@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://umami.bvh.fyi 'sha256-AfLm7d4t34f4RCe19ZLDyEpjxuCJgmqK+B3BImzTY38=' 'sha256-lo6N+pXQaLXjyUuTR/FBWaSZZ8J5r0KvmmlmNa1p0WI='; style-src 'self' 'unsafe-inline' https://fonts.bunny.net; font-src 'self' https://fonts.bunny.net; img-src 'self' data: https://time2crack.eu https://liberapay.com; connect-src 'self' https://api.pwnedpasswords.com https://cdn.jsdelivr.net https://umami.bvh.fyi; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="How long to crack your password? Time2Crack tests it against 14 attack types and 6 hashing algorithms — 100% local, works offline, open source. Free password strength checker."
+    />
+    <meta
+      name="keywords"
+      content="password strength checker, how long to crack password, password security test, free password checker, password strength meter, check password security, password crack time, how secure is my password, test password strength, vérifier force mot de passe, testeur mot de passe, générateur mot de passe sécurisé, passwort sicherheit, comprobador contraseña, password checker online free"
+    />
+    <meta name="author" content="Baudouin Van Humbeeck" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="language"
+      content="French, English, Spanish, Portuguese, German, Turkish, Italian, Polish, Dutch"
+    />
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+    <link rel="preconnect" href="https://api.pwnedpasswords.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+    <link
+      rel="prefetch"
+      href="https://api.pwnedpasswords.com/range/00000"
+      as="fetch"
+      crossorigin
+    />
+    <link rel="canonical" href="https://time2crack.eu/" id="canonical-link" />
+    <link rel="alternate" hreflang="en" href="https://time2crack.eu/?lang=en" />
+    <link rel="alternate" hreflang="fr" href="https://time2crack.eu/?lang=fr" />
+    <link rel="alternate" hreflang="es" href="https://time2crack.eu/?lang=es" />
+    <link rel="alternate" hreflang="pt" href="https://time2crack.eu/?lang=pt" />
+    <link rel="alternate" hreflang="de" href="https://time2crack.eu/?lang=de" />
+    <link rel="alternate" hreflang="tr" href="https://time2crack.eu/?lang=tr" />
+    <link rel="alternate" hreflang="it" href="https://time2crack.eu/?lang=it" />
+    <link rel="alternate" hreflang="pl" href="https://time2crack.eu/?lang=pl" />
+    <link rel="alternate" hreflang="nl" href="https://time2crack.eu/?lang=nl" />
+    <link rel="alternate" hreflang="x-default" href="https://time2crack.eu/?lang=en" />
+    <meta
+      property="og:title"
+      content="Time2Crack — How Long to Crack Your Password?"
+    />
+    <meta
+      property="og:description"
+      content="Test your password against 14 attack types and 6 hashing algorithms. 100% local — works in airplane mode, nothing leaves your browser. Free, open source, 9 languages."
+    />
+    <meta property="og:image" content="https://time2crack.eu/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Time2Crack password strength checker interface" />
+    <meta property="og:url" content="https://time2crack.eu/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="fr_FR" />
+    <meta property="og:locale:alternate" content="de_DE" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:site_name" content="Time2Crack" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@bvh_fyi" />
+    <meta
+      name="twitter:title"
+      content="Time2Crack — How Long to Crack Your Password?"
+    />
+    <meta
+      name="twitter:description"
+      content="Test your password against 14 attack types and 6 hashing algorithms. 100% local, works offline. Free & open source."
+    />
+    <meta name="twitter:image" content="https://time2crack.eu/og-image.png" />
+    <meta name="twitter:image:alt" content="Time2Crack password strength checker interface" />
+    <title>Time2Crack — How Long to Crack Your Password? Free Strength Checker</title>
+    <!-- Favicon with progressive enhancement: AVIF → WebP → SVG -->
+    <link rel="icon" type="image/avif" href="time2crack.avif" />
+    <link rel="icon" type="image/webp" href="time2crack.webp" />
+    <link rel="icon" type="image/svg+xml" href="time2crack.svg" />
+    <link rel="shortcut icon" href="time2crack.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Time2Crack",
+        "alternateName": ["Password Strength Checker", "Password Crack Time Calculator"],
+        "description": "Free open-source password strength checker that calculates how long it would take to crack your password using 14 attack types and 6 hashing algorithms. 100% client-side, works offline, zero data transmission. Supports 9 languages.",
+        "url": "https://time2crack.eu",
+        "applicationCategory": "SecurityApplication",
+        "applicationSubCategory": "Password Security",
+        "operatingSystem": "Any (runs in browser)",
+        "browserRequirements": "Requires JavaScript",
+        "featureList": [
+          "Password strength estimation",
+          "Crack time calculation",
+          "14 attack types modeled",
+          "6 hashing algorithms (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id)",
+          "Have I Been Pwned integration with k-anonymity",
+          "Secure password generator",
+          "9 language support",
+          "100% local processing",
+          "Works offline / airplane mode",
+          "Open source"
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Baudouin Van Humbeeck",
+          "url": "https://bvh.fyi",
+          "sameAs": [
+            "https://bsky.app/profile/bvh.fyi",
+            "https://codeberg.org/baudouin"
+          ]
+        },
+        "maintainer": {
+          "@type": "Person",
+          "name": "Baudouin Van Humbeeck"
+        },
+        "codeRepository": "https://codeberg.org/baudouin/crack-date",
+        "license": "https://codeberg.org/baudouin/crack-date/src/branch/main/LICENSE",
+        "datePublished": "2024-01-01",
+        "dateModified": "2026-04-01",
+        "inLanguage": ["en", "fr", "es", "pt", "de", "tr", "it", "pl", "nl"],
+        "isAccessibleForFree": true,
+        "privacyPolicyUrl": "https://codeberg.org/baudouin/crack-date",
+        "screenshot": "https://time2crack.eu/og-image.png"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How long does it take to crack a password?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It depends on password length, character set, and hashing algorithm. An 8-character lowercase password is cracked instantly with MD5, but takes centuries with Argon2id. Time2Crack calculates exact crack times against 14 attack types and 6 hashing algorithms using real Hashcat benchmarks on 12× RTX 4090 GPUs."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my password safe to test here?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Time2Crack runs 100% locally in your browser — nothing is ever sent to any server. You can verify this yourself: switch to airplane mode and the analysis still works. The only exception is Have I Been Pwned: only 5 anonymised characters of your password hash are sent, making it impossible to reconstruct your password."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How secure is my password?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A secure password in 2026 should be at least 12-16 characters, mix uppercase, lowercase, numbers and symbols, avoid dictionary words and keyboard patterns (qwerty, 123456), and not appear in data breaches. Time2Crack tests all these vulnerabilities simultaneously and shows you exactly how each attack type would perform against your password."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the difference between MD5, bcrypt and Argon2id for password security?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Hashing speed differs by a factor of 2.5 billion. With 12 RTX 4090 GPUs: MD5 = 2,000 billion hashes/second, bcrypt = 2.2 million hashes/second, Argon2id = 800 hashes/second. The same 8-character password cracked in 1 second with MD5 would take 80 years with Argon2id. Always use bcrypt or Argon2id for password storage."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is a brute force attack on passwords?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A brute force attack systematically tests every possible character combination (aaa, aab, aac...). It is guaranteed to crack any password eventually, but becomes impractical for long passwords: a 12-character random password with mixed characters would take millions of years to crack by brute force with current hardware."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is a dictionary attack and how can I protect against it?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A dictionary attack tests millions of known passwords and common words. Time2Crack checks against 14+ billion compromised credentials via Have I Been Pwned and language-specific wordlists. Protection: never use real words as passwords. Use a random password generator or a passphrase of 4+ truly random words."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What makes a password impossible to crack?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A password becomes practically impossible to crack when it combines: (1) length of 16+ characters, (2) true randomness (no words, no patterns), (3) full character set (upper, lower, digits, symbols), (4) a modern slow hash (bcrypt, Argon2id) on the server side. A 20-character random password would take longer than the age of the universe to brute force."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Time2Crack work offline?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Time2Crack works in airplane mode. All password analysis runs entirely in your browser with no internet connection required. The only feature requiring network access is the Have I Been Pwned breach check, which is optional."
+            }
+          }
+        ]
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Prototype responsive tuning for crack-time panel (mobile/tablet first) */
+      .ct-kicker {
+        margin: 0.3rem 0 0;
+        font-size: 0.74rem;
+        color: var(--text-muted);
+        line-height: 1.45;
+      }
+
+      .ct-responsive-toolbar {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 0.6rem;
+        align-items: start;
+        margin-bottom: 0.6rem;
+      }
+
+      .ct-controls-card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        padding: 0.6rem;
+      }
+
+      .ct-controls-card .ct-controls {
+        margin-bottom: 0;
+      }
+
+      .ct-list-shell {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface);
+        padding: 0.45rem;
+      }
+
+      @media (max-width: 900px) {
+        .ct-responsive-toolbar {
+          grid-template-columns: 1fr;
+        }
+
+        .ct-list-shell {
+          max-height: 56vh;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+    </style>
+    <!-- Analytics disabled to comply with strict CSP -->
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link" data-i18n="skip"
+      >Skip to content</a
+    >
+
+    <header role="banner">
+      <div class="lang-selector" id="lang-selector">
+        <button type="button" class="lang-toggle" id="lang-toggle" aria-label="Change language" aria-expanded="false" aria-controls="lang-menu">
+          <svg class="globe-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M2 12h20" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span class="lang-code" id="lang-code">EN</span>
+        </button>
+        <div class="lang-menu" id="lang-menu" hidden>
+          <button type="button" class="lang-option" data-lang="en" aria-label="English">EN — English</button>
+          <button type="button" class="lang-option" data-lang="fr" aria-label="Français">FR — Français</button>
+          <button type="button" class="lang-option" data-lang="es" aria-label="Español">ES — Español</button>
+          <button type="button" class="lang-option" data-lang="pt" aria-label="Português">PT — Português</button>
+          <button type="button" class="lang-option" data-lang="de" aria-label="Deutsch">DE — Deutsch</button>
+          <button type="button" class="lang-option" data-lang="tr" aria-label="Türkçe">TR — Türkçe</button>
+          <button type="button" class="lang-option" data-lang="it" aria-label="Italiano">IT — Italiano</button>
+          <button type="button" class="lang-option" data-lang="pl" aria-label="Polski">PL — Polski</button>
+          <button type="button" class="lang-option" data-lang="nl" aria-label="Nederlands">NL — Nederlands</button>
+        </div>
+      </div>
+      <div class="dict-loading-indicator" id="dict-loading" hidden aria-live="polite">
+        <svg class="spinner" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" opacity="0.25"/>
+          <path d="M12 2a10 10 0 0 1 10 10" opacity="0.75"/>
+        </svg>
+        <span data-i18n="dictLoading">Loading dictionary...</span>
+      </div>
+      <div class="logo">
+         <picture>
+           <source srcset="time2crack.avif" type="image/avif">
+           <source srcset="time2crack.webp" type="image/webp">
+           <img src="time2crack.svg" alt="Time2Crack" class="logo-image">
+         </picture>
+       </div>
+      <a
+        href="https://codeberg.org/baudouin/crack-date"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="codeberg-link"
+        aria-label="View source on Codeberg"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M11.955.49A12 12 0 0 0 0 12.49a12 12 0 0 0 1.832 6.373L11.838 5.928a4.5 4.5 0 0 1 6.786 5.87l-.035.045l-6.395 8.638a12 12 0 0 0 11.762-20.002z"
+            fill="#2185D0"
+          />
+        </svg>
+        <span class="codeberg-text">Codeberg</span>
+      </a>
+    </header>
+
+    <main id="main-content" role="main">
+      <section class="input-section">
+        <h1 class="sr-only">Time2Crack</h1>
+        <h2 class="sr-only">Password analysis</h2>
+        <p class="subtitle" data-i18n="subtitle">What if a hacker went after your password? Type it to see how long it would hold up.</p>
+        <label for="password-input" data-i18n="inputLabel"
+          >Enter a password to test</label
+        >
+        <div class="password-wrapper-row">
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="password-input"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="password-hint"
+              data-i18n-placeholder="inputPlaceholder"
+              placeholder="Testez votre mot de passe"
+            />
+            <span class="char-preview" id="char-preview" aria-hidden="true"></span>
+            <button
+              type="button"
+              id="toggle-visibility"
+              aria-label="Show password"
+            >
+              <svg
+                class="lucide lucide-eye"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span class="sr-only">Show</span>
+            </button>
+          </div>
+          <button
+            type="button"
+            id="reset-btn"
+            class="reset-btn-inline"
+            aria-label="Reset"
+          >
+            <svg
+              class="lucide lucide-rotate-ccw"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="1 4 1 10 7 10" />
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="controls-row">
+          <span class="hint" id="password-hint">
+            <span id="hint-text" data-i18n-html="hint"></span>
+          </span>
+        </div>
+
+        <!-- Privacy assurance — Prototype A : Le défi -->
+        <div class="challenge-block">
+          <p class="challenge-statement" data-i18n="challengeStatement">Switch to airplane mode. Type anyway.</p>
+          <p class="challenge-result" data-i18n="challengeResult">It works. Nothing leaves.</p>
+          <p class="challenge-sub" data-i18n="challengeSub">The analysis runs entirely in your browser.</p>
+        </div>
+
+        <div class="privacy-assurance">
+          <details class="privacy-details">
+            <summary>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span data-i18n="privacyDetailsSummary">How to verify</span>
+              <span class="privacy-chevron" aria-hidden="true">▶</span>
+            </summary>
+            <div class="privacy-details-body">
+              <ol>
+                <li data-i18n="privacyStep1">Open F12 → Network tab (desktop)</li>
+                <li data-i18n="privacyStep2">Type any password</li>
+                <li data-i18n="privacyStep3">No request to time2crack.eu appears</li>
+              </ol>
+              <p data-i18n="privacyHibp">One exception: HaveIBeenPwned receives 5 anonymised characters of your password hash — never the password itself.</p>
+              <a href="https://codeberg.org/baudouin/crack-date" target="_blank" rel="noopener noreferrer" data-i18n="privacySource">Publicly auditable on Codeberg →</a>
+            </div>
+          </details>
+        </div>
+
+        <!-- Password Generator Accordion -->
+        <div class="gen-accordion-trigger-row" id="gen-accordion-trigger-row">
+          <button
+            type="button"
+            class="gen-accordion-trigger"
+            id="gen-accordion-trigger"
+            aria-expanded="false"
+            aria-controls="gen-accordion-panel"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            <span data-i18n="generateBtn">Generate a password</span>
+            <svg class="gen-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+
+        </div>
+
+        <div class="gen-accordion-panel" id="gen-accordion-panel" role="region" aria-labelledby="gen-accordion-trigger" aria-hidden="true" inert>
+          <div class="gen-accordion-inner">
+
+            <!-- Type -->
+            <div class="gen-section">
+              <div class="gen-section-label" data-i18n="genType">Type</div>
+              <div class="gen-type-row" role="group" aria-label="Password type">
+                <button type="button" class="gen-type-chip active" data-gen-type="random" data-i18n="genTypeRandom">🔀 Random</button>
+                <button type="button" class="gen-type-chip" data-gen-type="passphrase" data-i18n="genTypePassphrase">💬 Passphrase</button>
+                <button type="button" class="gen-type-chip" data-gen-type="word-based" data-i18n="genTypeWord">✏️ Word-based</button>
+              </div>
+            </div>
+
+            <!-- Length slider (hidden for passphrase) -->
+            <div class="gen-section" id="gen-len-row">
+              <div class="gen-slider-label">
+                <span data-i18n="genLength">Length</span>
+                <span class="gen-slider-value" id="gen-len-val">20</span>
+              </div>
+              <input type="range" id="gen-len-range" min="8" max="64" value="20" aria-label="Password length" />
+            </div>
+
+            <!-- Charset chips (hidden for passphrase/word-based) -->
+            <div class="gen-section" id="gen-charset-row">
+              <div class="gen-section-label" data-i18n="genCharset">Characters</div>
+              <div class="gen-charset-chips">
+                <label class="gen-cs-chip active"><input type="checkbox" id="gen-chk-u" checked aria-label="Uppercase A-Z" /><span>A-Z</span></label>
+                <label class="gen-cs-chip active"><input type="checkbox" id="gen-chk-l" checked aria-label="Lowercase a-z" /><span>a-z</span></label>
+                <label class="gen-cs-chip active"><input type="checkbox" id="gen-chk-d" checked aria-label="Digits 0-9" /><span>0-9</span></label>
+                <label class="gen-cs-chip active"><input type="checkbox" id="gen-chk-s" checked aria-label="Symbols" /><span>!@#</span></label>
+              </div>
+            </div>
+
+            <!-- Word input (hidden unless word-based) -->
+            <div class="gen-section" id="gen-word-row" hidden>
+              <div class="gen-section-label" data-i18n="genBaseWord">Base word</div>
+              <input type="text" id="gen-word-input" class="gen-word-input" maxlength="20" data-i18n-placeholder="genBaseWordPlaceholder" placeholder="e.g. sunshine, mountain..." />
+              <p class="gen-word-hint" data-i18n="genWordHint">Digits and symbols will be added automatically.</p>
+            </div>
+
+            <!-- Live preview -->
+            <div class="gen-section gen-preview-section">
+              <div class="gen-preview-label">
+                <span data-i18n="genPreview">Live preview</span>
+                <div class="gen-preview-label-right">
+                  <span class="gen-preview-strength" id="gen-preview-strength"></span>
+                  <button type="button" class="gen-preview-toggle" id="gen-mask-toggle" aria-label="Toggle visibility">
+                    <svg id="gen-mask-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="gen-pw-preview">
+                <span class="gen-pw-preview-text gen-pw-placeholder" id="gen-preview-text" data-i18n="genPreviewPlaceholder">Choose a type and adjust options</span>
+              </div>
+              <div class="gen-mini-strength" id="gen-mini-bar">
+                <div class="gen-mini-seg" id="gen-mb0"></div>
+                <div class="gen-mini-seg" id="gen-mb1"></div>
+                <div class="gen-mini-seg" id="gen-mb2"></div>
+                <div class="gen-mini-seg" id="gen-mb3"></div>
+                <div class="gen-mini-seg" id="gen-mb4"></div>
+                <div class="gen-mini-seg" id="gen-mb5"></div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="gen-actions">
+              <button type="button" class="gen-btn-regen" id="gen-btn-regen" aria-label="Regenerate">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                </svg>
+              </button>
+              <button type="button" class="gen-btn-copy" id="gen-btn-copy" disabled aria-label="Copy password">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                <span id="gen-btn-copy-text" data-i18n="copyBtn">Copy</span>
+              </button>
+              <button type="button" class="gen-btn-use" id="gen-btn-use" disabled data-i18n="genUseBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Use this password
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Password Strength Indicator (moved after input for feedback positioning) -->
+        <div
+          class="strength-bar-wrapper"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Password strength"
+        >
+          <div class="bar-label">
+            <span class="strength-icon" id="strength-icon" aria-hidden="true">—</span>
+            <span id="strength-label">—</span>
+            <span id="strength-bits" class="strength-bits">—</span>
+            <button
+              type="button"
+              id="strength-info-btn"
+              class="strength-info-btn"
+              aria-label="Password strength explanation"
+              aria-describedby="strength-tooltip"
+            >
+              <svg
+                class="lucide lucide-info"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+            </button>
+            <div id="strength-tooltip" class="strength-tooltip" hidden role="tooltip">
+              <h4 class="tooltip-title">Password Strength Explained</h4>
+              <p class="tooltip-text">
+                <strong>Entropy (bits)</strong> measures randomness: higher = more random. But strength ≠ security!
+              </p>
+              <p class="tooltip-text">
+                <strong>Example:</strong> "Excellent" (128 bits) on MD5 hash = crackable in seconds. "Good" (60 bits) on bcrypt = unbreakable in centuries.
+              </p>
+              <p class="tooltip-text">
+                <strong>Recommendation:</strong> Use bcrypt or Argon2id for secure hashing. Focus on entropy AND hash algorithm.
+              </p>
+            </div>
+          </div>
+          <div class="strength-bar-segments">
+            <div class="segment segment-critical" data-level="0"></div>
+            <div class="segment segment-danger" data-level="1"></div>
+            <div class="segment segment-warning" data-level="2"></div>
+            <div class="segment segment-success" data-level="3"></div>
+            <div class="segment segment-excellent" data-level="4"></div>
+            <div class="segment segment-exceptional" data-level="5"></div>
+          </div>
+        </div>
+
+        <!-- Copy Button (shown only when password is generated) -->
+        <div class="copy-btn-wrap">
+          <button type="button" id="copy-btn" class="action-btn action-btn--copy action-btn--icon-only" hidden aria-label="Copy password">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+
+        <div
+          class="results visible"
+          id="results"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <h2 class="sr-only">Crack time results</h2>
+          <div class="attacker-frame" id="attacker-frame">
+            <!-- Onglets -->
+            <div class="attacker-tabs" role="tablist" aria-label="Attacker profile">
+              <div class="attacker-tab-wrapper is-active">
+                <button
+                  class="attacker-tab is-active"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="panel-experienced"
+                  tabindex="0"
+                  id="tab-experienced"
+                  data-profile="experienced"
+                >
+                  <span data-i18n="tabExperienced">Experienced</span>
+                </button>
+                <div class="attacker-tab-description" data-i18n="tabExperiencedGpus">12× RTX 4090 GPUs</div>
+              </div>
+              <div class="attacker-tab-wrapper">
+                <button
+                  class="attacker-tab"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="panel-professional"
+                  tabindex="-1"
+                  id="tab-professional"
+                  data-profile="professional"
+                >
+                  <span data-i18n="tabProfessional">Professional</span>
+                </button>
+                <div class="attacker-tab-description" data-i18n="tabProfessionalGpus">~100 GPUs</div>
+              </div>
+            </div>
+
+            <!-- Panneau Expérimenté -->
+            <div class="attacker-panel is-active" id="panel-experienced" role="tabpanel" aria-labelledby="tab-experienced">
+              <h3 class="label" id="result-label-fast">—</h3>
+              <div class="big-duration" id="crack-duration-fast">—</div>
+              <div class="big-date" id="crack-date-fast">—</div>
+              <p class="result-sentence" id="result-sentence-fast"></p>
+            </div>
+
+            <!-- Panneau Professionnel -->
+            <div class="attacker-panel" id="panel-professional" role="tabpanel" aria-labelledby="tab-professional" hidden>
+              <h3 class="label" id="result-label-pro">—</h3>
+              <div class="big-duration big-duration--professional" id="crack-duration-pro">—</div>
+              <div class="big-date" id="crack-date-pro">—</div>
+              <p class="result-sentence" id="result-sentence-pro"></p>
+            </div>
+
+            <!-- Quality + Pattern + HIBP Status Bar -->
+            <p class="qp-section-title">Heatmap</p>
+            <div class="quality-pattern-bar" id="quality-pattern-bar">
+              <!-- Ligne 1 : Analyse -->
+              <div class="qp-row">
+                <p class="qp-row-label" data-i18n="analyseRowLabel">Analyse</p>
+                <div class="qp-row-badges">
+                  <div class="qp-badge-wrapper">
+                    <div>
+                      <span class="qp-label"><span aria-hidden="true">🎲</span> <span data-i18n="entropyLabel">Entropy</span></span>
+                      <p class="entropy-desc" data-i18n="entropyDesc">Length + Variety + Unpredictability</p>
+                    </div>
+                    <span class="qp-badge" id="quality-badge">—</span>
+                  </div>
+                  <div class="qp-badge-wrapper">
+                    <div>
+                      <span class="qp-label"><span aria-hidden="true">📊</span> <span data-i18n="structureLabel">Structure</span></span>
+                      <p class="entropy-desc" data-i18n="structureDesc">L'arrangement des caractères est-il reconnaissable ?</p>
+                    </div>
+                    <span class="qp-badge" id="pattern-badge">—</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Ligne 2 : Fuites -->
+              <div class="qp-row">
+                <p class="qp-row-label" data-i18n="leakRowLabel">Votre mot de passe a-t-il déjà été piraté ?</p>
+                <div class="qp-row-badges">
+                  <div class="qp-badge-wrapper">
+                    <div>
+                      <span class="qp-label"><span aria-hidden="true">🔒</span> <span data-i18n="leakedLabel">Leaked</span></span>
+                      <p class="entropy-desc" data-i18n="hibpSourceLabel">Have I Been Pwned</p>
+                    </div>
+                    <span class="qp-badge" id="hibp-status-badge">—</span>
+                  </div>
+                  <div class="qp-badge-wrapper qp-rockyou-wrapper" id="qp-rockyou-wrapper">
+                    <div>
+                      <span class="qp-label"><span aria-hidden="true">💀</span> RockYou</span>
+                      <p class="entropy-desc" id="rockyou-hint" data-i18n="rockyouHint">Click to check · 17 MB download</p>
+                    </div>
+                    <span class="qp-badge" id="rockyou-status-badge">—</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Don désactivé temporairement
+              <div class="qp-donate-row">
+                <p class="qp-donate-label">Time2Crack vous a été utile ?</p>
+                <a
+                  href="https://liberapay.com/baudouinvh/donate"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Support on Liberapay"
+                >
+                  <img
+                    src="https://liberapay.com/assets/widgets/donate.svg"
+                    alt="Donate using Liberapay"
+                    height="32"
+                    loading="lazy"
+                  />
+                </a>
+              </div>
+              -->
+            </div>
+          </div>
+
+          <div class="details-summary">
+            <div id="vuln-tags" class="vuln-tags" aria-live="polite"></div>
+
+
+            <div
+              id="hibp-loading"
+              class="hibp-loading"
+              role="status"
+              aria-live="polite"
+              hidden
+            >
+              <span class="spinner" aria-hidden="true"></span>
+              <span data-i18n="hibpLoading"
+                >Checking against known breaches...</span
+              >
+            </div>
+
+            <!-- RockYou Bloom Filter trigger button (shown when pw entered, filter not loaded) -->
+            <div id="bloom-trigger" hidden>
+              <button type="button" id="bloom-check-btn" class="bloom-check-btn action-btn"
+                      data-i18n="bloomCheckBtn">Check against RockYou (14M passwords)</button>
+              <p class="bloom-trigger-note" data-i18n="bloomCheckNote">~17 MB · one-time · stays local</p>
+            </div>
+
+            <!-- RockYou Bloom Filter result banners (shown after load) -->
+            <div id="bloom-section" hidden>
+              <div id="bloom-banner" role="alert" aria-live="assertive" hidden>
+                <div class="bloom-icon" aria-hidden="true">☠</div>
+                <div class="bloom-content">
+                  <strong class="bloom-title" data-i18n="bloomFoundTitle">Found in RockYou!</strong>
+                  <p class="bloom-text" data-i18n="bloomFoundText">
+                    This password is in the RockYou dataset (14M+ most breached passwords).
+                    Any attacker will crack it instantly.
+                  </p>
+                </div>
+              </div>
+
+              <div id="bloom-safe" role="status" aria-live="polite" hidden>
+                <span class="bloom-safe-icon" aria-hidden="true">✓</span>
+                <span data-i18n="bloomNotFound">Not found in RockYou dataset.</span>
+              </div>
+
+              <div id="bloom-error" role="alert" hidden>
+                <span aria-hidden="true">⚠</span>
+                <span data-i18n="bloomError">Could not load RockYou filter.</span>
+              </div>
+
+              <div id="bloom-loading" role="status" aria-live="polite" hidden>
+                <span class="spinner" aria-hidden="true"></span>
+                <span data-i18n="bloomLoading">Loading RockYou filter (~17 MB)…</span>
+              </div>
+            </div>
+
+            <!-- Character-by-character heatmap (always visible) -->
+            <div
+              class="character-analysis-live-wrapper"
+              id="character-analysis-live-wrapper"
+              hidden
+            >
+              <div class="character-analysis-live" id="character-analysis-live"></div>
+              <div class="character-legend">
+                <span class="legend-item">
+                  <span class="char-badge char-strong">✔</span>
+                  <span class="legend-label" data-i18n="heatmapUnpredictable">Unpredictable</span>
+                </span>
+                <span class="legend-item">
+                  <span class="char-badge char-medium">◐</span>
+                  <span class="legend-label" data-i18n="heatmapModerate">Moderate</span>
+                </span>
+                <span class="legend-item">
+                  <span class="char-badge char-weak">✘</span>
+                  <span class="legend-label" data-i18n="heatmapPredictable">Predictable</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Live analysis details (always visible, same as Advanced Details) -->
+            <div
+              class="details-grid live-details-visible"
+              id="live-details-visible"
+              role="list"
+              aria-label="Live analysis"
+              hidden
+            >
+              <div class="detail-item" role="listitem">
+                <div class="detail-value" id="detail-length-live">—</div>
+                <div class="detail-label" data-i18n="chars">Characters</div>
+              </div>
+              <div class="detail-item" role="listitem">
+                <div class="detail-value" id="detail-charset-live">—</div>
+                <div class="detail-label" data-i18n="charsetSize">
+                  Charset size
+                </div>
+              </div>
+              <div class="detail-item" role="listitem">
+                <div class="detail-value" id="detail-entropy-live">—</div>
+                <div class="detail-label" data-i18n="entropyBits">
+                  Entropy bits
+                </div>
+              </div>
+              <div class="detail-item" role="listitem">
+                <div class="detail-value" id="detail-combos-live">—</div>
+                <div class="detail-label" data-i18n="combos">
+                  Combinations
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="secondary-panels">
+            <h2 class="sr-only" data-i18n="tableCaption">Crack time by attack type and hashing algorithm</h2>
+            <section class="cracktime-panel" aria-labelledby="ct-section-title">
+              <div class="ct-head">
+                <div class="ct-title" id="ct-section-title">
+                  <svg class="lucide lucide-clock-3" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span data-i18n="tableCaption">Crack time by attack type and hashing algorithm</span>
+                </div>
+                <p class="ct-kicker" data-i18n="ctKicker">Mobile/tablet: choose attack context, then scroll the attack list.</p>
+              </div>
+
+              <div class="ct-responsive-toolbar">
+                <div class="ct-controls-card">
+                  <div class="ct-controls">
+                    <div class="ct-control-group">
+                      <label class="ct-control-label" for="ct-algo" data-i18n="thAlgo">Algorithm</label>
+                      <select id="ct-algo" aria-label="Hash algorithm">
+                        <option value="md5">MD5</option>
+                        <option value="sha1">SHA-1</option>
+                        <option value="sha256" selected>SHA-256</option>
+                        <option value="ntlm">NTLM</option>
+                        <option value="mysql">MySQL5</option>
+                        <option value="bcrypt">bcrypt (cost 10)</option>
+                        <option value="bcrypt12">bcrypt (cost 12)</option>
+                        <option value="scrypt">scrypt</option>
+                        <option value="pbkdf2">PBKDF2-SHA256</option>
+                        <option value="argon2">Argon2id</option>
+                      </select>
+                    </div>
+                    <div class="ct-control-group">
+                      <label class="ct-control-label" for="ct-profile" data-i18n="tooltipBenchmarkTitle">Attacker profile</label>
+                      <select id="ct-profile" aria-label="Attacker profile">
+                        <option value="1" data-i18n="tooltipAmateur">Amateur (1 GPU)</option>
+                        <option value="12" selected data-i18n="profileExperienced">Experienced (12 GPU)</option>
+                        <option value="100" data-i18n="tooltipPro">Professional (~100 GPU)</option>
+                        <option value="10000" data-i18n="tooltipNation">Nation-state (~10k GPU)</option>
+                      </select>
+                    </div>
+                    <div class="model-mode-row ct-hf-row">
+                      <label class="model-mode-toggle" for="hf-toggle">
+                        <input type="checkbox" id="hf-toggle" />
+                        <span data-i18n="hfModeLabel">High-fidelity mode</span>
+                      </label>
+                      <small id="hf-status" data-i18n="hfModeOff">Calibration: standard</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ct-fastest" id="ct-fastest-block">
+                  <span class="ct-fastest-label" data-i18n="dominantAttack">Fastest attack</span>
+                  <div class="ct-fastest-value" id="ct-fastest-value">—</div>
+                  <div class="ct-fastest-sub" id="ct-fastest-sub"></div>
+                </div>
+              </div>
+
+              <div class="ct-list-shell" role="region" aria-label="Attack breakdown list">
+                <div class="ct-list" id="ct-list" role="list"></div>
+              </div>
+            </section>
+          </div>
+         </div>
+
+         <!-- ============================================================
+              ATTACK DESCRIPTIONS
+              ============================================================ -->
+          <details class="attack-descriptions" id="attack-descriptions">
+            <summary>
+             <span class="summary-main">
+               <svg class="lucide lucide-info" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                 <circle cx="12" cy="12" r="10" />
+                 <path d="M12 16v-4" />
+                 <path d="M12 8h.01" />
+               </svg>
+               <span data-i18n="attackDescriptions">Descriptions des types d'attaque</span>
+             </span>
+             <svg class="lucide lucide-chevron-down ui-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+               <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </summary>
+
+            <h2 class="sr-only">Everything about attack types</h2>
+
+           <div class="attack-desc-content">
+             <!-- Brute Force -->
+             <div class="attack-desc-item" id="attack-brute">
+               <h3 data-i18n="aBrute">Brute Force</h3>
+               <div data-i18n-html="descBrute">Teste tous les caractères possibles séquentiellement (aaa, aab, aac...). Extrêmement lent pour les longs mots de passe mais ne dépend d'aucune connaissance préalable. Vitesse : O(charset^length).</div>
+             </div>
+
+             <!-- Dictionary -->
+             <div class="attack-desc-item" id="attack-dict">
+               <h3 data-i18n="aDict">Dictionary Attack</h3>
+               <div data-i18n-html="descDict">Teste des mots courants et des variantes contre une base de ~14 milliards de mots de passe leakés (HIBP). Très efficace si le mot de passe contient des mots du dictionnaire. Vitesse : O(wordlist_size).</div>
+             </div>
+
+              <!-- Hybrid -->
+              <div class="attack-desc-item" id="attack-hybrid">
+                <h3 data-i18n="aHybrid">Hybrid Attack</h3>
+                <div data-i18n-html="descHybrid">Combine dictionnaire + mutations basées sur des règles (capitalization, number substitution, special characters). Ex: "password" → "P@ssw0rd!", "PASSWORD123", etc. Très efficace pour les mots avec modifications prévisibles.</div>
+              </div>
+
+              <!-- Rule-based Advanced -->
+              <div class="attack-desc-item" id="attack-rule">
+                <h3 data-i18n="aRule">Rule-based Advanced</h3>
+                <div data-i18n-html="descRule">Applies large mutation rule sets (best64/jumbo-style) to dictionary candidates. Captures realistic human edits better than simple hybrid rules.</div>
+              </div>
+
+              <!-- PRINCE -->
+              <div class="attack-desc-item" id="attack-prince">
+                <h3 data-i18n="aPrince">PRINCE Chaining</h3>
+                <div data-i18n-html="descPrince">Chains frequent fragments into many probable combinations (PRINCE). Very effective for passphrase-like or multi-token passwords.</div>
+              </div>
+
+             <!-- Mask -->
+             <div class="attack-desc-item" id="attack-mask">
+               <h3 data-i18n="aMask">Mask Attack</h3>
+               <div data-i18n-html="descMask">Cible les structures prévisibles (Uppercase + lowercase + digits + symbols dans des positions connues). Ex: "Name123!" ou "CapsWord+digits". Exploite les patterns humains courants.</div>
+             </div>
+
+             <!-- Rainbow Table -->
+             <div class="attack-desc-item" id="attack-rainbow">
+               <h3 data-i18n="aRainbow">Rainbow Table</h3>
+               <div data-i18n-html="descRainbow">Lookup instantané sur des tables pré-calculées de hashes (MD5, SHA-1, NTLM). Très rapide mais nécessite : (1) hashes non-salés, (2) tables déjà construites (~150 GB). Ineffectif contre bcrypt/Argon2id (salés et lents).</div>
+             </div>
+
+
+              <!-- Password Spraying -->
+              <div class="attack-desc-item" id="attack-spray">
+                <h3 data-i18n="aSpray">Password Spraying</h3>
+                <div data-i18n-html="descSpray">Teste les mots de passe les plus courants (top 1000) contre BEAUCOUP de comptes/emails. Ex: tester "123456", "password", "qwerty" sur 1 million d'emails. Très efficace pour les mots faibles à grande échelle.</div>
+              </div>
+
+              <!-- Targeted OSINT -->
+              <div class="attack-desc-item" id="attack-targeted">
+                <h3 data-i18n="aTargeted">Targeted OSINT</h3>
+                <div data-i18n-html="descTargeted">Builds guesses from personal context (names, dates, org terms, handles). Highly effective when attacker knows the target.</div>
+              </div>
+
+              <!-- Markov -->
+              <div class="attack-desc-item" id="attack-markov">
+                <h3 data-i18n="aMarkov">Markov Attack</h3>
+                <div data-i18n-html="descMarkov">Utilise des chaînes de Markov pour prédire les séquences de caractères probables selon les patterns observés dans les mots de passe leakés. Privilégie les combinaisons statistiquement courantes. Efficace contre les structures "humaines".</div>
+              </div>
+
+              <!-- Neural Guessing -->
+              <div class="attack-desc-item" id="attack-neural">
+                <h3 data-i18n="aNeural">Neural Guessing</h3>
+                <div data-i18n-html="descNeural">Prioritizes guesses using learned distributions from leaked passwords (PassGAN/transformer style), often outperforming manual rule order.</div>
+              </div>
+
+             <!-- PCFG -->
+             <div class="attack-desc-item" id="attack-pcfg">
+               <h3 data-i18n="aPCFG">PCFG (Probabilistic Context-Free Grammar)</h3>
+               <div data-i18n-html="descPCFG">Exploite les structures grammaticales des mots de passe (Word+digits+symbol, Uppercase+lowercase, etc.). Teste d'abord les structures les plus probables. Peut craquer "excellent" (72 bits) en ~1 sec même si brute force prend 2^72 ans. Très puissant contre structures prévisibles.</div>
+             </div>
+
+              <!-- Combinator -->
+              <div class="attack-desc-item" id="attack-combi">
+                <h3 data-i18n="aCombi">Combinator Attack</h3>
+                <div data-i18n-html="descCombi">Concatène 2 mots du dictionnaire (passphrases). Ex: "correcthorsebatterystaple" = "correct" + "horse" + "battery" + "staple". Efficace contre les paraphrases qui semblent fortes mais combinent peu de mots.</div>
+              </div>
+
+              <!-- Morphological Variants -->
+              <div class="attack-desc-item" id="attack-morph">
+                <h3 data-i18n="aMorph">Morphological Variants</h3>
+                <div data-i18n-html="descMorph">Explores linguistic variants: accents, inflections, transliterations, and near-language substitutions around dictionary roots.</div>
+              </div>
+            </div>
+          </details>
+
+         <details class="methodology" id="methodology">
+          <summary class="methodology-summary">
+            <span class="summary-main"
+              ><svg
+                class="lucide lucide-microscope"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M6 18h8" />
+                <path d="M3 22h18" />
+                <path d="M14 22a7 7 0 0 0 0-14h-1" />
+                <path d="M9 14h2" />
+                <path d="M9 10h2" />
+                <path d="M10 6V4a1 1 0 0 1 1-1h1" />
+                <path d="M13 3h2" />
+                <path d="m14 8 2-2" />
+                <path d="m16 6 2 2" />
+              </svg>
+              <span data-i18n="methTitle">Methodology and sources</span></span
+            >
+            <svg
+              class="lucide lucide-chevron-down ui-chevron"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="6 9 12 15 18 9" />
+             </svg>
+           </summary>
+          <h2 class="sr-only">Sources</h2>
+
+           <ul class="source-list">
+            <li>
+              <strong
+                >Wheeler, D. (2016). "zxcvbn: Low-Budget Password Strength
+                Estimation"</strong
+              >USENIX Security '16 — peer-reviewed.<br /><a
+                href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler"
+                target="_blank"
+                rel="noopener"
+                >usenix.org</a
+              >
+            </li>
+            <li>
+              <strong>Hive Systems — Password Table 2025</strong>Hashcat
+              benchmarks 12× RTX 4090, bcrypt.<br /><a
+                href="https://www.hivesystems.com/blog/are-your-passwords-in-the-green"
+                target="_blank"
+                rel="noopener"
+                >hivesystems.com</a
+              >
+            </li>
+            <li>
+              <strong>Kaspersky (2024). 193M passwords study</strong>45% cracked
+              in &lt; 1 min.<br /><a
+                href="https://securelist.com/password-brute-force-time/112984/"
+                target="_blank"
+                rel="noopener"
+                >securelist.com</a
+              >
+            </li>
+            <li>
+              <strong
+                >Saputra et al. (2025). "Password Strength Study Using
+                Zxcvbn…"</strong
+              >Pilar Nusa Mandiri, Vol. 21 No. 1.<br /><a
+                href="https://www.researchgate.net/publication/389902836"
+                target="_blank"
+                rel="noopener"
+                >ResearchGate</a
+              >
+            </li>
+             <li>
+               <strong>Hashcat Benchmarks RTX 4090 (Chick3nman)</strong><br /><a
+                 href="https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd"
+                 target="_blank"
+                 rel="noopener"
+                 >GitHub Gist</a
+               >
+             </li>
+             <li>
+               <strong>Hashcat Wiki — Rule-based Attack</strong>Comprehensive rule engine reference (best64-compatible functions and optimization constraints).<br /><a
+                 href="https://hashcat.net/wiki/doku.php?id=rule_based_attack"
+                 target="_blank"
+                 rel="noopener"
+                 >hashcat.net</a
+               >
+             </li>
+             <li>
+               <strong>Steube, J. — PRINCE Processor</strong>Official implementation and algorithm notes for PRINCE chained candidate generation.<br /><a
+                 href="https://github.com/hashcat/princeprocessor"
+                 target="_blank"
+                 rel="noopener"
+                 >GitHub</a
+               >
+             </li>
+             <li>
+               <strong>Hitaj et al. (2019). "PassGAN: A Deep Learning Approach for Password Guessing"</strong>Neural password guessing outperforming manual rule systems on leaked datasets.<br /><a
+                 href="https://arxiv.org/abs/1709.00440"
+                 target="_blank"
+                 rel="noopener"
+                 >arXiv.org</a
+               >
+             </li>
+             <li>
+               <strong>CUPP (Common User Passwords Profiler)</strong>Widely used OSINT-driven targeted password candidate generator.<br /><a
+                 href="https://github.com/Mebus/cupp"
+                 target="_blank"
+                 rel="noopener"
+                 >GitHub</a
+               >
+             </li>
+             <li>
+               <strong>PACK (Password Analysis and Cracking Kit)</strong>Statistical tooling for rule generation and morphological/transformational password candidate analysis.<br /><a
+                 href="https://github.com/iphelix/pack"
+                 target="_blank"
+                 rel="noopener"
+                 >GitHub</a
+               >
+             </li>
+             <li>
+               <strong>Have I Been Pwned (Troy Hunt)</strong>14B+ compromised
+               credentials.<br /><a
+                 href="https://haveibeenpwned.com/"
+                target="_blank"
+                rel="noopener"
+                >haveibeenpwned.com</a
+              >
+            </li>
+            <li>
+              <strong>Gosney, J. (2016). "8× GTX 1080 Hashcat Benchmarks"</strong
+              >Sagitta Brutalis system — 334 GH/s NTLM, first to break 330 GH/s.<br /><a
+                href="https://gist.github.com/epixoip/a83d38f412b4737e99bbef804a270c40"
+                target="_blank"
+                rel="noopener"
+                >GitHub Gist</a
+              >
+            </li>
+            <li>
+              <strong>Pasquini et al. (2021). "Reducing Bias in Modeling Real-world Password Strength"</strong
+              >USENIX Security '21 — Deep learning analysis of advanced attacker capabilities.<br /><a
+                href="https://arxiv.org/abs/2010.12269"
+                target="_blank"
+                rel="noopener"
+                >arXiv.org</a
+              >
+            </li>
+            <li>
+              <strong>Amazon Web Services (2024). "EC2 P4d Instances"</strong
+              >Cloud GPU clusters — Thousands of A100 GPUs for professional-scale attacks.<br /><a
+                href="https://aws.amazon.com/ec2/instance-types/p4/"
+                target="_blank"
+                rel="noopener"
+                >aws.amazon.com</a
+              >
+            </li>
+            <li>
+              <strong>Sprengers, M. (2011). "GPU-Based Password Cracking"</strong
+              >Master's thesis, Radboud University — Academic baseline for GPU performance.<br /><a
+                href="https://www.cs.ru.nl/masters-theses/2011/M_Sprengers___GPU-based_password_cracking.pdf"
+                target="_blank"
+                rel="noopener"
+                >Radboud University</a
+              >
+            </li>
+            <li>
+              <strong>Hatzivasilis & Papaefstathiou (2015). "Password Hashing Competition"</strong
+              >Multi-GPU cracking efficiency analysis.<br /><a
+                href="https://eprint.iacr.org/2015/265.pdf"
+                target="_blank"
+                rel="noopener"
+                >IACR ePrint</a
+              >
+            </li>
+            <li>
+              <strong>Weir et al. (2009). "Password Cracking Using Probabilistic Context-Free Grammars"</strong
+              >IEEE S&P — PCFG model, grammar structure derivation, Table II: 28.4% crack rate at 10^9 guesses.<br /><a
+                href="https://ieeexplore.ieee.org/document/5207658"
+                target="_blank"
+                rel="noopener"
+                >IEEE Xplore</a
+              >
+            </li>
+            <li>
+              <strong>Ma et al. (2014). "A Study of Probabilistic Password Models"</strong
+              >IEEE S&P — Measured hybrid attack keyspace: top-1000 passwords cracked within ~450 guesses (best64 rules).<br /><a
+                href="https://ieeexplore.ieee.org/document/6956583"
+                target="_blank"
+                rel="noopener"
+                >IEEE Xplore</a
+              >
+            </li>
+            <li>
+              <strong>Dürmuth et al. (2015). "OMEN: Ordered Markov ENumerator"</strong
+              >ESORICS — Measured Markov order-5 reduction: 94^8 keyspace → ~6.8×10^9 candidates on RockYou 14M (factor 0.006).<br /><a
+                href="https://link.springer.com/chapter/10.1007/978-3-319-24174-6_7"
+                target="_blank"
+                rel="noopener"
+                >Springer</a
+              >
+            </li>
+            <li>
+              <strong>Bonneau et al. (2012). "The Science of Guessing"</strong
+              >IEEE S&P — OSINT-driven attacks generate 10^3–10^5 usable candidates; credential stuffing hit rate 2–5%.<br /><a
+                href="https://ieeexplore.ieee.org/document/6234435"
+                target="_blank"
+                rel="noopener"
+                >IEEE Xplore</a
+              >
+            </li>
+            <li>
+              <strong>Veras et al. (2012). "Visualizing Keyboard Pattern Passwords"</strong
+              >VIZSEC — Keyboard walks in RockYou: forward 1.28%, reverse 0.18%, diagonal 0.31% of corpus.<br /><a
+                href="https://dl.acm.org/doi/10.1145/2379690.2379691"
+                target="_blank"
+                rel="noopener"
+                >ACM DL</a
+              >
+            </li>
+            <li>
+              <strong>Gosney, J. (2012). "Exploiting Password Reuse on the Internet"</strong
+              >Passwordscon — best64 rule set: 64 rules × 3.5M wordlist = 224M guesses, covers majority of rule-based cracking.<br /><a
+                href="https://passwords12.at.ifi.uio.no/Jeremi_Gosney_Password_Reuse_Passwordscon_2012.pdf"
+                target="_blank"
+                rel="noopener"
+                >Passwordscon 2012</a
+              >
+            </li>
+          </ul>
+        </details>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <p data-i18n-html="footer">
+        No password is stored. Calculation runs in your browser. Only network
+        request: the first 5 characters of the SHA-1 hash are sent to the
+        <a
+          href="https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange"
+          target="_blank"
+          rel="noopener"
+          >Have I Been Pwned</a
+        >
+        API (k-anonymity).
+      </p>
+      <div class="footer-social">
+        <a
+          href="https://www.linkedin.com/in/baudouinvanhumbeeck/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+          class="social-link"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="#0A66C2"/>
+          </svg>
+        </a>
+        <a
+          href="https://bsky.app/profile/bvh.fyi"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Bluesky"
+          class="social-link"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z" fill="#1185FE"/>
+          </svg>
+        </a>
+        <a
+          href="https://mastodon.social/@baudouinvh"
+          target="_blank"
+          rel="noopener noreferrer me"
+          aria-label="Mastodon"
+          class="social-link"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23.193 7.879c0-5.206-3.411-6.732-3.411-6.732C18.062.357 15.108.025 12.041 0h-.076c-3.068.025-6.02.357-7.74 1.147 0 0-3.411 1.526-3.411 6.732 0 1.192-.023 2.618.015 4.129.124 5.092.934 10.109 5.641 11.355 2.17.574 4.034.695 5.535.612 2.722-.15 4.25-.972 4.25-.972l-.09-1.975s-1.945.613-4.129.539c-2.165-.074-4.449-.233-4.799-2.891a5.499 5.499 0 0 1-.048-.745s2.125.52 4.817.643c1.646.075 3.19-.097 4.758-.283 3.007-.359 5.625-2.212 5.954-3.905.517-2.665.474-6.502.474-6.502zm-4.024 6.709h-2.497V8.469c0-1.29-.543-1.944-1.628-1.944-1.2 0-1.801.776-1.801 2.312v3.349h-2.483v-3.35c0-1.535-.601-2.311-1.801-2.311-1.085 0-1.628.653-1.628 1.944v6.119H4.834V8.284c0-1.289.328-2.313.987-3.07.68-.757 1.568-1.146 2.674-1.146 1.278 0 2.246.491 2.886 1.474L12 6.585l.619-1.043c.64-.983 1.608-1.474 2.886-1.474 1.106 0 1.994.389 2.674 1.146.658.757.986 1.781.986 3.07v6.304z" fill="#6364FF"/>
+          </svg>
+        </a>
+      </div>
+      <div class="footer-donate">
+        <a
+          href="https://liberapay.com/baudouinvh/donate"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Support on Liberapay"
+        >
+          <img
+            src="https://liberapay.com/assets/widgets/donate.svg"
+            alt="Donate using Liberapay"
+            height="28"
+            loading="lazy"
+          />
+        </a>
+      </div>
+      <p class="footer-note">Version 1.1.0 • Last updated: 2026-05-05 • Made with 🍫 in Brussels</p>
+    </footer>
+    <script src="app.js" defer></script>
+    <!-- Umami Analytics -->
+    <script
+      defer
+      src="https://umami.bvh.fyi/script.js"
+      data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7"
+    ></script>
+  </body>
+</html>

@@ -9,10 +9,15 @@
   const DEFAULT_LANG = 'en';
   const STORAGE_KEY = 'time2crack-lang';
 
-  // Only run on root or legacy pages (not on language-specific paths)
+  // Compute base path to support both custom domains (/) and GitHub Pages (/repo/)
   const pathname = window.location.pathname;
+  const langMatch = pathname.match(/^(.*?\/)((?:fr|en|es|pt|de|it|tr|pl|nl)\/)/);
+  const basePath = langMatch
+    ? langMatch[1]
+    : pathname.replace(/\/[^/]*$/, '/').replace(/\/$/, '') + '/';
+
   const isLanguagePath = SUPPORTED_LANGS.some(lang =>
-    pathname.startsWith(`/${lang}/`) || pathname.startsWith(`/${lang}?`)
+    pathname.includes(`/${lang}/`) || pathname.includes(`/${lang}?`)
   );
 
   // Don't redirect if already on a language-specific path
@@ -23,7 +28,7 @@
   // Check if user has a saved language preference
   const savedLang = localStorage.getItem(STORAGE_KEY);
   if (savedLang && SUPPORTED_LANGS.includes(savedLang) && savedLang !== DEFAULT_LANG) {
-    window.location.href = `/${savedLang}/`;
+    window.location.href = `${basePath}${savedLang}/`;
     return;
   }
 
@@ -36,6 +41,6 @@
   // If supported and not default, redirect
   if (primaryLang && SUPPORTED_LANGS.includes(primaryLang) && primaryLang !== DEFAULT_LANG) {
     localStorage.setItem(STORAGE_KEY, primaryLang);
-    window.location.href = `/${primaryLang}/`;
+    window.location.href = `${basePath}${primaryLang}/`;
   }
 })();

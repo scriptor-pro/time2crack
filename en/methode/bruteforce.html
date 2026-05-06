@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Brute Force — Attack Methods — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Test every possible combination systematically. The most exhaustive attack and a useful baseline for crack-time estimates."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Brute Force — Attack Methods — Time2Crack"><meta property="og:description" content="Test every possible combination systematically. The most exhaustive attack and a useful baseline for crack-time estimates."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/en/methode/bruteforce.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Brute Force — Attack Methods — Time2Crack"><meta name="twitter:description" content="Test every possible combination systematically. The most exhaustive attack and a useful baseline for crack-time estimates."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/en/methode/bruteforce.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/bruteforce.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/bruteforce.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/bruteforce.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/bruteforce.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/bruteforce.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/bruteforce.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/bruteforce.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/bruteforce.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/bruteforce.html"></head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">The Brute Force Attack — Comprehensive Operation</h1>
+<blockquote>
+Project reference document Time2Crack
+</blockquote>
+<blockquote>Recipients: developers, security researchers, advanced users</blockquote>
+<hr>
+<h2>Contents</h2>
+<li><a href="#1-vue-densemble">Overview</a></li>
+<li><a href="#2-contexte-historique-et-académique">Historical and academic background</a></li>
+<li><a href="#3-fondements-mathématiques--keyspace-et-entropie">Math: Keyspace and entropy</a></li>
+<li><a href="#4-architecture-dune-attaque-brute-force-moderne">Architecture of a brutal attack modern force</a></li>
+<li><a href="#5-vitesses-de-calcul-par-algorithme-de-hachage">Calculation speeds by hash algorithm</a></li>
+<li><a href="#6-détection-du-charset-dans-time2crack">Tanket detection in Time2Crack</a></li>
+<li><a href="#7-calcul-du-temps-de-cracking--brutetime">Calculation of cracking time: rawTime()</a></li>
+<li><a href="#8-réduction-par-date-détectée--detectdateandreduce">Date reduction detected: detectDateAndReduce()</a></li>
+<li><a href="#9-le-monotonicity-guard--plancher-des-autres-attaques">Monotonicity guard: floor of other attacks</a></li>
+<li><a href="#10-calibration-hf-et-rôle-de-la-force-brute">HF calibration and the role of gross force</a></li>
+<li><a href="#11-comparaison-avec-les-autres-attaques">Comparison with other attacks</a></li>
+<li><a href="#12-limites-théoriques-et-pratiques">Theoretical and practical limitations</a></li>
+<li><a href="#13-ce-que-la-force-brute-ne-dit-pas">What brute force does not say</a></li>
+<li><a href="#14-défenses-efficaces">Effective defences</a></li>
+<li><a href="#15-références-bibliographiques">References</a></li>
+<hr>
+<h2>1. Overview</h2>
+<p>Crude force is the most fundamental attack in password cracking: it consists of testing <strong>systematically all possible combinations</strong> No intelligence, no heuristic — only the raw computing power against the size of the space to travel.</p>
+<p>In Time2Crack, brute force plays a double role:</p>
+<li><strong>Modeled attack</strong> It represents the maximum theoretical time that an attacker would put, assuming no other exploitable vulnerability.</li>
+<li><strong>Floor (monotonicity guard)</strong> : it serves as a lower terminal for all other attacks — no specialized attack can legitimately display a time less than that which would take raw force on the alphabetical sub-chain of the password.</li>
+<strong>In practice</strong>, raw force is almost never the fastest attack on a real human password — PCFG, Markov or hybrid attack will be more effective. But for a truly random and long password, it represents reality: the attacker has no choice but to browse the space exhaustively.
+<hr>
+<h2>2. Historical and academic background</h2>
+<h3>2.1 Origins</h3>
+<p>The raw force precedes the computer: the principle of testing all possible combinations is used since the first mechanical encryption machines (Enigma during the Second World War). The bomb of Alan Turing was, in a broad sense, a device of raw force forced by a hypothesis of cribs.</p>
+<p>With the advent of computers, the unix password force was formalized from the 1970s to the 1980s:</p>
+<table>
+<tbody><tr><td>Year</td><td>Event</td></tr>
+<tr><td>-------</td><td>------------</td></tr>
+<tr><td>1979</td><td>Morris &amp; Thompson: First academic article on Unix password security, with raw force analysis on /etc/passwd</td></tr>
+<tr><td>1988</td><td>Morris Worm: first mass feat using, among other things, a dictionary and raw force password crack</td></tr>
+<tr><td>1993</td><td>Crack 5.0 (Alec Muffett): first public cracking tool by raw force on Unix</td></tr>
+<tr><td>2004</td><td>Ophcrack : groove tables + raw force on LM/NTLM hashes Windows</td></tr>
+<tr><td>2007</td><td>GPU-accelerated cracking (Elcomsoft): first public use of the GPU to accelerate gross force</td></tr>
+<tr><td>2012</td><td>Hashcat open source: reference tool, maximum GPU operation</td></tr>
+<tr><td>2016</td><td>Hive Systems: Annual publication of tables "gross force by GPU" become industrial reference</td></tr>
+</tbody></table>
+<h3>2.2 Benchmarks</h3>
+<p>The GPU revolution changed the order of magnitude of the raw force. On CPU, an attacker of the 1990s tested ~10,000 MD5/second passwords. A RTX 4090 in 2024 in test <strong>168.9 billion per second</strong> — an acceleration of 16 million times in 30 years.</p>
+<strong>Key academic sources</strong> :
+<ul>
+<li><strong>Gosney, J (2012)</strong> : first multi-GPU public benchmark on LM/NTLM, showing 180 GH/s with 8 GPU</li>
+<li><strong>Hive Systems (2025)</strong> : annual tables calibrated on 12× RTX 4090, quoted by Forbes, CNBC, BBC</li>
+<li><strong>Sprengers, M. (2011)</strong> : Radboud University thesis on GPU cracking, mathematical formalization</li>
+</ul>
+<hr>
+<h2>3. Math bases: keyspace and entropy</h2>
+<h3>3.1 Keyspace</h3>
+<p>Keyspace (keyspace) is the total number of possible passwords for a given length and tank:</p>
+<pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
+<p>Examples:</p>
+<table>
+<tbody><tr><td>Charset</td><td>Size</td><td>Length</td><td>Keyspace</td><td>Rating</td></tr>
+<tr><td>----------</td><td>--------</td><td>-----------</td><td>-----------</td><td>-----------</td></tr>
+<tr><td>Single digits</td><td>10</td><td>8</td><td>108 = 100,000,000</td><td>~108</td></tr>
+<tr><td>Minuscules alone</td><td>26</td><td>8</td><td>268 million</td><td>~2 × 1011</td></tr>
+<tr><td>Alphanumeric</td><td>62</td><td>8</td><td>628 million</td><td>~2 × 1014</td></tr>
+<tr><td>Full ASCII</td><td>95</td><td>8</td><td>958 billion</td><td>~6 × 1015</td></tr>
+<tr><td>Full ASCII</td><td>95</td><td>12</td><td>9512 - 5.4 × 1023</td><td>~5 × 1023</td></tr>
+<tr><td>Full ASCII</td><td>95</td><td>16</td><td>9516 - 4.4 × 1031</td><td>~4 × 1031</td></tr>
+</tbody></table>
+<h3>3.2 binary entropy</h3>
+<p>Entropy (measured in bits) is the logarithmic formulation of keyspace:</p>
+<pre><code class="language-plaintext">entropie = length × log₂(charset_size)</code></pre>
+<p>In Time2Crack (function <code>entropy()</code>) :</p>
+<pre><code class="language-javascript">function entropy(pw) {
+  return pw.length * Math.log2(getCharset(pw).size);
+}</code></pre>
+<p>The relationship between entropy and keyspace:</p>
+<pre><code class="language-plaintext">keyspace = 2^entropie
+entropie = log₂(keyspace)</code></pre>
+<strong>Concrete examples</strong> :
+<table>
+<tbody><tr><td>Password</td><td>Charset</td><td>Length</td><td>Entropy</td><td>Keyspace</td></tr>
+<tr><td>--------------</td><td>----------</td><td>-----------</td><td>-----------</td><td>-----------</td></tr>
+<tr><td>"12345678"</td><td>10 (digits)</td><td>8</td><td>26.6 bits</td><td>108</td></tr>
+<tr><td>"password"</td><td>26 (lower)</td><td>8</td><td>37.6 bits</td><td>268</td></tr>
+<tr><td>Password1</td><td>62 (alphanum)</td><td>9</td><td>53.6 bits</td><td>629</td></tr>
+<tr><td>"P@ssw0rd!"</td><td>95 (full ASCII)</td><td>9</td><td>59.3 bits</td><td>959</td></tr>
+<tr><td>xQz7@mK9#2pL</td><td>95 (full ASCII)</td><td>12</td><td>79 bits</td><td>9512</td></tr>
+</tbody></table>
+<h3>3.3 Mathematical Hope: Keyspace / 2</h3>
+<p>Crude force does not always test <code>keyspace</code> Integer combinations — on average, it finds the password midway, as the target is equiprobably distributed in space.<strong>mathematical expectation</strong> the number of attempts is therefore:</p>
+<pre><code class="language-plaintext">tentatives_attendues = keyspace / 2</code></pre>
+<p>This is exactly what models <code>bruteTime()</code> in Time2Crack:</p>
+<pre><code class="language-javascript">// "For brute force: expected value is keyspace/2 (uniform random search)"
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls); // = (keyspace / 2) / rate
+}</code></pre>
+<p>This division by 2 is correct under the assumption that the attacker travels the space linearly (non-repetitive). <code>keyspace/2</code> Attempts.</p>
+<hr>
+<h2>14. Effective defences</h2>
+<h3>14.1 User side: length and randomity</h3>
+<p>Gross force is defeated by two combined factors:</p>
+<strong>Length</strong> : each additional character multiplies the keyspace by <code>charset_size</code>From 8 to 12 characters (charset 95) multiplies the keyspace by <strong>954 - 81 million</strong>.
+<br>
+<strong>True random</strong> : a cryptographically secure generator (CSPRNG) produces passwords that do not benefit from any probabilistic reduction. Markov, PCFG and Neural have no advantage over a really random password.
+<br>
+<strong>Practical recommendation</strong> :
+<ul>
+<li>Password Manager + Random Generation ≥ 16 characters with complete float = out of range of any raw force in a human life horizon</li>
+</ul>
+<h3>14.2 Server side: resistant algorithms</h3>
+<p>The choice of the hash algorithm multiplies or divides the raw force time by factors up to <strong>several million</strong> :</p>
+<table>
+<tbody><tr><td>Recommendation</td><td>Algorithm</td><td>Reason</td></tr>
+<tr><td>----------------</td><td>-------------</td><td>--------</td></tr>
+<tr><td>Recommended</td><td>Argon2id</td><td>Memory-hard, GPU resistant</td></tr>
+<tr><td>Recommended</td><td>bcrypt (cost ≥ 12)</td><td>Intentionally slow, salty</td></tr>
+<tr><td>Acceptable</td><td>scrypt</td><td>Memory-hard but less standardized</td></tr>
+<tr><td>Inadequate</td><td>SHA-256 salted</td><td>Too fast even with salt</td></tr>
+<tr><td>Dangerous</td><td>MD5, SHA-1, NTLM</td><td>Non salty, extremely fast</td></tr>
+</tbody></table>
+<hr>
+<h2>15. Bibliographic references</h2>
+<h3>Academics</h3>
+<strong>Morris, R., &amp; Thompson, K. (1979).</strong>
+Password security: A case history.
+<em>Communications of the ACM, 22(11), 594–597.</em>
+→ Founding article on Unix password security
+<br>
+<strong>Sprengers, M. (2011).</strong>
+GPU-based password tracking (Master's theses).
+<em>Radboud University Nijmegen.</em>
+→ Mathematical formalization of GPU cracking, benchmarks on single GPU
+<br>
+<strong>Wheeler, D.L. (2016).</strong>
+zxcvbn: Low-Budget Password Strength Estimate.
+<em>25th USENIX Security Symposium.</em>
+→ Data on effective keyspace (Table 2: -30% for structured passwords)
+<br>
+<strong>Dürmuth, M. et al. (2015).</strong>
+OMEN: Ordered Markov ENumerator. <em>ESORICS 2015.</em>
+→ Comparative reference for probabilistic terminals vs gross force
+<h3>Industry</h3>
+<strong>Hive Systems. (2025).</strong>
+<em>2025 Hive Systems Password Table.</em>
+https://www.hivesystems.io/password-table
+→ Annual benchmarks on 12× RTX 4090, standard reference
+<br>
+<strong>Gosney, J (2012).</strong>
+<em>8x Nvidia GTX 1080 Hashcat benchmarks.</em> GitHub Gist.
+→ First public multi-GPU benchmark, historical reference
+<br>
+<strong>Hashcat. (2024).</strong>
+<em>Official Hashcat benchmarks v6.2.6.</em>
+https://hashcat.net/hashcat/
+→ Official speeds by algorithm, source of Time2Crack constants
+<br>
+<strong>NIST SP 800-63B. (2017, updated 2024).</strong>
+<em>Digital Identity Guidelines: Authentication and Lifecycle Management.</em>
+→ Official recommendations on password length and complexity
+<br>
+<strong>OWASP. (2024).</strong>
+<em>Password Storage Cheat Sheet.</em>
+https://cheatssheetseries.owasp.org/cheatssheets/Password Storage Cheat Sheet.html
+→ Recommendations on bcrypt (cost ≥ 12), Argon2id as modern standards
+<hr>
+<em>Document generated for Time2Crack project — last update : 2026-04-18</em>
+<em>Based on implementation in app.js, raw functionsTime(), getCharset(), and monotonicity guard</em>
+</main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

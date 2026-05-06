@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Brute force — Aanvalsmethoden — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Test systematisch alle mogelijke combinaties. De meest exhaustieve aanval en een goed referentiepunt."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Brute force — Aanvalsmethoden — Time2Crack"><meta property="og:description" content="Test systematisch alle mogelijke combinaties. De meest exhaustieve aanval en een goed referentiepunt."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/nl/methode/bruteforce.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="nl_NL"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Brute force — Aanvalsmethoden — Time2Crack"><meta name="twitter:description" content="Test systematisch alle mogelijke combinaties. De meest exhaustieve aanval en een goed referentiepunt."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/nl/methode/bruteforce.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/bruteforce.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/bruteforce.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/bruteforce.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/bruteforce.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/bruteforce.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/bruteforce.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/bruteforce.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/bruteforce.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/bruteforce.html"></head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">De Brute Force Attack Uitgebreide operatie</h1>
+<blockquote>
+Projectreferentiedocument Time2Crack
+</blockquote>
+<blockquote>Ontvangers: ontwikkelaars, security onderzoekers, geavanceerde gebruikers</blockquote>
+<hr>
+<h2>Inhoud</h2>
+<li><a href="#1-vue-densemble">Overzicht</a></li>
+<li><a href="#2-contexte-historique-et-académique">Historische en academische achtergrond</a></li>
+<li><a href="#3-fondements-mathématiques--keyspace-et-entropie">Wiskunde: sleutelruimte en entropie</a></li>
+<li><a href="#4-architecture-dune-attaque-brute-force-moderne">Architectuur van een brute aanval moderne kracht</a></li>
+<li><a href="#5-vitesses-de-calcul-par-algorithme-de-hachage">Berekeningssnelheden door hash-algoritme</a></li>
+<li><a href="#6-détection-du-charset-dans-time2crack">Tanketdetectie in Time2Crack</a></li>
+<li><a href="#7-calcul-du-temps-de-cracking--brutetime">Berekening van de kraaktijd: rawTime()</a></li>
+<li><a href="#8-réduction-par-date-détectée--detectdateandreduce">Datumreductie gedetecteerd: detectDateAndReduce()</a></li>
+<li><a href="#9-le-monotonicity-guard--plancher-des-autres-attaques">Monotone bewaker: vloer van andere aanvallen</a></li>
+<li><a href="#10-calibration-hf-et-rôle-de-la-force-brute">HF-kalibratie en de rol van de brutokracht</a></li>
+<li><a href="#11-comparaison-avec-les-autres-attaques">Vergelijking met andere aanvallen</a></li>
+<li><a href="#12-limites-théoriques-et-pratiques">Theoretische en praktische beperkingen</a></li>
+<li><a href="#13-ce-que-la-force-brute-ne-dit-pas">Wat brute kracht zegt niet</a></li>
+<li><a href="#14-défenses-efficaces">Doeltreffende verdediging</a></li>
+<li><a href="#15-références-bibliographiques">Referenties</a></li>
+<hr>
+<h2>1. Overzicht</h2>
+<p>Ruwe kracht is de meest fundamentele aanval in het kraken van wachtwoorden: het bestaat uit testen <strong>systematisch alle mogelijke combinaties</strong> Geen intelligentie, geen heuristische alleen de ruwe rekenkracht tegen de grootte van de ruimte om te reizen.</p>
+<p>In Time2Crack speelt brute kracht een dubbele rol:</p>
+<li><strong>Gemodelleerde aanval</strong> Het is de maximale theoretische tijd die een aanvaller zou stellen, aangenomen dat er geen andere uitbuitende kwetsbaarheid is.</li>
+<li><strong>Vloer (monotoneity guard)</strong> : het dient als een lagere terminal voor alle andere aanvallen </li>
+<strong>In de praktijk</strong>, ruwe kracht is bijna nooit de snelste aanval op een echt menselijk wachtwoord . PCFG , Markov of hybride aanval zal effectiever zijn . Maar voor een echt willekeurige en lange wachtwoord , het vertegenwoordigt de realiteit: de aanvaller heeft geen andere keuze dan om de ruimte uitputtend bladeren .
+<hr>
+<h2>2. Historische en academische achtergrond</h2>
+<h3>2.1 Oorsprong</h3>
+<p>De ruwe kracht gaat vooraf aan de computer: het principe van het testen van alle mogelijke combinaties wordt gebruikt sinds de eerste mechanische encryptie machines (Enigma tijdens de Tweede Wereldoorlog). De bom van Alan Turing was in brede zin een apparaat van ruwe kracht gedwongen door een hypothese van wieg.</p>
+<p>Met de komst van computers werd de unix password force geformaliseerd van de jaren zeventig tot de jaren tachtig:</p>
+<table>
+<tbody><tr><td>Jaar</td><td>Gebeurtenis</td></tr>
+<tr><td>-------</td><td>--------------</td></tr>
+<tr><td>1979</td><td>Morris &amp; Thompson: Eerste academisch artikel over Unix-wachtwoordbeveiliging, met ruwe krachtanalyse op /etc/passwd</td></tr>
+<tr><td>1988</td><td>Morris Worm: eerste grote prestatie met onder andere een woordenboek en een ruwe kracht wachtwoord crack</td></tr>
+<tr><td>1993</td><td>Crack 5.0 (Alec Muffett): eerste publieke kraken hulpmiddel door ruwe kracht op Unix</td></tr>
+<tr><td>2004</td><td>Ophcrack: groef tabellen + ruwe kracht op LM/NTLM hashes Windows</td></tr>
+<tr><td>2007</td><td>GPU-versnelde kraken (Elcomsoft): eerste publieke gebruik van de GPU om de brutokracht te versnellen</td></tr>
+<tr><td>2012</td><td>Hashcat open source: referentietool, maximale GPU-bewerking</td></tr>
+<tr><td>2016</td><td>Hive Systems: Jaarlijkse publicatie van tabellen "brutokracht door GPU" wordt industrieel referentie</td></tr>
+</tbody></table>
+<h3>2.2 Benchmark</h3>
+<p>De GPU revolutie veranderde de orde van grootte van de ruwe kracht. Op CPU, een aanvaller van de jaren negentig getest ~ 10.000 MD5/seconde wachtwoorden. Een RTX 4090 in 2024 in test <strong>168,9 miljard per seconde</strong> Een versnelling van 16 miljoen keer in 30 jaar.</p>
+<strong>Belangrijkste academische bronnen</strong> :
+<ul>
+<li><strong>Gosney, J (2012)</strong> : eerste multi-GPU publieke benchmark op LM/NTLM, met 180 GH/s met 8 GPU</li>
+<li><strong>Bijenkorven (2025)</strong> : jaartabellen gekalibreerd op 12× RTX 4090, geciteerd door Forbes, CNBC, BBC</li>
+<li><strong>Sprengers, M. (2011)</strong> : Radboud University thesis over GPU kraken, wiskundige formalisatie</li>
+</ul>
+<hr>
+<h2>3. Wiskundebases: sleutelruimte en entropie</h2>
+<h3>3.1 Sleutelruimte</h3>
+<p>Keyspace (keyspace) is het totale aantal mogelijke wachtwoorden voor een bepaalde lengte en tank:</p>
+<pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
+<p>Bijvoorbeeld:</p>
+<table>
+<tbody><tr><td>Charset</td><td>Grootte</td><td>Lengte</td><td>Sleutelruimte</td><td>Waardering</td></tr>
+<tr><td>-----------</td><td>--------</td><td>------------</td><td>------------</td><td>------------</td></tr>
+<tr><td>Enkele cijfers</td><td>10</td><td>8</td><td>108 = 100.000.000</td><td>~108</td></tr>
+<tr><td>Minuscules alleen</td><td>26</td><td>8</td><td>268 miljoen</td><td>~2 × 1011</td></tr>
+<tr><td>Alfanumerisch</td><td>62</td><td>8</td><td>628 miljoen</td><td>~2 × 1014</td></tr>
+<tr><td>Volledige ASCII</td><td>95</td><td>8</td><td>958 miljard</td><td>~6 × 1015</td></tr>
+<tr><td>Volledige ASCII</td><td>95</td><td>12</td><td>9512 - 5,4 × 1023</td><td>~5 × 1023</td></tr>
+<tr><td>Volledige ASCII</td><td>95</td><td>16</td><td>9516 - 4,4 × 1031</td><td>~4 × 1031</td></tr>
+</tbody></table>
+<h3>3.2 binaire entropie</h3>
+<p>Entropie (gemeten in bits) is de logaritmische formulering van keyspace:</p>
+<pre><code class="language-plaintext">entropie = length × log₂(charset_size)</code></pre>
+<p>In Time2Crack (functie <code>entropy()</code>) :</p>
+<pre><code class="language-javascript">function entropy(pw) {
+  return pw.length * Math.log2(getCharset(pw).size);
+}</code></pre>
+<p>De relatie tussen entropie en keyspace:</p>
+<pre><code class="language-plaintext">keyspace = 2^entropie
+entropie = log₂(keyspace)</code></pre>
+<strong>Concrete voorbeelden</strong> :
+<table>
+<tbody><tr><td>Wachtwoord</td><td>Charset</td><td>Lengte</td><td>Entropie</td><td>Sleutelruimte</td></tr>
+<tr><td>- [57]</td><td>-----------</td><td>------------</td><td>------------</td><td>------------</td></tr>
+<tr><td>"12345678"</td><td>10 (cijfers)</td><td>8</td><td>26,6 bits</td><td>108</td></tr>
+<tr><td>"wachtwoord"</td><td>26 (onder)</td><td>8</td><td>37,6 bits</td><td>268</td></tr>
+<tr><td>Wachtwoord1</td><td>62 (alfanum)</td><td>9</td><td>53,6 bits</td><td>629</td></tr>
+<tr><td>"P@ssw0rd!"</td><td>95 (volledige ASCII)</td><td>9</td><td>59,3 bits</td><td>959</td></tr>
+<tr><td>xQz7@mK9#2pL</td><td>95 (volledige ASCII)</td><td>12</td><td>79 bits</td><td>9512</td></tr>
+</tbody></table>
+<h3>3.3 Wiskundige hoop: sleutelruimte / 2</h3>
+<p>Ruwe kracht test niet altijd <code>keyspace</code> Geïntegreerde combinaties gemiddeld, vindt het wachtwoord halverwege, omdat het doel is equibrobablely verdeeld in de ruimte.<strong>wiskundige verwachting</strong> het aantal pogingen is daarom:</p>
+<pre><code class="language-plaintext">tentatives_attendues = keyspace / 2</code></pre>
+<p>Dit is precies wat modellen <code>bruteTime()</code> in Time2Crack:</p>
+<pre><code class="language-javascript">// "For brute force: expected value is keyspace/2 (uniform random search)"
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls); // = (keyspace / 2) / rate
+}</code></pre>
+<p>Deze verdeling door 2 is correct onder de veronderstelling dat de aanvaller de ruimte lineair (niet-repeterend) reist. <code>keyspace/2</code> Pogingen.</p>
+<hr>
+<h2>14. Doeltreffende verdediging</h2>
+<h3>14.1 Gebruikerszijde: lengte en willekeur</h3>
+<p>De brutokracht wordt door twee gecombineerde factoren tegengehouden:</p>
+<strong>Lengte</strong> : elk extra teken vermenigvuldigt de keyspace door <code>charset_size</code>Van 8 tot 12 tekens (charset 95) vermenigvuldigt de keyspace door <strong>954 - 81 miljoen</strong>.
+<br>
+<strong>Waar willekeurig</strong> : een cryptografische veilige generator (CSPRNG) produceert wachtwoorden die niet profiteren van een probabilistische reductie. Markov, PCFG en Neural hebben geen voordeel over een echt willekeurig wachtwoord.
+<br>
+<strong>Praktische aanbeveling</strong> :
+<ul>
+<li>Password Manager + Willekeurige Generatie ≥ 16 tekens met volledige float = buiten bereik van elke ruwe kracht in een menselijke levenshorizon</li>
+</ul>
+<h3>14.2 Serverzijde: resistente algoritmen</h3>
+<p>De keuze van het hash-algoritme vermenigvuldigt of verdeelt de ruwe krachttijd door factoren tot <strong>aantal miljoen</strong> :</p>
+<table>
+<tbody><tr><td>Aanbeveling</td><td>Algoritme</td><td>Reden</td></tr>
+<tr><td>----------------</td><td>››</td><td>--------</td></tr>
+<tr><td>Aanbevolen</td><td>Argon2id</td><td>Geheugenhard, GPU-bestendig</td></tr>
+<tr><td>Aanbevolen</td><td>bcrypt (kosten ≥ 12)</td><td>Opzettelijk langzaam, zoutachtig</td></tr>
+<tr><td>Aanvaardbaar</td><td>scrypt</td><td>Geheugen-hard maar minder gestandaardiseerd</td></tr>
+<tr><td>Onvoldoende</td><td>SHA-256 gezouten</td><td>Te snel zelfs met zout</td></tr>
+<tr><td>Gevaarlijk</td><td>MD5, SHA-1, NTLM</td><td>Niet zout, extreem snel</td></tr>
+</tbody></table>
+<hr>
+<h2>15. Bibliografische referenties</h2>
+<h3>Academici</h3>
+<strong>Morris, R., &amp; Thompson, K. (1979).</strong>
+Wachtwoordbeveiliging: een dossiergeschiedenis.
+<em>Mededelingen van de ACM, 22(11), 594, 597.</em>
+→ Oprichtingsartikel over Unix wachtwoordbeveiliging
+<br>
+<strong>Sprengers, M. (2011).</strong>
+GPU-gebaseerde wachtwoord tracking (Master's thesis).
+<em>Radboud Universiteit Nijmegen.</em>
+→ Wiskundige formalisering van GPU kraken, benchmarks op enkele GPU
+<br>
+<strong>Wheeler (2016).</strong>
+zxcvbn: Low-Budget Wachtwoord Sterkteschatting.
+<em>25e USENIX Security Symposium.</em>
+→ Gegevens over effectieve sleutelruimte (tabel 2: -30% voor gestructureerde wachtwoorden)
+<br>
+<strong>Dürmuth, M. et al. (2015).</strong>
+Bestelde Markov Enumerator. <em>ESORICS 2015.</em>
+→ Vergelijkende referentie voor probabilistische terminals vs brutokracht
+<h3>Industrie</h3>
+<strong>Hive Systems. (2025).</strong>
+<em>2025 Hive Systems Paswoordtabel.</em>
+https://www.hivesystems.io/password-table
+→ Jaarlijkse benchmarks op 12× RTX 4090, standaardreferentie
+<br>
+<strong>Gosney, J (2012).</strong>
+<em>8x Nvidia GTX 1080 Hashcat benchmarks.</em> GitHub Gist.
+→ Eerste publieke multi-GPU benchmark, historische referentie
+<br>
+<strong>Hashcat. (2024).</strong>
+<em>Officiële Hashcat benchmarks v6.2.6.</em>
+https://hashcat.net/hashcat/
+→ Officiële snelheden door algoritme, bron van Time2Crack constanten
+<br>
+<strong>NIST SP 800-63B. (2017, bijgewerkt 2024).</strong>
+<em>Digitale Identiteitsrichtlijnen: Authenticatie en Lifecycle Management.</em>
+→ Officiële aanbevelingen over wachtwoordlengte en complexiteit
+<br>
+<strong>OWASP. (2024).</strong>
+<em>Wachtwoord Opslag Valsblad.</em>
+https://cheatsheetserie.owasp.org/cheatsheets/Password Storage Cheat Sheet.html
+→ Aanbevelingen over bcrypt (kosten ≥ 12), Argon2id als moderne normen
+<hr>
+<em>Document gegenereerd voor Time2Crack project Laatste update: 2026-04-18</em>
+<em>Gebaseerd op implementatie in app.js, ruwe functiesTime(), getCharset(), en monotoneity guard</em>
+</main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Combinador — Métodos de ataque — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Combina dos listas de palabras para crear un conjunto más amplio de candidatos. Útil para secretos compuestos."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Combinador — Métodos de ataque — Time2Crack"><meta property="og:description" content="Combina dos listas de palabras para crear un conjunto más amplio de candidatos. Útil para secretos compuestos."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/es/methode/combinator.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="es_ES"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Combinador — Métodos de ataque — Time2Crack"><meta name="twitter:description" content="Combina dos listas de palabras para crear un conjunto más amplio de candidatos. Útil para secretos compuestos."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/es/methode/combinator.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/combinator.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/combinator.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/combinator.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/combinator.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/combinator.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/combinator.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/combinator.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/combinator.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/combinator.html"></head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">Ataque del Combinador - Operación Integral</h1>
+<blockquote>
+Documento de referencia del proyecto Time2Crack
+</blockquote>
+<blockquote>Recipientes: desarrolladores, investigadores de seguridad, usuarios avanzados</blockquote>
+<hr>
+<h2>Índice</h2>
+<li><a href="#1-vue-densemble">Sinopsis</a></li>
+<li><a href="#2-contexte-historique-et-académique">Antecedentes históricos y académicos</a></li>
+<li><a href="#3-fondements--concaténation-de-tokens-probables">Foundations: concatenation of probable tokens</a></li>
+<li><a href="#4-architecture-dune-attaque-combinator-moderne">Arquitectura de un ataque moderno combinador</a></li>
+<li><a href="#5-combinator-vs-passphrase-robuste">Combinador vs passphrase robusto</a></li>
+<li><a href="#6-implémentation-dans-time2crack--addcombinatorattacks">Ejecución en Time2Crack: <code>addCombinatorAttacks()</code></a></li>
+<li><a href="#7-keyspace-combinator-dans-time2crack">Combinador Keyspace en Time2Crack</a></li>
+<li><a href="#8-calibration-et-priorisation">Calibración y priorización</a></li>
+<li><a href="#9-benchmarks-et-ordres-de-grandeur">Criterios y órdenes de magnitud</a></li>
+<li><a href="#10-exemples-concrets">Ejemplos concretos</a></li>
+<li><a href="#11-limites-de-lattaque-combinator">Límites de ataque combinados</a></li>
+<li><a href="#12-défenses-efficaces">Defensas eficaces</a></li>
+<li><a href="#13-références-bibliographiques">Referencias</a></li>
+<hr>
+<h2>1. Sinopsis</h2>
+<p>El combinador concatenoso ataque de entradas de diccionario para producir candidatos compuestos (<code>mot1+mot2</code>, a veces con variantes). Se dirige específicamente a cortos pasos de palabras comunes.</p>
+<h2>2. Antecedentes históricos y académicos</h2>
+<p>Los Wordlists de las filtraciones han demostrado que gran parte de las breves contraseñas humanas dependen de palabras comunes combinadas. Los motores combinados se han convertido en ladrillos estándar de las campañas hashcat.</p>
+<h2>3. Foundations: concatenation of probable tokens</h2>
+<p>Si A y B son dos conjuntos de palabras, el espacio nominal es <code>|A| * |B|</code>La ganancia proviene de la densidad probabilística: las combinaciones humanas frecuentes se prueban temprano.</p>
+<h2>4. Arquitectura de un ataque combinador moderno</h2>
+<pre><code class="language-text">1) Sélection de listes (mots courants, prénoms, contexte)
+2) Tri par fréquence
+3) Concaténation ordonnée (A+B, parfois B+A)
+4) Ajout optionnel de règles simples
+5) Test hash GPU</code></pre>
+<h2>5. Combinator vs. robusto passphrase</h2>
+<p>Dos palabras concatenadas comunes siguen siendo vulnerables.</p>
+<p>Un robusto passphrase combina varias palabras raras e incorrelacionadas, idealmente generadas al azar.</p>
+<h2>6. Ejecución en Time2Crack: <code>addCombinatorAttacks()</code></h2>
+<p>Activación cuando:</p>
+<ul>
+<li><code>looksPassphrase</code>,</li>
+</ul>
+<li>o <code>common</code>,</li>
+<li>o <code>weak</code>.</li>
+<p>Categoría: <code>cat: "combi"</code>, nota: <code>nPassphrase</code> o <code>nNotPassphrase</code>.</p>
+<h2>7. Combinador Keyspace en Time2Crack</h2>
+<p>El modelo utiliza <code>COMBI_KEYSPACE</code> y <code>budgetTime(...)</code>, con rama específica para ciertos casos comunes.</p>
+<h2>8. Calibración y priorización</h2>
+<p>En alta fidelidad, la categoría combinador es favorecida cuando se detecta la estructura de la contraseña.</p>
+<h2>9. Criterios y órdenes de magnitud</h2>
+<p>En precipitación rápida, las combinaciones frecuentes se pueden probar muy rápidamente.</p>
+<p>En el lento KDF, el costo de cada intento disminuye el ataque pero no elimina la vulnerabilidad estructural.</p>
+<h2>10. Ejemplos prácticos</h2>
+<li><code>bluesky</code> : Presentación combinada.</li>
+<li><code>horsebattery</code> : exponer palabras tan frecuentes.</li>
+<li><code>fjord-nectar-lotus-amber</code> : claramente más resistente.</li>
+<h2>11. Limitaciones del ataque combinado</h2>
+<li>bajo rendimiento en secretos no léxicos,</li>
+<li>dependencia de los diccionarios originales,</li>
+<li>el rendimiento disminuyendo en pasfras largas y raras.</li>
+<h2>12. Defensas eficaces</h2>
+<li>Pasajes largos de palabras raras.</li>
+<li>Generación aleatoria a través de gerente.</li>
+<li>Modern KDF + MFA.</li>
+<h2>13. Referencias</h2>
+<li>Hashcat Wiki. https://hashcat.net/wiki/</li>
+<li>Weir et al. (2009).</li>
+<li>literatura reciente sobre las contraseñas y modelos probabilísticos (ver Time2Crack docs).</li>
+</main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

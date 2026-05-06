@@ -1,0 +1,214 @@
+<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Máscara — Métodos de ataque — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Procure apenas padrões que correspondam a uma máscara conhecida, como letras, dígitos e símbolos em posições fixas."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Máscara — Métodos de ataque — Time2Crack"><meta property="og:description" content="Procure apenas padrões que correspondam a uma máscara conhecida, como letras, dígitos e símbolos em posições fixas."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/pt/methode/mask.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="pt_PT"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Máscara — Métodos de ataque — Time2Crack"><meta name="twitter:description" content="Procure apenas padrões que correspondam a uma máscara conhecida, como letras, dígitos e símbolos em posições fixas."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/pt/methode/mask.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/mask.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/mask.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/mask.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/mask.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/mask.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/mask.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/mask.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/mask.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/mask.html"></head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">Ataque de Máscara — Operação abrangente</h1>
+<blockquote>
+Documento de referência do projeto Time2Crack
+</blockquote>
+<blockquote>Destinatários: desenvolvedores, pesquisadores de segurança, usuários avançados</blockquote>
+<hr>
+<h2>Índice</h2>
+<li><a href="#1-vue-densemble">Visão geral</a></li>
+<li><a href="#2-contexte-historique-et-académique">Formação histórica e académica</a></li>
+<li><a href="#3-fondements-conceptuels--pourquoi-les-masques-fonctionnent">Fundações conceituais: Por que as máscaras funcionam</a></li>
+<li><a href="#4-architecture-dune-attaque-par-masque-moderne">Arquitetura de um ataque de máscara moderna</a></li>
+<li><a href="#5-syntaxe-des-masques-hashcatjtr">Sintaxe da Máscara (Hashcat/JtR)</a></li>
+<li><a href="#6-réduction-du-keyspace--principe-mathématique">Redução do espaço-chave: princípio matemático</a></li>
+<li><a href="#7-implémentation-dans-time2crack--addmaskattacks">Implementação no Time2Crack: <code>addMaskAttacks()</code></a></li>
+<li><a href="#8-détection-de-date-et-réduction-structurelle">Detecção de datas e redução estrutural</a></li>
+<li><a href="#9-calibration-haute-fidélité">Calibração de alta fidelidade</a></li>
+<li><a href="#10-benchmarks-et-ordres-de-grandeur">Benchmarks e ordens de grandeza</a></li>
+<li><a href="#11-exemples-concrets-de-craquage-par-masque">Exemplos concretos de quebra de máscaras</a></li>
+<li><a href="#12-comparaison-avec-brute-force-hybride-et-pcfg">Comparação com força bruta, híbrida e PCFG</a></li>
+<li><a href="#13-limites-de-lattaque-par-masque">Limitações do ataque de máscara</a></li>
+<li><a href="#14-défenses-efficaces">Defesas eficazes</a></li>
+<li><a href="#15-références-bibliographiques">Referências</a></li>
+<hr>
+<h2>Resumo</h2>
+<p>Mascara ataque consiste em testar senhas que seguem um <strong>forma posicional precisa</strong> em vez de todas as combinações possíveis.</p>
+<p>Exemplo: em vez de testar todo o espaço 8 caracteres de 95 símbolos (<code>95^8</code>), o atacante visa um motivo provável como:</p>
+<ul>
+<li>1 capital,</li>
+</ul>
+<li>5 minúsculos,</li>
+<li>2 dígitos.</li>
+<p>Ou a máscara Hashcat <code>?u?l?l?l?l?l?d?d</code>.</p>
+<p>A ideia central: as senhas humanas não são aleatórias.<code>Thomas42</code>, <code>Marine2024</code>, <code>Bonjour!1</code>A máscara explora precisamente esta regularidade.</p>
+<hr>
+<h2>2. Antecedentes históricos e acadêmicos</h2>
+<h3>2.1 Origens</h3>
+<p>A lógica das máscaras é antiga: desde as primeiras ferramentas de cracking, os operadores observaram que as políticas de senha produzem formatos repetitivos.</p>
+<p>Industrialização vem com:</p>
+<li>John, o Estripador (modos e padrões incrementais),</li>
+<li>Hashcat (modos de máscara GPU super otimizados),</li>
+<li>vazamentos maciços (RockYou, LinkedIn, Adobe), que identificaram as estruturas mais frequentes.</li>
+<h3>2.2 Validação empírica</h3>
+<p>A literatura ofensiva/defensiva converge: uma fração muito grande de senhas reais seguem padrões simples (palavra + dígitos, capital inicial + palavra + ano, etc.).</p>
+<p>Wheeler (USENIX 2016), e as obras probabilísticas (Markov/PCFG/OMEN), mostram que a estrutura é tão decisiva quanto o comprimento bruto.</p>
+<hr>
+<h2>3. Fundamentos conceituais: Por que as máscaras funcionam</h2>
+<h3>3.1 Os seres humanos geram estruturas, não por acaso</h3>
+<p>A maioria dos usuários constrói segredos de memória:</p>
+<li>palavra conhecida,</li>
+<li>variação da quebra,</li>
+<li>sufixo digital,</li>
+<li>símbolo final opcional.</li>
+<p>Essa estratégia é previsível e altamente comprimível em máscaras.</p>
+<h3>3.2 Políticas de complexidade aumentam a previsibilidade</h3>
+<p>Uma regra do tipo "1 capital, 1 dígito, 1 símbolo" não impõe aleatoriedade; muitas vezes empurra para padrões estáveis:</p>
+<li><code>Mot123!</code></li>
+<li><code>Prénom2024</code></li>
+<li><code>Ville75#</code></li>
+<p>A máscara é a ferramenta ideal para navegar nestes diagramas a um custo muito baixo.</p>
+<h3>3.3 Redução do espaço-chave eficaz</h3>
+<p>Para uma senha de comprimento 8 :</p>
+<li>Força bruta total (<code>95^8</code>) <code>6.63e15</code> candidatos,</li>
+<li>máscara <code>?u?l?l?l?l?d?d</code> = <code>26 <em> 26^4 </em> 10^2</code> = <code>1.19e9</code> candidatos.</li>
+<p>A redução é de vários milhões de vezes, enquanto cobre um padrão humano comum.</p>
+<hr>
+<h2>4. Arquitetura de um ataque de máscara moderna</h2>
+<p>Tipo de pipeline:</p>
+<pre><code class="language-text">1) Profilage de la cible / du corpus
+   -&gt; structures fréquentes (L8D2, L6D4, U1L5D2, etc.)
+<p>2) Geração de máscaras candidatas
+-&gt; ordenados por probabilidade</p>
+<p>3) Execução da GPU (Hashcat -a 3)
+-&gt; ensaios paralelos de alta velocidade</p>
+<p>4) Adaptação
+-&gt; Mantemos as máscaras altas, espalhamos os fracos</p></code></pre>
+<p>O sucesso depende menos da quantidade bruta de máscaras do que de sua priorização.</p>
+<hr>
+<h2>5. Sintaxe da Máscara (Hashcat/JtR)</h2>
+<h3>5. 1 Classes básicas</h3>
+<li><code>?l</code> : minúsculo (<code>a-z</code>)</li>
+<li><code>?u</code> : capitais (<code>A-Z</code>)</li>
+<li><code>?d</code> : número (<code>0-9</code>)</li>
+<li><code>?s</code> : símbolo imprimível</li>
+<li><code>?a</code> : alfabeto misto padrão (muitas vezes <code>?l?u?d?s</code>)</li>
+<h3>5.2 Exemplos</h3>
+<li><code>?u?l?l?l?l?d?d</code> -&gt; <code>Thomas42</code></li>
+<li><code>?l?l?l?l?l?l?d?d?d?d</code> -&gt; <code>summer2024</code></li>
+<li><code>?u?l?l?l?l?l?l?s?d</code> -&gt; <code>Marine!7</code></li>
+<h3>5.3. Máscaras personalizadas</h3>
+<p>O Hashcat permite conjuntos de caracteres personalizados (<code>-1</code>, <code>-2</code>, etc.), por exemplo:</p>
+<li><code>-1 ?l?uéèàç</code> para as línguas latinas,</li>
+<li><code>-2 0123456789!@#</code> para sufixos prováveis,</li>
+<li>então máscara combinada <code>?1?1?1?1?2?2</code>.</li>
+<hr>
+<h2>6. Redução de Keyspace: princípio matemático</h2>
+<p>Ou uma máscara de comprimento <code>n</code> com cardinalidades posicionais <code>c1, c2, ..., cn</code>.</p>
+<p>O espaço de teclas mascarado é:</p>
+<code>K<em>máscara = Π(i)</em></code>
+<p>Tempo (modelo orçamental):</p>
+<code>T = Kmask / rate</code>
+<p>Num modelo ingénuo e desmascarado:</p>
+<code>K<em>full = cs^n</em></code>
+<p>O ganho da máscara é:</p>
+<code>Gain = Kfull / K_mask</code>
+<p>Quanto mais fortes as restrições posicionais (por exemplo, dígitos no final, capital na cabeça), maior o ganho.</p>
+<hr>
+<h2>7. Implementação no Time2Crack: <code>addMaskAttacks()</code></h2>
+<p>Time2Crack implementa lógica de máscara em <code>app.js</code> :</p>
+<li>função: <code>addMaskAttacks(rows, full, len, cs, kbPat, seq, weak, dt, pw)</code></li>
+<li>Categoria: <code>cat: "mask"</code></li>
+<li>display: <code>aMask</code> / nota <code>nMaskPositional</code>, <code>nKBDetected</code>, <code>nSeqDetected</code>, <code>nDateDetected</code></li>
+<h3>7.1. Cálculo do espaço de chave mascarado</h3>
+<p>O código conta as ocorrências reais de cada tipo de caracteres na senha:</p>
+<li>letras maiúsculas,</li>
+<li>minúsculo,</li>
+<li>números,</li>
+<li>símbolos.</li>
+<p>Em seguida, construído:</p>
+<code>maskKS = 26^U <em> 26 </em> 10^D <em> 33^S</em></code> (aproximação via constantes internas)
+<p>Isso modela um atacante conhecendo a estrutura por tipo, não apenas o comprimento total.</p>
+<h3>7.2 Casos especiais</h3>
+<li><code>weak</code> : estimativa via <code>weakGuessTime(a.rate)</code> (intervalo mínimo dependente do caudal),</li>
+<li><code>dt</code> (data detectada): redução via <code>detectDateAndReduce()</code>,</li>
+<li>Caso contrário: espaço de chave posicional padrão.</li>
+<p>O tempo é então estimado por <code>budgetTime(effectiveMaskGuesses, a.rate)</code> (com fator de classificação da máscara e processamento Unicode/data).</p>
+<hr>
+<h2>8. Detecção de datas e redução estrutural</h2>
+<p>Time2Crack inclui um processamento específico de data (<code>hasDate</code>, <code>detectDateAndReduce</code>) :</p>
+<li>detecção do ano <code>1600-2099</code>,</li>
+<li>detecção de padrões de data (<code>DD/MM/YYYY</code>, variantes do separador),</li>
+<li>substituição de um espaço enorme (<code>10^dateChars</code>) por um conjunto plausível (<code>~200 années</code> ou <code>~36500 dates</code>).</li>
+<p>Conseqüência: uma senha do tipo <code>Mot2024!</code> Isto é consistente com a prática ofensiva.</p>
+<hr>
+<h2>9. Calibração de alta fidelidade</h2>
+<p>Quando o modo de alta fidelidade está ativo, a categoria máscara recebe um multiplicador adicional em <code>applyHighFidelityCalibration()</code> :</p>
+<li>if teclado padrão / sequência / data: fator de redução adicional,</li>
+<li>Caso contrário: estimativa conservadora.</li>
+<p>Intuição: Estes sinais aumentam a probabilidade de uma classificação precoce na linha de máscaras testadas.</p>
+<hr>
+<h2>10. Benchmarks e ordens de magnitude</h2>
+<p>Ordens de magnitude (perfil 12x RTX 4090):</p>
+AlgoritmoVazão aproximadaTempo para 1o 9 candidatos
+------:---:
+MD5~2,03 TH/s~0,0005 s
+SHA-1~610 GH/s~0.0016 s
+SHA-256~272 GH/s~0.0037 s
+NTLM~3,46 TH/s~0,0003 s
+bcrypt (custo 10)~69 kH/s~4,0 h
+Argon2id~800 H/s~14.5 dias
+<p>Leitura:</p>
+<li>no haxixe rápido, a máscara é esmagadora,</li>
+<li>no hash lento, permanece muito perigoso em padrões frequentes, mas o custo torna-se concreto.</li>
+<hr>
+<h2>11. Exemplos concretos de quebra de máscara</h2>
+<h3>11.1 <code>Thomas42</code></h3>
+<li>Máscara relevante: <code>?u?l?l?l?l?l?d?d</code></li>
+<li>Espaço de teclas: <code>26  26^4 <em> 10^2</em></code> (ordem de magnitude ~1e9)</li>
+<li>em NTLM/MD5: quase instantâneo.</li>
+<h3>11.2 <code>summer2024</code></h3>
+<li>Máscara relevante: <code>?l?l?l?l?l?l?d?d?d?d</code></li>
+<li>se ano detectado, redução acentuada (anos plausíveis &lt; &lt; <code>10^4</code>).</li>
+<h3>11.3 <code>Marine!7</code></h3>
+<li>Máscara relevante: <code>?u?l?l?l?l?l?s?d</code></li>
+<li>um padrão muito comum nas políticas corporativas.</li>
+<hr>
+<h2>12. Comparação com força bruta, híbrido e PCFG</h2>
+AtaquePonto fortePonto baixo
+---------
+Resistência brutaCobertura globalcusto exponencial
+MáscaraExcelente eficiência em estruturas humanasEscolha sensível à má máscara
+Híbrido/regrasMuito bom em palavras + mutaçõesDepende de uma palavra básica
+PCFGCapturar gramática globalMais caro para treinar / operar
+<p>Na prática, os operadores combinam frequentemente máscara + regras + probabilística.</p>
+<hr>
+<h2>13. Limitações do ataque da máscara</h2>
+<li><strong>Dependência na máscara certa</strong> : um mau conjunto de máscaras rapidamente perde em rendimento.</li>
+<li><strong>Baixa generalização da estrutura externa</strong> : em uma senha realmente aleatória, a vantagem desaparece.</li>
+<li><strong>Explosão combinatória se máscaras muito largas</strong> : <code>?a</code> Repetido em comprimento longo retorna perto da força bruta.</li>
+<li><strong>Cobertura linguística parcial</strong> : Unicode / alfabetos diacríticos requerem jogos personalizados.</li>
+<hr>
+<h2>14. Defesas eficazes</h2>
+<h3>14.1 Lado do usuário</h3>
+<li>usar um gerenciador de senhas,</li>
+<li>gerar senhas aleatórias longas (&gt; = 16),</li>
+<li>evitar padrões completamente <code>Mot+année</code>, <code>Prénom+chiffres</code>, <code>Majuscule+mot+symbole</code>.</li>
+<h3>14.2. Lado do sistema</h3>
+<li>armazenamento com Argon2id (ou bcrypt de alto custo),</li>
+<li>AMF sistemática,</li>
+<li>bloqueio de senhas comprometidas,</li>
+<li>telemetria de ligação e detecção de anomalias.</li>
+<h3>14.3 Política</h3>
+<li>duração da prioridade e controlo do compromisso,</li>
+<li>reduzir as regras de complexidade puramente cosmética que favorecem padrões previsíveis.</li>
+<hr>
+<h2>15. Referências bibliográficas</h2>
+<h3>Fontes académicas</h3>
+<strong>Wheeler, D.L. (2016).</strong> zxcvbn: Estimativa de Força de Senha de Baixo Orçamento.<em> 25o Simpósio de Segurança USENIX.
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong> </em>Rastreamento de senhas usando Gramática Probabilística Livre de Contexto.<em> Simpósio IEE sobre Segurança e Privacidade.
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., et al. (2015).</strong> </em>OMEN: Senha mais rápida adivinhando usando um Enumerador Markov ordenado.<em> Essos.
+<strong>Ur, B., Kelley, P. G., Komanduri, S., et al. (2012).</strong> </em>Como sua senha se encaixa?<em> USENIX Segurança.
+<h3>Fontes industriais e técnicas</h3>
+<strong>Hashcat Wiki.</strong> </em>Ataque de máscara (-a 3).<em> https://hashcat.net/wiki/
+<strong>Hashcat (benchmarks).</strong> https://hashcat.net/hashcat/
+<strong>Sistemas de Colmeia (Tabela de Senha).</strong> https://www.hivesystems.io/password-table
+<h3>Fontes da Web citadas no aplicativo Time2Crack</h3>
+<strong>USENIX Security 2016 (Wheeler).</strong>
+https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheller
+<hr>
+</em>Documento gerado para o projeto Time2Crack — Versão 1.0 — 2026-04-01<em>
+</em>Código- fonte: <code>app.js</code> (funções <code>addMaskAttacks</code>, <code>detectDateAndReduce</code>, <code>hasDate</code>, <code>budgetTime</code>, <code>applyHighFidelityCalibration</code>)*
+
+  </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

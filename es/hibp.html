@@ -1,0 +1,429 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Verificación HIBP — Time2Crack</title><link rel="preload" href="../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="../style.min.css" rel="stylesheet"></noscript><meta name="description" content="Comprueba si una contraseña aparece en una filtración de datos con HIBP mediante una consulta anónima y respetuosa con tu privacidad."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Verificación HIBP — Time2Crack"><meta property="og:description" content="Comprueba si una contraseña aparece en una filtración de datos con HIBP mediante una consulta anónima y respetuosa con tu privacidad."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/es/hibp.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="es_ES"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Verificación HIBP — Time2Crack"><meta name="twitter:description" content="Comprueba si una contraseña aparece en una filtración de datos con HIBP mediante una consulta anónima y respetuosa con tu privacidad."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/es/hibp.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/hibp.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/hibp.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/hibp.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/hibp.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/hibp.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/hibp.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/hibp.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/hibp.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/hibp.html"></head><body><header class="site-header">
+<div class="site-header__top">
+<h1><a class="site-logo" href="index.html">Time2Crack</a></h1>
+<select aria-label="Idioma / idioma" class="lang-select" id="lang-select">
+<option selected="" value="fr">EN</option>
+<option value="en">EN</option>
+</select>
+</div>
+<nav aria-label="Navegación principal" class="site-nav">
+<div class="site-nav__primary">
+<a class="site-nav__link nav-home" href="index.html">Prueba contraseña</a>
+<a class="site-nav__link nav-generator" href="generator.html">Generar una contraseña</a>
+<a class="site-nav__link nav-faq" href="faq.html">FAQ</a>
+<a class="site-nav__link nav-about" href="about.html">Acerca de</a>
+</div>
+<button aria-controls="drawer" aria-expanded="false" aria-label="Abrir menú" class="hamburger" id="hamburger-btn">
+<span class="hamburger__icon"></span>
+</button>
+<div class="site-nav__secondary">
+<div class="site-nav__dropdown">
+<button aria-expanded="false" aria-label="Ciencia" class="site-nav__dropdown-toggle">
+            Ciencia <span class="dropdown-arrow">▼</span>
+</button>
+<ul aria-label="Science submenu" class="site-nav__dropdown-menu" role="menu">
+<li role="none"><a class="site-nav__dropdown-item" href="how-time2crack-works.html" role="menuitem">¿Cómo funciona?</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/bruteforce.html" role="menuitem">Fuerza bruta</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/dictionary.html" role="menuitem">Diccionario</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/hybrid.html" role="menuitem">híbrido</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/mask.html" role="menuitem">Máscara</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/markov.html" role="menuitem">Markov</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/pcfg.html" role="menuitem">PCFG</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/combinator.html" role="menuitem">Combiner</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="sources.html" role="menuitem">Fuentes</a></li>
+</ul>
+</div>
+<div class="site-nav__dropdown">
+<button aria-expanded="false" aria-label="Seguridad" class="site-nav__dropdown-toggle">
+            Seguridad <span class="dropdown-arrow">▼</span>
+</button>
+<ul aria-label="Submenú de seguridad" class="site-nav__dropdown-menu" role="menu">
+<li role="none"><a class="site-nav__dropdown-item" href="hibp.html" role="menuitem">HIBP</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="privacy.html" role="menuitem">Confidencialidad</a></li>
+</ul>
+</div>
+</div>
+</nav>
+<aside aria-hidden="true" aria-label="Menú secundario" class="drawer" id="drawer" role="complementary">
+<div class="drawer__header">
+<button aria-label="Cerrar menú" class="drawer__close" id="drawer-close-btn"></button>
+</div>
+<nav aria-label="Navegación secundaria" class="drawer__nav">
+<details class="drawer__details">
+<summary class="drawer__summary">Ciencia</summary>
+<a class="drawer__link" href="how-time2crack-works.html">¿Cómo funciona?</a>
+<a class="drawer__link" href="methode/bruteforce.html">Fuerza bruta</a>
+<a class="drawer__link" href="methode/dictionary.html">Diccionario</a>
+<a class="drawer__link" href="methode/hybrid.html">híbrido</a>
+<a class="drawer__link" href="methode/mask.html">Máscara</a>
+<a class="drawer__link" href="methode/markov.html">Markov</a>
+<a class="drawer__link" href="methode/pcfg.html">PCFG</a>
+<a class="drawer__link" href="methode/combinator.html">Combiner</a>
+<a class="drawer__link" href="sources.html">Fuentes</a>
+</details>
+<details class="drawer__details">
+<summary class="drawer__summary">Seguridad</summary>
+<a class="drawer__link" href="hibp.html">HIBP</a>
+<a class="drawer__link" href="privacy.html">Confidencialidad</a>
+</details>
+</nav>
+<footer class="drawer__footer">
+<p>v2.0.6 • Estimación local de crack</p>
+</footer>
+</aside>
+<div aria-hidden="true" class="drawer-backdrop" hidden="" id="drawer-backdrop"></div>
+<div aria-label="Nota de privacidad" class="privacy-notice" role="note">
+<span aria-hidden="true" class="privacy-notice__icon"></span>
+<div class="privacy-notice__text">
+<strong>Todo permanece en su navegador.</strong>
+        No se transmite contraseña, el cálculo es completamente local.
+La única solicitud externa es un cheque de fuga anónimo
+(5 primeros caracteres hash SHA-1, nunca contraseña).
+      </div>
+</div>
+</header><main>
+<h2>HIBP Verification — Understanding k-anonymity</h2>
+<p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6; max-width: 100%;">
+      Time2Crack utiliza API <a class="external-link" href="https://haveibeenpwned.com/" rel="noopener noreferrer" target="_blank">He estado Pwned (HIBP)</a>
+      para comprobar si su contraseña ha sido comprometida en una fuga de datos. Para proteger su privacidad,
+No mandamos <strong>Nunca</strong> tu contraseña completa.
+      <strong>k-anonymity</strong> Sólo se envían los primeros 5 caracteres del hash SHA-1 de la contraseña.
+    </p>
+ SECCIÓN DE EXPLANATORIA 
+<div class="hibp-container">
+<div class="hibp-section">
+<h3>Lo que puedes ver</h3>
+<p>Su contraseña sigue <strong>siempre en su navegador</strong>Nada se envía al servidor.</p>
+<p>Sólo <strong>hash SHA-1 de tu contraseña</strong> se calcula localmente (en JavaScript).</p>
+<p>Entonces sólo el <strong>Primero 5 caracteres</strong> de este hash son enviados a HIBP.</p>
+</div>
+<div class="hibp-section">
+<h3>Lo que HIBP no puede ver</h3>
+<p>HIBP no ve <strong>no</strong> tu contraseña completa.</p>
+<p>HIBP no ve <strong>no</strong> el hash SHA-1 completo.</p>
+<p>HiBP recibe sólo 5 caracteres y devuelve <strong>Todos los hachís</strong> correspondiente a este prefijo (k-anonimato).</p>
+</div>
+</div>
+<div class="info-box">
+<strong>¿Qué es el anonimato k?</strong>
+<p>
+        k-anonymity es una técnica de confidencialidad que hace un registro inaceptable entre los registros k.
+En este caso, al enviar 5 caracteres de un hash SHA-1, HIBP devuelve todos los hashs comenzando con estos 5 caracteres
+(generalmente 400-500 resultados). Tu verdadero hash está escondido entre todos los demás. Incluso HIBP no sabe qué hash es tuyo.
+      </p>
+</div>
+ INTERACTIVE DEMONSTRATION 
+<div class="demo-section">
+<h3>- Demostración interactiva</h3>
+<p style="color: #4b5563; line-height: 1.6;">
+        Introduzca una contraseña a continuación y ver exactamente lo que se envía a HiBP.
+      </p>
+<div class="input-group">
+<label for="password-input">Contraseña (prueba: contraseña123):</label>
+<input aria-label="Campo de entrada de contraseña" id="password-input" placeholder="Introduzca una contraseña..." type="password" value="password123">
+</div>
+<div class="button-group">
+<button class="btn btn-primary" onclick="calculateHash()">Calcular hash SHA-1</button>
+<button class="btn btn-secondary" onclick="clearDemo()">Reset</button>
+</div>
+ PASS MOT 
+<div class="demo-step">
+<div class="demo-step-number">1</div>
+<div class="demo-step-content">
+<h4>Contraseña (en su navegador)</h4>
+<p>Su contraseña <strong>Siempre te quedas local</strong>Nunca enviado.</p>
+<div class="hash-display" id="password-display" style="display:none;">
+<div class="hash-label">Contraseña:</div>
+<span id="password-value"></span>
+</div>
+</div>
+</div>
+ PASO 2: COMPLETE SHA-1 
+<div class="demo-step">
+<div class="demo-step-number">2</div>
+<div class="demo-step-content">
+<h4>Full Hash SHA-1 (calculado localmente)</h4>
+<p>El hash SHA-1 se calcula <strong>en su navegador</strong> en JavaScript. HIBP nunca lo ve completo.</p>
+<div class="hash-display" id="full-hash-display" style="display:none;">
+<div class="hash-label">Completa SHA-1 (40 caracteres):</div>
+<span id="full-hash-value"></span>
+</div>
+</div>
+</div>
+ PASO 3: 5 PRIMER CARACTERISTICAS 
+<div class="demo-step">
+<div class="demo-step-number">3</div>
+<div class="demo-step-content">
+<h4>Prefijo SHA-1 (5 primeros caracteres)</h4>
+<p>Sólo <strong>estos 5 caracteres</strong> son enviados a HiBP a través de HTTPS seguro.</p>
+<div class="hash-display" id="prefix-display" style="display:none;">
+<div class="hash-label">Prefijo (5 caracteres) enviado a HIBP:</div>
+<span id="prefix-value" style="color: #059669; font-weight: 600;"></span>
+</div>
+</div>
+</div>
+ PASO 4: HIBP RESPONSE 
+<div class="demo-step">
+<div class="demo-step-number">4</div>
+<div class="demo-step-content">
+<h4>Respuesta de HiBP (todas las precipitaciones)</h4>
+<p>HIBP regresa <strong>Todos los hachís</strong> Tu verdadero hash está escondido entre ellos.</p>
+<button class="btn btn-primary" id="hibp-btn" onclick="fetchHIBP()" style="display:none; width: 100%; margin-top: 0.75rem;">
+            Check on HIBP →
+          </button>
+<div class="result-box" id="hibp-result">
+<div class="result-title">Resultados recibidos de HIBP</div>
+<div id="hibp-content"></div>
+</div>
+</div>
+</div>
+<div class="warning-box">
+<strong>Importante</strong>
+<p>
+          Incluso si el prefijo "55D97" coincide con la contraseña123, HIBP no sabe <strong>no</strong>
+          Sólo sabes cuál es el tuyo.
+        </p>
+</div>
+</div>
+ DETALLADO FLUX 
+<h3 style="margin-top: 3rem;">Cómo Time2Crack utiliza HiBP</h3>
+<div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.5rem;">
+<div class="demo-step">
+<div class="demo-step-number">1</div>
+<div class="demo-step-content">
+<h4>Usted escribe una contraseña</h4>
+<p>Su contraseña se queda en su navegador. Nada se envía en cualquier lugar.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">2</div>
+<div class="demo-step-content">
+<h4>Time2Crack calcula SHA-1</h4>
+<p>En JavaScript calculamos el hash SHA-1 de la contraseña. Esto es cálculo local, sin transmisión.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">3</div>
+<div class="demo-step-content">
+<h4>Enviar prefijo a HIBP</h4>
+<p>Sólo los primeros 5 caracteres del hash se envían a HIBP a través de una solicitud HTTPS cifrada.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">4</div>
+<div class="demo-step-content">
+<h4>HIBP devuelve todos los resultados</h4>
+<p>HIBP devuelve todos los hashs (generalmente 400-500) comenzando con este prefijo.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">5</div>
+<div class="demo-step-content">
+<h4>Verificación local</h4>
+<p>Time2Crack compara su hash completa con todos los resultados de HiBP <strong>en su navegador</strong>Si se encuentra, la contraseña está comprometida.</p>
+</div>
+</div>
+</div>
+ FAQ 
+<h3 style="margin-top: 3rem;">Preguntas frecuentes</h3>
+<div id="faq-container"></div>
+ RECURSOS 
+<h3 style="margin-top: 3rem; margin-bottom: 1rem;">Recursos</h3>
+<div style="background: #f9fafb; border-radius: 8px; padding: 1.5rem; line-height: 1.8;">
+<p>
+<strong>¿He sido Pwned (HIBP):</strong>
+<a class="external-link" href="https://haveibeenpwned.com/" rel="noopener noreferrer" target="_blank">
+          haveibeenpwned.com
+        </a>
+        - Base de datos de contraseñas integrada.
+      </p>
+<p>
+<strong>DIBP API Documentación:</strong>
+<a class="external-link" href="https://haveibeenpwned.com/API/v3" rel="noopener noreferrer" target="_blank">
+          haveibeenpwned.com/API/v3
+        </a>
+        — Documentación técnica de la API de anonimato k.
+      </p>
+<p>
+<strong>k-anonymity:</strong>
+<a class="external-link" href="https://en.wikipedia.org/wiki/K-anonymity" rel="noopener noreferrer" target="_blank">
+          Wikipedia — k-anonymity
+        </a>
+        - Concepto de confidencialidad de datos.
+      </p>
+<p>
+<strong>Seguridad de la contraseña:</strong>
+<a class="external-link" href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" rel="noopener noreferrer" target="_blank">
+          OWASP Password Storage Cheat Sheet
+        </a>
+        - Buenas prácticas de almacenamiento.
+      </p>
+</div>
+</main><footer id="site-footer"></footer><script src="../includes.js"></script><script>
+    // SHA-1 implementation (simplified for demo purposes)
+    // Uses Web Crypto API when available, falls back to a pure JS implementation
+
+    async function sha1(str) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    }
+
+    async function calculateHash() {
+      const password = document.getElementById('password-input').value;
+
+      if (!password) {
+        alert('Entrez un mot de passe');
+        return;
+      }
+
+      // Show password
+      document.getElementById('password-display').style.display = 'block';
+      document.getElementById('password-value').textContent = password;
+
+      // Calculate SHA-1
+      const fullHash = await sha1(password);
+      document.getElementById('full-hash-display').style.display = 'block';
+      document.getElementById('full-hash-value').textContent = fullHash;
+
+      // Extract prefix (5 characters)
+      const prefix = fullHash.slice(0, 5);
+      document.getElementById('prefix-display').style.display = 'block';
+      document.getElementById('prefix-value').textContent = prefix;
+
+      // Show HIBP button
+      document.getElementById('hibp-btn').style.display = 'block';
+    }
+
+    async function fetchHIBP() {
+      const fullHash = document.getElementById('full-hash-value').textContent;
+      const prefix = fullHash.slice(0, 5);
+      const suffix = fullHash.slice(5);
+
+      try {
+        document.getElementById('hibp-btn').disabled = true;
+        document.getElementById('hibp-btn').textContent = 'Vérification en cours…';
+
+        const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
+          headers: { 'Add-Padding': 'true' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const text = await response.text();
+        const lines = text.split('\n');
+
+        let found = false;
+        let count = 0;
+
+        for (const line of lines) {
+          const [lineSuffix, countStr] = line.trim().split(':');
+          if (lineSuffix === suffix) {
+            count = parseInt(countStr, 10);
+            found = true;
+            break;
+          }
+        }
+
+        const resultBox = document.getElementById('hibp-result');
+        const content = document.getElementById('hibp-content');
+
+        resultBox.classList.add('show');
+
+        if (found) {
+          content.innerHTML = `
+            <div style="color: #dc2626; font-weight: 600;">
+              ⚠️ Ce mot de passe a été trouvé ${count.toLocaleString('fr-FR')} fois dans des fuites de données!
+            </div>
+            <p style="margin-top: 0.75rem; color: #4b5563;">
+              <strong>Recommandation:</strong> Ne pas utiliser ce mot de passe. Changez-le immédiatement sur tous les services qui l'utilisent.
+            </p>
+          `;
+        } else {
+          content.innerHTML = `
+            <div style="color: #059669; font-weight: 600;">
+              ✅ Ce mot de passe n'a pas été trouvé dans les fuites HIBP connues.
+            </div>
+            <p style="margin-top: 0.75rem; color: #4b5563;">
+              Note: HIBP contient les données des plus grandes fuites connues, mais ce n'est pas une garantie absolue que le mot de passe n'a jamais été compromis ailleurs.
+            </p>
+          `;
+        }
+
+        document.getElementById('hibp-btn').textContent = 'Vérifier sur HIBP →';
+        document.getElementById('hibp-btn').disabled = false;
+
+      } catch (err) {
+        alert('Erreur lors de la vérification HIBP: ' + err.message);
+        document.getElementById('hibp-btn').textContent = 'Vérifier sur HIBP →';
+        document.getElementById('hibp-btn').disabled = false;
+      }
+    }
+
+    function clearDemo() {
+      document.getElementById('password-input').value = '';
+      document.getElementById('password-display').style.display = 'none';
+      document.getElementById('full-hash-display').style.display = 'none';
+      document.getElementById('prefix-display').style.display = 'none';
+      document.getElementById('hibp-btn').style.display = 'none';
+      document.getElementById('hibp-result').classList.remove('show');
+    }
+
+    // FAQ data
+    const faqData = [
+      {
+        question: 'Comment Time2Crack peut-il vérifier HIBP sans risquer la confidentialité?',
+        answer: 'Grâce à la k-anonymité. Nous envoyons seulement 5 caractères du hash SHA-1. HIBP retourne 400-500 hashes correspondant à ce préfixe. Votre vrai hash est caché parmi eux. Même HIBP ne sait pas lequel est le vôtre.'
+      },
+      {
+        question: 'Et si quelqu\'un intercepte la requête à HIBP?',
+        answer: 'Les requêtes HIBP sont en HTTPS, donc chiffrées en transit. Un attaquant ne verrait que les 5 premiers caractères du hash. Même avec ces 5 caractères, il y a 400-500 hashes possibles, ce qui rend le brute-force impratique.'
+      },
+      {
+        question: 'Pourquoi HIBP retourne tous les résultats au lieu d\'un oui/non?',
+        answer: 'Pour la k-anonymité. Si HIBP disait juste "trouvé" ou "non trouvé", il révélerait des informations sur votre hash. En retournant tous les résultats, votre hash est indiscernable parmi 400-500 autres.'
+      },
+      {
+        question: 'Time2Crack enregistre-t-il ma requête à HIBP?',
+        answer: 'Non. Time2Crack n\'est qu\'un proxy transparent. Votre requête va directement au serveur HIBP. HIBP peut voir les 5 caractères du préfixe (c\'est le but), mais pas plus. Time2Crack n\'enregistre rien.'
+      },
+      {
+        question: 'Combien de mots de passe compromis HIBP contient-il?',
+        answer: 'HIBP contient plus de 600 millions de mots de passe compromis provenant des plus grandes fuites publiques (LinkedIn, Yahoo, Facebook, etc.). C\'est une des plus grandes bases de données de ce type.'
+      },
+      {
+        question: 'Que faire si mon mot de passe est trouvé dans HIBP?',
+        answer: 'Changez-le immédiatement sur tous les services qui l\'utilisent. Un mot de passe compromis peut être utilisé pour accéder à vos comptes. Utilisez un mot de passe fort et unique pour chaque service, ou un gestionnaire de mots de passe.'
+      }
+    ];
+
+    // Render FAQ
+    function renderFAQ() {
+      const container = document.getElementById('faq-container');
+      container.innerHTML = faqData.map((item, index) => `
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(${index})">
+            <span>${item.question}</span>
+            <span class="faq-toggle">▼</span>
+          </div>
+          <div class="faq-answer" id="faq-${index}">
+            ${item.answer}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleFAQ(index) {
+      const answer = document.getElementById(`faq-${index}`);
+      const toggle = answer.previousElementSibling.querySelector('.faq-toggle');
+      answer.classList.toggle('show');
+      toggle.classList.toggle('open');
+    }
+
+    // Initialize FAQ on page load
+    document.addEventListener('DOMContentLoaded', renderFAQ);
+  </script></body></html>

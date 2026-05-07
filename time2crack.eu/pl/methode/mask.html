@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Maska — Metody ataku — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Szukaj tylko wzorców pasujących do znanej maski, takich jak litery, cyfry i symbole w stałych pozycjach."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Maska — Metody ataku — Time2Crack"><meta property="og:description" content="Szukaj tylko wzorców pasujących do znanej maski, takich jak litery, cyfry i symbole w stałych pozycjach."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/pl/methode/mask.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="pl_PL"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Maska — Metody ataku — Time2Crack"><meta name="twitter:description" content="Szukaj tylko wzorców pasujących do znanej maski, takich jak litery, cyfry i symbole w stałych pozycjach."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/pl/methode/mask.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/mask.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/mask.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/mask.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/mask.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/mask.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/mask.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/mask.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/mask.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/mask.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">Atak maski - kompleksowa operacja</h1>
+<blockquote>
+Dokument referencyjny projektu Time2Crack
+</blockquote>
+<blockquote>Odbiorcy: deweloperzy, badacze bezpieczeństwa, zaawansowani użytkownicy</blockquote>
+<hr>
+<h2>Spis treści</h2>
+<li><a href="#1-vue-densemble">Przegląd</a></li>
+<li><a href="#2-contexte-historique-et-académique">Tło historyczne i akademickie</a></li>
+<li><a href="#3-fondements-conceptuels--pourquoi-les-masques-fonctionnent">Fundacje koncepcyjne: Dlaczego Maski działają</a></li>
+<li><a href="#4-architecture-dune-attaque-par-masque-moderne">Architektura nowoczesnego ataku maski</a></li>
+<li><a href="#5-syntaxe-des-masques-hashcatjtr">Składnia maska (Hashcat / JtR)</a></li>
+<li><a href="#6-réduction-du-keyspace--principe-mathématique">Ograniczenie przestrzeni klawiatury: zasada matematyczna</a></li>
+<li><a href="#7-implémentation-dans-time2crack--addmaskattacks">Wdrożenie w Time2Crack: <code>addMaskAttacks()</code></a></li>
+<li><a href="#8-détection-de-date-et-réduction-structurelle">Wykrywanie daty i redukcja strukturalna</a></li>
+<li><a href="#9-calibration-haute-fidélité">Wysoka kalibracja wierności</a></li>
+<li><a href="#10-benchmarks-et-ordres-de-grandeur">Wskaźniki i rzędy wielkości</a></li>
+<li><a href="#11-exemples-concrets-de-craquage-par-masque">Betonowe przykłady pękania masek</a></li>
+<li><a href="#12-comparaison-avec-brute-force-hybride-et-pcfg">Porównanie z siłą brutalną, hybrydą i PCFG</a></li>
+<li><a href="#13-limites-de-lattaque-par-masque">Ograniczenia ataku maski</a></li>
+<li><a href="#14-défenses-efficaces">Skuteczna obrona</a></li>
+<li><a href="#15-références-bibliographiques">Odniesienia</a></li>
+<hr>
+<h2>1. Przegląd</h2>
+<p>Atak maski składa się z testowania haseł, które następują <strong>dokładny kształt pozycyjny</strong> zamiast wszystkich możliwych kombinacji.</p>
+<p>Przykład: zamiast testować wszystkie spacje 8 znaków z 95 symboli (<code>95^8</code>), atakujący celuje w prawdopodobny motyw, taki jak:</p>
+<ul>
+<li>1 kapitał,</li>
+</ul>
+<li>5 małych,</li>
+<li>2 cyfry.</li>
+<p>Albo maska Hashcat <code>?u?l?l?l?l?l?d?d</code>.</p>
+<p>Centralna idea: ludzkie hasła nie są przypadkowe.<code>Thomas42</code>, <code>Marine2024</code>, <code>Bonjour!1</code>Maska wykorzystuje dokładnie tę regularność.</p>
+<hr>
+<h2>2. Tło historyczne i akademickie</h2>
+<h3>2.1 Początki</h3>
+<p>Logika masek jest stara: z pierwszych narzędzi krakingu operatorzy zauważyli, że polityka haseł tworzy powtarzalne formaty.</p>
+<p>Industrializacja pochodzi z:</p>
+<li>John Rozpruwacz (tryby i wzory przyrostowe),</li>
+<li>Hashcat (tryb maski GPU zoptymalizowany),</li>
+<li>masywne przecieki (RockYou, LinkedIn, Adobe), które zidentyfikowały najczęstsze struktury.</li>
+<h3>2.2 Walidacja empiryczna</h3>
+<p>Ofensywna / defensywna literatura zbiega się: bardzo duża część prawdziwych haseł podąża za prostymi wzorami (słowo + cyfry, kapitał początkowy + słowo + rok, itd.).</p>
+<p>Wheeler (USENIX 2016) oraz prace probabilistyczne (Markov / PCFG / OMEN) pokazują, że struktura jest równie decydująca jak długość brutto.</p>
+<hr>
+<h2>3. Koncepcyjne fundacje: Dlaczego Maski pracy</h2>
+<h3>3.1 Ludzie generują struktury, nie przez przypadek</h3>
+<p>Większość użytkowników buduje tajemnice pamięci:</p>
+<li>znane słowo,</li>
+<li>zmiany uszkodzenia,</li>
+<li>przyrostek cyfrowy,</li>
+<li>opcjonalny symbol końcowy.</li>
+<p>Strategia ta jest przewidywalna i bardzo skomplikowana w maskach.</p>
+<h3>3.2 Polityka kompleksowości zwiększa przewidywalność</h3>
+<p>Reguła typu "1 kapitał, 1 cyfra, 1 symbol" nie narzuca losowości; często naciska na stabilne wzory:</p>
+<li><code>Mot123!</code></li>
+<li><code>Prénom2024</code></li>
+<li><code>Ville75#</code></li>
+<p>Maska jest idealnym narzędziem do przeglądania tych diagramów po bardzo niskich kosztach.</p>
+<h3>3.3 Zmniejszenie efektywnej przestrzeni klawiszowej</h3>
+<p>Hasło o długości 8:</p>
+<li>Siła całkowita brutto (<code>95^8</code>) <code>6.63e15</code> kandydatów,</li>
+<li>maska <code>?u?l?l?l?l?d?d</code> = <code>26 <em> 26 ^ 4 </em> 10^2</code> = <code>1.19e9</code> Kandydaci.</li>
+<p>Redukcja jest kilka milionów razy, jednocześnie pokrywając wspólny ludzki wzór.</p>
+<hr>
+<h2>4. Architektura nowoczesnego ataku maski</h2>
+<p>Typ rurociągu:</p>
+<pre><code class="language-text">1) Profilage de la cible / du corpus
+   -&gt; structures fréquentes (L8D2, L6D4, U1L5D2, etc.)
+<p>2) Tworzenie kandydackich masek
+- &gt; uporządkowane według prawdopodobieństwa</p>
+<p>3) Wykonanie GPU (Hashcat -a 3)
+- &gt; badania równoległe dużych prędkości</p>
+<p>4) Dostosowanie adaptacyjne
+- &gt; Trzymamy maski wysoko, szerzymy słabe</p></code></pre>
+<p>Sukces zależy mniej od ilości masek niż od ich priorytetu.</p>
+<hr>
+<h2>5. Składnia maski (Hashcat / JtR)</h2>
+<h3>5.1 Klasy podstawowe</h3>
+<li><code>?l</code> : tiny (<code>a-z</code>)</li>
+<li><code>?u</code> : stolice (<code>A-Z</code>)</li>
+<li><code>?d</code> : numer (<code>0-9</code>)</li>
+<li><code>?s</code> : symbol do wydrukowania</li>
+<li><code>?a</code> : standardowy alfabet mieszany (często <code>?l?u?d?s</code>)</li>
+<h3>5.2 Przykłady</h3>
+<li><code>?u?l?l?l?l?d?d</code> - &gt; <code>Thomas42</code></li>
+<li><code>?l?l?l?l?l?l?d?d?d?d</code> - &gt; <code>summer2024</code></li>
+<li><code>?u?l?l?l?l?l?l?s?d</code> - &gt; <code>Marine!7</code></li>
+<h3>5.3. Maski specjalne</h3>
+<p>Hashcat pozwala na niestandardowe zestawy znaków (<code>-1</code>, <code>-2</code>itd.), na przykład:</p>
+<li><code>-1 ?l?uéèàç</code> dla języków łacińskich,</li>
+<li><code>-2 0123456789!@#</code> dla prawdopodobnych przyrostów,</li>
+<li>następnie połączona maska <code>?1?1?1?1?2?2</code>.</li>
+<hr>
+<h2>6. Klawiatura redukcja: zasada matematyczna</h2>
+<p>Albo maska długości <code>n</code> z kardynałami pozycyjnymi <code>c1, c2, ..., cn</code>.</p>
+<p>Zamaskowana przestrzeń klawiszy to:</p>
+<code>K<em>maska = ∞ (i)</em></code>
+<p>Czas (model budżetu):</p>
+<code>T = Kmask / rate</code>
+<p>W naiwnym, niezamaskowanym modelu:</p>
+<code>K<em>full = cs ^ n</em></code>
+<p>Zysk maski jest:</p>
+<code>Gain = Kfull / K_mask</code>
+<p>Im większe ograniczenia pozycyjne (np. cyfry na końcu, kapitał w głowie), tym większy zysk.</p>
+<hr>
+<h2>7. Wdrożenie w Time2Crack: <code>addMaskAttacks()</code></h2>
+<p>Time2Crack implementuje logikę maski w <code>app.js</code> :</p>
+<li>funkcja: <code>addMaskAttacks(rows, full, len, cs, kbPat, seq, weak, dt, pw)</code></li>
+<li>Kategoria: <code>cat: "mask"</code></li>
+<li>wyświetlacz: <code>aMask</code> / Uwaga <code>nMaskPositional</code>, <code>nKBDetected</code>, <code>nSeqDetected</code>, <code>nDateDetected</code></li>
+<h3>7.1. Obliczanie zamaskowanej przestrzeni klawiszowej</h3>
+<p>Kod oblicza rzeczywiste zdarzenia każdego typu znaku w haśle:</p>
+<li>drukowanymi literami,</li>
+<li>malutki,</li>
+<li>liczby,</li>
+<li>symbole.</li>
+<p>Następnie zbudowany:</p>
+<code>maskKS = 26^U <em> 26 </em> 10^D <em> 33 ^ S</em></code> (zbliżenie za pomocą stałych wewnętrznych)
+<p>To modeluje napastnika, który zna strukturę według typu, nie tylko całkowitą długość.</p>
+<h3>7.2 Przypadki szczególne</h3>
+<li><code>weak</code> : oszacowanie <code>weakGuessTime(a.rate)</code> (minimalny zakres zależny od przepływu),</li>
+<li><code>dt</code> (wykryta data): zmniejszenie <code>detectDateAndReduce()</code>,</li>
+<li>w innym przypadku: standardowa klawiatura pozycyjna.</li>
+<p>Czas jest następnie szacowany przez <code>budgetTime(effectiveMaskGuesses, a.rate)</code> (z maską rang współczynnik i Unicode / przetwarzanie daty).</p>
+<hr>
+<h2>8. Wykrywanie daty i redukcja struktury</h2>
+<p>Time2Crack zawiera konkretne przetwarzanie daty (<code>hasDate</code>, <code>detectDateAndReduce</code>):</p>
+<li>wykrywanie roku <code>1600-2099</code>,</li>
+<li>wykrywanie wzorców daty (<code>DD/MM/YYYY</code>, warianty separatorów),</li>
+<li>wymiana ogromnej przestrzeni (<code>10^dateChars</code>) przez wiarygodny zestaw (<code>~200 années</code> lub <code>~36500 dates</code>).</li>
+<p>Konsekwencja: hasło typu <code>Mot2024!</code> Jest to zgodne z praktyką ofensywną.</p>
+<hr>
+<h2>9. Wysoka kalibracja wierności</h2>
+<p>Gdy tryb wysokiej wierności jest aktywny, kategoria masek otrzymuje dodatkowy mnożnik w <code>applyHighFidelityCalibration()</code> :</p>
+<li>jeżeli wzór / sekwencja / data klawiatury: dodatkowy współczynnik redukcji,</li>
+<li>W przeciwnym razie: zachowawcze szacunki.</li>
+<p>Intuicja: Sygnały te zwiększają prawdopodobieństwo wczesnego rankingu w linii testowanych masek.</p>
+<hr>
+<h2>10. Wskaźniki i rzędy wielkości</h2>
+<p>Porządek wielkości (profil 12x RTX 4090):</p>
+AlgorytmPrzybliżone natężenie przepływuCzas na 1. 9 kandydatów
+----:---:
+MD5- 2,03 TH / s0, 0005 s
+SHA-1- 610 GH / s- 0,0016 s
+SHA- 256- 272 GH / s0, 0037 s
+NTLM- 3, 46 TH / s0, 0003 s
+bcrypt (koszt 10)- 69 kH / s- 4,0 h
+Argon2id- 800 H / s- 14,5 dni
+<p>Czytanie:</p>
+<li>Na haszu szybko, maska jest przytłaczająca,</li>
+<li>na powolne hash, pozostaje bardzo niebezpieczne na częstych wzorców, ale koszty stają się konkretne.</li>
+<hr>
+<h2>11. Betonowe przykłady pękania maski</h2>
+<h3>11, 1 <code>Thomas42</code></h3>
+<li>odpowiednia maska: <code>?u?l?l?l?l?l?d?d</code></li>
+<li>Klawiatura: <code>26  26^4 <em> 10 ^ 2</em></code> (rząd wielkości ~ 1e9)</li>
+<li>na NTLM / MD5: prawie natychmiast.</li>
+<h3>11, 2 <code>summer2024</code></h3>
+<li>odpowiednia maska: <code>?l?l?l?l?l?l?d?d?d?d</code></li>
+<li>jeżeli wykryto rok, ostre zmniejszenie (lata wiarygodne &lt; &lt; <code>10^4</code>).</li>
+<h3>11, 3 <code>Marine!7</code></h3>
+<li>odpowiednia maska: <code>?u?l?l?l?l?l?s?d</code></li>
+<li>bardzo powszechny wzór polityki korporacyjnej.</li>
+<hr>
+<h2>12. Porównanie z Surowymi Siłami, Hybrydami i PCFG</h2>
+AtakSilny punktNiski punkt
+---
+Moc bruttoKompleksowy zakreskoszt wykładniczy
+MaskaDoskonała wydajność struktur ludzkichWrażliwy na zły wybór maski
+Hybrydy / zasadyBardzo dobrze na słowach + mutacjeZależy od podstawowego słowa
+PCFGPrzechwytywanie gramatyki globalnejBardziej kosztowne szkolenie / eksploatacja
+<p>W praktyce operatorzy często łączą maski + zasady + prawdopodobieństwo.</p>
+<hr>
+<h2>13. Ograniczenia ataku maski</h2>
+<li><strong>Zależność od prawej maski</strong> : zły zestaw masek szybko traci wydajność.</li>
+<li><strong>Niskie uogólnienie struktury zewnętrznej</strong> : na naprawdę losowe hasło, przewaga znika.</li>
+<li><strong>Eksplozja zespołowa, jeśli maski są zbyt szerokie</strong> : <code>?a</code> Powtórzone na długie powroty blisko brutalnej siły.</li>
+<li><strong>Częściowy zakres językowy</strong> : Alfabety Unicode / diakrytyczne wymagają niestandardowych gier.</li>
+<hr>
+<h2>14. Skuteczna obrona</h2>
+<h3>14.1 Strona użytkownika</h3>
+<li>używać menedżera haseł,</li>
+<li>generuje długie, losowe hasła (&gt; = 16),</li>
+<li>całkowicie unikać wzorców <code>Mot+année</code>, <code>Prénom+chiffres</code>, <code>Majuscule+mot+symbole</code>.</li>
+<h3>14.2. Strona systemowa</h3>
+<li>przechowywanie za pomocą Argon2id (lub wysokiej ceny bcrypt),</li>
+<li>Systematyczne MFA,</li>
+<li>blokowanie uszkodzonych haseł,</li>
+<li>telemetria połączenia i wykrywania anomalii.</li>
+<h3>14.3 Polityka</h3>
+<li>długość priorytetowa i kontrola kompromisowa,</li>
+<li>zmniejszyć zasady czysto kosmetycznej złożoności sprzyjającej przewidywalnym wzorcom.</li>
+<hr>
+<h2>15. Odniesienia bibliograficzne</h2>
+<h3>Źródło akademickie</h3>
+<strong>Wheeler, D.L. (2016).</strong> zxcvbn: Szacunkowa moc hasła w budżecie.<em> 25. USENIX Sympozjum Bezpieczeństwa.
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Globek, B. (2009).</strong> </em>Hasło Śledzenie Korzystanie Probabilistic Context- Free Grammars.<em> Sympozjum IEEE na temat bezpieczeństwa i prywatności.
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., et al. (2015).</strong> </em>OMEN: Szybsze Password Guessing Using an Ordered Markov Enurator.<em> ESSOS.
+<strong>Ur, B., Kelley, P. G., Komanduri, S., et al. (2012).</strong> </em>Jak Twoje hasło mierzy?<em> USENIX Security.
+<h3>Źródła przemysłowe i techniczne</h3>
+<strong>Hashcat Wiki.</strong> </em>Atak maski (-a 3).<em> https: / / hashcat.net / wiki /
+<strong>Hashcat (poziomy odniesienia).</strong> https: / / hashcat.net / hashcat /
+<strong>Hive Systems (Tabela Hasło).</strong> https: / / www.hivesystems.io / password- table
+<h3>Źródła internetowe cytowane w aplikacji Time2Crack</h3>
+<strong>USENIX Security 2016 (Wheeler).</strong>
+https: / / www.usenix.org / conference / usenixsecurity16 / technical- sessions / presentation / wheeler
+<hr>
+</em>Dokument wygenerowany dla Time2Crack Project - Wersja 1.0 - 2026- 04- 01<em>
+</em>Kod źródła: <code>app.js</code> (funkcje <code>addMaskAttacks</code>, <code>detectDateAndReduce</code>, <code>hasDate</code>, <code>budgetTime</code>, <code>applyHighFidelityCalibration</code>) *
+
+  </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

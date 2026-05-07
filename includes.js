@@ -1,26 +1,9 @@
-// Shared header/footer include system
-// Detects page depth and adjusts relative hrefs accordingly
+// Simplified includes: setup drawer, dropdowns, and language selector
+// Header/footer are now inline in HTML layouts
 
 (function() {
-  // Determine if we're in a subdirectory (methode/) or at root
-  const pathname = window.location.pathname;
-  const isSubdir = pathname.includes('/methode/');
-  const prefix = isSubdir ? '../' : '';
-
-  // Build correct hrefs for navigation
-  const navHrefs = {
-    home: prefix + 'index.html',
-    generator: prefix + 'generator.html',
-    methods: prefix + 'methode/index.html',
-    about: prefix + 'about.html',
-    faq: prefix + 'faq.html',
-    hibp: prefix + 'hibp.html',
-    privacy: prefix + 'privacy.html',
-    sources: prefix + 'sources.html',
-    howItWorks: prefix + 'how-time2crack-works.html'
-  };
-
   // Detect current page for active state
+  const pathname = window.location.pathname;
   const pageName = pathname.split('/').pop() || 'index.html';
 
   // Map page to nav class
@@ -35,64 +18,42 @@
     'how-time2crack-works.html': 'nav-how-it-works'
   };
 
-  // Check if we're in methode/ subdirectory
-  if (isSubdir) {
-    pageToNavClass['index.html'] = 'nav-methods';
-  }
-
-  async function loadIncludes() {
-    try {
-      // Only fetch footer (header is now inline HTML)
-      const footerResponse = await fetch(prefix + 'includes/footer.html');
-
-      if (!footerResponse.ok) throw new Error('Failed to load footer');
-
-      const footerHtml = await footerResponse.text();
-
-      // Set active nav link (primary + secondary + drawer)
-      const activeNavClass = pageToNavClass[pageName];
-      if (activeNavClass) {
-        // Primary + Secondary nav
-        const activeTopLink = document.querySelector('.' + activeNavClass);
-        if (activeTopLink) {
-          document.querySelectorAll('.site-nav__link').forEach(link => {
-            link.removeAttribute('aria-current');
-            link.classList.remove('site-nav__link--active');
-          });
-          activeTopLink.setAttribute('aria-current', 'page');
-          activeTopLink.classList.add('site-nav__link--active');
-        }
-
-        // Drawer links
-        const activeDrawerLink = document.querySelector('.drawer__link.' + activeNavClass);
-        if (activeDrawerLink) {
-          document.querySelectorAll('.drawer__link').forEach(link => {
-            link.removeAttribute('aria-current');
-          });
-          activeDrawerLink.setAttribute('aria-current', 'page');
-        }
+  function setupUI() {
+    // Set active nav link (primary + secondary + drawer)
+    const activeNavClass = pageToNavClass[pageName];
+    if (activeNavClass) {
+      // Primary + Secondary nav
+      const activeTopLink = document.querySelector('.' + activeNavClass);
+      if (activeTopLink) {
+        document.querySelectorAll('.site-nav__link').forEach(link => {
+          link.removeAttribute('aria-current');
+          link.classList.remove('site-nav__link--active');
+        });
+        activeTopLink.setAttribute('aria-current', 'page');
+        activeTopLink.classList.add('site-nav__link--active');
       }
 
-      // Setup drawer interaction (header is already in DOM)
-      setupDrawer();
-
-      // Setup desktop dropdowns
-      setupDropdowns();
-
-      // Signal header is ready (immediate since it's inline)
-      document.dispatchEvent(new CustomEvent('headerLoaded'));
-
-      // Inject footer asynchronously (non-blocking)
-      const footerElement = document.getElementById('site-footer');
-      if (footerElement) {
-        footerElement.outerHTML = footerHtml;
+      // Drawer links
+      const activeDrawerLink = document.querySelector('.drawer__link.' + activeNavClass);
+      if (activeDrawerLink) {
+        document.querySelectorAll('.drawer__link').forEach(link => {
+          link.removeAttribute('aria-current');
+        });
+        activeDrawerLink.setAttribute('aria-current', 'page');
       }
-
-      // Signal full includes load complete
-      document.dispatchEvent(new CustomEvent('includesLoaded'));
-    } catch (error) {
-      console.error('Failed to load includes:', error);
     }
+
+    // Setup drawer interaction
+    setupDrawer();
+
+    // Setup desktop dropdowns
+    setupDropdowns();
+
+    // Setup language selector
+    setupLanguageSelector();
+
+    // Signal includes are ready
+    document.dispatchEvent(new CustomEvent('includesLoaded'));
   }
 
   // Drawer state management
@@ -204,10 +165,44 @@
     });
   }
 
-  // Load includes when DOM is ready
+  function setupLanguageSelector() {
+    const toggle = document.getElementById('lang-toggle');
+    const menu = document.getElementById('lang-menu');
+    const items = menu?.querySelectorAll('.lang-menu__item') || [];
+
+    if (!toggle || !menu) return;
+
+    // Toggle menu ouverture/fermeture
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+      menu.toggleAttribute('hidden');
+    });
+
+    // Sélectionner une langue
+    items.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const newLang = item.getAttribute('data-lang');
+        localStorage.setItem('time2crack-lang', newLang);
+        window.location.href = `/${newLang}/index.html`;
+      });
+    });
+
+    // Fermer le menu si clic ailleurs
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.lang-selector')) {
+        toggle.setAttribute('aria-expanded', 'false');
+        menu.setAttribute('hidden', '');
+      }
+    });
+  }
+
+  // Setup UI when DOM is ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadIncludes);
+    document.addEventListener('DOMContentLoaded', setupUI);
   } else {
-    loadIncludes();
+    setupUI();
   }
 })();

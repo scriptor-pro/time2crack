@@ -1,0 +1,582 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hoe Time2Crack de tijd berekent — Time2Crack</title><link rel="preload" href="../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="../style.min.css" rel="stylesheet"></noscript><meta name="description" content="Begrijp hoe Time2Crack cracktijd schat met aanvalmodellen, gekalibreerde GPU-snelheden en een lokale rekenengine."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Hoe Time2Crack de tijd berekent — Time2Crack"><meta property="og:description" content="Begrijp hoe Time2Crack cracktijd schat met aanvalmodellen, gekalibreerde GPU-snelheden en een lokale rekenengine."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/nl/how-time2crack-works.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="nl_NL"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Hoe Time2Crack de tijd berekent — Time2Crack"><meta name="twitter:description" content="Begrijp hoe Time2Crack cracktijd schat met aanvalmodellen, gekalibreerde GPU-snelheden en een lokale rekenengine."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/nl/how-time2crack-works.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/how-time2crack-works.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/how-time2crack-works.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/how-time2crack-works.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/how-time2crack-works.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/how-time2crack-works.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/how-time2crack-works.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/how-time2crack-works.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/how-time2crack-works.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/how-time2crack-works.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header class="site-header">
+<div class="site-header__top">
+<h1><a class="site-logo" href="index.html">Time2Crack</a></h1>
+<div class="lang-selector">
+<button aria-controls="lang-menu" aria-expanded="false" aria-label="Taal selecteren" class="lang-toggle" id="lang-toggle">
+<svg class="lang-toggle__icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+<span class="lang-toggle__label" id="lang-label">Engels</span>
+<span class="dropdown-arrow">▼</span>
+</button>
+<menu aria-label="Taal selecteren" class="lang-menu" hidden="" id="lang-menu" role="menu">
+<button class="lang-menu__item" data-lang="fr" role="menuitem" type="button">Frans</button>
+<button class="lang-menu__item" data-lang="en" role="menuitem" type="button">Engels</button>
+<button class="lang-menu__item" data-lang="es" role="menuitem" type="button">Español</button>
+<button class="lang-menu__item" data-lang="pt" role="menuitem" type="button">Português</button>
+<button class="lang-menu__item" data-lang="de" role="menuitem" type="button">Deutsch</button>
+<button class="lang-menu__item" data-lang="it" role="menuitem" type="button">Italiano</button>
+<button class="lang-menu__item" data-lang="tr" role="menuitem" type="button">Türkçe</button>
+<button class="lang-menu__item" data-lang="pl" role="menuitem" type="button">Polski</button>
+<button class="lang-menu__item" data-lang="nl" role="menuitem" type="button">Nederlands</button>
+</menu>
+</div>
+</div>
+<nav aria-label="Hoofdnavigatie" class="site-nav">
+<div class="site-nav__primary">
+<a aria-current="page" class="site-nav__link nav-home" href="index.html">Testwachtwoord</a>
+<a class="site-nav__link nav-generator" href="generator.html">Wachtwoord aanmaken</a>
+</div>
+<button aria-controls="drawer" aria-expanded="false" aria-label="Menu openen" class="hamburger" id="hamburger-btn">
+<span class="hamburger__icon"></span>
+</button>
+<div class="site-nav__secondary">
+<a class="site-nav__link" href="faq.html">Veelgestelde vragen</a>
+<a class="site-nav__link" href="about.html">Info</a>
+<div class="site-nav__dropdown">
+<button aria-expanded="false" aria-label="Wetenschap" class="site-nav__dropdown-toggle">
+            Wetenschap <span class="dropdown-arrow">▼</span>
+</button>
+<ul aria-label="Submenu Wetenschap" class="site-nav__dropdown-menu" role="menu">
+<li role="none"><a class="site-nav__dropdown-item" href="how-time2crack-works.html" role="menuitem">Hoe het werkt?</a></li>
+<li class="site-nav__dropdown-item--group" role="none">
+<span class="site-nav__dropdown-group-title">Aanvalsmethoden</span>
+<ul class="site-nav__dropdown-submenu" role="menu">
+<li role="none"><a class="site-nav__dropdown-item" href="methode/bruteforce.html" role="menuitem">Brutokracht</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/dictionary.html" role="menuitem">Woordenboek</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/hybrid.html" role="menuitem">Hybride</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/mask.html" role="menuitem">Masker</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/markov.html" role="menuitem">Markov</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/pcfg.html" role="menuitem">PCFG</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/combinator.html" role="menuitem">Combiner</a></li>
+</ul>
+</li>
+<li role="none"><a class="site-nav__dropdown-item" href="sources.html" role="menuitem">Bronnen</a></li>
+</ul>
+</div>
+<div class="site-nav__dropdown">
+<button aria-expanded="false" aria-label="Beveiliging" class="site-nav__dropdown-toggle">
+            Beveiliging <span class="dropdown-arrow">▼</span>
+</button>
+<ul aria-label="Submenu Beveiliging" class="site-nav__dropdown-menu" role="menu">
+<li role="none"><a class="site-nav__dropdown-item" href="hibp.html" role="menuitem">HIBP</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="privacy.html" role="menuitem">Privacy</a></li>
+</ul>
+</div>
+</div>
+</nav>
+<aside aria-hidden="true" aria-label="Secundaire menu" class="drawer" id="drawer" role="complementary">
+<div class="drawer__header">
+<button aria-label="Menu sluiten" class="drawer__close" id="drawer-close-btn"></button>
+</div>
+<nav aria-label="Secundaire navigatie" class="drawer__nav">
+<a class="drawer__link" href="faq.html">Veelgestelde vragen</a>
+<a class="drawer__link" href="about.html">Info</a>
+<details class="drawer__details">
+<summary class="drawer__summary">Wetenschap</summary>
+<a class="drawer__link" href="how-time2crack-works.html">Hoe het werkt?</a>
+<details class="drawer__details drawer__details--nested">
+<summary class="drawer__summary drawer__summary--nested">Aanvalsmethoden</summary>
+<a class="drawer__link drawer__link--nested" href="methode/bruteforce.html">Brutokracht</a>
+<a class="drawer__link drawer__link--nested" href="methode/dictionary.html">Woordenboek</a>
+<a class="drawer__link drawer__link--nested" href="methode/hybrid.html">Hybride</a>
+<a class="drawer__link drawer__link--nested" href="methode/mask.html">Masker</a>
+<a class="drawer__link drawer__link--nested" href="methode/markov.html">Markov</a>
+<a class="drawer__link drawer__link--nested" href="methode/pcfg.html">PCFG</a>
+<a class="drawer__link drawer__link--nested" href="methode/combinator.html">Combiner</a>
+</details>
+<a class="drawer__link" href="sources.html">Bronnen</a>
+</details>
+<details class="drawer__details">
+<summary class="drawer__summary">Beveiliging</summary>
+<a class="drawer__link" href="hibp.html">HIBP</a>
+<a class="drawer__link" href="privacy.html">Privacy</a>
+</details>
+</nav>
+<footer class="drawer__footer">
+<p>v2.2.1 • Lokale crackschatting - 2026-05-01 (Global language selector + 9 languages)</p>
+</footer>
+</aside>
+<div aria-hidden="true" class="drawer-backdrop" hidden="" id="drawer-backdrop"></div>
+<div aria-label="Privacyverklaring" class="privacy-notice" role="note">
+<span aria-hidden="true" class="privacy-notice__icon"></span>
+<div class="privacy-notice__text">
+<strong>Alles blijft in uw browser.</strong>
+        Er wordt geen wachtwoord verzonden. Berekening is volledig lokaal.
+Het enige externe verzoek is een anonieme lekcontrole
+(Eerste 5 tekens van SHA-1 hash, nooit het wachtwoord).
+      </div>
+</div>
+<div aria-label="Drie pijlers" class="pillars" role="note">
+<div class="pillars__item">
+<span class="pillars__icon"></span>
+<span class="pillars__text" id="pillar-local">Lokale berekening</span>
+</div>
+<div class="pillars__item">
+<span class="pillars__icon"></span>
+<span class="pillars__text" id="pillar-verification">Alleen externe verificatie</span>
+</div>
+<div class="pillars__item">
+<span class="pillars__icon"></span>
+<span class="pillars__text" id="pillar-opensource">Bron openen</span>
+</div>
+</div>
+</header><main class="doc-page">
+<div class="doc-header">
+<h1>Hoe Time2Crack de kraaktijd berekent</h1>
+<p class="subtitle">Volledige gids voor wetenschappelijke en technische operaties</p>
+</div>
+<nav aria-label="Inhoud" class="toc">
+<h2>Inhoud</h2>
+<ol>
+<li><a href="#overview">Overzicht</a></li>
+<li><a href="#flux">Voornaamste berekeningsstroom</a></li>
+<li><a href="#step1">Stap 1: Wachtwoordanalyse</a></li>
+<li><a href="#step2">Stap 2: Rangschatting</a></li>
+<li><a href="#step3">Stap 3: Conversie naar tijd</a></li>
+<li><a href="#attacks">De 7 uitgevoerde aanvallen</a></li>
+<li><a href="#algorithms">De 6 hash algoritmen</a></li>
+<li><a href="#profiles">Aanvalsprofielen</a></li>
+<li><a href="#example">Concrete voorbeelden</a></li>
+<li><a href="#faq">Veelgestelde vragen</a></li>
+</ol>
+</nav>
+ Overzicht 
+<section class="doc-section" id="overview">
+<h2>Overzicht</h2>
+<p>Time2Crack beantwoordt een eenvoudige vraag: <strong>Hoe lang duurt het om dit wachtwoord te kraken?</strong></p>
+<p>Het antwoord omvat drie stappen:</p>
+<div class="diagram">
+PASS MOT (bv. "P@ssw0rd!")
+▼
+STAP 1: Analyse (patroondetectie, entropie)
+▼
+STAP 2: Geschat aantal pogingen (bereik)
+▼
+STAP 3: Tijdconversie (gebaseerd op GPU snelheid)
+▼
+Als gevolg daarvan (bv. "2 dagen op GPU NTLM")
+      </div>
+<p><strong>Kritisch punt</strong> : Time2Crack-tests <strong>Niet echt.</strong> Het wachtwoord. <strong>wiskundig</strong> hoeveel pogingen nodig zouden zijn met verschillende aanvallen.</p>
+<div class="insight-box">
+        De belangrijkste innovatie is de strikte scheiding tussen <strong>Rang</strong> (aantal pogingen) en <strong>Tijd</strong> Dit maakt het mogelijk om aanvalsalgoritmen of GPU snelheden onafhankelijk te wijzigen.
+      </div>
+</section>
+ Berekeningsstroom 
+<section class="doc-section" id="flux">
+<h2>Voornaamste berekeningsstroom</h2>
+<div class="diagram">
+calcCrackTime(wachtwoord, opties) [core/calc.js]
+Promotie
+- analysePatterns(wachtwoord)
+│
+Promotie
+Ü--schattingRank(wachtwoord, context)
+│ Ã - rankBrute() → tanklengte
+│ ç - rangDictionary() → woordenboek + HIPP
+│ ç - rangHybrid() → woordenboek + mutaties
+│ Ã - rangMask() → voorspelbare structuren
+│ Ü - RankMarkov() → probabilistisch model
+│ ç - rangPCFG() → grammatica
+Promotie
+│
+Promotie
+- RangToAllSeconds(rank)
+- Converteert pogingen → seconden (GPU snelheid)
+- Return: { md5, sha1, sha256, ntlm, bcrypt, argon2 }
+      </div>
+<h3>Twee lagen architectuur</h3>
+<p>Time2Crack's belangrijkste innovatie is <strong>strikte scheiding</strong> tussen:</p>
+<div class="feature-list">
+<div class="feature-item">
+<strong><span class="emoji-marker">1</span>Laag 1 (rang)</strong>
+<p>"Hoeveel pogingen?" hebben geen idee van GPU tijd of snelheid. Modules: <code>core/rank/*.js</code></p>
+</div>
+<div class="feature-item">
+<strong><span class="emoji-marker">2</span>Laag 2 (tijd)</strong>
+<p>"Hoe lang?" Omzetten pogingen in seconden. Module: <code>core/time.js</code></p>
+</div>
+</div>
+<p><strong>Voordeel</strong> : Het veranderen van het algoritme van een aanval heeft nooit invloed op de logica van de tijd.</p>
+</section>
+ Stap 1 
+<section class="doc-section" id="step1">
+<h2>Stap 1: Wachtwoordanalyse</h2>
+<h3>Wat analyseren we?</h3>
+<p>Voordat de cracktijd wordt berekend, ontleedt Time2Crack het wachtwoord om te detecteren:</p>
+<div class="code-block">
+<pre>analyzePatterns(password) retourne {
+  // CHARSET &amp; ENTROPIE
+  charset: { hasLower, hasUpper, hasDigit, hasSymbol },
+  entropy: 52.3,  // bits
+
+  // DÉTECTIONS
+  patterns: {
+    dictionaryWord: true,      // mot dans dictionnaire
+    commonPassword: false,     // dans HIBP
+    keyboardPattern: false,    // qwerty, asdfgh
+    sequencePattern: false,    // abc, 123
+    datePattern: false,        // 2024, 12/25
+    repeatingPattern: false,   // aaaa, 1111
+    maskLike: true,            // structure prévisible
+    looksPassphrase: true,     // plusieurs mots
+  }
+}</pre>
+</div>
+<h3>De 8 soorten detecties</h3>
+<h4><span class="emoji-marker">1</span> Woordenboekwoord</h4>
+<p>Test het wachtwoord tegen 50k-200k gewone woorden en hun varianten (eenvoudige mutaties).</p>
+<h4><span class="emoji-marker">2</span> Gemeenschappelijk wachtwoord (HIBP)</h4>
+<p>Test tegen de 1000 meest ontsnapte wachtwoorden met behulp van de <strong>k-anonimiteit</strong> (slechts 5 eerste SHA-1 tekens verzonden).</p>
+<p><small><a href="hibp.html">Controleer of uw wachtwoord is gehackt →</a></small></p>
+<h4><span class="emoji-marker">3</span> Toetsenbordpatroon</h4>
+<p>Detecteren: <code>qwerty</code>, <code>asdfgh</code>, <code>qazwsx</code>, enz.</p>
+<h4><span class="emoji-marker">4</span> Volgnummer</h4>
+<p>Detecteren: <code>abc</code>, <code>123</code>, <code>xyz</code>, enz.</p>
+<h4><span class="emoji-marker">5</span> Datum</h4>
+<p>Detecteren: <code>2024</code>, <code>12/25</code>, <code>25-12-2024</code>, enz.</p>
+<h4><span class="emoji-marker">6</span> Herhaal</h4>
+<p>Detecteren: <code>aaaa</code>, <code>1111</code>, <code>!!!</code>, enz.</p>
+<h4><span class="emoji-marker">7</span> Gestructureerd</h4>
+<p>Detecteert te verwachten structuren: <code>Name2024!</code>, <code>Passw0rd!</code></p>
+<h4><span class="emoji-marker">8</span> Uitdrukking</h4>
+<p>Detecteert verschillende samengevoegde woorden: <code>correcthorsebatterystaple</code> → <code>[correct] + [horse] + [battery] + [staple]</code></p>
+</section>
+ Stap 2 
+<section class="doc-section" id="step2">
+<h2>Stap 2: Rangschatting (aantal pogingen)</h2>
+<h3>Basisconcept</h3>
+<p>De <strong>rij</strong> is: <strong>"Hoeveel wachtwoorden moet een aanval testen voordat je het vindt?"</strong></p>
+<div class="example-box">
+<h4>Voorbeeld</h4>
+<ul>
+<li><strong>Brutosterkte</strong> voor <code>abc</code> : 263 = 17,576 pogingen</li>
+<li><strong>Woordenboek</strong> voor <code>password</code> : ~1 poging</li>
+<li><strong>PCFG</strong> voor <code>Password123</code> : ~1011 pogingen</li>
+</ul>
+</div>
+<h3>Hoe kies je de winnende aanval?</h3>
+<p>Time2Crack lanceert de <strong>7 parallelle aanvallen</strong> en neemt het beste resultaat:</p>
+<div class="code-block">
+<pre>const results = {
+  brute:      { rank: 1e30 },
+  dictionary: { rank: 1e6 },      // GAGNANT
+  hybrid:     { rank: 1e7 },
+  mask:       { rank: 1e8 },
+  markov:     { rank: 1e9 },
+  pcfg:       { rank: 1e11 },
+  combinator: { rank: 1e12 },
+};
+
+const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
+// → 1e6 (Dictionary attack est la plus rapide)
+      </pre>
+</div>
+</section>
+ Stap 3 
+<section class="doc-section" id="step3">
+<h2>Stap 3: Conversie naar tijd</h2>
+<h3>Het concept</h3>
+<p>Nu we weten dat we moeten <code>rang</code> pogingen, we converteren naar <strong>seconden</strong> :</p>
+<div class="code-block">
+<pre>Formule : temps (secondes) = log₁₀(rang) / log₁₀(taux_hachage)</pre>
+</div>
+<h3>Hashing snelheden (GPU)</h3>
+<p>Time2Crack-toepassingen <strong>echte snelheden Hashcat</strong> voor 12× RTX 4090:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Algoritme</th>
+<th>Snelheid</th>
+<th>Salificatie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MD5</strong></td>
+<td>2,03 TH/s</td>
+<td>Nee</td>
+</tr>
+<tr>
+<td><strong>SHA-1</strong></td>
+<td>610 GH/s</td>
+<td>Nee</td>
+</tr>
+<tr>
+<td><strong>SHA-256</strong></td>
+<td>272 GH/s</td>
+<td>Nee</td>
+</tr>
+<tr>
+<td><strong>NTLM</strong></td>
+<td>3,46 TH/s</td>
+<td>Nee</td>
+</tr>
+<tr>
+<td><strong>bcrypt</strong></td>
+<td>2,2 MH/s</td>
+<td>Ja.</td>
+</tr>
+<tr>
+<td><strong>Argon2id</strong></td>
+<td>800 H/s</td>
+<td>Ja.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Voorbeeld van conversie</h3>
+<div class="example-box">
+<h4>Wachtwoord: "wachtwoord" (rang: 1 miljoen = 106)</h4>
+<h4>Voor MD5 (2 biljoen/sec):</h4>
+<p><code>Temps = 10⁶ / (2×10¹²) = 0.5 microsecondes</code></p>
+<h4>Voor SHA-256 (272 GH/s):</h4>
+<p><code>Temps = 10⁶ / (2.72×10¹¹) = 3.7 microsecondes</code></p>
+<h4>Voor bcrypt (2,2 MH/s):</h4>
+<p><code>Temps = 10⁶ / (2.2×10⁶) = 0.45 secondes</code></p>
+<h4>Voor Argon2id (800 H/s):</h4>
+<p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
+</div>
+</section>
+ De 7 aanvallen 
+<section class="doc-section" id="attacks">
+<h2>De 7 uitgevoerde aanvallen</h2>
+<h3><span class="emoji-marker">1</span> Brutokracht</h3>
+<p><strong>Onderwerp</strong> : Test alle mogelijke combinaties</p>
+<div class="code-block"><pre>Formule : rang = charset_size ^ length</pre></div>
+<p><strong>Voorbeeld</strong> : <code>abc</code> → 263 = 17,576 pogingen</p>
+<p><strong>Zeer effectief voor</strong> : korte en willekeurige wachtwoorden</p>
+<p><small><a href="methode/bruteforce.html">Meer informatie over Brute Force →</a></small></p>
+<h3><span class="emoji-marker">2</span> Woordenboekaanval</h3>
+<p><strong>Onderwerp</strong> : Test elk woord in het woordenboek</p>
+<div class="code-block"><pre>Formule : rang = taille_dictionnaire</pre></div>
+<p><strong>Zeer effectief voor</strong> Menselijke woorden</p>
+<p><small><a href="methode/dictionary.html">Meer informatie over woordenboekaanval →</a></small></p>
+<h3><span class="emoji-marker">3</span> Hybride aanval</h3>
+<p><strong>Onderwerp</strong> : Woordenboek Word + eenvoudige mutaties</p>
+<div class="code-block"><pre>Formule : rang = taille_dictionnaire × nombre_mutations (~1000)</pre></div>
+<p><strong>Zeer effectief voor</strong> : woordenboek woorden + kleine wijzigingen</p>
+<p><small><a href="methode/hybrid.html">Meer informatie over Hybrid Attack →</a></small></p>
+<h3><span class="emoji-marker">4</span> Maskeraanval</h3>
+<p><strong>Onderwerp</strong> : Test voorspelbare structuren</p>
+<p><strong>Zeer effectief voor</strong> : menselijke structuren (<code>Name2024</code>, <code>Password!</code>)</p>
+<p><small><a href="methode/mask.html">Meer informatie over Maskeraanval →</a></small></p>
+<h3><span class="emoji-marker">5</span> Model Markov</h3>
+<p><strong>Onderwerp</strong> : Statistische benadering gebaseerd op n-gramfrequenties</p>
+<p><strong>Zeer effectief voor</strong> Menselijke woorden verminderde ruimte met ~99%</p>
+<p><small><a href="methode/markov.html">Meer informatie over Markov Model →</a></small></p>
+<h3><span class="emoji-marker">6</span> PCFG</h3>
+<p><strong>Onderwerp</strong> : Grammatisch model dat structuren leert</p>
+<div class="example-box">
+<h4>Echt voorbeeld</h4>
+<p><code>Password123</code> :</p>
+<ul>
+<li>Bruto sterkte: 9411 = 475 biljoen pogingen</li>
+<li>PCFG: ~100 biljoen pogingen (4.700× sneller!)</li>
+</ul>
+</div>
+<p><small><a href="methode/pcfg.html">Meer informatie over PCFG →</a></small></p>
+<h3><span class="emoji-marker">7</span> Combineraanval</h3>
+<p><strong>Onderwerp</strong> : Samenvoeging van 2+ woordenboek woorden</p>
+<p><strong>Zeer effectief voor</strong> : wachtwoordzinnen (4+ woorden)</p>
+<p><small><a href="methode/combinator.html">Meer informatie over Combiner Attack →</a></small></p>
+</section>
+ Algoritmen 
+<section class="doc-section" id="algorithms">
+<h2>De 6 hash algoritmen</h2>
+<h3>Waarom zes?</h3>
+<p>Verschillende algoritmen bieden verschillende niveaus van beveiliging. Time2Crack toont crack tijden voor de 6 om de impact van de algoritme keuze te tonen.</p>
+<h4><span class="emoji-marker"></span> MD5 (GEDEPRECTEERD)</h4>
+<ul>
+<li><strong>Snelheid</strong> : 2 TH/s (zeer snel)</li>
+<li><strong>Salificatie</strong> Nee</li>
+<li><strong>Status</strong> - Niet gebruiken</li>
+</ul>
+<h4><span class="emoji-marker"></span> SHA-1 (GEDEPRECTEERD)</h4>
+<ul>
+<li><strong>Snelheid</strong> : 610 GH/s</li>
+<li><strong>Salificatie</strong> Nee</li>
+<li><strong>Status</strong> - Botsingen gevonden (2017)</li>
+</ul>
+<h4><span class="emoji-marker"></span> SHA-256 (aanvaardbaar)</h4>
+<ul>
+<li><strong>Snelheid</strong> : 272 GH/s</li>
+<li><strong>Salificatie</strong> : Algemeen ja</li>
+<li><strong>Status</strong> - Aanvaardbaar indien met SALT + iteratie</li>
+</ul>
+<h4><span class="emoji-marker"></span> NTLM (LEGACY)</h4>
+<ul>
+<li><strong>Snelheid</strong> : 3,46 TH/s</li>
+<li><strong>Status</strong> - Gebruikt in Windows nalatenschap</li>
+</ul>
+<h4><span class="emoji-marker"></span> bcrypt (GENOMEN)</h4>
+<ul>
+<li><strong>Snelheid</strong> 2.2 MH/s (opzettelijk langzaam)</li>
+<li><strong>Salificatie</strong> : JA</li>
+<li><strong>Status</strong> * Uitstekend voor productie</li>
+</ul>
+<h4><span class="emoji-marker"></span> Argon2id (beter)</h4>
+<ul>
+<li><strong>Snelheid</strong> 800 H/s (zeer langzaam = zeer veilig)</li>
+<li><strong>Type</strong> : Hybrid (tijd + geheugen)</li>
+<li><strong>Status</strong> Beste moderne keuze (NIST 2021)</li>
+</ul>
+<div class="insight-box">
+        Moderne algoritmen zijn <strong>opzettelijk langzaam</strong>Het is een functie, geen bug! MD5 is snel (slecht), bcrypt is traag (uitstekend), Argon2id is nog langzamer (beste).
+      </div>
+</section>
+ Profielen 
+<section class="doc-section" id="profiles">
+<h2>Aanvalsprofielen</h2>
+<h3>Onderwerp</h3>
+<p>Verschillende aanvallers hebben verschillende bronnen. Time2Crack modellen 4 profielen:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Profiel</th>
+<th>GPU's</th>
+<th>NTLM</th>
+<th>Gebruik</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Amateur</strong></td>
+<td>1</td>
+<td>288 GH/s</td>
+<td>Hobbyisten</td>
+</tr>
+<tr>
+<td><strong>Ervaren</strong></td>
+<td>12</td>
+<td>3,46 TH/s</td>
+<td>Ernstige crackers</td>
+</tr>
+<tr>
+<td><strong>Professioneel</strong></td>
+<td>100</td>
+<td>28,8 TH/s</td>
+<td>Bedrijven, AWS clusters</td>
+</tr>
+<tr>
+<td><strong>Staat</strong></td>
+<td>~10k</td>
+<td>2,88 PH/s</td>
+<td>Regeringen</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Concrete impact</h3>
+<div class="example-box">
+<h4>Wachtwoord: "P@ssw0rd" (10 tanks, rij: 1 biljoen)</h4>
+<ul>
+<li><strong>Amateur</strong> 44 seconden</li>
+<li><strong>Ervaren</strong> 3,7 seconden</li>
+<li><strong>Professioneel</strong> : 0,43 seconden</li>
+<li><strong>Staat</strong> 4,4 milliseconden</li>
+</ul>
+</div>
+<p><strong>Onderwijs</strong> : Zelfs een "sterk" wachtwoord kan worden gekraakt in milliseconden door een natie-staat!</p>
+</section>
+ Voorbeeld 
+<section class="doc-section" id="example">
+<h2>Concrete voorbeeld: Tr0ub4dor&amp;3</h2>
+<p>Het is het filmwachtwoord. <strong>"Correct Horse Battery Nieten"</strong> Eens kijken wat Time2Crack doet:</p>
+<h3>Stap 1: Analyse</h3>
+<div class="code-block">
+<pre>• length : 11 caractères
+• charset : 94 caractères
+• entropy : ~64 bits
+• dictionaryWord : FALSE
+• commonPassword : FALSE
+• maskLike : TRUE
+• looksPassphrase : FALSE</pre>
+</div>
+<h3>Stap 2: Rangschatting</h3>
+<div class="code-block">
+<pre>Brute Force  : 94^11 ≈ 475 trillion
+Dictionary   : ∞ (pas dans dictionnaire)
+Mask         : ≈ 1.4 trillion
+Markov       : ≈ 10 trillion
+PCFG         : ≈ 50 billion (GAGNANT)
+Combinator   : ∞</pre>
+</div>
+<h3>Stap 3: Conversie naar tijd</h3>
+<div class="example-box">
+<h4>Resultaten voor 50 miljard pogingen</h4>
+<ul>
+<li><strong>MD5</strong> : 0,025 seconden</li>
+<li><strong>SHA-256</strong> 0,18 seconden</li>
+<li><strong>bcrypt</strong> 6,3 uur</li>
+<li><strong>Argon2id</strong> 2 jaar</li>
+</ul>
+</div>
+<h3>Conclusie</h3>
+<ul>
+<li>• Veilig tegen bcrypt/Argon2id (uren → jaren)</li>
+<li></li>
+<li></li>
+</ul>
+</section>
+ Veelgestelde vragen 
+<section class="doc-section" id="faq">
+<h2>Veelgestelde vragen</h2>
+<h3>V: Test Time2Crack het wachtwoord eigenlijk?</h3>
+<p><strong>Nee</strong>. Time2Crack verstuurt niet <strong>Nooit</strong> uw wachtwoord naar een server.</p>
+<ul>
+<li>Alle berekeningen zijn uitgevoerd <strong>Lokale</strong> in de browser</li>
+<li>Alleen netwerkgesprek: HIPB controleert met k-anonimiteit</li>
+<li>Geen volledige wachtwoordoverdracht</li>
+</ul>
+<p><small><a href="privacy.html">Meer informatie over ons privacybeleid →</a></small></p>
+<h3>V: Waar komen GPU snelheidsnummers vandaan?</h3>
+<p><strong>Officiële benchmarks voor Hashcat</strong> (v6.2.6) betreffende RTX 4090:</p>
+<ul>
+<li>Laboratoriummetingen</li>
+<li>Openbaar domein</li>
+<li>Uitlijning met bijenkorven 2025</li>
+</ul>
+<h3>V: Waarom is Argon2id zo traag?</h3>
+<p><strong>Het is opzettelijk.</strong>. Argon2id is ontworpen om langzaam te zijn, geheugen-hard, en moeilijk te paralleliseren. Dit dwingt aanvallers om veel middelen te gebruiken.</p>
+<h3>V: Kunnen we een 100% "veilig" wachtwoord verbeteren?</h3>
+<p><strong>Nee</strong>Zelfs het beste wachtwoord kan worden gestolen of geraden. <strong>Defensieve strategie</strong> :</p>
+<ul>
+<li>Goed wachtwoord (15+ willekeurige tekens)</li>
+<li>Multifactorauthenticatie</li>
+<li>Wachtwoordbeheer</li>
+<li>Controle van inbreuken (Heb ik geklaagd)</li>
+</ul>
+<h3>V: Hoe kan ik mijn wachtwoord verbeteren?</h3>
+<p><strong>Eenvoudige regels</strong> :</p>
+<ul>
+<li><strong>Lengte</strong> : 15+ karakters (groter dan complexiteit)</li>
+<li><strong>Willekeurig</strong> : Wachtwoordbeheer gebruiken</li>
+<li><strong>Uniek</strong> : Ander wachtwoord per site</li>
+<li><strong>MVO</strong> : 2FA-authenticatie inschakelen indien mogelijk</li>
+</ul>
+</section>
+ Conclusie 
+<section class="doc-section">
+<h2>Conclusie</h2>
+<p><strong>Time2Crack werkt in 3 onveranderlijke stappen</strong> :</p>
+<div class="code-block">
+<pre>1. ANALYSE       → Détecte patterns (dictionnaire, keyboard, etc.)
+2. RANG          → Estime tentatives nécessaires (7 attaques)
+3. TEMPS         → Convertit tentatives en secondes (GPU speeds)</pre>
+</div>
+<p><strong>Kerninnovatie</strong> : Rigoreuze scheiding tussen rij (aanval) en tijd (GPU), waardoor:</p>
+<ul>
+<li>Eenvoudige update van GPU snelheden</li>
+<li>Eenvoudige toevoeging van nieuwe aanvallen</li>
+<li>Modulaire en testbare architectuur</li>
+</ul>
+<p><strong>Resultaat</strong> : Raming <strong>precies</strong>, <strong>Offline</strong>, <strong>meertalig</strong> Tijd om een wachtwoord te kraken.</p>
+<a class="back-to-top" href="#top">↑ Terug naar boven</a>
+</section>
+</main><footer id="site-footer">
+<small class="commit-info">Laatste: <span id="commit-date">2026-04-25 11:52:15</span> • <span id="commit-message">functie(automatisering): implementatie fu ...</span></small>
+</footer><script src="../includes.js"></script></body></html>

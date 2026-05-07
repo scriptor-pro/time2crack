@@ -1,0 +1,50 @@
+# Personal notes
+to-do-gitignore.mkd
+
+# Development files
+index.dev.html
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code (personal configuration, not for repo)
+.claude/
+.claudeignore
+
+# GSD planning (internal work-in-progress)
+.planning/
+
+# Python virtual environment
+.venv/
+
+# Aider (AI coding assistant session data)
+.aider*
+.aider*/
+
+# Large datasets (generated locally via scripts/, exceeds GitHub 100MB limit)
+data/rockyou.txt
+data/rockyou.txt.zip
+data/rockyou.bloom
+data/rockyou-ranked.txt
+data/ml-training/rockyou.txt
+data/wordlists/realhuman_phill.txt
+time2crack-production.zip
+
+# Prototypes (work in progress, not for distribution)
+prototypes/
+rockyou-sample-2000-fastest-attacks.html
+prototype-privacy-*.html
+prototype-*.html
+proto-*.html

@@ -25,6 +25,11 @@
     return;
   }
 
+  // Don't redirect if on static documentation pages (methode, sources, etc.)
+  if (pathname.includes('/methode/') || pathname.includes('/sources')) {
+    return;
+  }
+
   // Check if user has a saved language preference
   const savedLang = localStorage.getItem(STORAGE_KEY);
   if (savedLang && SUPPORTED_LANGS.includes(savedLang) && savedLang !== DEFAULT_LANG) {

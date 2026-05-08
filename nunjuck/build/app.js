@@ -3019,6 +3019,10 @@
     // If page doesn't have password input, don't initialize analyzer
     if (!input) return;
 
+    // Check for critical elements required by the analyzer
+    const resultsDiv = $("results");
+    if (!resultsDiv) return; // Can't render results without results div
+
   // Only run password analysis code on pages that have the password input (index + generator)
   if (input) {
   const toggleBtn = $("toggle-visibility");
@@ -5753,7 +5757,7 @@
   function setPendingState() {
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
-    resetBtn.classList.add("visible");
+    if (resetBtn) resetBtn.classList.add("visible");
     
     // Reset strength bar segments
     strengthSegments.forEach((seg) => seg.classList.remove("active"));
@@ -5992,7 +5996,7 @@
     const pw = inputPw;
 
     if (inputEmpty) {
-      resetBtn.classList.remove("visible");
+      if (resetBtn) resetBtn.classList.remove("visible");
       resultsDiv.classList.add("visible");
       resultsDiv.classList.add("is-empty");
       if (attackerFrame) attackerFrame.hidden = false;
@@ -6050,7 +6054,7 @@
       return;
     }
 
-    resetBtn.classList.add("visible");
+    if (resetBtn) resetBtn.classList.add("visible");
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
     if (attackerFrame) attackerFrame.hidden = false;  // Show force bar
@@ -6522,25 +6526,27 @@
   }
 
   // Reset
-  resetBtn.addEventListener("click", () => {
-    input.value = "";
-    input.type = "password";
-    const textSpan = toggleBtn.querySelector("span");
-    if (textSpan) textSpan.textContent = t("show");
-    toggleBtn.setAttribute("aria-label", t("showAria"));
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      input.value = "";
+      input.type = "password";
+      const textSpan = toggleBtn.querySelector("span");
+      if (textSpan) textSpan.textContent = t("show");
+      toggleBtn.setAttribute("aria-label", t("showAria"));
 
-    // Cancel pending renders/checks and force a fresh empty-state render
-    clearTimeout(timer);
-    userPinnedAlgo = false;
-    selectedAlgo = "sha256";
-    if (ctAlgo) ctAlgo.value = "sha256";
-    if (hibpAbort) hibpAbort.abort();
-    clearTimeout(hibpDebounce);
-    lastCheckedPw = "";
+      // Cancel pending renders/checks and force a fresh empty-state render
+      clearTimeout(timer);
+      userPinnedAlgo = false;
+      selectedAlgo = "sha256";
+      if (ctAlgo) ctAlgo.value = "sha256";
+      if (hibpAbort) hibpAbort.abort();
+      clearTimeout(hibpDebounce);
+      lastCheckedPw = "";
 
-    render();
-    input.focus();
-  });
+      render();
+      input.focus();
+    });
+  }
 
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") e.preventDefault();

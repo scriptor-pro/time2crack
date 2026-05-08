@@ -3010,8 +3010,17 @@
     }
   });
 
-  const $ = (id) => document.getElementById(id);
-  const input = $("password-input");
+  // Defer password analyzer initialization to DOMContentLoaded
+  // This ensures DOM is ready and prevents crashes on pages without password input
+  document.addEventListener("DOMContentLoaded", () => {
+    const $ = (id) => document.getElementById(id);
+    const input = $("pw-input");
+
+    // If page doesn't have password input, don't initialize analyzer
+    if (!input) return;
+
+  // Only run password analysis code on pages that have the password input (index + generator)
+  if (input) {
   const toggleBtn = $("toggle-visibility");
   const strengthIcon = $("strength-icon");
   const strengthLabel = $("strength-label");
@@ -6751,6 +6760,7 @@
       if (!BLOOM_LOADED && !BLOOM_LOADING) loadBloomFilter();
     });
   }
+  } // End of: if (input) block
 
   // Initialize i18n and load dictionary on page load
   // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
@@ -6761,4 +6771,5 @@
   loadNeuralCalibration();
   loadPrinceCalibration();
   render(); // Keep layout fully visible even with empty input
+  }); // End DOMContentLoaded
 })();

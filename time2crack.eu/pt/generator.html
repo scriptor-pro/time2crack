@@ -820,9 +820,16 @@ The only external request is an anonymous leak check
       if (modelsLoaded) return;
 
       try {
+        // Detect language from URL path (fr, en, es, etc.) or default to en
+        const pathLang = window.location.pathname.match(/\/(fr|en|es|pt|de|it|tr|pl|nl)\//);
+        const lang = pathLang ? pathLang[1] : 'en';
+
+        // For English, use files without language suffix; for others use -lang suffix
+        const langSuffix = lang === 'en' ? '' : `-${lang}`;
+
         const [markovData, pcfgData] = await Promise.all([
-          fetch('../data/calibration/markov-ngrams-fr.json').then(r => r.json()),
-          fetch('../data/calibration/pcfg-data-fr.json').then(r => r.json())
+          fetch(`../data/calibration/markov-ngrams${langSuffix}.json`).then(r => r.json()),
+          fetch(`../data/calibration/pcfg-data${langSuffix}.json`).then(r => r.json())
         ]);
 
         initMarkov(markovData);

@@ -1,0 +1,130 @@
+---
+lang: en
+permalink: "/en/index.html"
+layout: base.njk
+currentPage: index
+pageSlug: index.html
+mainClass: index-page
+pageTitle: "Test your password strength — Time2Crack"
+pageDescription: "Analyze the real strength of your password with 7 attack models and 6 hash algorithms. 100% local computation, no password transmitted."
+criticalCss: true
+---
+<script>
+window.RESOURCE_BASE = '/';
+</script>
+
+
+    <div class="input-section">
+      <div class="input-group">
+        <label for="pw-input" id="main-title">Testez la force de votre mot de passe</label>
+        <input id="pw-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ex: Password2024!" aria-describedby="status">
+        <p class="input-hint" id="main-hint">Analyse locale, sécurisée, gratuite • Aucun mot de passe n'est transmis</p>
+        <p class="input-hint"><small><a href="how-time2crack-works.html" id="how-it-works-link">How it works? →</a></small></p>
+      </div>
+    </div>
+
+    <!-- Barre de chargement du dictionnaire -->
+    <div id="dict-loader" class="dict-loader" hidden="">
+      <div class="dict-loader__content">
+        <span class="dict-loader__text" id="dict-loader-text">Chargement du dictionnaire…</span>
+        <div class="dict-loader__bar">
+          <div class="dict-loader__progress" id="dict-loader-progress" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <p id="status" aria-live="polite"></p>
+
+    <div id="results" hidden="">
+
+      <h2>Temps de crack estimé</h2>
+
+      <p id="hibp-badge" data-state="hidden" role="status" aria-live="polite"></p>
+
+      <div class="profile-selector" role="group" aria-label="Profil d'attaquant">
+        <span class="profile-selector__label">Profil d'attaquant</span>
+        <div class="profile-selector__buttons">
+          <button class="profile-btn" data-profile="amateur" aria-pressed="false">
+            <span class="profile-btn__name">Amateur</span>
+            <span class="profile-btn__gpu">1 GPU</span>
+          </button>
+          <button class="profile-btn profile-btn--active" data-profile="experienced" aria-pressed="true">
+            <span class="profile-btn__name">Standard</span>
+            <span class="profile-btn__gpu">12 GPU</span>
+          </button>
+          <button class="profile-btn" data-profile="professional" aria-pressed="false">
+            <span class="profile-btn__name">Pro</span>
+            <span class="profile-btn__gpu">~100 GPU</span>
+          </button>
+          <button class="profile-btn" data-profile="nation_state" aria-pressed="false">
+            <span class="profile-btn__name">État</span>
+            <span class="profile-btn__gpu">~10k GPU</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="best-attack-card">
+        <div class="best-attack-card-header">
+          <span class="best-attack-card-badge-icon">✓</span>
+          <span class="best-attack-card-badge-text">Estimé</span>
+        </div>
+        <div class="best-attack-card-content">
+          <div class="best-attack-card-icon" id="best-attack-icon">🔐</div>
+          <div class="best-attack-card-label">Test your password strength</div>
+          <div class="best-attack-card-time" id="best-attack-time">15 days</div>
+          <div class="best-attack-card-attack">
+            <span id="best-attack-name">Brute Force</span>
+            <span class="best-attack-card-divider">•</span>
+            <span id="best-attack-gpus">12 GPU</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-info-card" id="profile-info-card" role="status" aria-live="polite">
+        <div class="profile-info-card__header">
+          <span id="profile-info-name"></span>
+          <span id="profile-info-gpus" class="profile-info-card__gpus"></span>
+        </div>
+        <span id="profile-info-desc" class="profile-info-card__desc"></span>
+      </div>
+
+      <h2>Analyse détaillée des attaques</h2>
+      <div class="table-wrapper" role="region" aria-label="Tableau des temps de crack" tabindex="0">
+        <table id="results-table">
+          <thead>
+            <tr>
+              <th scope="col">Attaque</th>
+              <th scope="col">Algorithme</th>
+              <th scope="col">Temps estimé</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h2>Analyse du mot de passe</h2>
+      <div id="context-grid" class="context-grid" aria-label="Caractéristiques du mot de passe">
+        <div class="context-group" id="ctx-group-structure">
+          <div class="context-group__title">Structure</div>
+          <div class="context-row"><dt>Longueur</dt>        <dd id="ctx-len"></dd></div>
+          <div class="context-row"><dt>Charset effectif</dt><dd id="ctx-cs"></dd></div>
+          <div class="context-row"><dt>Date détectée</dt>   <dd id="ctx-dt"></dd></div>
+        </div>
+        <div class="context-group" id="ctx-group-patterns">
+          <div class="context-group__title">Patterns</div>
+          <div class="context-row"><dt>Séq. clavier</dt>   <dd id="ctx-kb"></dd></div>
+          <div class="context-row"><dt>Séq. alpha/num</dt> <dd id="ctx-seq"></dd></div>
+          <div class="context-row"><dt>Répétition</dt>     <dd id="ctx-rep"></dd></div>
+        </div>
+        <div class="context-group" id="ctx-group-dict">
+          <div class="context-group__title">Dictionnaire</div>
+          <div class="context-row"><dt>Mot dico</dt>   <dd id="ctx-dict"></dd></div>
+          <div class="context-row"><dt>Hybride</dt>    <dd id="ctx-hybrid"></dd></div>
+          <div class="context-row"><dt>Passphrase</dt> <dd id="ctx-pass"></dd></div>
+        </div>
+      </div>
+
+    </div>
+
+  
+<script src="/app.min.js" type="module"></script>

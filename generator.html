@@ -698,7 +698,7 @@ The only external request is an anonymous leak check
 </div>
 </div>
 </main><footer id="site-footer"></footer><script src="./includes.js"></script><script type="module">
-    import { calcCrackTime } from './core/calc.js';
+    import { calcCrackTime, initMarkov, initPCFG } from './core/calc.js';
     import { rankToSeconds } from './core/time.js';
 
     // ========== CONFIGURATION ==========
@@ -815,6 +815,24 @@ The only external request is an anonymous leak check
       generatePassword();
     }
 
+    let modelsLoaded = false;
+    async function lazyLoadModels() {
+      if (modelsLoaded) return;
+
+      try {
+        const [markovData, pcfgData] = await Promise.all([
+          fetch('./data/calibration/markov-ngrams-fr.json').then(r => r.json()),
+          fetch('./data/calibration/pcfg-data-fr.json').then(r => r.json())
+        ]);
+
+        initMarkov(markovData);
+        initPCFG(pcfgData);
+        modelsLoaded = true;
+      } catch (err) {
+        console.error('Erreur lors du chargement des modèles:', err);
+      }
+    }
+
     async function generatePassword() {
       const { charset } = calculateEntropy();
 
@@ -840,6 +858,9 @@ The only external request is an anonymous leak check
 
     async function calculateCrackingTime(password) {
       try {
+        // Initialize Markov and PCFG models if not already done
+        await lazyLoadModels();
+
         // Use real Time2Crack calculation
         const result = await calcCrackTime(password, { lang: 'fr' });
         const { rank, best_attack, profile } = result;

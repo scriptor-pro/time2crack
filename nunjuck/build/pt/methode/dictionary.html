@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="pt" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dicionário — Métodos de ataque — Time2Crack</title>
+  <link rel="preload" href="/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.min.css"></noscript>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap"></noscript>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+<meta name="description" content="Teste senhas de listas selecionadas e variantes comuns. Rápido quando o segredo se baseia em palavras conhecidas.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#2563EB">
+
+<meta property="og:title" content="Dicionário — Métodos de ataque — Time2Crack">
+<meta property="og:description" content="Teste senhas de listas selecionadas e variantes comuns. Rápido quando o segredo se baseia em palavras conhecidas.">
+<meta property="og:image" content="https://time2crack.eu/logo.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://time2crack.eu/pt/methode/dictionary.html">
+<meta property="og:site_name" content="Time2Crack">
+<meta property="og:locale" content="pt_PT">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:locale:alternate" content="pl_PL">
+<meta property="og:locale:alternate" content="nl_NL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dicionário — Métodos de ataque — Time2Crack">
+<meta name="twitter:description" content="Teste senhas de listas selecionadas e variantes comuns. Rápido quando o segredo se baseia em palavras conhecidas.">
+<meta name="twitter:image" content="https://time2crack.eu/logo.png">
+
+<link rel="canonical" href="https://time2crack.eu/pt/methode/dictionary.html">
+<link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/dictionary.html">
+<link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/dictionary.html">
+<link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/dictionary.html">
+<link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/dictionary.html">
+<link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/dictionary.html">
+<link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/dictionary.html">
+<link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/dictionary.html">
+<link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/dictionary.html">
+<link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/dictionary.html">
+<link rel="alternate" hreflang="x-default" href="https://time2crack.eu/en/methode/dictionary.html">
+  <script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header__top">
+    <h1><a href="/pt/index.html" class="site-logo"><img src="/logo.png" alt="" class="site-logo__icon" aria-hidden="true">Time2Crack</a></h1>
+    <div class="lang-selector">
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Selecionar idioma" aria-expanded="false" aria-controls="lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+        <span class="lang-toggle__label" id="lang-label">Português</span>
+        <span class="dropdown-arrow">▼</span>
+      </button>
+      <menu id="lang-menu" class="lang-menu" hidden role="menu" aria-label="Selecionar idioma">
+        <button type="button" data-lang="fr" class="lang-menu__item" role="menuitem">Français</button>
+        <button type="button" data-lang="en" class="lang-menu__item" role="menuitem">English</button>
+        <button type="button" data-lang="es" class="lang-menu__item" role="menuitem">Español</button>
+        <button type="button" data-lang="pt" class="lang-menu__item lang-menu__item--active" role="menuitem">Português</button>
+        <button type="button" data-lang="de" class="lang-menu__item" role="menuitem">Deutsch</button>
+        <button type="button" data-lang="it" class="lang-menu__item" role="menuitem">Italiano</button>
+        <button type="button" data-lang="tr" class="lang-menu__item" role="menuitem">Türkçe</button>
+        <button type="button" data-lang="pl" class="lang-menu__item" role="menuitem">Polski</button>
+        <button type="button" data-lang="nl" class="lang-menu__item" role="menuitem">Nederlands</button>
+      </menu>
+    </div>
+  </div>
+  <nav class="site-nav" aria-label="Navegação principal">
+    <div class="site-nav__primary">
+      <a href="/pt/index.html" class="site-nav__link nav-home">Testar uma senha</a>
+      <a href="/pt/generator.html" class="site-nav__link nav-generator">Gerar uma senha</a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="drawer"><span class="hamburger__icon"></span></button>
+    <div class="site-nav__secondary">
+      <a href="/pt/faq.html" class="site-nav__link">FAQ</a>
+      <a href="/pt/about.html" class="site-nav__link nav-about">Sobre</a>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Ciência">Ciência <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Ciência submenu">
+          <li role="none"><a href="/pt/how-time2crack-works.html" role="menuitem" class="site-nav__dropdown-item">Como funciona</a></li>
+          <li role="none" class="site-nav__dropdown-item--group">
+            <span class="site-nav__dropdown-group-title">Métodos de ataque</span>
+            <ul class="site-nav__dropdown-submenu" role="menu">
+              <li role="none"><a href="/pt/methode/bruteforce.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/dictionary.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/hybrid.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/mask.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/markov.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/pcfg.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/combinator.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+            </ul>
+          </li>
+          <li role="none"><a href="/pt/sources.html" role="menuitem" class="site-nav__dropdown-item">Fontes</a></li>
+        </ul>
+      </div>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Segurança">Segurança <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Segurança submenu">
+          <li role="none"><a href="/pt/hibp.html" role="menuitem" class="site-nav__dropdown-item">HIBP</a></li>
+          <li role="none"><a href="/pt/privacy.html" role="menuitem" class="site-nav__dropdown-item">Privacidade</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <aside id="drawer" class="drawer" role="complementary" aria-hidden="true" aria-label="Navegação secundária">
+    <div class="drawer__header">
+      <button class="drawer__close" id="drawer-close-btn" aria-label="Fechar menu">✕</button>
+    </div>
+    <nav class="drawer__nav" aria-label="Navegação secundária">
+      <a href="/pt/faq.html" class="drawer__link">FAQ</a>
+      <a href="/pt/about.html" class="drawer__link">Sobre</a>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Ciência</summary>
+        <a href="/pt/how-time2crack-works.html" class="drawer__link">Como funciona</a>
+        <details class="drawer__details drawer__details--nested">
+          <summary class="drawer__summary drawer__summary--nested">Métodos de ataque</summary>
+          <a href="/pt/methode/bruteforce.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/dictionary.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/hybrid.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/mask.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/markov.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/pcfg.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/combinator.html" class="drawer__link drawer__link--nested"></a>
+        </details>
+        <a href="/pt/sources.html" class="drawer__link">Fontes</a>
+      </details>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Segurança</summary>
+        <a href="/pt/hibp.html" class="drawer__link">HIBP</a>
+        <a href="/pt/privacy.html" class="drawer__link">Privacidade</a>
+      </details>
+    </nav>
+    <footer class="drawer__footer">
+      <p>v2.2.1 • Estimador de crack local 🔐</p>
+    </footer>
+  </aside>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
+  <div class="privacy-notice" role="note" aria-label="Aviso de privacidade">
+    <span class="privacy-notice__icon" aria-hidden="true">🔒</span>
+    <div class="privacy-notice__text">
+      <strong>Tudo fica no seu navegador.</strong>
+      Nenhuma senha é transmitida. A computação é totalmente local. A única solicitação externa é uma verificação anônima de vazamento (primeiros 5 caracteres do hash SHA-1, nunca a senha).
+    </div>
+  </div>
+</header>
+<main class="methode-page">
+  <div id="method-lang-selector" class="method-lang-selector">
+  <button id="method-lang-toggle" class="lang-toggle" type="button" aria-label="Selecionar idioma" aria-expanded="false" aria-controls="method-lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+    <span class="lang-toggle__label">Português</span>
+    <span class="dropdown-arrow">▼</span>
+  </button>
+  <menu id="method-lang-menu" class="lang-menu" hidden role="menu">
+    <button type="button" class="lang-menu__item" onclick="window.location='/fr/methode/.html'" role="menuitem">Français</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/en/methode/.html'" role="menuitem">English</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/es/methode/.html'" role="menuitem">Español</button>
+    <button type="button" class="lang-menu__item lang-menu__item--active" onclick="window.location='/pt/methode/.html'" role="menuitem">Português</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/de/methode/.html'" role="menuitem">Deutsch</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/it/methode/.html'" role="menuitem">Italiano</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/tr/methode/.html'" role="menuitem">Türkçe</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/pl/methode/.html'" role="menuitem">Polski</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/nl/methode/.html'" role="menuitem">Nederlands</button>
+  </menu>
+</div>
+
+<h1 style="display:none">Ataque de dicionário — Operação abrangente</h1>
+<blockquote>
+Documento de referência do projeto Time2Crack
+</blockquote>
+<blockquote>Destinatários: desenvolvedores, pesquisadores de segurança, usuários avançados</blockquote>
+<hr>
+<h2>Índice</h2>
+<li><a href="#1-vue-densemble">Visão geral</a></li>
+<li><a href="#2-contexte-historique-et-académique">Formação histórica e académica</a></li>
+<li><a href="#3-fondements-conceptuels--pourquoi-les-dictionnaires-fonctionnent">Fundamentos conceituais: por que os dicionários trabalham</a></li>
+<li><a href="#4-architecture-dune-attaque-dictionnaire-moderne">Arquitetura de um moderno ataque dicionário</a></li>
+<li><a href="#5-les-corpus-de-mots-de-passe-réels">O corpus de senhas reais</a></li>
+<li><a href="#6-la-vérification-k-anonymat-hibp--une-attaque-en-temps-réel">K-Anonymity HIBP verificação: um ataque em tempo real</a></li>
+<li><a href="#7-les-wordlists-linguistiques-de-time2crack">Listas de Palavras de Idioma Time2Crack</a></li>
+<li><a href="#8-détection-dictionnaire-dans-time2crack--isdictword">Detecção do Dicionário no Tempo2Crack: <code>isDictWord()</code></a></li>
+<li><a href="#9-de-leetification--comment-lattaquant-décode-les-substitutions">Desleetificação: como o atacante descodifica substituições</a></li>
+<li><a href="#10-calcul-du-temps-de-cracking--adddictionaryattacks">Cálculo do tempo de fissuração: <code>addDictionaryAttacks()</code></a></li>
+<li><a href="#11-calibration-haute-fidélité--applyhighfidelitycalibration">Calibração de alta fidelidade: <code>applyHighFidelityCalibration()</code></a></li>
+<li><a href="#12-probabilité-dapplicabilité-et-score-de-confiance">Probabilidade de aplicabilidade e escore de confiança</a></li>
+<li><a href="#13-bloom-filter-rockyou--détection-locale-des-mots-de-passe-répandus">Bloom filter RockYou : detecção local de senhas generalizadas</a></li>
+<li><a href="#14-comparaison-avec-les-attaques-dérivées">Comparação com ataques derivados</a></li>
+<li><a href="#15-limites-de-lattaque-dictionnaire">Limitações do dicionário de ataque</a></li>
+<li><a href="#16-défenses-efficaces">Defesas eficazes</a></li>
+<li><a href="#17-références-bibliographiques">Referências</a></li>
+<hr>
+<h2>Resumo</h2>
+<p>O ataque do dicionário é o mais antigo método de quebra de senha, o mais simples conceitualmente, e estatisticamente mais eficaz na maioria das senhas humanas reais. Seu princípio é testar, em ordem decrescente de probabilidade, uma lista pré-compilada de candidatos — o "dicionário" — em vez de enumerar exaustivamente todas as combinações possíveis como a força bruta faz.</p>
+<strong>Porque é terrivelmente eficaz</strong> Os humanos não escolhem suas senhas aleatoriamente. Décadas de vazamentos de dados revelam que a distribuição real de senhas está extremamente concentrada: as 1.000 senhas mais comuns representam cerca de 5 a 10% de todas as contas online. Os 1 milhão mais comuns cobrem 40 a 60%. Um ataque de dicionário bem construído irá testar esses candidatos em milissegundos a segundos — onde a força bruta levaria milhões de anos.
+<p>No Time2Crack, o dicionário ataca dois mecanismos distintos, mas complementares:</p>
+<li><strong>Verificação HIBP</strong> (Teve sido pwned): Confronto da senha com as credenciais exclusivas de ~14 bilhões de vazamentos de dados históricos. Se a senha estiver lá, um atacante a descobrirá em uma fração de segundo.</li>
+<li><strong>Detecção da Lista de Palavras da Língua</strong> Uma palavra de linguagem comum — "sol" ou "sol" — é vulnerável mesmo que não esteja no HIBP.</li>
+<p>Essas duas deteções são independentes e complementares: HiBP cobre as credenciais exatas de compromisso, a lista de palavras abrange as palavras comuns ainda não vazadas.</p>
+<hr>
+<h2>2. Antecedentes históricos e acadêmicos</h2>
+<h3>2.1 Origens</h3>
+<p>O ataque do dicionário precede a era moderna da segurança do computador. Os primeiros sistemas Unix guardaram senhas em linguagem simples em <code>/etc/passwd</code>, tornando qualquer ataque dicionário trivial assim que o arquivo foi acessível.</p>
+<strong>Cronologia dos marcos</strong> :
+AnoEvento
+----------------------
+1979Morris &amp; Thompson: Primeiro artigo acadêmico sobre segurança de senhas do Unix. Veja se 1/3 das senhas escolhem palavras em inglês comuns
+1988Morris Worm: propaga-se parcialmente através de um dicionário de 432 palavras + host /usr/share/dict/words
+1993Crack 5.0 (Alec Muffett): Primeira ferramenta pública de ataque de dicionário no Unix, inclui regras de mutação
+2000John the Ripper: populariza wordlists combinadas com regras de hashcat (wordlist + modo regras)
+2009RockYou vazamento: 14,3 milhões de senhas claras revelam a distribuição real das escolhas humanas
+2012Eu fui Pwned (Troy Hunt): primeiro serviço de auditoria pública para credenciais comprometidas
+2013Adobe quebra: 153 milhões de contas — senhas de topo tornam-se identificáveis por análise de frequência mesmo em haxixes não saldados
+2016Hashcat open source v3.0: otimização maciça de ataques de lista de palavras em GPU (MD5: 2 TH/s em 8 GPU cluster)
+2019Coleção #1–5: 2,7 bilhões de pares de login/senha compilados, distribuídos publicamente
+2024HIBP v8: ~14 bilhões de senhas únicas indexadas
+<h3>2.2 Fuga de fundação</h3>
+<p>Alguns vazamentos transformaram a paisagem do ataque pelo dicionário revelando a distribuição real das senhas humanas:</p>
+<strong>RockYou (2009)</strong> Um desenvolvedor tinha armazenado 14,3 milhões de senhas em linguagem simples.
+<ul>
+<li>Senha #1 ("123456") representou 290.731 contas (2%)</li>
+</ul>
+<li>As primeiras 10 senhas cobriram ~5% das contas</li>
+<li>Primeiro 1.000: ~20% das contas</li>
+<li>A distribuição segue uma lei de poder — confirmando que os humanos "pensam o mesmo"</li>
+<strong>LinkedIn (2012)</strong> — 6,5 milhões de SHA-1 não salgados.
+<strong>Adobe (2013)</strong> — 153 milhões de contas.
+<strong>Fui enganado (2013–presente)</strong> - Agregação progressiva de fugas públicas, permitindo que Troy Hunt crie uma base de referência usada em todo o mundo.
+<h3>2.3 Benchmarks de referência para o ataque do dicionário</h3>
+<p>Uma lista de 200.000 entradas testadas à velocidade de um RTX 4090:</p>
+AlgoritmoVelocidadeTempo para 200k candidatos
+----------------------------------------
+MD5168,9 GH/s~1,2 nanosegundo
+SHA-150,86 GH/s~3,9 nanossegundos
+SHA-25622.68 GH/s~8,8 nanossegundos
+NTLM288,5 GH/s~ 0,7 nanosegundo
+bcrypt (custo 5)184 kH/s~ 1,09 segundo
+Argon2id~67 H/s~50 minutos
+<p>O ataque do dicionário é, portanto, quase instantâneo para MD5, SHA-1 e NTLM — e permanece muito rápido mesmo para bcrypt em pequenas listas.</p>
+<hr>
+<h2>3. Fundamentos conceituais: por que os dicionários trabalham</h2>
+<h3>3.1 A Lei do Poder das Senhas Humanas</h3>
+<p>Todos os estudos empíricos convergem para a mesma observação: a distribuição de senhas humanas não é uniforme — segue-se a <strong>lei do poder</strong> Algumas senhas concentram uma fração desproporcionada de escolhas.</p>
+<strong>Formalmente</strong> : se todas as senhas são classificadas por frequência decrescente, a frequência da senha de classificação <em>r</em> é proporcional a <em>r^(-α)</em> com <em>α 1,5 a 2</em> De acordo com o corpus.
+<p>Consequência directa: <strong>10 senhas mais comuns</strong> Um atacante que testa apenas 10 candidatos já tem uma chance em 20 de ter sucesso — estatisticamente, é enorme para a quantidade de ruído gerado.</p>
+<h3>3.2 Bias Cognitivas na Criação de Senhas</h3>
+<p>Os humanos não escolhem ao acaso. Eles sistematicamente aplicam heurísticas que tornam suas senhas previsíveis:</p>
+<li><strong>Bias de memória</strong> : as palavras fáceis de lembrar (nomes comuns, nomes próprios, termos da cultura popular) são sobre-representadas</li>
+<li><strong>Bias de Disponibilidade</strong> A senha reflete o ambiente imediato (nome do animal doméstico, equipe esportiva, caráter serial)</li>
+<li><strong>Vieses de substituição previsíveis</strong> : "e" → "3", "a" → "@", "o" → "0" — o usuário acredita que a senha seja forte, mas essas substituições são exatamente as primeiras que o atacante tenta fazer</li>
+<li><strong>Bia completa</strong> : adição de um número ou símbolo no final de uma palavra (senha 1, sol!)</li>
+<li><strong>Vieses culturais</strong> As senhas comuns estão ligadas ao idioma e cultura do usuário ("Soleil123" na França, "Sommer123" na Alemanha)</li>
+<h3>3.3 O conceito de "senha já nas listas"</h3>
+<p>Uma senha pode estar em uma lista de ataque por duas razões diferentes:</p>
+<strong>Razão 1 — Ele está no HIBP</strong> A credencial exata foi comprometida em um vazamento passado. O atacante não precisa adivinhar — testa as credenciais conhecidas uma a uma, por ordem de frequência. Se o servidor alvo aceitar a credencial, ela estará terminada.
+<strong>Razão 2 — Está numa lista linguística</strong> A senha é uma palavra comum do vocabulário comum. Mesmo que nunca tenha fugido, está em todas as listas de palavras de ataque porque é um candidato óbvio. "Paillon" pode não estar no HiBP, mas está na lista de palavras francesa de qualquer ferramenta de craqueamento grave.
+<p>Estes dois casos correspondem a ataques de natureza diferente, com velocidades diferentes — e isto é precisamente o que modelos Time2Crack.</p>
+<hr>
+<h2>4. Arquitetura de um moderno ataque dicionário</h2>
+<h3>4.1 Oleoduto geral</h3>
+<p>Um moderno ataque dicionário ocorre em várias fases:</p>
+<pre><code class="language-plaintext">Phase 1 : Constitution de la wordlist
+    ├── Mots de passe fuités (HIBP, RockYou, Collections)
+    ├── Wordlists linguistiques (dictionnaires, prénoms, lieux)
+    ├── Wordlists thématiques (sport, pop culture, tech, religion)
+    └── Wordlists contextuelles (domaine de l'entreprise cible, noms d'employés)
+<p>Fase 2: Pré-processamento da Lista de Palavras
+- Ordenar por frequência (o mais provável primeiro)
+- Deduplicação (não duas vezes o mesmo candidato)
+- Filtragem de comprimento (comprimento alvo + ±2)
+- Normalização (inferior, Unicode NFC)</p>
+<p>Fase 3: Cálculo dos hashs candidatos
+Para cada candidato w na lista de palavras:
+• hash<em>candidato = hash</em>Algo(w)
+Promocional se hash<em>candidato == hash</em>Alvo: Encontrado
+- Velocidade: 168 GH/s para MD5 em RTX 4090</p>
+<p>Fase 4: Análise dos resultados
+Relatório de senhas rachadas, estatísticas de cobertura</p></code></pre>
+<h3>4.2 Otimização de hardware</h3>
+<p>Os ataques de dicionário modernos são massivamente paralelos na GPU:</p>
+<li><strong>Hashcat</strong> (ferramenta de referência): explora os núcleos CUDA da GPU para paralelizar bilhões de computação simultânea de hash</li>
+<li><strong>Pipeline Vector</strong> : em um RTX 4090, uma única instrução SIMD calcula 8 a 16 hashs MD5 em paralelo</li>
+<li><strong>Cache de GPU</strong> : a lista de palavras é carregada em VRAM para minimizar a latência da memória</li>
+<li><strong>Batting</strong> : os candidatos são enviados para a GPU em lotes de milhões para maximizar o fluxo</li>
+<p>Para uma lista de palavras de 14 bilhões de entradas (tamanho HIBP) em 12× RTX 4090:
+</p><li>MD5 : 14e9 / (168,9e9 × 12) <strong>6.9 segundos</strong></li>
+<li>custo de bcrypt 5 : 14e9 / (184000 × 12) <strong>6.337 anos</strong></li><p></p>
+<p>Esta diferença de ~9 ordens de magnitude entre MD5 e bcrypt explica porque a escolha do algoritmo de hash é crítica.</p>
+<h3>4.3 Ordem de ensaio dos candidatos</h3>
+<p>A lista de palavras não é testada em ordem alfabética — é <strong>ordenado por probabilidade decrescente</strong> :</p>
+<li>As senhas de escape mais comuns (RockYou top 100)</li>
+<li>Senhas comuns multi-fault (lista de prioridades HIBP)</li>
+<li>Palavras comuns da língua alvo</li>
+<li>Nomes próprios (primeiros nomes, cidades, celebridades)</li>
+<li>Termos temáticos relacionados com o objectivo</li>
+<li>Variações e conjugação</li>
+<p>Este tipo garante que se a senha for "baixa", ela será encontrada nos primeiros milissegundos — seja qual for a velocidade do hash.</p>
+<hr>
+<h2>5. O corpus de senhas reais</h2>
+<h3>5. 1 Fui enganado (HIBP)</h3>
+<strong>Tamanho</strong> ~14 bilhões de senhas únicas (2024)
+<strong>Origem</strong> : agregação de vazamentos públicos desde 2013
+<strong>Formato</strong> : SHA-1 ordenado por frequência de aparência
+<strong>Acesso público</strong> : k- anonimato API, hash download completo disponível para defensores
+<p>HiBP é a referência global porque:
+</p><li>Abrange quase todas as principais fugas públicas</li>
+<li>Os hashs são ordenados por frequência — as senhas mais comuns são testadas primeiro</li>
+<li>É mantido ativamente (novos vazamentos adicionados continuamente)</li><p></p>
+<p>Um atacante com a descarga completa HIBP pode primeiro testar os ~14 bilhões de candidatos em ordem decrescente de frequência. Para algoritmos não saldados (MD5, SHA-1), esta lista cobre a ordem de 50-70% de todas as senhas online reais.</p>
+<h3>5.2 RockYou (2009) — Corpo fundador</h3>
+<strong>Tamanho</strong> : 14,3 milhões de senhas claras
+<strong>Características-chave</strong> :
+PosiçãoSenhaOcorrências% de corpus
+----------------------------------------------------
+1123456290 7312,03%
+21234579 0780,55%
+312345678976 7900,54%
+4senha59 4620,42%
+5Adoro-te.49 9520,35%
+Top 10—~650.000~4,5%
+Top 100—~1 200 000~ 8,4%
+Top 1000—~2 500 000~17,5%
+Top 10.000—~4 500 000~31,5%
+<strong>Educação</strong> Teste apenas 10.000 candidatos (100 μs velocidade MD5) compromete ~31% de uma base de dados de contas protegidas MD5.
+<h3>5.3 Colecções de listas de palavras especializadas</h3>
+<strong>SecListas</strong> (Daniel Miessler): coleção de código aberto de ~ 4 GB wordlists cobrindo:
+<li>Senhas (RockYou, senhas de topo várias fugas)</li>
+<li>Utilização actual</li>
+<li>Senhas ordenadas por idioma</li>
+<li>Termos técnicos, nomes de produtos, celebridades</li>
+<strong>Kaonashi</strong> : 1.3 bilhões de entradas wordlist compilado desde vazamentos públicos
+<strong>Crackstation</strong> : 1.5 bilhões de entradas, incluindo palavras de todos os dicionários da Wikipédia em vários idiomas
+<strong>Fracopass</strong> : agregação de ~8 bilhões de entradas de senha reais
+<p>Esses corpus podem ser baixados publicamente — sua existência é um fato estabelecido de segurança ofensiva.</p>
+<hr>
+<h2>6. K-Anonymity verificação HIBP: Um ataque em tempo real</h2>
+<h3>6.1 Protocolo k- anonimato</h3>
+<p>Time2Crack incorpora uma verificação HIBP em tempo real que reproduz exatamente o que um atacante faria com o banco de dados HIBP — mas nunca transmite a senha em linguagem simples ou seu hash completo.</p>
+<p>O protocolo k-anonymity funciona da seguinte forma:</p>
+<pre><code class="language-plaintext">1. Calculer SHA-1(password)      → par exemple "CBFDAC6008F9CAB4083784CBD1874F76618D2A97"
+<li>Envie apenas os primeiros 5 caracteres para a API HIBP: "CBFDA"</li>
+<li>A API retorna TODOS os sufixos SHA-1 começando com "CBFDA" (aproximadamente 400-600 hashes)</li>
+<li>Procure localmente se o resto do hash ("C6008F9CAB4083784CBD1874F7618D2A97") está na lista</li>
+<li>Se encontrado: senha foi comprometida (HIBP também retorna o número de vazamentos)</li></code></pre>
+<strong>Garantia da confidencialidade</strong> O servidor HIBP nunca vê o hash completo (por isso não consegue identificar a senha), muito menos a senha clara. O cálculo final é feito localmente.
+<strong>O que isto significa para o ataque</strong> : se o HIBP retorna uma correspondência com uma contagem elevada (por exemplo, 9.547.236 aparições para "123456"), isso significa que um atacante com o banco de dados do HIBP testando esta credencial iria encontrá-lo em uma posição muito alta em sua lista ordenada por frequência - em uma fração de nanossegundos.
+<h3>6.2 Implementação no Time2Crack (app.js)</h3>
+<p>A verificação HIBP é assíncrona e não bloqueada. A senha é imediatamente analisada por métodos locais, e a verificação HIBP completa o resultado:</p>
+<pre><code class="language-javascript">// Pseudo-code simplifié
+async function checkHIBP(password) {
+  const sha1 = await sha1Hash(password);
+  const prefix = sha1.substring(0, 5);   // 5 premiers chars
+  const suffix = sha1.substring(5);       // reste du hash
+<p>resposta const = aguarde buscar(
+    <code>https://api.pwnedpasswords.com/range/${prefix}</code>
+  );
+linhas const = aguarde response.text();</p>
+<p>para (linha contínua de linhas. split('\n')) {
+const [hashSufixo, contagem] = line.split(':');
+se (hashSuffix.toLowerCase() = suffix.toLowerCase() {
+retornar parseInt( contagem); // número de vazamentos
+}
+}
+retorno 0; // não encontrado
+}</p></code></pre>
+<strong>Dados de desempenho HIBP</strong> :
+<li>Latência típica da API: 50–200 ms (rede)</li>
+<li>Volume de sufixos retornados: ~400–600 por consulta</li>
+<li>Falso positivo: 0 (SHA-1 é determinístico)</li>
+<li>Falso negativo: 0 (se no HiBP, sempre devolvido)</li>
+<h3>6.3 Interpretação da contagem HIBP</h3>
+<p>A contagem retornada pelo HiBP indica o número de vezes que esta senha exata apareceu em vazamentos indexados:</p>
+ContagemInterpretaçãoTempo de fissuração (MD5, 12× RTX 4090)
+-----------------------------------------------------------------------------
+&gt; 1 000 000Top 100 Mundo&lt; 1 nanosegundo
+10.000–1.000.000Muito frequentes&lt; 10 nanossegundos
+1 000–10 000Frequentes&lt; 100 nanossegundos
+100–1.000Pouco frequentes, mas conhecidos&lt; 1 microssegundo
+1–100Raros mas comprometidos&lt; 10 microssegundos
+<p>Mesmo uma contagem de 1 (a senha apareceu apenas uma vez em um vazamento) indica uma vulnerabilidade: se um atacante ataca esta conta especificamente e tem a lista de credenciais do vazamento em questão, ele vai encontrá-lo.</p>
+<hr>
+<h2>7. Time2Crack Language Wordlists</h2>
+<h3>7.1 Por que as listas de palavras linguísticas para além do HIBP</h3>
+<p>O HiBP cobre as credenciais exatas de compromisso — mas não as palavras comuns nunca fogem ainda. Um usuário francófono que escolhe "efémero" como uma senha pode não estar no HiBP (a palavra é improvável em credenciais anglophone), mas está na lista de palavras francesa de qualquer atacante que se desloque em um sistema francófono.</p>
+<p>Os wordlists da linguagem Time2Crack cobrem esta lacuna:</p>
+LínguaOrigemTamanho estimado
+----------------------------------
+InglêsSecListas Wikipedia PT~200,000 entradas
+Francês (fr)SecListas Wikipedia PT~150,000 entradas
+EspanholSecListas Wikipedia ES~150,000 entradas
+Português (pt)SecListas Wikipedia PT~ 120 000 entradas
+AlemãoSeclistas Wikipedia DE~ 180.000 entradas
+Turco (tr)SecListas Wikipédia TR~100,000 entradas
+Italiano (i)kkrypt0nn~100,000 entradas
+Polaco (pl)kkrypt0nn~80 000 entradas
+Países Baixos (nl)kkrypt0nn~80 000 entradas
+<strong>Filtragem aplicada</strong> Apenas palavras com ≥ 4 caracteres são retidas (os 1-3 caracteres são muito curtos para ser uma senha realista, e sua inclusão iria inflar a lista sem valor acrescentado).
+<h3>7.2 Carregamento preguiçoso</h3>
+<p>Listas de palavras não estão incluídas no código – são carregadas a pedido ao mudar de idioma, para atender ao orçamento da rede:</p>
+<pre><code class="language-javascript">// app.js - loadDictionary()
+async function loadDictionary(lang) {
+  if (DICT<em>lang &amp; DICT</em>WORDS) return;  // Déjà chargé
+  if (DICT<em>LUGAR) {
+DICT</em>PENDING<em>LANG = lang; // Arquivo de espera
+Retorno;
+}
+DICT</em>LOADING = true;
+<p>const res = aguarde a busca(<code>data/wordlists/${lang}.txt</code>);
+const text = aguarde res.text();</p>
+<p>// Converter para Set&lt;string&gt; para pesquisa O(1)
+DICT<em>MENÇÃO = novo conjunto (
+text.split("\n")
+.map( w =&gt; w.normalize("NFC").trim().toLowerCase()
+.filtro(w =&gt; w.comprimento &gt;= 4)
+);
+DICT</em>LANG = Lang;
+DICT<em>CARGAMENTO = falso;
+}</em></p></code></pre>
+<strong>Porquê? <code>Set</code> ?</strong> Estrutura <code>Set</code> JavaScript garante O(1) buscas — independentemente do tamanho do dicionário (50.000 ou 200.000 entradas), verificação <code>DICTWORDS.has(word)</code> leva o mesmo tempo constante. <code>Array</code> Seria necessário O(n) por exame, ou seja, até 200.000 comparações por verificação.
+<h3>Carregando fila</h3>
+<p>A <code>DICT<em>PEDIDOS</em>LANG</code> evita as condições raciais durante as rápidas alterações linguísticas:</p>
+<pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE
+├── EN demandé : DICT<em>CARGA = false → start of the fetch PT
+FR solicitado durante a recolha PT : DICT</em>LOADING = true → DICT<em>PEDIDOS</em>LANG = "fr"
+├── DE demandé pendant fetch EN : DICT<em>CARGO = true → DICT</em>PENDING<em>LANG = "de" (crash "fr")
+- Buscar Terminas: DICT</em>LANG = "en", puis lance loadDictionary("de")
+└── Résultat : seule la dernière langue demandée est chargée</code></pre>
+<p>Este comportamento é intencional: o idioma mais recentemente solicitado é carregado, não todas as línguas intermediárias.</p>
+<hr>
+<h2>8. Dictionary Detection in Time2Crack: <code>isDictWord()</code></h2>
+<h3>8.1. Operação de detecção</h3>
+<p>A função <code>isDictWord(pw)</code> determina se uma senha é ou é derivada de uma palavra do dicionário atual:</p>
+<pre><code class="language-javascript">// app.js - ligne 2181
+function isDictWord(pw) {
+  if (!DICT<em>Retorne falso;
+<p>// Normalização: NFC + Minúsculas
+const l = pw. normalize ("NFC").toLowerCase();</p>
+<p>// Verificação direta
+se (DICT)</p></em>WORDS.has(l) || DICT<em>WORDS.has(deLeet(pw)) retorna true;
+<p>// Variações morfológicas
+const deleetWord = deLeet( pw);
+variações const = getMorphVariations(deletWord);</p>
+<p>(variação constante das variações) {
+se (DICT)</p></em>WORDS.has(variation)) return true;
+  }
+<p>Retorno falso;
+}</p></code></pre>
+<strong>Linha de detecção de 3 camadas</strong> :
+<li><strong>Correspondente directa</strong> : A senha padrão está no dicionário?</li>
+<li>"sol" → hit directo</li>
+<li>"SOLEIL" → padrão em "sol" → hit</li>
+<li><strong>Correspondência pós-saída</strong> : A senha contém padrão deixar substituições?</li>
+<li>"s0l3il" → deLeet → "sol" → hit</li>
+<li>"p@ssw0rd" → deLeet → "senha" → hit</li>
+<li><strong>Variações morfológicas</strong> : é a senha uma variante morfológica conhecida?</li>
+<li>"sol" → variação plural de "sol" → hit</li>
+<li>"senhas" → variação de "senha" → bater</li>
+<h3>8.2 Normalização Unicode (NFC)</h3>
+<p>Normalização <code>normalize("NFC")</code> assegura que os caracteres acentuados sejam tratados de forma consistente:
+</p><li>"e" pode ser representado no Unicode como um código de ponto único (U+00E9) ou como "e" + acento de combinação (U+0065 + U+0301)</li>
+<li>Sem padronização, "café" e "café" (codificações diferentes) não corresponderiam</li><p></p>
+<p>Essa padronização é aplicada tanto na criação do dicionário quanto na verificação – garantindo correspondência correta para linguagens de sotaque (FR, ES, DE, PT, etc.).</p>
+<h3>8.3 Impacto na vulnerabilidade detectada</h3>
+<p>Quando <code>isDictWord()</code> Para trás. <code>true</code>São aplicáveis vários ataques:
+</p><li><strong>Ataque do dicionário</strong> auto: pontuação de confiança 0,85 (vs 0 se ausente)</li>
+<li><strong>Ataque híbrido</strong> : <code>hybridVuln = true</code> → 1000 mutações testadas com base em dicionário</li>
+<li><strong>Ataque PCFG</strong> : aumento da pontuação de confiança (base lexical detectada)</li>
+<li><strong>Ataque morfológico</strong> : alta prioridade se variante morfológica detectada</li><p></p>
+<hr>
+<h2>9. Desleetificação: como o atacante decodifica substituições</h2>
+<h3>9.1 Leetspeak e suas limitações como proteção</h3>
+<p>O leetspeak é uma prática de substituir letras por números ou símbolos visualmente semelhantes: <code>a→@</code>, <code>e→3</code>, <code>i→1</code> ou <code>!</code>, <code>o→0</code>, <code>s→$</code>. Usuários usam-no para "fortalecer" palavras comuns.</p>
+<strong>Exemplo</strong> : "senha" → "p@$$w0rd"
+<p>A realidade: estas substituições são <strong>as primeiras regras aplicadas</strong> em qualquer ataque de dicionário com regras de mutação. Eles não constituem uma defesa real contra um atacante competente.</p>
+<h3>9.2 Execução <code>deLeet()</code> no tempo2Crack</h3>
+<pre><code class="language-javascript">// app.js - ligne 3622
+const LEET<em>BASE = {
+a: ["@", "4"];
+e: ["3"],
+o: ["0"],
+s: ["$", "5"],
+t: ["+", "7"],
+h: ["#"],
+g: ["9"],
+};
+<p>função deLeetWith( pw, oneMap) {
+deixe r = pw.normalize("NFC").toLowerCase();
+para (const [ch, reps] de Object.entries(LEET)</p></em>BASE))
+    for (const c of reps) r = r.split(c).join(ch);
+  // Appliquer la résolution ambiguë (i ou l) en dernier
+  for (const [ch, reps] of Object.entries(oneMap))
+    for (const c of reps) r = r.split(c).join(ch);
+  return r;
+}
+<p>função deLeet(pw) {
+// Ambiguidade: "1" pode ser "i" ou "l"
+const withI = deLeetWith(pw, { i: "1!", l: "" });
+const withL = deLeetWith(pw, { l: "1, i: "!" });</p>
+<p>// Se o dicionário for carregado, prefira a variante que corresponde
+se (DICT)<em>MENÇÃO
+se (DICT)</em>WORDS. tem (com L) retorno com L;
+se (DICT)<em>WORDS. tem(comI) retorno comI;
+}</em></p>
+<p>// Caso contrário: prefira a variante com os números menos restantes
+const digestsI = (comI.match(/\d/g)
+const digestsL = (comL.match(/\d/g)
+dígito de retorno L &lt;= dígito I ? comL: comI;
+}</p></code></pre>
+<h3>9.3 Gestão da ambiguidade "1" → "i" ou "l"</h3>
+<p>A substituição "1" é ambígua: "1" pode representar "i" (como em "1nfo" → "info") ou "l" (como em "p1ayer" → "player").</p>
+<li>Testando ambas as variantes ("comI" e "comL")</li>
+<li>Se o dicionário for carregado, preferindo a variante que dá uma correspondência de dicionário</li>
+<li>Sem um dicionário, preferindo a variante que deixa o menor número residual (assunção: a desleetificação completa é mais provável)</li>
+<strong>Exemplo</strong> :
+<li>"b1ue" → comI = "biue" (não em dict), comL = "blue" (em dict) → retorna "blue"</li>
+<li>"f1le" → comI = "file" (em dict), comL = "flle" (não em dict) → retorna "file"</li>
+<h3>9.4 Substituições não abrangidas (intencionalmente)</h3>
+<p>Time2Crack não cobre substituições raras ou ambíguas para além dos padrões LEETBASE. É uma escolha de design: cobrir muitos casos aumentaria os falsos positivos (detectando uma senha como uma "palavra atual" enquanto não é). Os padrões incluídos cobrem &gt; 95% das leetificações reais observadas no corpus.</p>
+<hr>
+<h2>10. Cálculo do tempo de fissuração: <code>addDictionaryAttacks()</code></h2>
+<h3>Lógica de cálculo</h3>
+<pre><code class="language-javascript">// app.js - ligne 3848
+function addDictionaryAttacks(rows, common, weak, dictWord) {
+  for (const a of ALGOS) {
+    let sec;
+    if (weak)     sec = 100 / a.rate;     // Top ~100 entrées
+    else if (common) sec = 10000 / a.rate; // HIBP priority list ~10k
+    else if (dictWord) sec = 200000 / a.rate; // Scan wordlist complète ~200k mots
+    else sec = null;                        // Non applicable
+<p>const note = ? t("nWeakPassword")
+: comum ? t("nInLeaks")
+: dictWord ? t(nDictHit)
+: t(nAbsentLeaks);</p>
+<p>rows.push({ atk: t("aDict"), hash: a.name, baço: a.rate, sec, nota, cat: "dict" });
+}
+}</p></code></pre>
+<h3>10.2 Três níveis de vulnerabilidade</h3>
+<strong>Nível 1 — Ultrafraco</strong> (<code>weak = true</code>) : ~100 / baço
+A senha está no Top 100 do mundo ("senha", "123456", "qwerty"...). Um atacante testando estes 100 candidatos prioritários encontra-o na primeira passagem. Para MD5: 100 / 168.9e9 <strong>0,6 nanossegundo</strong>.
+<strong>Nível 2 — Comum</strong> (<code>common = true</code>) : ~10 000 / baço
+A senha está na lista de referência HIBP das senhas ~10.000 mais frequentes. Estes candidatos são testados nos primeiros microssegundos. Para MD5: 10.000 / 168,9e9 <strong>59 nanossegundos</strong>.
+<strong>Nível 3 — DictWord</strong> (<code>dictWord = true</code>) : ~200.000 / baço
+A senha é uma palavra do dicionário de idiomas atual (lista de palavras local ~50k–200k entradas). Uma verificação completa da lista de palavras é quase instantânea para algoritmos rápidos. Para MD5: 200 000 / 168,9e9 <strong>1.18 microsegundo</strong>.
+<strong>Nível 4 — Não aplicável</strong> (<code>sec = null</code>) : a senha não é nem ultra-fraca, nem comum, nem uma palavra do dicionário atual. O ataque do dicionário sozinho não é aplicável — outros ataques (força bruta, Markov, PCFG) tornar-se a principal ameaça.
+<h3>10.3 Por que estes números (100, 10.000, 200.000)?</h3>
+<p>Estes valores são calibrados para dados reais:</p>
+<li><strong>100</strong> As primeiras senhas 100 RockYou representam ~10% do corpus. Todas as ferramentas sérias as testam como prioridade.</li>
+<li><strong>10 000</strong> : HiBP classifica seus ~14 bilhões de entradas por frequência. Os 10 mil tops cobrem cerca de 30–40% das senhas reais em uso. Qualquer atacante competente começa com este subconjunto.</li>
+<li><strong>200 000</strong> : tamanho típico de uma lista de palavras completa da linguagem após a filtragem. Isto é suficiente para cobrir o vocabulário atual de uma língua sem exceder a capacidade de carga razoável na memória.</li>
+<strong>Referência</strong> Weir et al. (2009) mostram que palavras de dicionário são encontradas nas primeiras 200.000 tentativas de ataque bem ordenado. Ur et al. (2012) confirmam que senhas comuns são encontradas nas primeiras 10.000 tentativas.
+<h3>10.4 Exemplo numérico completo</h3>
+<p>Para a senha "sol" (palavra francesa atual, detectada como <code>dictWord</code>) :</p>
+AlgoritmoVelocidade (12× RTX 4090)FórmulaTempo
+-------------------------------------------------------
+NTLM3,462 GH/s200 000 / 3 462e9<strong>57,8 picosegundos</strong>
+MD52 027 GH/s200 000 / 2 027e9<strong>98,7 picosegundos</strong>
+SHA-1610 GH/s200 000 / 610e9<strong>327.9 segundos</strong>
+SHA-256272 GH/s200 000 / 272e9<strong>735 picosegundos</strong>
+bcrypt (custo 5)2.2 MH/s200 000 / 2 200 000<strong>90,9 milissegundos</strong>
+Argon2id800 H/s200 000 / 800<strong>250 segundos</strong>
+<p>Mesmo para Argon2id, 250 segundos são menos de 5 minutos — para uma simples palavra do dicionário francês.</p>
+<hr>
+<h2>11. Calibração de alta fidelidade: <code>applyHighFidelityCalibration()</code></h2>
+<h3>11.1 Por que a calibração adicional?</h3>
+<p>O cálculo bruto <code>addDictionaryAttacks()</code> dá uma estimativa do "pior caso" — como se o atacante estivesse testando toda a lista de palavras uniformemente. <strong>ordenado por probabilidade</strong> : as senhas mais comuns chegam primeiro.</p>
+<p>Calibração de alta fidelidade aplica um multiplicador corretivo baseado em observações empíricas:</p>
+<pre><code class="language-javascript">// app.js - ligne 4442
+case "dict":
+  // Ur et al. 2012 : mots communs trouvés dans les 100-10k premiers essais
+  // Weir 2009 : mots dict trouvés dans les 200k premiers essais (scan ordonné)
+  m <em>= contexto.comum ? 0.15: contexto.dictWord ? 0.5: 1.0;
+Quebrar;</em></code></pre>
+<strong>Multiplicador <code>common</code> (0.15)</strong> : se a senha está na lista de prioridades comuns, ela é encontrada em média no percentil 15 da lista — ou seja, ~1.500 testes dos 10.000 listados. O tempo é multiplicado por 0,15 → 6,7× mais rápido do que o exame uniforme.
+<strong>Multiplicador <code>dictWord</code> (0,5)</strong> : uma palavra comum dicionário é encontrado em média meio-termo de uma lista bem ordenada. Multiplicador 0.5 → 2× mais rápido do que o exame uniforme.
+<h3>11.2 Fontes Acadêmicas de Calibração</h3>
+<li><strong>Ur et al. (2012)</strong> — Como se mede sua senha?<em> (USENIX Security): análise da distribuição de senhas no corpus real. Palavras comuns: encontradas nos primeiros 10.000 ensaios para 95% dos casos.</em></li>
+<li><strong>Weir et al. (2009)</strong> — Quebra de senhas usando Gramática Probabilística Livre de Contexto<em> (IEEE S&amp;P): Palavras de dicionário puras são encontradas nas primeiras 200.000 tentativas de um ataque ordenado.</em></li>
+<hr>
+<h2>12. Probabilidade de aplicabilidade e escore de confiança</h2>
+<h3>12.1 Sistema de pontuação</h3>
+<p>Time2Crack não apenas calcula um tempo — ele também avalia a probabilidade de que o ataque do dicionário seja realmente o ataque mais rápido, através de um sistema de pontuação multifator:</p>
+<pre><code class="language-javascript">// Score d'applicabilité (0-1)
+case "dict":
+  return context.common ? 0.99 : context.dictWord ? 0.85 : 0;</code></pre>
+<li><strong>0, 99</strong> se <code>common</code> A senha está no HIBP → o ataque do dicionário aplica-se com máxima confiança.</li>
+<li><strong>0,85</strong> se <code>dictWord</code> Apenas: alta probabilidade. Uma palavra do dicionário é vulnerável, mas um atacante deve ter a lista de palavras linguísticas correta.</li>
+<li><strong>0</strong> Caso contrário: o ataque do dicionário não se aplica (nenhuma vulnerabilidade lexical detectada).</li>
+<h3>12.2 Escore de evidência</h3>
+<p>Paralelamente ao escore de aplicabilidade, um escore de "prova" registra os sinais observados:</p>
+<pre><code class="language-javascript">case "dict":
+  return Number(!!context.common) + Number(!!context.dictWord);
+  // 0 : aucun signal
+  // 1 : un signal (common OU dictWord)
+  // 2 : deux signaux (common ET dictWord)</code></pre>
+<p>Uma pontuação de evidência de 2 (palavra tanto no HIBP quanto no dicionário linguístico) aumenta a confiança final de 0,08 (2 × 0,04).</p>
+<h3>12.3 Pontuação de Confiança Final</h3>
+<pre><code class="language-javascript">const base = confidenceBase["dict"] || 0.6;  // confiance de base
+const evidenceBoost = Math.min(0.12, row.evidenceScore  0.04);
+const speculativePenalty = speculativeCats.has("dict") ? 0.08 : 0;  // dict n'est pas spéculatif
+<p>row.confidence = Math.max(0, Math.min(1,
+Math.max(aplicabilidade, base) + evidênciaBoost - específicaPenalidade
+));</p></code></pre>
+<p>Para uma senha <code>common</code> com <code>dictWord</code> também detectado:
+</p><li><code>applicability = 0.99</code></li>
+<li><code>evidenceBoost = min(0.12, 2 × 0.04) = 0.08</code></li>
+<li><code>confidence = min(1, max(0.99, 0.6) + 0.08) = min(1, 1.07) = 1.0</code></li><p></p>
+<p>Máxima confiança: O ataque do dicionário é o ataque primário sem ambiguidades.</p>
+<hr>
+<h2>13. Bloom filter RockYou: detecção local de senhas generalizadas</h2>
+<h3>13.1 Contexto</h3>
+<p>Para além da verificação HIBP (que requer uma chamada de rede), a Time2Crack incorpora uma <strong>filtro de flores</strong> Um filtro de flores é uma estrutura de dados probabilística que permite testar pertencendo a um conjunto com uma probabilidade de falsos positivos (~1%), sem armazenar os próprios elementos.</p>
+<h3>13.2 Benefícios do filtro de flores</h3>
+CritériosHIBP k- anonimatoFiltro Bloom local
+--------------------------------------------------------------
+Cobertura~14 bilhões~ 14 milhões (RockYou)
+Latência50–200 ms (rede)&lt; 1 ms (local)
+Confidencialidadek- anonimato (5 tanques SHA-1)100% local, nada transmitido
+Falso positivo0%~1%
+TamanhoAPI~2–5 MB (binário do filtro de brilho)
+<h3>13.3 Operação de dupla apreensão</h3>
+<pre><code class="language-javascript">// app.js - ligne 1962
+function bloomHas(filter, word) {
+  if (!filter) return false;
+  const { bitArray, m, k } = filter;
+  const w = word.toLowerCase();
+<p>// Dupla-hashing: h1 e h2 são duas funções de hash independentes
+const h1 = fnv1a32(w, 2166136261); // FNV1a com sementes padrão
+const h2 = fnv1a32(w, 0x811c9dc5); // FNV1a com sementes alternativas</p>
+<p>para (vamos i = 0; i &lt; k; i++) {
+const pos = (h1 + (i) <em> (h2) &gt;&gt; (0)) % m; // k posições no array de bits
+const byteIdx = Math.floor(pos / 8);
+const bitIdx = pos % 8;</em></p>
+<p>// Se um pouco for 0: a palavra está definitivamente ausente
+se ((bitArray[byteIdx] &amp; (1 &lt; &lt; bitIdx)) = 0) retornar false;
+}
+// Todos os bits estão em 1 : a palavra está provavelmente presente (com 1% de FP)
+Retorno verdadeiro;
+}</p></code></pre>
+<p>O duplo hashing FNV1a garante uma distribuição uniforme de posições na matriz de bits, minimizando colisões e mantendo a taxa de falsos positivos perto de 1%.</p>
+<h3>13.4 Carregamento e formato binário</h3>
+<p>O filtro flor é armazenado em <code>data/rockyou.bloom</code> — um ficheiro binário com:
+</p><li><strong>Cabeçalho</strong> (20 bytes): número mágico (0x424c4f4f = "BLOO"), versão, m (tamanho do array de bits), k (número de funções de hash), n (número de elementos)</li>
+<li><strong>Carga útil</strong> : bit array (m/8 bytes)</li><p></p>
+<p>A carga é acionada manualmente pelo usuário (botão na UI), não automaticamente no carregamento da página — para preservar o desempenho inicial.</p>
+<hr>
+<h2>14. Comparação com ataques derivados</h2>
+<p>O ataque do dicionário "puro" é o primeiro de uma família de ataques que todos compartilham uma raiz comum: uma lista de palavras lexicais. Time2Crack implementa 7 modelos de cracking offline (força bruta, dicionário, híbrido, máscara, PCFG, Markov, combinador), cada um atacando a senha de um ângulo diferente.</p>
+<h3>14,1 Dicionário vs Híbrido</h3>
+CritériosDicionárioHíbrido (dict+regras)
+------------------------------------------------
+CandidatosPalavras do dicionário comoPalavras + ~1000 mutações por palavra
+Espaço de teclas200.000 candidatos~200 milhões de candidatos
+Exemplos triturados"senha", "sol""P@ssw0rd!", "s0l3il2024"
+Velocidade relativa1000× mais rápidoCobertura muito mais ampla
+Aplicável sepalavra exata na listaSenha derivada de uma palavra dita
+<p>O ataque híbrido começa onde o dicionário puro pára: leva cada palavra da lista de palavras e aplica regras sistemáticas de mutação (hashcat "melhor64.rule" em mente).</p>
+<h3>14,2 Dicionário vs PCFG</h3>
+CritériosDicionárioPCFG
+---------------------------------
+ModeloLista fixa dos candidatosGramática da estrutura probabilística
+ForçarPalavras precisasEstruturas Word+Digits, Cap+lower+sym
+Exemplo"senha" → 文"Password123" → 文 (detetado na estrutura)
+Coberturavocabulário conhecidoEstruturas humanas genéricas
+<p>Uma senha como "Password123" pode passar despercebida em um dicionário (a palavra exata "Password123" pode não estar listada), mas será rachada muito rapidamente pelo PCFG que reconhece a estrutura [Majuscule][minuscules][digites].</p>
+<h3>14.3 Dicionário vs Markov</h3>
+CritériosDicionárioMarkov
+-----------------------------------
+CandidatosLista pré-compiladaMosca gerada por modelo estatístico
+Coberturavocabulário conhecidoQualquer provável sequência "humana"
+VantagemMuito rápido em palavras exatasCobre palavras de vocabulário desconhecidas
+Exemplo"Sunshine" → 文"sunsh1ne" potencialmente
+<p>Markov cobre casos em que a senha parece uma palavra humana sem estar em nenhuma lista.</p>
+<h3>14.4 Dicionário vs Recheio Credencial</h3>
+CritériosDicionárioRecheio Credencial
+-----------------------------------------------
+ObjectivoQuebrando um haxixeTestar uma autenticação específica
+MecanismoComputação local do HashTentativas de ligação remota
+OrigemLista de Palavras GenéricasEmparelhar as fugas de login/senha
+DefesaAlgoritmo de hash forteLimitação de taxa, MFA, bloqueio de IP
+<p>O recheio credencial não ataca um hash — ele tenta diretamente pares de login/password em serviços remotos. É conceitualmente diferente de cracking, mas compartilha a mesma fonte de dados (HIBP/fail).</p>
+<hr>
+<h2>15. Limitações do dicionário de ataque</h2>
+<h3>15.1 Limites intrínsecos</h3>
+<strong>1. Apenas vocabulário conhecido</strong>
+Uma senha inventada que não se assemelha a nenhuma palavra existente e que não está no HiBP é impermeável ao ataque de dicionário puro. "Xqz7mK9pL" nunca estará em nenhuma lista de palavras.
+<strong>2. Cobertura linguística</strong>
+Um atacante atacando um usuário de língua francesa sem uma lista de palavras francesa perderá palavras como "efémero", "grenouille" ou "bricolagem" que não estão em listas de palavras em inglês padrão.
+<strong>3. Novas senhas</strong>
+Uma credencial que acabou de ser criada e nunca fugiu não estará no HiBP — mesmo que seja muito comum, terá de esperar até o próximo vazamento para encontrá-lo.
+<strong>4. Senhas muito longas</strong>
+Uma senha composta por uma frase inventada há muito tempo ("MaGrandeAventure2024SousLesEtoiles") não estará em nenhuma lista de palavras — mesmo que cada palavra tomada separadamente seja trivial. Esta é a ideia por trás das frases-passe, tratada por outros ataques (Combinador, PRINCE).
+<h3>15.2 Qual o Cálculo do Time2Crack Não Modelo</h3>
+<strong>Lista de Palavras de Contexto</strong> O Time2Crack usa wordlists genéricos.
+<strong>Listas de palavras de força bruta combinadas</strong> : Ferramentas como CeWL (Custom Word List Generator) podem extrair termos do site alvo para construir uma lista de palavras personalizada. Este nível de segmentação não é modelado.
+<strong>Vazamentos recentes ainda não no HIBP</strong> entre o momento em que ocorre um vazamento e sua integração no HIBP, as credenciais comprometidas circulam em fóruns privados sem serem acessíveis via API pública.
+<strong>Algoritmos de hash não abrangidos</strong> Os algoritmos Time2Crack 6 (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id). Algoritmos como SHA-512, scrypt ou PBKDF2 têm perfis diferentes.
+<hr>
+<h2>16. Defesas eficazes</h2>
+<h3>16.1 O que protege contra ataques de dicionário</h3>
+<strong>Algoritmo de hash moderno (bcrypt, Argon2id)</strong>
+Esta é a defesa mais eficaz do lado do servidor.
+<li>MD5: rachadura em ~ 1 microsegundo</li>
+<li>bcrypt custo 12 : crack in <strong>35 horas</strong></li>
+<li>Argon2id (parâmetros recomendados): crack in <strong>anos</strong></li>
+<p>A diferença de 10+ ordens de magnitude entre MD5 e Argon2id torna a senha do dicionário "sol" imune na prática se protegida por Argon2id — mesmo que o atacante saiba que é uma palavra francesa.</p>
+<strong>Sal único por conta</strong>
+Um sal impede ataques pré- calculados na tabela e obriga o atacante a recalcular individualmente para cada conta. Ele não protege ataques de lista de palavras direcionados (o atacante ainda pode testar as 200.000 palavras com o sal), mas invalida as tabelas do arco-íris e torna impraticáveis ataques maciços em grandes bases de dados.
+<strong>Comprimento da senha</strong>
+Uma senha de uma única palavra do dicionário (8-10 caracteres) é vulnerável. Uma frase-passe de 4-5 palavras ("cheval-lumière-forest-voyage") é resistente ao ataque do dicionário puro, mas não ao ataque Combinator — daí a importância do comprimento E da aleatoriedade.
+<strong>Senhas geradas aleatoriamente</strong>
+A solução real: use um gerenciador de senhas que gera senhas aleatórias longas (20+ caracteres de todos os tipos). Estas senhas nunca estarão em nenhum dicionário.
+<strong>Autenticação multifatorial (MFA)</strong>
+O MFA não impede o crack offline (o atacante recupera hashs e cracks offline), mas protege contra o recheio credencial (use credenciais rachadas para conectar).
+<strong>Taxa que limita e detecta anomalias</strong>
+Protege contra ataques on-line (tentativas diretas de conexão), não contra rachadura offline de haxixes roubados.
+<h3>16.2 O que não protege</h3>
+<strong>Substituições de leet simples</strong> : "senha" → "p@ssw0rd" — ver secção 9.
+<strong>Números adicionados no final</strong> : "password" → "password1" — entre as primeiras regras testadas.
+<strong>Pagamento inicial</strong> : "senha" → "senha" — regra padrão de capitalização.
+<strong>Figuras e símbolos se a palavra permanecer reconhecível</strong> "Sunshine!" está em qualquer lista de palavras que inclui "Sunshine" com regras básicas.
+<strong>Complexidade imposta sem comprimento</strong> "P@s1w" atende aos critérios de complexidade (maj, min, número, símbolo) mas é mais curto e previsível do que "correcthorsebaterystaple".
+<h3>16.3 Recomendações práticas</h3>
+<li><strong>Usar um gerenciador de senhas</strong> (Bitwarden, 1Password, KeePass) — gera senhas aleatórias, você só precisa lembrar a senha mestre.</li>
+<li><strong>Activar o MFA em todo o lado</strong> — mesmo que a senha esteja comprometida, o atacante não pode se conectar.</li>
+<li><strong>Verificar o HIBP regularmente</strong> — se o seu e-mail está em fugas conhecidas.</li>
+<li><strong>Nunca reutilize uma senha</strong> — o recheio de credenciais explora a reutilização de serviços cruzados.</li>
+<li><strong>Para senhas memorizáveis</strong> : 5+ palavras frase-passe <strong>aleatório</strong> (não "cavalo-correcto-bateria-agrafe-violeta", mas palavras realmente desenhadas por sorteio).</li>
+<hr>
+<h2>17. Referências</h2>
+<h3>Fontes primárias (estudos académicos)</h3>
+<strong>Morris, R., &amp; Thompson, K. (1979).</strong> Segurança da senha: Um histórico de casos.<em> Comunicação da ACM, 22(11), 594-597.
+<li>Primeira análise acadêmica da distribuição de senhas Unix</li>
+<li>Reconhece que as senhas ~1/3 são palavras comuns em inglês</li>
+<strong>Klein, D.V. (1990).</strong> </em>Falindo o cracker: Uma pesquisa e melhorias na segurança de senha.<em> Procedimentos de Simpósio de Segurança UNIX, 5-14.
+<li>15.000 quebra senha Unix: 25% rachado em poucas horas</li>
+<li>Documentar as primeiras listas de palavras e as regras de mutação</li>
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong> </em>Quebra de senha usando gramáticas probabilísticas livres de contexto.<em> Simpósio IEE sobre Segurança e Privacidade.
+<li>Referência básica no ataque PCFG e comparação com ataque dicionário puro</li>
+<li>Determina que palavras de dicionário são encontradas nas primeiras 200.000 tentativas de um ataque ordenado</li>
+<li><strong>Citado em Time2Crack</strong> para a calibração HF do ataque do dicionário (multiplicador 0.5)</li>
+<strong>Ur, B., Kelley, P. G., Komanduri, S., Lee, J., Maase, M., Shay, R., Vaniea, K., Bauer, L., &amp; Cranor, L. F. (2012).</strong> </em>Como sua senha mede? O efeito dos medidores de força na escolha do usuário da senha.<em> 21o Simpósio de Segurança USENIX.
+<li>Análise da distribuição das palavras comuns no corpus real</li>
+<li>Palavras comuns encontradas nas primeiras 100-10 000 tentativas</li>
+<li><strong>Citado em Time2Crack</strong> para calibração de HF <code>common ? 0.15</code> (nível superior 10k)</li>
+<strong>Bonneau, J (2012).</strong> </em>A ciência do canto: Analisando um corpus anônimo de 70 milhões de senhas.<em> Simpósio IEE sobre Segurança e Privacidade.
+<li>Estudo de 70 milhões de senhas do Yahoo anonimizadas</li>
+<li>Quantifica a distribuição real de senhas, confirma a lei do poder</li>
+<li>Medindo a eficácia do recheio credencial (2–5% taxa de sucesso em contas reais)</li>
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong> </em>Um estudo de modelos probabilísticos de senha.<em> Simpósio IEE sobre Segurança e Privacidade.
+<li>Comparação de modelos probabilísticos (dicionário, Markov, PCFG) no corpus real</li>
+<li>Best64.rule priorizado → ~40% redução no tempo médio para palavras de dicionário</li>
+<li><strong>Citado em Time2Crack</strong> para calibração HF de ataque híbrido</li>
+<strong>Wheeler, D.L. (2016).</strong> </em>zxcvbn: estimativa da força de senha de baixo orçamento.<em> 25o Simpósio de Segurança USENIX, 157-173.
+<li>Forçar o sistema de estimação usando listas de palavras e padrões</li>
+<li>Análise de vieses cognitivos na criação de senhas</li>
+<li>Medir a eficácia das listas de palavras em relação à força bruta</li>
+<strong>Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M. (2021).</strong> </em>Redução do viés em modelar a força de senha do mundo real através de aprendizagem profunda e dicionários dinâmicos.<em> 30o Simpósio de Segurança USENIX.
+<li>Avaliação de modelos de estimativa para ataques reais</li>
+<li>Confirma que os dicionários continuam a ser a ferramenta mais eficaz para senhas humanas comuns</li>
+<h3>Fontes industriais</h3>
+<strong>Fui enganado. (2024).</strong> </em>Senhas digitadas.<em> https://hapibeenpwned.com/Passwords
+<li>Base de ~14 bilhões de senhas únicas de vazamentos documentados</li>
+<li>API k- anonimato usada pela Time2Crack para verificação em tempo real</li>
+<strong>Sistemas Colmeias. (2025).</strong> </em>Tabela de senha de sistemas Hive 2025.<em>
+<li>Benchmarks 12× RTX 4090: MD5 2,027 GH/s, NTLM 3,462 GH/s, custo de bcrypt 5 : 2,2 MH/s</li>
+<li><strong>Fonte principal de taxas de hash utilizadas no Time2Crack</strong></li>
+<strong>Hashcat. (2025).</strong> </em>Hashcat — Recuperação avançada de senhas.<em>
+<li>Ferramenta de referência para benchmarks GPU</li>
+<li>Documentação das regras de mutação (melhor64.regra, UmaRegraParaRegraTodos)</li>
+<strong>Gosney, J (2012).</strong> </em>Estribos sobre Lee et al. e quebra de senha probabilística.<em> Procedimento de senhascon.
+<li>Primeiros benchmarks multi-GPU documentados publicamente</li>
+<li>Referência para calibração de ataques baseados em regras</li>
+<strong>Miessler, D. (2024).</strong> </em>SecLists — Uma coleção de vários tipos de listas utilizadas durante as avaliações de segurança.<em> GitHub.
+<li>Fonte das listas de palavras da Wikipédia usadas no Time2Crack</li>
+<li>Listas de palavras em inglês, francês, espanhol, português, alemão, turco</li>
+<h3>Fontes secundárias (contexto)</h3>
+<strong>Troy Hunt. (2013).</strong> </em>Introdução 306 Million Freely Downloadable Pwned Passwords.<em> troyhunt.com.
+<li>Estabelecimento inicial do serviço HIBP e explicação do protocolo k-anonymity</li>
+<strong>Thomas, K., et al. (2019).</strong> </em>Proteger contas de recheio credencial com alerta de quebra de senha.<em> 28o Simpósio de Segurança USENIX.
+<li>Estudo Google/Stanford sobre proteção de credenciais comprometidas</li>
+<li>Confirma a eficácia do k-anonymity como mecanismo de privacidade</li>
+<strong>Wang, D., Cheng, H., Wang, P., Huang, X., &amp; Jian, G. (2016).</strong> </em>A lei do Zipf em senhas.<em> Transacções IEEE sobre a Forense e a Segurança da Informação, 12(11), 2776–2791.
+<li>Formalização matemática da lei de poder na distribuição de senhas</li>
+<li>Confirma que a distribuição do Zipf mantém todo o grande corpus conhecido</li>
+<h3>Fontes da Web citadas no aplicativo Time2Crack</h3>
+<strong>IEEE Xplore (referência dictional).</strong>
+https://ieexplore.ieee.org/document/6234435
+<li>Fonte relacionada em <code>descDict</code> (app.js) para a ordem de cobertura dos principais dicionários.</li>
+<strong>Intervalo de API HIBP (k- anonimato).</strong>
+https://api.pwnedpasswords.com/range/
+<li>Endpoint usado pelo Time2Crack para verificação do k-anonymity (pedido de prefixo sha1).</li>
+<strong>Padrão de chamadas HIBP em código.</strong>
+https://api.pwnedpasswords.com/range/${prefix}
+<li>A forma exata da URL chamada nos exemplos de código do documento (prefixo SHA-1 interpolado).</li>
+<hr>
+</em>Documento gerado para o projeto Time2Crack — Versão 1.0 — 2026-04-01<em>
+</em>Código- fonte: <code>app.js</code> (funções <code>addDictionaryAttacks</code>, <code>isDictWord</code>, <code>deLeet</code>, <code>loadDictionary</code>, <code>applyHighFidelityCalibration</code>, <code>bloomHas</code>)*
+
+  
+<script src="/includes.js" defer></script>
+
+</main>
+<footer id="site-footer" class="site-footer">
+  <p>Cálculo local · verificação HIBP · Código aberto</p>
+  <div class="footer-social">
+    <a href="https://linkedin.com/company/time2crack" class="footer-social__link" aria-label="Siga-nos no LinkedIn">
+      <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" width="24" height="24">
+        <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+      </svg>
+    </a>
+    <a href="https://bsky.social/profile/time2crack.bsky.social" class="footer-social__link" aria-label="Siga-nos no Bluesky">
+      <img src="/bluesky-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+    <a href="https://fosstodon.org/@time2crack" class="footer-social__link" aria-label="Siga-nos no Mastodon">
+      <img src="/mastodon-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+  </div>
+</footer>
+<script src="/includes.js" defer></script>
+</body>
+</html>

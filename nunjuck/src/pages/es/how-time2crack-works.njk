@@ -1,0 +1,465 @@
+---
+lang: es
+permalink: "/es/how-time2crack-works.html"
+layout: base.njk
+currentPage: how-time2crack-works
+pageSlug: how-time2crack-works.html
+mainClass: how-time2crack-works-page
+pageTitle: "Cómo Time2Crack calcula el tiempo — Time2Crack"
+pageDescription: "Entiende cómo Time2Crack estima el tiempo de crack con sus modelos de ataque, velocidades GPU calibradas y motor local."
+---
+
+<div class="doc-header">
+<h1>Cómo Time2Crack calcula el tiempo de crack</h1>
+<p class="subtitle">Guía completa de las operaciones científicas y técnicas</p>
+</div>
+<nav aria-label="Índice" class="toc">
+<h2>Índice</h2>
+<ol>
+<li><a href="#overview">Sinopsis</a></li>
+<li><a href="#flux">Flujo de cálculo principal</a></li>
+<li><a href="#step1">Paso 1: Análisis de contraseña</a></li>
+<li><a href="#step2">Paso 2: Estimaciones de Rank</a></li>
+<li><a href="#step3">Paso 3: Conversión al tiempo</a></li>
+<li><a href="#attacks">Los 7 ataques aplicados</a></li>
+<li><a href="#algorithms">Los 6 algoritmos de hash</a></li>
+<li><a href="#profiles">Perfiles de atacante</a></li>
+<li><a href="#example">Ejemplo concreto</a></li>
+<li><a href="#faq">Preguntas frecuentes</a></li>
+</ol>
+</nav>
+ Sinopsis 
+<section class="doc-section" id="overview">
+<h2>Sinopsis</h2>
+<p>Time2Crack responde a una pregunta simple: <strong>"¿Cuánto tardaría en romper esta contraseña?"</strong></p>
+<p>La respuesta implica tres pasos:</p>
+<div class="diagram">
+PASS MOT (por ejemplo, "¡P@ssw0rd!")
+▼
+PASO 1: Análisis (detección de agentes, entropía)
+▼
+PASO 2: Número estimado de intentos (rango)
+▼
+PASO 3: Conversión de tiempo (basada en la velocidad de GPU)
+▼
+RESULT (por ejemplo, "2 días en GPU NTLM")
+      </div>
+<p><strong>Punto crítico</strong> : Pruebas Time2Crack <strong>No realmente</strong> La contraseña. <strong>matemáticamente</strong> cuántos intentos se necesitarían con diferentes ataques.</p>
+<div class="insight-box">
+        La innovación clave es la separación estricta entre <strong>Rank</strong> (número de intentos) y <strong>Hora</strong> Esto permite modificar algoritmos de ataque o velocidades GPU de forma independiente.
+      </div>
+</section>
+ Flujo de cálculo 
+<section class="doc-section" id="flux">
+<h2>Flujo de cálculo principal</h2>
+<div class="diagram">
+calcCrackTime(palabra, opciones) [core/calc.js]
+Promoción
+- análisisPatterns(palabra)
+.
+Promoción
+Ü--estimateRank(palabra, contexto)
+Ã©l - rankBrute() → tanklength
+ç - rankingDiccionario() → diccionario + HIBP
+ç - rankHybrid() → diccionario + mutaciones
+Ã©l - rankMask() → estructuras predecibles
+Ü - RankMarkov() → modelo probabilístico
+ç - rankPCFG() → gramática
+Promoción
+.
+Promoción
+- RankToAllSeconds(rank)
+- Convertir intentos → segundos (GPU velocidad)
+- Regreso: { md5, sha1, sha256, ntlm, bcrypt, argon2 }
+      </div>
+<h3>Arquitectura de dos capas</h3>
+<p>La innovación clave de Time2Crack es <strong>separación estricta</strong> entre:</p>
+<div class="feature-list">
+<div class="feature-item">
+<strong><span class="emoji-marker">1</span>Capa 1 (Rank)</strong>
+<p>"¿Cuántos intentos?" — No tienen idea de tiempo o velocidad de GPU. <code>core/rank/*.js</code></p>
+</div>
+<div class="feature-item">
+<strong><span class="emoji-marker">2</span>Capa 2 (tiempo)</strong>
+<p>"¿Cuánto tiempo?" — Convertir intentos en segundos. Módulo: <code>core/time.js</code></p>
+</div>
+</div>
+<p><strong>Ventajas</strong> : Cambiar el algoritmo de un ataque nunca afecta la lógica del tiempo. Cambiar la velocidad de la GPU nunca afecta los ataques.</p>
+</section>
+ Paso 1 
+<section class="doc-section" id="step1">
+<h2>Paso 1: Análisis de contraseña</h2>
+<h3>¿Qué estamos analizando?</h3>
+<p>Antes de calcular el tiempo de grieta, Time2Crack disecciona la contraseña para detectar:</p>
+<div class="code-block">
+<pre>analyzePatterns(password) retourne {
+  // CHARSET &amp; ENTROPIE
+  charset: { hasLower, hasUpper, hasDigit, hasSymbol },
+  entropy: 52.3,  // bits
+
+  // DÉTECTIONS
+  patterns: {
+    dictionaryWord: true,      // mot dans dictionnaire
+    commonPassword: false,     // dans HIBP
+    keyboardPattern: false,    // qwerty, asdfgh
+    sequencePattern: false,    // abc, 123
+    datePattern: false,        // 2024, 12/25
+    repeatingPattern: false,   // aaaa, 1111
+    maskLike: true,            // structure prévisible
+    looksPassphrase: true,     // plusieurs mots
+  }
+}</pre>
+</div>
+<h3>Los 8 tipos de detección</h3>
+<h4><span class="emoji-marker">1</span> Diccionario Word</h4>
+<p>Prueba la contraseña contra palabras comunes de 50k-200k y sus variantes (mutaciones simples).</p>
+<h4><span class="emoji-marker">2</span> Contraseña común (HIBP)</h4>
+<p>Prueba contra las 1.000 contraseñas más escapadas usando el <strong>k-anonymity</strong> (sólo 5 primeros caracteres SHA-1 enviados).</p>
+<p><small><a href="hibp.html">Compruebe si su contraseña ha sido hackeado →</a></small></p>
+<h4><span class="emoji-marker">3</span> Patrón de teclado</h4>
+<p>Detectar: <code>qwerty</code>, <code>asdfgh</code>, <code>qazwsx</code>, etc.</p>
+<h4><span class="emoji-marker">4</span> Secuencia</h4>
+<p>Detectar: <code>abc</code>, <code>123</code>, <code>xyz</code>, etc.</p>
+<h4><span class="emoji-marker">5</span> Fecha</h4>
+<p>Detectar: <code>2024</code>, <code>12/25</code>, <code>25-12-2024</code>, etc.</p>
+<h4><span class="emoji-marker">6</span> Repito</h4>
+<p>Detectar: <code>aaaa</code>, <code>1111</code>, <code>!!!</code>, etc.</p>
+<h4><span class="emoji-marker">7</span> Estructurado</h4>
+<p>Detecta estructuras previsibles: <code>Name2024!</code>, <code>Passw0rd!</code></p>
+<h4><span class="emoji-marker">8</span> Frase</h4>
+<p>Detecta varias palabras concatenadas: <code>correcthorsebatterystaple</code> → <code>[correct] + [horse] + [battery] + [staple]</code></p>
+</section>
+ Paso 2 
+<section class="doc-section" id="step2">
+<h2>Paso 2: Estimaciones de los puestos (número de intentos)</h2>
+<h3>Concepto básico</h3>
+<p>El <strong>fila</strong> es: <strong>"¿Cuántas contraseñas tiene que probar un ataque antes de encontrarlo?"</strong></p>
+<div class="example-box">
+<h4>Ejemplo</h4>
+<ul>
+<li><strong>Fuerza bruta</strong> para <code>abc</code> : 263 = 17.576 intentos</li>
+<li><strong>Diccionario</strong> para <code>password</code> ~1 intento</li>
+<li><strong>PCFG</strong> para <code>Password123</code> ~1011 intentos</li>
+</ul>
+</div>
+<h3>¿Cómo elegir el ataque ganador?</h3>
+<p>Time2Crack lanza el <strong>7 ataques paralelos</strong> y toma el mejor resultado:</p>
+<div class="code-block">
+<pre>const results = {
+  brute:      { rank: 1e30 },
+  dictionary: { rank: 1e6 },      // GAGNANT
+  hybrid:     { rank: 1e7 },
+  mask:       { rank: 1e8 },
+  markov:     { rank: 1e9 },
+  pcfg:       { rank: 1e11 },
+  combinator: { rank: 1e12 },
+};
+
+const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
+// → 1e6 (Dictionary attack est la plus rapide)
+      </pre>
+</div>
+</section>
+ Paso 3 
+<section class="doc-section" id="step3">
+<h2>Paso 3: Conversión al tiempo</h2>
+<h3>El concepto</h3>
+<p>Ahora que sabemos que tenemos que <code>rang</code> intentos, nos convertimos en <strong>segundos</strong> :</p>
+<div class="code-block">
+<pre>Formule : temps (secondes) = log₁₀(rang) / log₁₀(taux_hachage)</pre>
+</div>
+<h3>Velocidades (GPU)</h3>
+<p>Time2Crack utiliza <strong>verdaderas velocidades Hashcat</strong> para 12× RTX 4090:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Algoritm</th>
+<th>Speed</th>
+<th>Salificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MD5</strong></td>
+<td>2.03 TH/s</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>SHA-1</strong></td>
+<td>610 GH/s</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>SHA-256</strong></td>
+<td>272 GH/s</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>NTLM</strong></td>
+<td>3.46 TH/s</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>bcrypt</strong></td>
+<td>2.2 MH/s</td>
+<td>Sí.</td>
+</tr>
+<tr>
+<td><strong>Argon2id</strong></td>
+<td>800 H/s</td>
+<td>Sí.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Ejemplo de conversión</h3>
+<div class="example-box">
+<h4>Contraseña: "palabra" (Rang: 1 millón = 106)</h4>
+<h4>Para MD5 (2 trillion/sec):</h4>
+<p><code>Temps = 10⁶ / (2×10¹²) = 0.5 microsecondes</code></p>
+<h4>Para SHA-256 (272 GH/s):</h4>
+<p><code>Temps = 10⁶ / (2.72×10¹¹) = 3.7 microsecondes</code></p>
+<h4>Para bcrypt (2.2 MH/s):</h4>
+<p><code>Temps = 10⁶ / (2.2×10⁶) = 0.45 secondes</code></p>
+<h4>Para Argon2id (800 H/s):</h4>
+<p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
+</div>
+</section>
+ Los 7 ataques 
+<section class="doc-section" id="attacks">
+<h2>Los 7 ataques aplicados</h2>
+<h3><span class="emoji-marker">1</span> Fuerza bruta</h3>
+<p><strong>Concepto</strong> : Prueba todas las combinaciones posibles</p>
+<div class="code-block"><pre>Formule : rang = charset_size ^ length</pre></div>
+<p><strong>Ejemplo</strong> : <code>abc</code> → 263 = 17.576 intentos</p>
+<p><strong>Muy eficaz para</strong> : contraseñas cortas y aleatorias</p>
+<p><small><a href="methode/bruteforce.html">Más información sobre Brute Force →</a></small></p>
+<h3><span class="emoji-marker">2</span> Ataque</h3>
+<p><strong>Concepto</strong> : Prueba cada palabra en el diccionario</p>
+<div class="code-block"><pre>Formule : rang = taille_dictionnaire</pre></div>
+<p><strong>Muy eficaz para</strong> Palabras humanas</p>
+<p><small><a href="methode/dictionary.html">Más información sobre Diccionario de ataque →</a></small></p>
+<h3><span class="emoji-marker">3</span> Ataque híbrido</h3>
+<p><strong>Concepto</strong> : Diccionario Word + mutaciones simples</p>
+<div class="code-block"><pre>Formule : rang = taille_dictionnaire × nombre_mutations (~1000)</pre></div>
+<p><strong>Muy eficaz para</strong> : palabras de diccionario + pequeñas modificaciones</p>
+<p><small><a href="methode/hybrid.html">Más información sobre Ataque híbrido →</a></small></p>
+<h3><span class="emoji-marker">4</span> Mask Attack</h3>
+<p><strong>Concepto</strong> : Testar estructuras predecibles</p>
+<p><strong>Muy eficaz para</strong> : estructuras humanas<code>Name2024</code>, <code>Password!</code>)</p>
+<p><small><a href="methode/mask.html">Más información sobre Mask Attack →</a></small></p>
+<h3><span class="emoji-marker">5</span> Markov Model</h3>
+<p><strong>Concepto</strong> : Enfoque estadístico basado en frecuencias n-gram</p>
+<p><strong>Muy eficaz para</strong> Palabras humanas — espacio reducido en ~99%</p>
+<p><small><a href="methode/markov.html">Más información sobre Markov Model →</a></small></p>
+<h3><span class="emoji-marker">6</span> PCFG</h3>
+<p><strong>Concepto</strong> : Modelo gramático que aprende estructuras</p>
+<div class="example-box">
+<h4>Ejemplo real</h4>
+<p><code>Password123</code> :</p>
+<ul>
+<li>Fuerza bruta: 9411 = 475 intentos de trillón</li>
+<li>PCFG: ~100 trillones intentos (4,700× más rápido!)</li>
+</ul>
+</div>
+<p><small><a href="methode/pcfg.html">Aprender más acerca de PCFG →</a></small></p>
+<h3><span class="emoji-marker">7</span> Ataque combinado</h3>
+<p><strong>Concepto</strong> : Concatenación de 2 palabras de diccionario</p>
+<p><strong>Muy eficaz para</strong> : passphrases (4+ palabras)</p>
+<p><small><a href="methode/combinator.html">Más información sobre el ataque combinado →</a></small></p>
+</section>
+ Algoritmos 
+<section class="doc-section" id="algorithms">
+<h2>Los 6 algoritmos de hash</h2>
+<h3>¿Por qué seis?</h3>
+<p>Diferentes algoritmos ofrecen diferentes niveles de seguridad. Time2Crack muestra tiempos de grieta para el 6 para mostrar el impacto de la elección del algoritmo.</p>
+<h4><span class="emoji-marker"></span> MD5 (DEPRECTED)</h4>
+<ul>
+<li><strong>Speed</strong> : 2 TH/s (muy rápido)</li>
+<li><strong>Salificación</strong> No</li>
+<li><strong>Situación</strong> - No uso</li>
+</ul>
+<h4><span class="emoji-marker"></span> SHA-1 (DEPRECTED)</h4>
+<ul>
+<li><strong>Speed</strong> : 610 GH/s</li>
+<li><strong>Salificación</strong> No</li>
+<li><strong>Situación</strong> - Colisions found (2017)</li>
+</ul>
+<h4><span class="emoji-marker"></span> SHA-256 (ACEPTABLE)</h4>
+<ul>
+<li><strong>Speed</strong> : 272 GH/s</li>
+<li><strong>Salificación</strong> : Generalmente sí</li>
+<li><strong>Situación</strong> - Aceptable si con SALT + iteración</li>
+</ul>
+<h4><span class="emoji-marker"></span> NTLM (LEGACY)</h4>
+<ul>
+<li><strong>Speed</strong> : 3.46 TH/s</li>
+<li><strong>Situación</strong> - Utilizado en el legado de Windows</li>
+</ul>
+<h4><span class="emoji-marker"></span> bcrypt (RECOMENDADO)</h4>
+<ul>
+<li><strong>Speed</strong> 2.2 MH/s (intencionadamente lento)</li>
+<li><strong>Salificación</strong> Sí.</li>
+<li><strong>Situación</strong> * Excelente para la producción</li>
+</ul>
+<h4><span class="emoji-marker"></span> Argon2id (Mejor)</h4>
+<ul>
+<li><strong>Speed</strong> 800 H/s (muy lento = muy seguro)</li>
+<li><strong>Tipo</strong> : Híbrido (tiempo + memoria)</li>
+<li><strong>Situación</strong> La mejor opción moderna (NIST 2021)</li>
+</ul>
+<div class="insight-box">
+        Los algoritmos modernos son <strong>intencionalmente lento</strong>Es una característica, no un error! MD5 es rápido (bad), la bcripta es lenta (excelente), Argon2id es incluso más lento (mejor).
+      </div>
+</section>
+ Perfiles 
+<section class="doc-section" id="profiles">
+<h2>Perfiles de atacante</h2>
+<h3>Concepto</h3>
+<p>Los diferentes atacantes tienen diferentes recursos.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Perfil</th>
+<th>GPUs</th>
+<th>NTLM</th>
+<th>Casos de uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Amateur</strong></td>
+<td>1</td>
+<td>288 GH/s</td>
+<td>Hobbyist Hackers</td>
+</tr>
+<tr>
+<td><strong>Experiencias</strong></td>
+<td>12</td>
+<td>3.46 TH/s</td>
+<td>grietas graves</td>
+</tr>
+<tr>
+<td><strong>Cuadro orgánico</strong></td>
+<td>~100</td>
+<td>28,8 TH/s</td>
+<td>Empresas, agrupaciones AWS</td>
+</tr>
+<tr>
+<td><strong>State Nation</strong></td>
+<td>~10k</td>
+<td>2.88 PH/s</td>
+<td>Gobiernos</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Impacto concreto</h3>
+<div class="example-box">
+<h4>Contraseña: "P@ssw0rd" (10 tanques, fila: 1 trillón)</h4>
+<ul>
+<li><strong>Amateur</strong> 44 segundos</li>
+<li><strong>Experiencias</strong> 3,7 segundos</li>
+<li><strong>Cuadro orgánico</strong> : 0.43 segundos</li>
+<li><strong>State Nation</strong> 4,4 milisegundos</li>
+</ul>
+</div>
+<p><strong>Educación</strong> : Incluso una contraseña "fuerte" se puede romper en milisegundos por un estado nacional!</p>
+</section>
+ Ejemplo 
+<section class="doc-section" id="example">
+<h2>Ejemplo concreto: Tr0ub4dor</h2>
+<p>Es la contraseña de la película. <strong>"Batería de caballos corridos"</strong> Veamos qué hace Time2Crack:</p>
+<h3>Paso 1: Análisis</h3>
+<div class="code-block">
+<pre>• length : 11 caractères
+• charset : 94 caractères
+• entropy : ~64 bits
+• dictionaryWord : FALSE
+• commonPassword : FALSE
+• maskLike : TRUE
+• looksPassphrase : FALSE</pre>
+</div>
+<h3>Paso 2: Estimaciones de Rank</h3>
+<div class="code-block">
+<pre>Brute Force  : 94^11 ≈ 475 trillion
+Dictionary   : ∞ (pas dans dictionnaire)
+Mask         : ≈ 1.4 trillion
+Markov       : ≈ 10 trillion
+PCFG         : ≈ 50 billion (GAGNANT)
+Combinator   : ∞</pre>
+</div>
+<h3>Paso 3: Conversión al tiempo</h3>
+<div class="example-box">
+<h4>Resultados para 50 mil millones de intentos</h4>
+<ul>
+<li><strong>MD5</strong> : 0.025 segundos</li>
+<li><strong>SHA-256</strong> 0.18 segundos</li>
+<li><strong>bcrypt</strong> 6.3 horas</li>
+<li><strong>Argon2id</strong> 2 años</li>
+</ul>
+</div>
+<h3>Conclusión</h3>
+<ul>
+<li>• Caja fuerte contra bcrypt/Argon2id (horas → años)</li>
+<li></li>
+<li></li>
+</ul>
+</section>
+ FAQ 
+<section class="doc-section" id="faq">
+<h2>Preguntas frecuentes</h2>
+<h3>P: ¿En realidad, Time2Crack prueba la contraseña?</h3>
+<p><strong>No</strong>. Time2Crack no envía <strong>Nunca</strong> su contraseña a un servidor.</p>
+<ul>
+<li>Todos los cálculos se hacen <strong>Local</strong> en el navegador</li>
+<li>Sólo llamada de red: cheque HIBP usando el anonimato k</li>
+<li>Sin transmisión de contraseña completa</li>
+</ul>
+<p><small><a href="privacy.html">Más información sobre nuestra política de privacidad →</a></small></p>
+<h3>P: ¿De dónde vienen los números de velocidad de GPU?</h3>
+<p><strong>Parámetros oficiales Hashcat</strong> (v6.2.6) en RTX 4090:</p>
+<ul>
+<li>Mediciones de laboratorio</li>
+<li>Dominio público</li>
+<li>Alineación con Hive Systems 2025</li>
+</ul>
+<h3>P: ¿Por qué Argon2id es tan lento?</h3>
+<p><strong>Es intencional.</strong>Argon2id está diseñado para ser lento, duro de memoria y difícil de paralelizar. Esto obliga a los atacantes a utilizar muchos recursos.</p>
+<h3>P: ¿Podemos mejorar una contraseña 100% segura?</h3>
+<p><strong>No</strong>Incluso la mejor contraseña puede ser robada o adivinada. <strong>Estrategia de defensa</strong> :</p>
+<ul>
+<li>Buena contraseña (15+ caracteres al azar)</li>
+<li>autenticación multifactorial</li>
+<li>Password Manager</li>
+<li>Verificación de las infracciones (He estado Pwned)</li>
+</ul>
+<h3>P: ¿Cómo mejoro mi contraseña?</h3>
+<p><strong>Reglas simples</strong> :</p>
+<ul>
+<li><strong>Duración</strong> : 15+ caracteres (más grande que la complejidad)</li>
+<li><strong>Aleatorio</strong> : Use gestor de contraseña</li>
+<li><strong>Única</strong> : Diferente contraseña por sitio</li>
+<li><strong>MFA</strong> : Activar la autenticación 2FA si es posible</li>
+</ul>
+</section>
+ Conclusión 
+<section class="doc-section">
+<h2>Conclusión</h2>
+<p><strong>Time2Crack trabaja en 3 pasos inmutables</strong> :</p>
+<div class="code-block">
+<pre>1. ANALYSE       → Détecte patterns (dictionnaire, keyboard, etc.)
+2. RANG          → Estime tentatives nécessaires (7 attaques)
+3. TEMPS         → Convertit tentatives en secondes (GPU speeds)</pre>
+</div>
+<p><strong>Innovación clave</strong> : Separación rígora entre fila (ataque) y tiempo (GPU), permitiendo:</p>
+<ul>
+<li>Fácil actualización de las velocidades de GPU</li>
+<li>Fácil adición de nuevos ataques</li>
+<li>Arquitectura modular y testable</li>
+</ul>
+<p><strong>Resultado</strong> Estimación <strong>preciso</strong>, <strong>Sin conexión</strong>, <strong>multilingüe</strong> tiempo para romper una contraseña.</p>
+<a class="back-to-top" href="#top">↑ Volver arriba</a>
+</section>

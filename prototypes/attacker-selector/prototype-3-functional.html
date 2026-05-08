@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype 3: Tabs - Functional</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      color: #ecf0f1;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #e74c3c;
+      margin-bottom: 8px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      color: #95a5a6;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    /* Password Input */
+    .input-section {
+      background: #34495e;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      border: 1px solid #445566;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .input-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ecf0f1;
+      margin-bottom: 14px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    #passwordInput {
+      width: 100%;
+      padding: 18px 50px 18px 18px;
+      background: #2c3e50;
+      border: 2px solid #445566;
+      border-radius: 10px;
+      color: #ecf0f1;
+      font-size: 17px;
+      font-family: 'Courier New', monospace;
+      transition: all 0.3s;
+    }
+
+    #passwordInput::placeholder {
+      color: #7f8c8d;
+    }
+
+    #passwordInput:focus {
+      outline: none;
+      border-color: #e74c3c;
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #445566;
+      border: none;
+      color: #ecf0f1;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .toggle-visibility:hover {
+      background: #556677;
+    }
+
+    /* Tabs */
+    .tabs-wrapper {
+      background: #34495e;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      border: 1px solid #445566;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .tabs-header {
+      display: flex;
+      background: #2c3e50;
+      border-bottom: 2px solid #445566;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      position: relative;
+    }
+
+    .tab:hover:not(.active) {
+      background: rgba(231, 76, 60, 0.05);
+    }
+
+    .tab.active {
+      background: #34495e;
+      border-bottom-color: #e74c3c;
+    }
+
+    .tab-emoji {
+      display: block;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .tab-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #95a5a6;
+    }
+
+    .tab.active .tab-label {
+      color: #e74c3c;
+      font-weight: 700;
+    }
+
+    /* Tab Content */
+    .tab-content {
+      padding: 32px;
+      min-height: 400px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid #445566;
+    }
+
+    .profile-emoji-large {
+      font-size: 56px;
+    }
+
+    .profile-title {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 28px;
+      font-weight: 900;
+      color: #e74c3c;
+      margin-bottom: 6px;
+    }
+
+    .profile-subtitle {
+      font-size: 14px;
+      color: #95a5a6;
+    }
+
+    .profile-badge {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Specs Grid */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .spec-card {
+      background: #2c3e50;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #445566;
+    }
+
+    .spec-label {
+      font-size: 11px;
+      color: #95a5a6;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .spec-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #e74c3c;
+    }
+
+    /* Result Card in Tab */
+    .tab-result {
+      background: #2c3e50;
+      border-radius: 14px;
+      padding: 28px;
+      border: 2px solid #e74c3c;
+      margin-bottom: 24px;
+    }
+
+    .tab-result.empty {
+      opacity: 0.4;
+      border-style: dashed;
+    }
+
+    .tab-result-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #95a5a6;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    .tab-result-value {
+      font-size: 48px;
+      font-weight: 900;
+      color: #e74c3c;
+      margin-bottom: 10px;
+      letter-spacing: -1px;
+    }
+
+    .tab-result-detail {
+      font-size: 14px;
+      color: #95a5a6;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-result-algo {
+      background: rgba(231, 76, 60, 0.2);
+      color: #e74c3c;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Description */
+    .profile-description {
+      background: rgba(231, 76, 60, 0.1);
+      border-left: 4px solid #e74c3c;
+      padding: 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #bdc3c7;
+      margin-bottom: 24px;
+    }
+
+    /* Stats in Tab */
+    .tab-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      background: #2c3e50;
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #445566;
+    }
+
+    .tab-stat-item {
+      text-align: center;
+      padding: 12px;
+    }
+
+    .tab-stat-label {
+      font-size: 11px;
+      color: #95a5a6;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .tab-stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #e74c3c;
+    }
+
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .tab-result-value {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Prototype 3: Tabs</h1>
+    <p class="subtitle">Design détaillé et éducatif</p>
+
+    <!-- Password Input -->
+    <div class="input-section">
+      <div class="input-label">🔐 Testez votre mot de passe</div>
+      <div class="password-wrapper">
+        <input 
+          type="password" 
+          id="passwordInput" 
+          placeholder="Entrez un mot de passe..."
+          autocomplete="off"
+        >
+        <button class="toggle-visibility" id="toggleBtn">👁️</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-wrapper">
+      <div class="tabs-header">
+        <div class="tab active" data-profile="experienced">
+          <span class="tab-emoji">💼</span>
+          <span class="tab-label">Expérimenté</span>
+        </div>
+        <div class="tab" data-profile="professional">
+          <span class="tab-emoji">🏢</span>
+          <span class="tab-label">Professionnel</span>
+        </div>
+        <div class="tab" data-profile="nationstate">
+          <span class="tab-emoji">🏛️</span>
+          <span class="tab-label">État-nation</span>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tabContent">
+        <!-- Content will be dynamically updated -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PROFILES = {
+      experienced: {
+        emoji: '💼',
+        name: 'Attaquant Expérimenté',
+        subtitle: '12× NVIDIA RTX 4090 GPUs',
+        badge: 'Baseline',
+        specs: [
+          { label: 'GPU Count', value: '12' },
+          { label: 'NTLM Speed', value: '3.5 TH/s' },
+          { label: 'MD5 Speed', value: '2.0 TH/s' },
+          { label: 'vs Amateur', value: '12×' }
+        ],
+        description: 'Représente un attaquant dédié avec du matériel commercial. Baseline bien documenté par Hive Systems 2025 et les benchmarks Hashcat. Ce profil est largement cité par Forbes, CNBC, BBC, et l\'US Army comme modèle de menace réaliste.',
+        hashRates: {
+          md5: 2.027e12, sha1: 610.3e9, sha256: 272.2e9,
+          ntlm: 3.462e12, bcrypt: 2.2e6, argon2: 800
+        }
+      },
+      professional: {
+        emoji: '🏢',
+        name: 'Attaquant Professionnel',
+        subtitle: '~100 GPUs via Cloud',
+        badge: '~8× Plus rapide',
+        specs: [
+          { label: 'GPU Count', value: '~100' },
+          { label: 'NTLM Speed', value: '28.8 TH/s' },
+          { label: 'MD5 Speed', value: '16.9 TH/s' },
+          { label: 'vs Expérimenté', value: '8.33×' }
+        ],
+        description: 'Attaquant à l\'échelle cloud utilisant des clusters GPU loués (AWS, Azure). Représente des groupes criminels organisés ou des équipes APT avec des ressources financières significatives. Ce niveau de capacité est commercialement disponible.',
+        hashRates: {
+          md5: 2.027e12 * 8.33, sha1: 610.3e9 * 8.33, sha256: 272.2e9 * 8.33,
+          ntlm: 3.462e12 * 8.33, bcrypt: 2.2e6 * 8.33, argon2: 800 * 8.33
+        }
+      },
+      nationstate: {
+        emoji: '🏛️',
+        name: 'Attaquant État-nation',
+        subtitle: '~10,000 GPUs (Estimation)',
+        badge: '~800× Plus rapide',
+        specs: [
+          { label: 'GPU Count', value: '~10,000' },
+          { label: 'NTLM Speed', value: '2.88 PH/s' },
+          { label: 'MD5 Speed', value: '1.69 PH/s' },
+          { label: 'vs Expérimenté', value: '833×' }
+        ],
+        description: 'Acteur menace niveau gouvernemental avec capacités classifiées (NSA, GCHQ, Unit 8200). Estimé sur base d\'infrastructures cloud publiques et recherche académique. Capacités réelles sont classifiées et probablement significativement supérieures. Note : Même à ce niveau extrême, bcrypt et Argon2id restent cryptographiquement sécurisés.',
+        hashRates: {
+          md5: 2.027e12 * 833, sha1: 610.3e9 * 833, sha256: 272.2e9 * 833,
+          ntlm: 3.462e12 * 833, bcrypt: 2.2e6 * 833, argon2: 800 * 833
+        }
+      }
+    };
+
+    let currentProfile = 'experienced';
+    let currentPassword = '';
+    let currentCalc = null;
+
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const tabs = document.querySelectorAll('.tab');
+    const tabContent = document.getElementById('tabContent');
+
+    toggleBtn.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      toggleBtn.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const profile = tab.dataset.profile;
+        if (profile === currentProfile) return;
+
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentProfile = profile;
+
+        updateTabContent(profile);
+        localStorage.setItem('attackerProfile', profile);
+      });
+    });
+
+    passwordInput.addEventListener('input', (e) => {
+      currentPassword = e.target.value;
+      if (currentPassword) {
+        currentCalc = calculateCrackTime(currentPassword);
+      } else {
+        currentCalc = null;
+      }
+      updateTabContent(currentProfile);
+    });
+
+    function updateTabContent(profile) {
+      const data = PROFILES[profile];
+
+      const specsHTML = data.specs.map(spec => `
+        <div class="spec-card">
+          <div class="spec-label">${spec.label}</div>
+          <div class="spec-value">${spec.value}</div>
+        </div>
+      `).join('');
+
+      const hasPassword = currentCalc !== null;
+      const resultClass = hasPassword ? '' : 'empty';
+      const resultValue = hasPassword ? formatTime(currentCalc.fastestTime) : '—';
+      const resultAttack = hasPassword ? 'Brute force' : 'En attente...';
+      const resultAlgo = hasPassword ? `<span class="tab-result-algo">${currentCalc.fastestAlgo}</span>` : '';
+
+      const statsHTML = hasPassword ? `
+        <div class="tab-stat-item">
+          <div class="tab-stat-label">Longueur</div>
+          <div class="tab-stat-value">${currentCalc.length}</div>
+        </div>
+        <div class="tab-stat-item">
+          <div class="tab-stat-label">Charset</div>
+          <div class="tab-stat-value">${currentCalc.charset}</div>
+        </div>
+        <div class="tab-stat-item">
+          <div class="tab-stat-label">Entropie</div>
+          <div class="tab-stat-value">${currentCalc.entropy.toFixed(1)} bits</div>
+        </div>
+        <div class="tab-stat-item">
+          <div class="tab-stat-label">Combinaisons</div>
+          <div class="tab-stat-value">${formatNumber(currentCalc.combinations)}</div>
+        </div>
+      ` : `
+        <div class="tab-stat-item">
+          <div class="tab-stat-label">Longueur</div>
+          <div class="tab-stat-value">—</div>
+        </div>
+        <div class="tab-stat-item">
+          <div class="tab-stat-label">Charset</div>
+          <div class="tab-stat-value">—</div>
+        </div>
+        <div class="tab-stat-item">
+          <div class="tab-stat-label">Entropie</div>
+          <div class="tab-stat-value">—</div>
+        </div>
+        <div class="tab-stat-item">
+          <div class="tab-stat-label">Combinaisons</div>
+          <div class="tab-stat-value">—</div>
+        </div>
+      `;
+
+      tabContent.style.opacity = '0';
+      
+      setTimeout(() => {
+        tabContent.innerHTML = `
+          <div class="profile-header">
+            <span class="profile-emoji-large">${data.emoji}</span>
+            <div class="profile-title">
+              <div class="profile-name">${data.name}</div>
+              <div class="profile-subtitle">${data.subtitle}</div>
+            </div>
+            <div class="profile-badge">${data.badge}</div>
+          </div>
+
+          <div class="specs-grid">
+            ${specsHTML}
+          </div>
+
+          <div class="profile-description">
+            ${data.description}
+          </div>
+
+          <div class="tab-result ${resultClass}">
+            <div class="tab-result-label">⚡ Temps d'attaque le plus rapide</div>
+            <div class="tab-result-value">${resultValue}</div>
+            <div class="tab-result-detail">
+              <span>${resultAttack}</span>
+              ${resultAlgo}
+            </div>
+          </div>
+
+          <div class="tab-stats">
+            ${statsHTML}
+          </div>
+        `;
+        
+        tabContent.style.opacity = '1';
+      }, 150);
+    }
+
+    function calculateCrackTime(password) {
+      const length = password.length;
+      const hasLower = /[a-z]/.test(password);
+      const hasUpper = /[A-Z]/.test(password);
+      const hasDigit = /[0-9]/.test(password);
+      const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+
+      let charset = 0;
+      if (hasLower) charset += 26;
+      if (hasUpper) charset += 26;
+      if (hasDigit) charset += 10;
+      if (hasSymbol) charset += 32;
+
+      const entropy = length * Math.log2(charset || 1);
+      const combinations = Math.pow(charset || 1, length);
+
+      const rates = PROFILES[currentProfile].hashRates;
+      let fastestTime = Infinity;
+      let fastestAlgo = 'MD5';
+
+      Object.entries(rates).forEach(([algo, rate]) => {
+        const timeSeconds = combinations / rate;
+        if (timeSeconds < fastestTime) {
+          fastestTime = timeSeconds;
+          fastestAlgo = algo.toUpperCase();
+        }
+      });
+
+      return { length, charset, entropy, combinations, fastestTime, fastestAlgo };
+    }
+
+    function formatTime(seconds) {
+      if (seconds < 0.001) return 'Instantané';
+      if (seconds < 1) return (seconds * 1000).toFixed(0) + ' ms';
+      if (seconds < 60) return seconds.toFixed(1) + ' sec';
+      if (seconds < 3600) return (seconds / 60).toFixed(1) + ' min';
+      if (seconds < 86400) return (seconds / 3600).toFixed(1) + ' heures';
+      if (seconds < 2592000) return (seconds / 86400).toFixed(1) + ' jours';
+      if (seconds < 31536000) return (seconds / 2592000).toFixed(1) + ' mois';
+      
+      const years = seconds / 31536000;
+      if (years < 100) return years.toFixed(1) + ' ans';
+      if (years < 10000) return (years / 100).toFixed(1) + ' siècles';
+      if (years < 1000000) return (years / 1000).toFixed(1) + ' millénaires';
+      
+      return '> univers';
+    }
+
+    function formatNumber(num) {
+      if (num < 1000) return num.toFixed(0);
+      if (num < 1e6) return (num / 1e3).toFixed(1) + 'K';
+      if (num < 1e9) return (num / 1e6).toFixed(1) + 'M';
+      if (num < 1e12) return (num / 1e9).toFixed(1) + 'B';
+      if (num < 1e15) return (num / 1e12).toFixed(1) + 'T';
+      return (num / 1e15).toFixed(1) + 'P';
+    }
+
+    // Initial load
+    updateTabContent('experienced');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('attackerProfile');
+      if (saved && PROFILES[saved]) {
+        tabs.forEach(t => {
+          if (t.dataset.profile === saved) t.click();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

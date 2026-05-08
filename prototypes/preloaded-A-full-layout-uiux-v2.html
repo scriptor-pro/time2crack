@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype A v2 — Clarity Stack</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.proto-label { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #0f766e; color: #fff; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px; }
+body { padding-top: 30px; }
+
+.ux-block { margin-top: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-alt); overflow: hidden; }
+.ux-block h2 { margin: 0; padding: 12px 14px; font-size: 15px; border-bottom: 1px solid var(--border); }
+.ux-content { padding: 12px; }
+
+.crack-hero { display: grid; gap: 10px; }
+.crack-main { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 12px; }
+.crack-main .kicker { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.crack-main .value { font-size: clamp(1.3rem, 5vw, 2rem); font-weight: 700; margin-top: 4px; }
+.crack-main .support { margin-top: 6px; color: var(--text-muted); font-size: 13px; }
+
+.profile-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.profile-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 10px; }
+.profile-card strong { display: block; font-size: 13px; }
+.profile-card span { color: var(--text-muted); font-size: 12px; }
+
+.method-strip { display: grid; gap: 8px; margin-top: 10px; }
+.method-step { border-left: 3px solid var(--accent); background: var(--surface); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+
+.attacks-list { display: grid; gap: 8px; }
+.attack-item { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.attack-item summary { list-style: none; cursor: pointer; padding: 10px 12px; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 600; }
+.attack-item summary::-webkit-details-marker { display: none; }
+.attack-meta { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+.attack-body { border-top: 1px solid var(--border); padding: 10px 12px; display: grid; gap: 8px; font-size: 13px; }
+.attack-body a { font-size: 12px; }
+
+@media (min-width: 760px) {
+  .profile-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="proto-label">Prototype A v2 · Clarity Stack · temps + attaques + méthode fusionnées</div>
+
+<header class="site-header">
+  <div class="header-left">
+    <a href="#" class="logo-link" aria-label="Time2Crack">
+      <span class="logo-text"><span class="logo-time">Time</span><span class="logo-2">2</span><span class="logo-crack">Crack</span></span>
+    </a>
+  </div>
+</header>
+
+<main id="main-content" role="main">
+  <section class="input-section">
+    <p class="subtitle">Version prototype orientee lisibilite: un seul parcours de lecture, du verdict vers la preuve.</p>
+
+    <div class="password-wrapper-row">
+      <div class="password-wrapper">
+        <input type="password" id="password-input" placeholder="Testez votre mot de passe" autocomplete="off" spellcheck="false" />
+        <button type="button" id="toggle-visibility" aria-label="Afficher">Voir</button>
+      </div>
+      <button type="button" id="reset-btn" class="reset-btn-inline" aria-label="Reset">Reset</button>
+    </div>
+
+    <div class="ux-block">
+      <h2>Temps de craquage</h2>
+      <div class="ux-content crack-hero">
+        <div class="crack-main">
+          <div class="kicker">Scenario par defaut</div>
+          <div class="value" id="main-crack-time">Entrez un mot de passe</div>
+          <p class="support" id="main-crack-note">Le resultat principal apparait ici avec le type d'attaque dominant.</p>
+        </div>
+
+        <div class="profile-grid" aria-label="Comparaison profils attaquants">
+          <article class="profile-card"><strong>Amateur</strong><span id="t-amateur">--</span></article>
+          <article class="profile-card"><strong>Experimente (12 GPU)</strong><span id="t-experienced">--</span></article>
+          <article class="profile-card"><strong>Professionnel (100 GPU)</strong><span id="t-pro">--</span></article>
+        </div>
+      </div>
+    </div>
+
+    <div class="ux-block">
+      <h2>Description des attaques + Methodologie et sources</h2>
+      <div class="ux-content">
+        <div class="method-strip" aria-label="Methodologie en 4 etapes">
+          <div class="method-step"><strong>1. Profil du mot de passe:</strong> longueur, diversite de caracteres, motifs predictibles.</div>
+          <div class="method-step"><strong>2. Modeles d'attaque:</strong> 10 attaques simulees, de brute force a PCFG.</div>
+          <div class="method-step"><strong>3. Materiel attaquant:</strong> base 12 RTX 4090, profils plus faibles/forts compares.</div>
+          <div class="method-step"><strong>4. Sources:</strong> Hashcat, Hive Systems, USENIX, HIBP.</div>
+        </div>
+
+        <div class="attacks-list" style="margin-top:10px;">
+          <details class="attack-item" open>
+            <summary>
+              <span>Brute force</span>
+              <span class="attack-meta">Explore tout l'espace de recherche</span>
+            </summary>
+            <div class="attack-body">
+              <p>Test systematique de toutes les combinaisons. Plus le mot de passe est long, plus la difficulte explose.</p>
+              <a href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler" target="_blank" rel="noopener">Source USENIX Security</a>
+            </div>
+          </details>
+
+          <details class="attack-item">
+            <summary>
+              <span>Dictionnaire + hybride</span>
+              <span class="attack-meta">Le plus realiste pour les mots humains</span>
+            </summary>
+            <div class="attack-body">
+              <p>Teste des mots connus puis leurs variations frequentes (majuscule, chiffres, substitutions).</p>
+              <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Source HIBP</a>
+            </div>
+          </details>
+
+          <details class="attack-item">
+            <summary>
+              <span>Attaques structurelles (Mask, Markov, PCFG)</span>
+              <span class="attack-meta">Exploite les habitudes de construction</span>
+            </summary>
+            <div class="attack-body">
+              <p>Privilegie des structures probables comme Mot+Annee ou Majuscule+minuscule+chiffres.</p>
+              <a href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler" target="_blank" rel="noopener">Source probabiliste</a>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const input = document.getElementById('password-input');
+const toggle = document.getElementById('toggle-visibility');
+const resetBtn = document.getElementById('reset-btn');
+
+toggle.addEventListener('click', () => {
+  input.type = input.type === 'password' ? 'text' : 'password';
+  toggle.textContent = input.type === 'password' ? 'Voir' : 'Masquer';
+});
+
+resetBtn.addEventListener('click', () => {
+  input.value = '';
+  input.dispatchEvent(new Event('input'));
+  input.focus();
+});
+
+input.addEventListener('input', () => {
+  const effectivePw = input.value && input.value.length ? input.value : 'DemoPassphrase2026!';
+  const n = effectivePw.length;
+  const weak = n < 8;
+  const medium = n >= 8 && n < 13;
+
+  const main = document.getElementById('main-crack-time');
+  const note = document.getElementById('main-crack-note');
+  const tA = document.getElementById('t-amateur');
+  const tE = document.getElementById('t-experienced');
+  const tP = document.getElementById('t-pro');
+
+  if (weak) {
+    main.textContent = 'Instantane';
+    note.textContent = 'Mot de passe prioritaire pour dictionnaire/hybride.';
+    tA.textContent = 'moins de 1 s';
+    tE.textContent = 'instantane';
+    tP.textContent = 'instantane';
+  } else if (medium) {
+    main.textContent = 'De quelques heures a quelques jours';
+    note.textContent = 'Depend surtout des structures detectees et du hash choisi.';
+    tA.textContent = '2 a 20 jours';
+    tE.textContent = '4 a 36 h';
+    tP.textContent = 'moins de 3 h';
+  } else {
+    main.textContent = 'Tres long (annees a millenaires)';
+    note.textContent = 'La longueur rend les attaques non ciblées peu rentables.';
+    tA.textContent = 'plusieurs millenaires';
+    tE.textContent = 'plusieurs annees';
+    tP.textContent = 'mois a annees';
+  }
+});
+
+input.dispatchEvent(new Event('input'));
+</script>
+</body>
+</html>

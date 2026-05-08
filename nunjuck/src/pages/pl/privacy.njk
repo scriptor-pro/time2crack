@@ -1,0 +1,259 @@
+---
+lang: pl
+permalink: "/pl/privacy.html"
+layout: base.njk
+currentPage: privacy
+pageSlug: privacy.html
+mainClass: privacy-page
+pageTitle: "Prywatność i bezpieczeństwo — Time2Crack"
+pageDescription: "Dowiedz się, jak Time2Crack przetwarza dane: lokalne obliczenia w przeglądarce, bez wysyłania hasła i z minimalnymi sprawdzeniami."
+---
+
+<h1>Prywatność i bezpieczeństwo</h1>
+<p style="font-size: 1.05em; color: #666; margin-bottom: 2em;">
+      Zrozum dokładnie co Time2Crack robi, a nie robi z twoim hasłem
+    </p>
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+Co TIME2CRACK robi
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+<section>
+<h2>Co Time2Crack robi</h2>
+<div class="privacy-section">
+<h3>1. Skanowanie lokalne w przeglądarce</h3>
+<ul class="does-list">
+<li><strong>Otrzymuj swoje hasło</strong> Tylko kiedy wpisujesz to w polu</li>
+<li><strong>Oblicz w lokalnym</strong> wszystkie szeregi ataku (surowa siła, słownik, Markov, itp.)</li>
+<li><strong>Pokaż wyniki</strong> bezpośrednio na ekranie</li>
+<li><strong>Zapomnij o haśle</strong> po opuszczeniu lub zmianie strony</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin-top: 1em;">
+          Twoja przeglądarka nigdzie nie wysyła hasła - pozostaje tylko w lokalnej pamięci RAM podczas skanowania.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>2. Fakultatywna weryfikacja HIBP (Czy jestem Pwned)</h3>
+<p>
+          Jeśli zaznaczysz opcję "Sprawdź znane przecieki", Time2Crack może sprawdzić, czy Twoje hasło pojawia się w historycznych przeciekach. <strong>k- anonimowość</strong> by chronić twoją prywatność.
+        </p>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Jak działa k- anonimowość</h4>
+<div class="flow-diagram">
+<div class="flow-step">
+<div class="flow-number">1</div>
+<div class="flow-content">
+<p><strong>Obliczanie haszu SHA-1</strong> (na komputerze)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack oblicza pełen hash SHA-1 hasła, ale <strong>Nigdy go nie zostawiaj.</strong>.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">2</div>
+<div class="flow-content">
+<p><strong>Ekstrakcja przedrostka</strong> (5 pierwszych znaków)</p>
+<p style="color: #666; margin-top: 0.3em;">Tylko 5 pierwszych znaków haszu jest wysyłanych do HIBP. Identyfikacja hasła jest niewystarczająca.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">3</div>
+<div class="flow-content">
+<p><strong>Anonimowy wniosek do HIBP</strong></p>
+<p style="color: #666; margin-top: 0.3em;">HiBP zwraca wszystkie hasła, które zaczynają się od tego przedrostka (około 500- 1000 anonimowych wyników).</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">4</div>
+<div class="flow-content">
+<p><strong>Porównanie lokalne</strong> (na komputerze)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack porównuje pozostałe 35 znaków haszu lokalnie. Tylko twój komputer wie, czy jest to dopasowanie.</p>
+</div>
+</div>
+</div>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Przykład betonu: hasło</h4>
+<div class="example-box">
+<div class="example-title">Krok po kroku</div>
+<div class="hash-row">
+<span class="hash-label">Hasło:</span>
+<span class="hash-value"><code>password</code></span>
+</div>
+<div class="hash-row">
+<span class="hash-label">Kompletny Hash SHA-1:</span>
+<span class="hash-value">
+<code>5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+</span>
+</div>
+<div style="margin: 1em 0; padding: 1em; background: #f0f0f0; border-radius: 4px; border-left: 4px solid #2196F3;">
+<p style="margin-top: 0; color: #666; font-size: 0.9em;"><strong>SPLIT</strong></p>
+<div class="hash-row" style="margin-top: 0.8em;">
+<span class="hash-label"><span class="hash-sent">Wysłany do HIBP</span> :</span>
+<span class="hash-value">
+<code class="hash-sent">5BAA6</code>
+<span style="color: #666; font-size: 0.85em;"> (5 znaków = ~ 2000 możliwych hashs)</span>
+</span>
+</div>
+<div class="hash-row">
+<span class="hash-label"><span class="hash-local">Lokalnie zachowane</span> :</span>
+<span class="hash-value">
+<code class="hash-local">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+<span style="color: #666; font-size: 0.85em;"> (35 znaków, nigdy nie przesłane)</span>
+</span>
+</div>
+</div>
+<div style="margin-top: 1em; padding: 1em; background: #e8f5e9; border-radius: 4px; border-left: 4px solid #388e3c;">
+<p style="margin: 0; color: #1b5e20; font-weight: 500;">
+               <code>5BAA6</code> (~ 500- 1000 wyników).
+              <br>Time2Crack porównuje lokalnie i określa, czy jest to mecz. <strong>Twoje pełne hasło nigdy nie opuszcza urządzenia.</strong>
+</p>
+</div>
+</div>
+<p style="font-size: 0.9em; color: #666; margin-top: 1.5em;">
+<strong>Dlaczego 5 znaków wystarczy na k- anonimowość:</strong>
+          Z 5 znaków szesnastkowych, istnieje 16 ^ 5 = 1,048,576 możliwych kombinacji. HIBP zwraca około 500- 1000 wyników dla każdego przedrostka, tworząc masę krytyczną, gdzie hasło jest anonimowe wśród setek innych.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>3. Przechowywanie danych</h3>
+<ul class="does-list">
+<li><strong>Użyj localStorage przeglądarki</strong> tylko dla ustawień użytkownika (język, preferencje)</li>
+<li><strong>Brak kopii zapasowej hasła</strong> lub wyniki dotyczące czasu pęknięcia</li>
+<li><strong>Automatycznie wykasuj</strong> hasło pamięci po analizie</li>
+</ul>
+</div>
+</section>
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+Co TIME2Crack nie robi
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+<section>
+<h2>Co Time2Crack NIE robi</h2>
+<div class="privacy-section">
+<h3>1. Transmisja haseł</h3>
+<ul class="does-list doesnt-list">
+<li>Nie wysyłaj <span class="highlight-red">Nigdy</span> Twoje hasło do naszych serwerów lub stron trzecich</li>
+<li>Nie wysyłaj <span class="highlight-red">Nigdy</span> Twoje hasło do HIBP lub innych usług</li>
+<li>Nie wysyłaj <span class="highlight-red">Nigdy</span> kompletny hash SHA-1 (tylko 5 znaków)</li>
+<li>Zapis <span class="highlight-red">Nigdy</span> testowane hasła</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>2. Wykorzystanie danych</h3>
+<ul class="does-list doesnt-list">
+<li>Zachowaj <span class="highlight-red">Brak śladów</span> aktywności lub testowanych haseł</li>
+<li>Tworzy <span class="highlight-red">brak profilu użytkownika</span> związane z danymi osobowymi</li>
+<li>Nie udostępniaj <span class="highlight-red">brak informacji</span> z osobami trzecimi (reklamodawcami, partnerami itp.)</li>
+<li>Nie sprzedawać <span class="highlight-red">Nigdy</span> Twoje dane</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Przechowywanie trwa</h3>
+<ul class="does-list doesnt-list">
+<li>Spis treści <span class="highlight-red">brak bazy danych</span> hasła użytkownika</li>
+<li>Zapisz <span class="highlight-red">brak historii</span> obliczenia lub wyniki</li>
+<li>Nie wymaga <span class="highlight-red">brak konta użytkownika</span> lub rejestracji</li>
+</ul>
+</div>
+<div class="warning-box">
+<div class="warning-title">Ważne</div>
+<p style="margin: 0.5em 0 0;">
+          Nawet jeśli Time2Crack nigdy nie przekaże hasła, <strong>nie testuj swojego prawdziwego hasła tutaj, jeśli ktoś inny patrzy na ekran</strong>. Użyj hasła testowego lub skorzystaj z tego narzędzia na osobności.
+        </p>
+</div>
+</section>
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+TABELA PORÓWNAWCZA
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+<section>
+<h2>Streszczenie: Fakt vs.</h2>
+<table class="comparison-table">
+<thead>
+<tr>
+<th>Działanie</th>
+<th class="does-column">Time2Crack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Oblicz czasy pęknięcia</strong></td>
+<td class="does-column">Tak (lokalnie)</td>
+</tr>
+<tr>
+<td><strong>Wyślij pełne hasło</strong></td>
+<td class="doesnt-column">Nie.</td>
+</tr>
+<tr>
+<td><strong>Wyślij kompletny hash SHA-1</strong></td>
+<td class="doesnt-column">Nie.</td>
+</tr>
+<tr>
+<td><strong>Wyślij pierwsze 5 znaków haszu (k- anonimowość)</strong></td>
+<td class="does-column">Tak (jeśli kontrola HIBP włączona)</td>
+</tr>
+<tr>
+<td><strong>Zapisz hasła</strong></td>
+<td class="doesnt-column">Nie.</td>
+</tr>
+<tr>
+<td><strong>Utwórz konto użytkownika</strong></td>
+<td class="doesnt-column">Nie.</td>
+</tr>
+<tr>
+<td><strong>Wymiana danych z osobami trzecimi</strong></td>
+<td class="doesnt-column">Nie.</td>
+</tr>
+<tr>
+<td><strong>Użyj plików cookie śledzenia</strong></td>
+<td class="doesnt-column">Nie.</td>
+</tr>
+<tr>
+<td><strong>Wyświetlanie ogłoszeń</strong></td>
+<td class="doesnt-column">Nie.</td>
+</tr>
+<tr>
+<td><strong>Wykonaj zewnętrzny kod klienta</strong></td>
+<td class="doesnt-column">Nie (0 zależności)</td>
+</tr>
+</tbody>
+</table>
+</section>
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+WERYFIKACJA
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+<section>
+<h2>Jak sprawdzić even</h2>
+<div class="privacy-section">
+<h3>1. Narzędzia do opracowywania przeglądarki</h3>
+<ol style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Otwórz <strong>Narzędzia rozwojowe</strong> (F12 lub Cmd + Opcja + I)</li>
+<li>Przejdź do zakładki <strong>Sieć</strong> (Sieć)</li>
+<li>Wprowadź hasło testowe w Time2Crack</li>
+<li>Oglądaj zapytania sieciowe: nie zobaczysz <strong>że</strong> Zapytanie HiBP z przedrostkiem 5- char</li>
+<li>Pełne hasło nie pojawia się <strong>Nigdy</strong> we wnioskach</li>
+</ol>
+</div>
+<div class="privacy-section">
+<h3>2. Patrz kod źródłowy</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Time2Crack <strong>100% otwarte źródło</strong> w sprawie Codeberg</li>
+<li>Kod zawiera <strong>zero zależności zewnętrznych</strong> - To czysty JavaScript.</li>
+<li>Możesz sprawdzić <code>app.js</code> oraz sprawdzić, czy:
+            <ul style="margin-top: 0.5em;">
+<li>Hasła są zawsze lokalne</li>
+<li>Tylko przedrostek HiBP 5-char jest wysyłany</li>
+<li>Brak śledzenia plików cookie lub analizy osobistej</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Test w trybie offline</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Możesz użyć Time2Crack <strong>całkowicie offline</strong></li>
+<li>Pobierz pliki i otwórz <code>index.html</code> Lokalne</li>
+<li>Wszystkie obliczenia działają bez podłączenia (z wyjątkiem opcjonalnej weryfikacji HIBP)</li>
+</ul>
+</div>
+</section>
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+FOOTER
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+<section style="margin-top: 3em; padding-top: 2em; border-top: 1px solid #eee;">
+<p style="color: #999; font-size: 0.9em;">
+<strong>Pytania?</strong> Patrz <a href="faq.html">FAQ</a> lub <a href="sources.html">źródła akademickie</a> Więcej informacji na temat metodologii Time2Crack.
+      </p>
+</section>

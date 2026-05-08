@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype A — Dashboard complet</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<style>
+:root {
+  --bg: #0D1116;
+  --surface: #0D1116;
+  --surface-alt: #161B23;
+  --surface-elev: #1C232D;
+  --border: #2E3642;
+  --border-strong: #3A4452;
+  --text: #e8e6e3;
+  --text-muted: #9a9aa1;
+  --text-lighter: #b0adaa;
+  --critical: #EB4949;
+  --critical-dim: #EB494922;
+  --danger: #e65100;
+  --warning: #d97706;
+  --success: #16A34A;
+  --excellent: #10b981;
+  --exceptional: #0891B2;
+  --accent: #ff6600;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-display: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-display);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ========== HEADER ========== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem clamp(1rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-size: 1.1rem; font-weight: 700; }
+.logo span { color: var(--accent); }
+
+/* ========== MAIN LAYOUT ========== */
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1rem clamp(0.75rem, 3vw, 1.5rem);
+}
+
+/* ========== INPUT ========== */
+.input-section { margin-bottom: 1rem; }
+.input-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+.password-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 0.75rem;
+  transition: border-color 0.2s;
+}
+.password-wrapper:focus-within { border-color: var(--accent); }
+.password-wrapper input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.1rem;
+  font-family: var(--font-mono);
+  padding: 0.85rem 0;
+  outline: none;
+}
+.password-wrapper input::placeholder { color: var(--text-muted); opacity: 0.6; }
+.icon-btn {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; padding: 0.4rem; border-radius: 6px;
+}
+.icon-btn:hover { color: var(--text); background: var(--surface-elev); }
+
+/* ========== STRENGTH BAR ========== */
+.strength-section { margin-top: 0.6rem; }
+.bar-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+  min-height: 1.4rem;
+}
+.bar-label .icon { font-size: 1rem; }
+.bar-label .label-text { font-weight: 600; }
+.bar-label .bits { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.78rem; }
+.strength-bar {
+  display: flex; gap: 3px; height: 6px;
+}
+.strength-bar .seg {
+  flex: 1; border-radius: 3px;
+  background: var(--surface-elev);
+  transition: background 0.3s;
+}
+.strength-bar .seg.active-critical { background: var(--critical); }
+.strength-bar .seg.active-danger { background: var(--danger); }
+.strength-bar .seg.active-warning { background: var(--warning); }
+.strength-bar .seg.active-success { background: var(--success); }
+.strength-bar .seg.active-excellent { background: var(--excellent); }
+.strength-bar .seg.active-exceptional { background: var(--exceptional); }
+
+/* ========== CRACK TIME (hero) ========== */
+.crack-hero {
+  text-align: center;
+  padding: 1.2rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  margin-top: 1rem;
+  transition: border-color 0.3s;
+}
+.crack-hero.has-value { border-color: var(--border-strong); }
+.crack-hero .attack-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+.crack-hero .duration {
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+  transition: color 0.3s;
+}
+.crack-hero .duration.empty { color: var(--text-muted); opacity: 0.4; }
+.crack-hero .duration.instant { color: var(--critical); }
+.crack-hero .duration.short { color: var(--danger); }
+.crack-hero .duration.medium { color: var(--warning); }
+.crack-hero .duration.long { color: var(--success); }
+.crack-hero .crack-date {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+.crack-hero .sentence {
+  font-size: 0.8rem;
+  color: var(--text-lighter);
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+/* ========== HEATMAP ========== */
+.heatmap-section {
+  margin-top: 0.9rem;
+  padding: 0.7rem 0.8rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  min-height: 3.4rem;
+}
+.heatmap-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 1.8rem;
+  align-items: center;
+}
+.heatmap-row.empty {
+  justify-content: center;
+}
+.heatmap-row.empty::after {
+  content: "Analyse caractère par caractère";
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+.heatmap-char {
+  width: 1.6rem; height: 1.6rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.heatmap-char.strong { background: #16A34A44; color: #4ade80; }
+.heatmap-char.medium { background: #d9770644; color: #fbbf24; }
+.heatmap-char.weak { background: #EB494944; color: #f87171; }
+
+.heatmap-legend {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.4rem;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+.legend-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+.legend-dot.strong { background: #4ade80; }
+.legend-dot.medium { background: #fbbf24; }
+.legend-dot.weak { background: #f87171; }
+
+/* ========== STATS GRID (4 boxes) ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+.stat-box {
+  text-align: center;
+  padding: 0.6rem 0.3rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  transition: border-color 0.3s;
+}
+.stat-box.has-value { border-color: var(--border-strong); }
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  transition: color 0.3s;
+}
+.stat-value.empty { color: var(--text-muted); opacity: 0.3; }
+.stat-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* ========== ANALYSIS BADGES (2 rows) ========== */
+.analysis-bar {
+  margin-top: 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.analysis-row {
+  display: flex;
+  flex-direction: column;
+  padding: 0.55rem clamp(0.6rem, 3vw, 1rem);
+  gap: 0.35rem;
+}
+.analysis-row + .analysis-row { border-top: 1px solid var(--border); }
+.row-title {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+.row-badges {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+.badge-info { display: flex; flex-direction: column; gap: 0.1rem; }
+.badge-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.badge-desc {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+.badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--surface-elev);
+  transition: background 0.3s;
+}
+.badge.empty { color: var(--text-muted); }
+.badge.critical { background: var(--critical); }
+.badge.success { background: var(--success); }
+.badge.warning { background: var(--warning); }
+.badge.clickable {
+  cursor: pointer;
+  border: 1px dashed var(--text-muted);
+  background: transparent;
+  color: var(--text-muted);
+}
+.badge.clickable:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ========== HELPER TEXT ========== */
+.waiting-text {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+  font-style: italic;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 400px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .row-badges { flex-direction: column; gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Time<span>2</span>Crack</div>
+  <span style="font-size:0.75rem; color:var(--text-muted)">Prototype A — Dashboard</span>
+</header>
+
+<main>
+  <!-- INPUT -->
+  <section class="input-section">
+    <p class="input-label">Testez votre mot de passe</p>
+    <div class="password-wrapper">
+      <input type="password" id="pw" placeholder="Entrez un mot de passe..." autocomplete="off" spellcheck="false">
+      <button class="icon-btn" id="toggle-vis" aria-label="Afficher">👁</button>
+    </div>
+  </section>
+
+  <!-- STRENGTH BAR -->
+  <section class="strength-section">
+    <div class="bar-label" id="bar-label">
+      <span class="icon" id="str-icon">—</span>
+      <span class="label-text" id="str-text">—</span>
+      <span class="bits" id="str-bits">—</span>
+    </div>
+    <div class="strength-bar">
+      <div class="seg" id="seg0"></div>
+      <div class="seg" id="seg1"></div>
+      <div class="seg" id="seg2"></div>
+      <div class="seg" id="seg3"></div>
+      <div class="seg" id="seg4"></div>
+      <div class="seg" id="seg5"></div>
+    </div>
+  </section>
+
+  <!-- CRACK TIME HERO -->
+  <section class="crack-hero" id="crack-hero">
+    <div class="attack-label" id="attack-label">Attaquant expérimenté · 12× RTX 4090</div>
+    <div class="duration empty" id="duration">Temps de craquage</div>
+    <div class="crack-date" id="crack-date"></div>
+    <p class="sentence" id="sentence"></p>
+  </section>
+
+  <!-- HEATMAP -->
+  <section class="heatmap-section">
+    <div class="heatmap-row empty" id="heatmap"></div>
+    <div class="heatmap-legend">
+      <span><span class="legend-dot strong"></span> Imprévisible</span>
+      <span><span class="legend-dot medium"></span> Modéré</span>
+      <span><span class="legend-dot weak"></span> Prévisible</span>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-grid">
+    <div class="stat-box" id="box-len">
+      <div class="stat-value empty" id="val-len">—</div>
+      <div class="stat-label">Caractères</div>
+    </div>
+    <div class="stat-box" id="box-cs">
+      <div class="stat-value empty" id="val-cs">—</div>
+      <div class="stat-label">Taille du jeu</div>
+    </div>
+    <div class="stat-box" id="box-ent">
+      <div class="stat-value empty" id="val-ent">—</div>
+      <div class="stat-label">Bits d'entropie</div>
+    </div>
+    <div class="stat-box" id="box-combos">
+      <div class="stat-value empty" id="val-combos">—</div>
+      <div class="stat-label">Combinaisons</div>
+    </div>
+  </section>
+
+  <!-- ANALYSIS BADGES -->
+  <section class="analysis-bar">
+    <!-- Row 1: Analyse -->
+    <div class="analysis-row">
+      <div class="row-title">Analyse</div>
+      <div class="row-badges">
+        <div class="badge-group">
+          <div class="badge-info">
+            <span class="badge-label">🎲 Entropie</span>
+            <span class="badge-desc">Longueur + Variété + Imprévisibilité</span>
+          </div>
+          <span class="badge empty" id="badge-entropy">—</span>
+        </div>
+        <div class="badge-group">
+          <div class="badge-info">
+            <span class="badge-label">📊 Structure</span>
+            <span class="badge-desc">L'arrangement est-il reconnaissable ?</span>
+          </div>
+          <span class="badge empty" id="badge-struct">—</span>
+        </div>
+      </div>
+    </div>
+    <!-- Row 2: Fuites -->
+    <div class="analysis-row">
+      <div class="row-title">Votre mot de passe a-t-il déjà été piraté ?</div>
+      <div class="row-badges">
+        <div class="badge-group">
+          <div class="badge-info">
+            <span class="badge-label">🔒 HIBP</span>
+            <span class="badge-desc">~14 milliards de mots de passe</span>
+          </div>
+          <span class="badge empty" id="badge-hibp">En attente</span>
+        </div>
+        <div class="badge-group">
+          <div class="badge-info">
+            <span class="badge-label">💀 RockYou</span>
+            <span class="badge-desc">Cliquer pour vérifier · 17 MB</span>
+          </div>
+          <span class="badge clickable" id="badge-rockyou">Vérifier</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const pw = document.getElementById('pw');
+const toggleVis = document.getElementById('toggle-vis');
+let visible = false;
+
+toggleVis.addEventListener('click', () => {
+  visible = !visible;
+  pw.type = visible ? 'text' : 'password';
+  toggleVis.textContent = visible ? '🙈' : '👁';
+});
+
+// Simulated analysis
+const levels = [
+  { max: 20, icon: '💀', text: 'Très faible', color: 'critical', segs: 1, durClass: 'instant' },
+  { max: 40, icon: '⚠️', text: 'Faible', color: 'danger', segs: 2, durClass: 'short' },
+  { max: 60, icon: '◐', text: 'Moyen', color: 'warning', segs: 3, durClass: 'medium' },
+  { max: 80, icon: '✓', text: 'Bon', color: 'success', segs: 4, durClass: 'long' },
+  { max: 120, icon: '🔥', text: 'Excellent', color: 'excellent', segs: 5, durClass: 'long' },
+  { max: Infinity, icon: '✨', text: 'Exceptionnel', color: 'exceptional', segs: 6, durClass: 'long' },
+];
+
+const segClasses = ['active-critical','active-danger','active-warning','active-success','active-excellent','active-exceptional'];
+const durations = ['Instantané','2 minutes','3 jours','218 millions d\'années','10¹⁸ années','10⁴² années'];
+const crackDates = ['','Maintenant','Jeudi prochain','Après la mort du soleil','Jamais','Jamais'];
+
+function charStrength(c, i, pw) {
+  if (/[0-9]/.test(c)) return i < 3 || i === pw.length - 1 ? 'weak' : 'medium';
+  if (/[!@#$%^&*]/.test(c)) return 'strong';
+  if (/[A-Z]/.test(c)) return i === 0 ? 'weak' : 'strong';
+  if (/[a-z]/.test(c)) return 'medium';
+  return 'strong';
+}
+
+pw.addEventListener('input', () => {
+  const v = pw.value;
+  const len = v.length;
+
+  // Charset
+  let cs = 0;
+  if (/[a-z]/.test(v)) cs += 26;
+  if (/[A-Z]/.test(v)) cs += 26;
+  if (/[0-9]/.test(v)) cs += 10;
+  if (/[^a-zA-Z0-9]/.test(v)) cs += 33;
+
+  const ent = len > 0 ? Math.round(len * Math.log2(Math.max(cs, 2))) : 0;
+  const combos = len > 0 ? Math.pow(cs || 2, len) : 0;
+
+  // Level
+  const lvl = levels.find(l => ent < l.max) || levels[5];
+  const lvlIdx = levels.indexOf(lvl);
+
+  // Strength bar
+  for (let i = 0; i < 6; i++) {
+    const seg = document.getElementById('seg' + i);
+    seg.className = 'seg';
+    if (len > 0 && i < lvl.segs) seg.classList.add(segClasses[i]);
+  }
+
+  // Bar label
+  document.getElementById('str-icon').textContent = len > 0 ? lvl.icon : '—';
+  document.getElementById('str-text').textContent = len > 0 ? lvl.text : '—';
+  document.getElementById('str-bits').textContent = len > 0 ? `(${ent} bits)` : '—';
+
+  // Duration
+  const dur = document.getElementById('duration');
+  if (len === 0) {
+    dur.textContent = 'Temps de craquage';
+    dur.className = 'duration empty';
+    document.getElementById('crack-date').textContent = '';
+    document.getElementById('sentence').textContent = '';
+  } else {
+    dur.textContent = durations[lvlIdx] || durations[0];
+    dur.className = 'duration ' + lvl.durClass;
+    document.getElementById('crack-date').textContent = crackDates[lvlIdx];
+    document.getElementById('sentence').textContent = `Déchiffré via Force brute sur SHA-256.`;
+    document.getElementById('crack-hero').classList.add('has-value');
+  }
+
+  // Heatmap
+  const hm = document.getElementById('heatmap');
+  if (len === 0) {
+    hm.innerHTML = '';
+    hm.className = 'heatmap-row empty';
+  } else {
+    hm.className = 'heatmap-row';
+    hm.innerHTML = [...v].map((c, i) => {
+      const s = charStrength(c, i, v);
+      const display = pw.type === 'password' ? '•' : c;
+      return `<span class="heatmap-char ${s}">${display}</span>`;
+    }).join('');
+  }
+
+  // Stats
+  const setVal = (id, val, boxId) => {
+    const el = document.getElementById(id);
+    const box = document.getElementById(boxId);
+    if (len === 0) {
+      el.textContent = '—';
+      el.className = 'stat-value empty';
+      box.classList.remove('has-value');
+    } else {
+      el.textContent = val;
+      el.className = 'stat-value';
+      box.classList.add('has-value');
+    }
+  };
+
+  setVal('val-len', len, 'box-len');
+  setVal('val-cs', cs || '—', 'box-cs');
+  setVal('val-ent', ent, 'box-ent');
+
+  let combosStr = '—';
+  if (len > 0) {
+    if (combos < 1e6) combosStr = Math.round(combos).toLocaleString('fr-FR');
+    else if (combos < 1e9) combosStr = (combos / 1e6).toFixed(1) + ' M';
+    else if (combos < 1e12) combosStr = (combos / 1e9).toFixed(1) + ' Md';
+    else combosStr = combos.toExponential(1);
+  }
+  setVal('val-combos', combosStr, 'box-combos');
+
+  // Badges
+  const be = document.getElementById('badge-entropy');
+  const bs = document.getElementById('badge-struct');
+  const bh = document.getElementById('badge-hibp');
+
+  if (len === 0) {
+    be.textContent = '—'; be.className = 'badge empty';
+    bs.textContent = '—'; bs.className = 'badge empty';
+    bh.textContent = 'En attente'; bh.className = 'badge empty';
+  } else {
+    be.textContent = lvl.text; be.className = 'badge ' + lvl.color;
+    bs.textContent = ent < 40 ? 'Trop court' : ent < 80 ? 'Reconnaissable' : 'Aléatoire';
+    bs.className = 'badge ' + (ent < 40 ? 'critical' : ent < 80 ? 'warning' : 'success');
+    bh.textContent = '⏳ Vérification...'; bh.className = 'badge warning';
+    setTimeout(() => {
+      if (pw.value === v) {
+        const leaked = len < 8;
+        bh.textContent = leaked ? '💀 Trouvé dans HIBP' : '✓ Non divulgué';
+        bh.className = leaked ? 'badge critical' : 'badge success';
+      }
+    }, 800);
+  }
+});
+</script>
+</body>
+</html>

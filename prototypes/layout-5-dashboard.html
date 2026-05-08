@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout 5 : Dashboard Pro — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800|jetbrains-mono:400,500,600&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1a1a1a;
+      --surface-3: #202020;
+      --text: #ffffff;
+      --text-muted: #a3a3a3;
+      --text-dim: #737373;
+      --accent: #3b82f6;
+      --accent-dim: #1e40af;
+      --border: #262626;
+      --border-bright: #404040;
+      --danger: #ef4444;
+      --danger-dim: #991b1b;
+      --warning: #f59e0b;
+      --warning-dim: #92400e;
+      --success: #10b981;
+      --success-dim: #065f46;
+      --mono: 'JetBrains Mono', 'SF Mono', monospace;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Layout en grid dense */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      grid-template-rows: 60px 1fr;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Header global */
+    .header {
+      grid-column: 1 / -1;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .logo {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-header {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-header:hover {
+      background: var(--surface-3);
+      border-color: var(--border-bright);
+      color: var(--text);
+    }
+
+    /* Sidebar gauche */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .sidebar-section {
+      margin-bottom: 32px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .input-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .input-box input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      padding: 8px 0;
+      outline: none;
+      letter-spacing: 0.05em;
+    }
+
+    .input-box input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .input-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 8px;
+    }
+
+    .strength-mini {
+      width: 100%;
+      height: 3px;
+      background: var(--surface-3);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .strength-mini-fill {
+      height: 100%;
+      width: 60%;
+      background: var(--warning);
+      transition: all 0.3s ease;
+    }
+
+    /* Quick stats sidebar */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      font-family: var(--mono);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Vulnerability badges */
+    .vuln-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .vuln-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .vuln-badge.critical {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: var(--danger-dim);
+      color: var(--danger);
+    }
+
+    .vuln-badge.warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: var(--warning-dim);
+      color: var(--warning);
+    }
+
+    .vuln-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Main content area */
+    .content {
+      background: var(--bg);
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .panel-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .panel-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      background: var(--surface-3);
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    .panel-body {
+      padding: 18px;
+    }
+
+    /* Hero result panel */
+    .hero-panel {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+      border-color: var(--danger-dim);
+    }
+
+    .hero-result {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .hero-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-time {
+      font-size: 64px;
+      font-weight: 800;
+      color: var(--danger);
+      line-height: 1;
+      font-family: var(--mono);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .hero-method {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    /* Attack matrix table */
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .matrix-table thead {
+      background: var(--surface-2);
+    }
+
+    .matrix-table th {
+      text-align: left;
+      padding: 10px 12px;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .matrix-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      color: var(--text-muted);
+    }
+
+    .matrix-table tbody tr:hover {
+      background: var(--surface-2);
+    }
+
+    .matrix-table .attack-name {
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+    }
+
+    .time-critical {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .time-safe {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    /* HIBP Panel */
+    .hibp-alert {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger-dim);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .hibp-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .hibp-content {
+      flex: 1;
+    }
+
+    .hibp-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--danger);
+      margin-bottom: 6px;
+    }
+
+    .hibp-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .hibp-count {
+      font-family: var(--mono);
+      font-weight: 700;
+      color: var(--danger);
+    }
+
+    /* Charts area */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .chart-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bar-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 24px;
+      background: var(--surface-2);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+    }
+
+    .bar-value {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text);
+      font-family: var(--mono);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px auto 1fr;
+      }
+
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">TIME2CRACK PRO</div>
+      <div class="header-actions">
+        <button class="btn-header">Export JSON</button>
+        <button class="btn-header">Settings</button>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Password Input</div>
+        <div class="input-box">
+          <input type="password" placeholder="Enter password to analyze" autocomplete="off" />
+          <div class="input-meta">
+            <span>12 chars</span>
+            <span>4 charsets</span>
+          </div>
+          <div class="strength-mini">
+            <div class="strength-mini-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Quick Stats</div>
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-value">52</div>
+            <div class="stat-label">Entropy bits</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">2.5e12</div>
+            <div class="stat-label">Combos</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">MD5</div>
+            <div class="stat-label">Fastest</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">Argon2</div>
+            <div class="stat-label">Slowest</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Vulnerabilities</div>
+        <div class="vuln-list">
+          <div class="vuln-badge critical">
+            <span class="dot"></span>
+            Dictionary word
+          </div>
+          <div class="vuln-badge critical">
+            <span class="dot"></span>
+            HIBP breach
+          </div>
+          <div class="vuln-badge warning">
+            <span class="dot"></span>
+            Common pattern
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <!-- Hero result -->
+      <div class="panel hero-panel">
+        <div class="panel-header">
+          <span class="panel-title">Fastest Crack Time</span>
+          <span class="panel-badge">CRITICAL</span>
+        </div>
+        <div class="panel-body">
+          <div class="hero-result">
+            <div class="hero-label">Time to crack</div>
+            <div class="hero-time">2 sec</div>
+            <div class="hero-method">Dictionary attack • MD5 hash</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HIBP Alert -->
+      <div class="panel">
+        <div class="panel-body">
+          <div class="hibp-alert">
+            <div class="hibp-icon">⚠️</div>
+            <div class="hibp-content">
+              <div class="hibp-title">Password Compromised</div>
+              <div class="hibp-text">
+                This password appears <span class="hibp-count">127,453 times</span> in known data breaches 
+                indexed by Have I Been Pwned. Change immediately.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-grid">
+        <div class="chart-box">
+          <div class="chart-title">Attack Times by Hash (Dictionary)</div>
+          <div class="bar-chart">
+            <div class="bar-item">
+              <div class="bar-label">MD5</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 5%; background: var(--danger);">
+                  <span class="bar-value">2s</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">SHA-1</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 8%; background: var(--danger);">
+                  <span class="bar-value">5s</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">SHA-256</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 12%; background: var(--warning);">
+                  <span class="bar-value">12s</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">bcrypt</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 65%; background: var(--success);">
+                  <span class="bar-value">3y</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">Argon2id</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 90%; background: var(--success);">
+                  <span class="bar-value">45y</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-title">Charset Composition</div>
+          <div class="bar-chart">
+            <div class="bar-item">
+              <div class="bar-label">Lowercase</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 50%;">
+                  <span class="bar-value">50%</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">Uppercase</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 25%;">
+                  <span class="bar-value">25%</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">Digits</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 16%;">
+                  <span class="bar-value">16%</span>
+                </div>
+              </div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label">Symbols</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width: 8%;">
+                  <span class="bar-value">8%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attack matrix -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Attack Matrix</span>
+          <span class="panel-badge">60 scenarios</span>
+        </div>
+        <div class="panel-body">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Attack Type</th>
+                <th>MD5</th>
+                <th>SHA-1</th>
+                <th>SHA-256</th>
+                <th>NTLM</th>
+                <th>bcrypt</th>
+                <th>Argon2id</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="attack-name">Brute Force</td>
+                <td class="time-critical">3 min</td>
+                <td class="time-critical">8 min</td>
+                <td class="time-critical">18 min</td>
+                <td class="time-critical">3 min</td>
+                <td>15 years</td>
+                <td class="time-safe">230 years</td>
+              </tr>
+              <tr>
+                <td class="attack-name">Dictionary</td>
+                <td class="time-critical">2 sec</td>
+                <td class="time-critical">5 sec</td>
+                <td class="time-critical">12 sec</td>
+                <td class="time-critical">2 sec</td>
+                <td>3 years</td>
+                <td class="time-safe">45 years</td>
+              </tr>
+              <tr>
+                <td class="attack-name">Hybrid</td>
+                <td class="time-critical">12 sec</td>
+                <td class="time-critical">30 sec</td>
+                <td class="time-critical">1.2 min</td>
+                <td class="time-critical">10 sec</td>
+                <td>8 years</td>
+                <td class="time-safe">120 years</td>
+              </tr>
+              <tr>
+                <td class="attack-name">Mask</td>
+                <td class="time-critical">45 sec</td>
+                <td class="time-critical">2 min</td>
+                <td class="time-critical">4 min</td>
+                <td class="time-critical">40 sec</td>
+                <td>12 years</td>
+                <td class="time-safe">180 years</td>
+              </tr>
+              <tr>
+                <td class="attack-name">Rainbow Table</td>
+                <td class="time-critical">instant</td>
+                <td class="time-critical">instant</td>
+                <td>N/A</td>
+                <td class="time-critical">instant</td>
+                <td>N/A</td>
+                <td>N/A</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

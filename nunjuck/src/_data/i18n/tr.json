@@ -1,0 +1,106 @@
+{
+  "lang": "tr",
+  "dir": "ltr",
+  "nav": {
+    "ariaLabel": "Ana navigasyon",
+    "langSelectLabel": "Dil seçin",
+    "openMenuLabel": "Menüyü aç",
+    "closeMenuLabel": "Menüyü kapat",
+    "testPassword": "Bir şifreyi test edin",
+    "generatePassword": "Şifre oluştur",
+    "faq": "SSS",
+    "about": "Hakkında",
+    "science": "Bilim",
+    "security": "Güvenlik",
+    "howItWorks": "Nasıl çalışır",
+    "attackMethods": "Saldırı yöntemleri",
+    "bruteForce": "Brute Force",
+    "dictionary": "Dictionary",
+    "hybrid": "Hybrid",
+    "mask": "Mask",
+    "markov": "Markov",
+    "pcfg": "PCFG",
+    "combinator": "Combinator",
+    "sources": "Kaynaklar",
+    "hibp": "HIBP",
+    "privacy": "Gizlilik",
+    "secondaryNavLabel": "İkincil navigasyon",
+    "drawerVersion": "v2.2.1 • Yerel çatlak tahmincisi 🔐"
+  },
+  "privacyNotice": {
+    "ariaLabel": "Gizlilik notu",
+    "icon": "🔒",
+    "strong": "Her şey tarayıcında kalır.",
+    "text": "Şifre iletilmez. Hesaplama tamamen yereldir. Tek harici istek, anonim sızıntı kontrolüdür (SHA-1 hash'inin ilk 5 karakteri, asla şifre değil)."
+  },
+  "footer": {
+    "tagline": "Yerel hesaplama · HIBP kontrolü · Açık kaynak",
+    "linkedinLabel": "LinkedIn'de bizi takip edin",
+    "blueskyLabel": "Bluesky'da bizi takip edin",
+    "mastodonLabel": "Mastodon'da bizi takip edin"
+  },
+  "pages": {
+    "index": {
+      "title": "Şifrenizin gücünü test edin — Time2Crack",
+      "description": "Şifrenizin gerçek gücünü 7 saldırı modeli ve 6 hash algoritmasıyla analiz edin. %100 yerel hesaplama, şifre iletilmez."
+    },
+    "about": {
+      "title": "Hakkında — Time2Crack — Bilimsel şifre çatlak süresi tahmincisi",
+      "description": "Time2Crack'i keşfedin: en doğru çatlak süresi hesaplama aracı. Bilimsel metodoloji, doğrulanmış akademik kaynaklar, güvenli yerel analiz."
+    },
+    "privacy": {
+      "title": "Gizlilik ve güvenlik — Time2Crack",
+      "description": "Time2Crack’in verilerinizi nasıl işlediğini öğrenin: tarayıcı içinde yerel hesaplama, şifre gönderimi yok ve minimum ihlal kontrolü."
+    },
+    "sources": {
+      "title": "Bilimsel kaynaklar — Time2Crack",
+      "description": "Time2Crack’i doğrulayan bilimsel referansları ve benchmarkları inceleyin; kriptografiden şifre gücü tahminine kadar."
+    },
+    "hibp": {
+      "title": "HIBP doğrulaması — Time2Crack",
+      "description": "HIBP ile bir şifrenin veri ihlalinde yer alıp almadığını anonim ve gizlilik dostu bir sorguyla kontrol edin."
+    },
+    "faq": {
+      "title": "SSS — Time2Crack",
+      "description": "Time2Crack’in yerel çalışması, bilimsel yöntemi ve sonuçları hakkında sık sorulan soruların yanıtları."
+    },
+    "generator": {
+      "title": "Güvenli şifre oluşturucu — Time2Crack",
+      "description": "Time2Crack ile güçlü şifreler oluşturun. Karakter kümeleri seçin, belirsizlikleri azaltın ve kullanımınıza uygun sırlar üretin."
+    },
+    "how-time2crack-works": {
+      "title": "Time2Crack zamanı nasıl hesaplar — Time2Crack",
+      "description": "Time2Crack’in saldırı modelleri, kalibre edilmiş GPU hızları ve yerel hesaplama motoruyla zamanı nasıl tahmin ettiğini anlayın."
+    },
+    "methodes": {
+      "bruteforce": {
+        "title": "Brute Force — Saldırı yöntemleri — Time2Crack",
+        "description": "Tüm olası kombinasyonları sistematik olarak deneyin. En kapsamlı saldırı ve iyi bir referans noktasıdır."
+      },
+      "dictionary": {
+        "title": "Sözlük — Saldırı yöntemleri — Time2Crack",
+        "description": "Seçilmiş kelime listelerinden ve yaygın varyantlardan parolaları deneyin. Gizli bilgi bilinen kelimelere dayanıyorsa hızlıdır."
+      },
+      "hybrid": {
+        "title": "Hibrit — Saldırı yöntemleri — Time2Crack",
+        "description": "Adayları genişletmek için sözlük, maske veya kuralları birleştirin. Tahmin edilebilir değişikliklere karşı etkilidir."
+      },
+      "mask": {
+        "title": "Maske — Saldırı yöntemleri — Time2Crack",
+        "description": "Yalnızca bilinen bir maskeye uyan desenleri arayın; sabit konumlardaki harfler, rakamlar ve semboller gibi."
+      },
+      "markov": {
+        "title": "Markov — Saldırı yöntemleri — Time2Crack",
+        "description": "Gerçek parolalardan öğrenilen geçiş olasılıklarına dayalı adaylar üretin. Kapsama ve hız arasında iyi denge sağlar."
+      },
+      "pcfg": {
+        "title": "PCFG — Saldırı yöntemleri — Time2Crack",
+        "description": "Parola yapısından öğrenilen olasılıksal dilbilgisi desenlerinden adaylar oluşturun."
+      },
+      "combinator": {
+        "title": "Kombinatör — Saldırı yöntemleri — Time2Crack",
+        "description": "Daha büyük bir aday kümesi oluşturmak için iki kelime listesini birleştirin. Birden çok kelimeden oluşan parolalarda kullanışlıdır."
+      }
+    }
+  }
+}

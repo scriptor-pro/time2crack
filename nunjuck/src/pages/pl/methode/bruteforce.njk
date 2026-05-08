@@ -1,0 +1,180 @@
+---
+lang: pl
+permalink: "/pl/methode/bruteforce.html"
+layout: methode.njk
+currentPage: bruteforce
+pageSlug: methode/bruteforce.html
+mainClass: methode-page
+pageTitle: "Bruteforce — Metody ataku — Time2Crack"
+pageDescription: "Testuj systematycznie wszystkie możliwe kombinacje. To najbardziej wyczerpujący atak i dobry punkt odniesienia."
+---
+
+<h1 style="display:none">Atak brutalnej siły - kompleksowa operacja</h1>
+<blockquote>
+Dokument referencyjny projektu Time2Crack
+</blockquote>
+<blockquote>Odbiorcy: deweloperzy, badacze bezpieczeństwa, zaawansowani użytkownicy</blockquote>
+<hr>
+<h2>Spis treści</h2>
+<li><a href="#1-vue-densemble">Przegląd</a></li>
+<li><a href="#2-contexte-historique-et-académique">Tło historyczne i akademickie</a></li>
+<li><a href="#3-fondements-mathématiques--keyspace-et-entropie">Matematyka: Klawiatura i entropia</a></li>
+<li><a href="#4-architecture-dune-attaque-brute-force-moderne">Architektura brutalnego ataku nowoczesnej siły</a></li>
+<li><a href="#5-vitesses-de-calcul-par-algorithme-de-hachage">Prędkość obliczeniowa według algorytmu haszu</a></li>
+<li><a href="#6-détection-du-charset-dans-time2crack">Wykrywanie cystern w Time2Crack</a></li>
+<li><a href="#7-calcul-du-temps-de-cracking--brutetime">Obliczanie czasu krakingu: rawTime ()</a></li>
+<li><a href="#8-réduction-par-date-détectée--detectdateandreduce">Wykryto redukcję daty: detectDateAndReduce ()</a></li>
+<li><a href="#9-le-monotonicity-guard--plancher-des-autres-attaques">Ochrona przed monotonicznością: podłoga innych ataków</a></li>
+<li><a href="#10-calibration-hf-et-rôle-de-la-force-brute">Kalibracja HF i rola siły brutto</a></li>
+<li><a href="#11-comparaison-avec-les-autres-attaques">Porównanie z innymi atakami</a></li>
+<li><a href="#12-limites-théoriques-et-pratiques">Teoretyczne i praktyczne ograniczenia</a></li>
+<li><a href="#13-ce-que-la-force-brute-ne-dit-pas">Jaka brutalna siła nie mówi</a></li>
+<li><a href="#14-défenses-efficaces">Skuteczna obrona</a></li>
+<li><a href="#15-références-bibliographiques">Odniesienia</a></li>
+<hr>
+<h2>1. Przegląd</h2>
+<p>Surowa siła jest najbardziej podstawowym atakiem w łamaniu haseł: polega na testowaniu <strong>systematycznie wszystkie możliwe kombinacje</strong> Brak inteligencji, brak heuryzmu - tylko surowa moc obliczeniowa przeciw wielkości przestrzeni do podróży.</p>
+<p>W Time2Crack brutalna siła odgrywa podwójną rolę:</p>
+<li><strong>Atak wzorcowy</strong> To oznacza maksymalny teoretyczny czas, jaki napastnik umieściłby, zakładając, że nie będzie innej podatności.</li>
+<li><strong>Podłoga (osłona monotoniczna)</strong> : służy jako dolny terminal dla wszystkich innych ataków - żaden wyspecjalizowany atak nie może legalnie wyświetlić czasu mniej niż ten, który miałby surową siłę na alfabetycznym podłańcuchu hasła.</li>
+<strong>W praktyce</strong>, Surowa siła jest prawie nigdy najszybszy atak na prawdziwe ludzkie hasło - PCFG, Markov lub atak hybrydowy będzie bardziej skuteczne. Ale dla naprawdę losowe i długie hasło, to reprezentuje rzeczywistość: napastnik nie ma wyboru, ale przeglądać przestrzeń wyczerpująco.
+<hr>
+<h2>2. Tło historyczne i akademickie</h2>
+<h3>2.1 Początki</h3>
+<p>Surowa siła poprzedza komputer: zasada testowania wszystkich możliwych kombinacji jest stosowana od czasu pierwszej mechanicznej maszyny szyfrującej (Enigma podczas II wojny światowej). Bomba Alana Turinga była, w szerokim znaczeniu, urządzeniem surowej siły wymuszonym hipotezą kołysek.</p>
+<p>Wraz z pojawieniem się komputerów, siła hasła unix została sformalizowana od lat 70. do 80.:</p>
+<table>
+<tbody><tr><td>Rok</td><td>Zdarzenie</td></tr>
+<tr><td>Więc...</td><td>To...</td></tr>
+<tr><td>1979</td><td>Morris &amp; Thompson: Pierwszy artykuł akademicki na temat bezpieczeństwa haseł Unix, z analizą surowej siły na / etc / passwd</td></tr>
+<tr><td>1988</td><td>Morris Worm: pierwszy wyczyn masowy przy użyciu, między innymi, słownika i surowego hasło crack</td></tr>
+<tr><td>1993</td><td>Crack 5.0 (Alec Muffett): pierwsze publiczne narzędzie krakingowe na Unix</td></tr>
+<tr><td>2004</td><td>Ophcrack: tabele rowków + surowa siła na LM / NTLM hashs Windows</td></tr>
+<tr><td>2007</td><td>GPU- akcelerated cracking (Elcomsoft): pierwsze publiczne zastosowanie GPU w celu przyspieszenia siły brutto</td></tr>
+<tr><td>2012</td><td>Hashcat open source: narzędzie referencyjne, maksymalna obsługa GPU</td></tr>
+<tr><td>2016</td><td>Hive Systems: Roczna publikacja tabel "siła brutto przez GPU" staje się referencją przemysłową</td></tr>
+</tbody></table>
+<h3>2.2 Wartości odniesienia</h3>
+<p>Rewolucja GPU zmieniła kolejność wielkości siły pierwotnej. Na CPU, napastnik z lat 90. przetestował ~ 10,000 MD5 / drugie hasła. <strong>168,9 miliarda na sekundę</strong> - przyspieszenie 16 milionów razy w ciągu 30 lat.</p>
+<strong>Kluczowe źródła akademickie</strong> :
+<ul>
+<li><strong>Gosney, J (2012)</strong> : pierwszy publiczny punkt odniesienia multi- GPU na LM / NTLM, przedstawiający 180 GH / s z 8 GPU</li>
+<li><strong>Systemy Hive (2025)</strong> : coroczne tabele skalibrowane na 12 × RTX 4090, cytowane przez Forbes, CNBC, BBC</li>
+<li><strong>Sfengers, M. (2011)</strong> : Teza Uniwersytetu Radboud na temat łamania GPU, formalizacja matematyczna</li>
+</ul>
+<hr>
+<h2>3. Podstawy matematyki: keyspace i entropia</h2>
+<h3>3.1 Klawiatura</h3>
+<p>Keyspace (keyspace) to całkowita liczba możliwych haseł dla danej długości i zbiornika:</p>
+<pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
+<p>Przykłady:</p>
+<table>
+<tbody><tr><td>Charset</td><td>Rozmiar</td><td>Długość</td><td>Klawiatura</td><td>Ocena</td></tr>
+<tr><td>Czy...</td><td>Bo...</td><td>- Nie.</td><td>- Nie.</td><td>- Nie.</td></tr>
+<tr><td>Pojedyncze cyfry</td><td>10</td><td>8</td><td>108 = 100 000 000</td><td>108</td></tr>
+<tr><td>Tylko minuskule</td><td>26</td><td>8</td><td>268 mln</td><td>~ 2 × 1011</td></tr>
+<tr><td>Alfanumeryczne</td><td>62</td><td>8</td><td>628 mln</td><td>~ 2 × 1014</td></tr>
+<tr><td>Pełny ASCII</td><td>95</td><td>8</td><td>958 mld</td><td>~ 6 × 1015</td></tr>
+<tr><td>Pełny ASCII</td><td>95</td><td>12</td><td>9512 - 5,4 × 1023</td><td>~ 5 × 1023</td></tr>
+<tr><td>Pełny ASCII</td><td>95</td><td>16</td><td>9516 - 4.4 × 1031</td><td>~ 4 × 1031</td></tr>
+</tbody></table>
+<h3>3.2 entropia binarna</h3>
+<p>Entropia (mierzona w bitach) jest logarytmiczną formułą przestrzeni klawiszowej:</p>
+<pre><code class="language-plaintext">entropie = length × log₂(charset_size)</code></pre>
+<p>W Time2Crack (funkcja <code>entropy()</code>):</p>
+<pre><code class="language-javascript">function entropy(pw) {
+  return pw.length * Math.log2(getCharset(pw).size);
+}</code></pre>
+<p>Związek między entropią a przestrzenią klawiszową:</p>
+<pre><code class="language-plaintext">keyspace = 2^entropie
+entropie = log₂(keyspace)</code></pre>
+<strong>Konkretne przykłady</strong> :
+<table>
+<tbody><tr><td>Hasło</td><td>Charset</td><td>Długość</td><td>Entropia</td><td>Klawiatura</td></tr>
+<tr><td>- Tak.</td><td>Czy...</td><td>- Nie.</td><td>- Nie.</td><td>- Nie.</td></tr>
+<tr><td>"12345678"</td><td>10 (cyfry)</td><td>8</td><td>26,6 bitów</td><td>108</td></tr>
+<tr><td>"hasło"</td><td>26 (niższe)</td><td>8</td><td>37,6 bitów</td><td>268</td></tr>
+<tr><td>Hasło 1</td><td>62 (alfanum)</td><td>9</td><td>53,6 bitów</td><td>629</td></tr>
+<tr><td>"P @ ssw0rd!"</td><td>95 (pełne ASCII)</td><td>9</td><td>59.3 bitów</td><td>959</td></tr>
+<tr><td>xQz7 @ mK9 # 2pL</td><td>95 (pełne ASCII)</td><td>12</td><td>79 bitów</td><td>9512</td></tr>
+</tbody></table>
+<h3>3.3 Nadzieja matematyczna: Keyspace / 2</h3>
+<p>Surowa siła nie zawsze testuje <code>keyspace</code> Kombinacje Integer - średnio, znajduje hasło w połowie drogi, ponieważ cel jest prawdopodobnie rozprowadzany w przestrzeni.<strong>oczekiwania matematyczne</strong> liczba prób jest zatem:</p>
+<pre><code class="language-plaintext">tentatives_attendues = keyspace / 2</code></pre>
+<p>To jest dokładnie co modele <code>bruteTime()</code> w Time2Crack:</p>
+<pre><code class="language-javascript">// "For brute force: expected value is keyspace/2 (uniform random search)"
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls); // = (keyspace / 2) / rate
+}</code></pre>
+<p>Podział przez 2 jest poprawny przy założeniu, że napastnik podróżuje liniowo (niepowtarzalny). <code>keyspace/2</code> Próby.</p>
+<hr>
+<h2>14. Skuteczna obrona</h2>
+<h3>14.1 Strona użytkownika: długość i losowość</h3>
+<p>Siła brutto zostaje pokonana przez dwa czynniki:</p>
+<strong>Długość</strong> : każdy dodatkowy znak mnoży przestrzeń klawiszy przez <code>charset_size</code>Od 8 do 12 znaków (charset 95) mnoży przestrzeń klawiszy przez <strong>954 - 81 mln</strong>.
+<br>
+<strong>Prawdziwe losowe</strong> : kryptograficznie bezpieczny generator (CSPRNG) produkuje hasła, które nie korzystają z żadnej redukcji probabilistycznej. Markov, PCFG i Neural nie mają żadnej przewagi nad naprawdę losowym hasłem.
+<br>
+<strong>Zalecenie praktyczne</strong> :
+<ul>
+<li>Hasło Manager + Random Generation ≥ 16 znaków z pełnym float = poza zasięgiem jakiejkolwiek siły w ludzkim horyzoncie życia</li>
+</ul>
+<h3>14.2 Strona serwera: algorytmy odporne</h3>
+<p>Wybór algorytmu hash mnoży lub dzieli czas siły na czynniki aż do <strong>kilka milionów</strong> :</p>
+<table>
+<tbody><tr><td>Zalecenie</td><td>Algorytm</td><td>Uzasadnienie</td></tr>
+<tr><td>{C: $aaccff} Tłumaczenie:</td><td>/</td><td>Bo...</td></tr>
+<tr><td>Zalecane</td><td>Argon2id</td><td>Pamiętnik twardy, odporny na GPU</td></tr>
+<tr><td>Zalecane</td><td>bcrypt (koszt ≥ 12)</td><td>Intencjonalnie wolne, słone</td></tr>
+<tr><td>Dopuszczalne</td><td>scrypt</td><td>Pamięt- twarde, ale mniej standaryzowane</td></tr>
+<tr><td>Nieodpowiednie</td><td>Scha- 256 solony</td><td>Za szybko nawet z solą</td></tr>
+<tr><td>Niebezpieczne</td><td>MD5, SHA-1, NTLM</td><td>Niesłony, bardzo szybki</td></tr>
+</tbody></table>
+<hr>
+<h2>15. Odniesienia bibliograficzne</h2>
+<h3>Akademika</h3>
+<strong>Morris, R., &amp; Thompson, K. (1979).</strong>
+Bezpieczeństwo haseł: Historia spraw.
+<em>Komunikaty ACM, 22 (11), 594- 597.</em>
+→ Założenie artykułu na temat bezpieczeństwa hasła Unix
+<br>
+<strong>Spregers, M. (2011).</strong>
+Śledzenie hasła bazujące na GPU- (tezy Mistrza).
+<em>Radboud University Nijmegen.</em>
+→ Matematyczna formalizacja krakingu GPU, wartości odniesienia dla pojedynczego GPU
+<br>
+<strong>Wheeler, D.L. (2016).</strong>
+zxcvbn: Szacunkowa moc hasła w budżecie.
+<em>25. USENIX Sympozjum Bezpieczeństwa.</em>
+→ Dane dotyczące efektywnej przestrzeni klawiszowej (Tabela 2: -30% dla ustrukturyzowanych haseł)
+<br>
+<strong>Dürmuth, M. et al. (2015).</strong>
+Orded Markov Enumerator. <em>ESORICS 2015.</em>
+→ Porównywalne odniesienie dla terminali probabilistycznych wobec siły brutto
+<h3>Przemysł</h3>
+<strong>Hive Systems. (2025).</strong>
+<em>2025 Hive Systems Password Table.</em>
+https: / / www.hivesystems.io / password- table
+→ Roczne poziomy odniesienia dla 12 × RTX 4090, standardowy punkt odniesienia
+<br>
+<strong>Gosney, J (2012).</strong>
+<em>8x wartości odniesienia Nvidia GTX 1080 Hashcat.</em> GitHub Gist.
+→ Pierwszy publiczny wskaźnik multi- GPU, odniesienie historyczne
+<br>
+<strong>Hashcat. (2024).</strong>
+<em>Official Hashcat references v6.2.6.</em>
+https: / / hashcat.net / hashcat /
+→ Oficjalne prędkości według algorytmu, źródło stałych Time2Crack
+<br>
+<strong>NIST SP 800- 63B. (2017, aktualizacja 2024).</strong>
+<em>Wytyczne dotyczące tożsamości cyfrowej: Uwierzytelnianie i zarządzanie cyklem życia.</em>
+→ Oficjalne zalecenia dotyczące długości i złożoności hasła
+<br>
+<strong>OWASP. (2024).</strong>
+<em>Password Storage Cheat Arkusz.</em>
+https: / / cheatssheetseries.owasp.org / cheatssheets / Password Storage Cheat Sheet.html
+→ Zalecenia dotyczące bcrypt (koszt ≥ 12), Argon2id jako nowoczesne standardy
+<hr>
+<em>Dokument wygenerowany dla projektu Time2Crack - ostatnia aktualizacja: 2026- 04- 18</em>
+<em>Na podstawie implementacji w app.js, surowych funkcjonalnościTime (), getCharset () i ochrony monotoniczności</em>

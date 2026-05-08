@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout 4 : Breath — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600,700|ibm-plex-mono:400,500&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a1a;
+      --text-light: #737373;
+      --text-ultra-light: #a3a3a3;
+      --accent: #2563eb;
+      --line: #e5e5e5;
+      --danger: #dc2626;
+      --success: #059669;
+      --warning: #d97706;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      min-height: 100vh;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      font-size: 16px;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* Navigation ultra-minimale */
+    nav {
+      padding: 80px 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 100px;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    /* Hero section avec beaucoup d'espace */
+    .hero {
+      margin-bottom: 140px;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-light);
+      max-width: 560px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    /* Input section - très épuré */
+    .input-section {
+      margin-bottom: 180px;
+    }
+
+    .field-group {
+      margin-bottom: 12px;
+    }
+
+    .field-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      display: block;
+      letter-spacing: 0.01em;
+    }
+
+    .password-field {
+      width: 100%;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 20px;
+      font-weight: 400;
+      padding: 16px 0;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      letter-spacing: 0.05em;
+      transition: border-color 0.3s ease;
+      outline: none;
+    }
+
+    .password-field:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .password-field::placeholder {
+      color: var(--text-ultra-light);
+      font-weight: 400;
+    }
+
+    .field-hint {
+      font-size: 12px;
+      color: var(--text-ultra-light);
+      margin-top: 8px;
+    }
+
+    /* Result section - typographie forte */
+    .result-section {
+      margin-bottom: 140px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-ultra-light);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 32px;
+    }
+
+    .primary-result {
+      margin-bottom: 80px;
+    }
+
+    .result-metric {
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--danger);
+      margin-bottom: 16px;
+    }
+
+    .result-metric.safe {
+      color: var(--success);
+    }
+
+    .result-context {
+      font-size: 16px;
+      color: var(--text-light);
+      line-height: 1.7;
+      max-width: 540px;
+    }
+
+    .result-context strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Data table - ultra-simple */
+    .data-table {
+      margin-bottom: 100px;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+
+    .table-row:first-child {
+      border-top: 1px solid var(--line);
+    }
+
+    .row-label {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .row-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .row-value.highlight {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    /* Alert box */
+    .alert {
+      padding: 24px 28px;
+      background: #fef2f2;
+      border-left: 3px solid var(--danger);
+      margin-bottom: 100px;
+    }
+
+    .alert-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--danger);
+      margin-bottom: 8px;
+    }
+
+    .alert-content {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    .alert.success {
+      background: #f0fdf4;
+      border-left-color: var(--success);
+    }
+
+    .alert.success .alert-title {
+      color: var(--success);
+    }
+
+    /* Footer */
+    footer {
+      padding: 80px 0 60px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.8;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    footer a:hover {
+      border-bottom-color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page {
+        padding: 0 24px;
+      }
+
+      nav {
+        padding: 60px 0 32px;
+        margin-bottom: 80px;
+      }
+
+      .nav-links {
+        gap: 20px;
+        font-size: 12px;
+      }
+
+      .hero {
+        margin-bottom: 100px;
+      }
+
+      .hero h1 {
+        font-size: clamp(32px, 8vw, 48px);
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .input-section {
+        margin-bottom: 120px;
+      }
+
+      .password-field {
+        font-size: 18px;
+      }
+
+      .result-section {
+        margin-bottom: 100px;
+      }
+
+      .primary-result {
+        margin-bottom: 60px;
+      }
+
+      .table-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .row-value {
+        text-align: left;
+      }
+    }
+
+    /* Smooth entrance */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero, .input-section, .result-section, .data-table, .alert {
+      animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    .hero { animation-delay: 0.1s; }
+    .input-section { animation-delay: 0.2s; }
+    .result-section { animation-delay: 0.3s; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav>
+      <div class="logo">Time2Crack</div>
+      <div class="nav-links">
+        <a href="#">À propos</a>
+        <a href="#">Méthodologie</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1>Évaluez la sécurité de votre mot de passe</h1>
+      <p>
+        Testez la résistance de votre mot de passe face aux attaques modernes. 
+        Analyse locale, instantanée et totalement confidentielle.
+      </p>
+    </section>
+
+    <section class="input-section">
+      <div class="field-group">
+        <label class="field-label">Mot de passe à analyser</label>
+        <input 
+          type="password" 
+          class="password-field" 
+          placeholder="Entrez votre mot de passe"
+          autocomplete="off"
+        />
+        <p class="field-hint">Calcul 100% local. Aucune donnée n'est transmise.</p>
+      </div>
+    </section>
+
+    <section class="result-section">
+      <div class="section-label">Résultat de l'analyse</div>
+      
+      <div class="primary-result">
+        <div class="result-metric">2 secondes</div>
+        <p class="result-context">
+          Votre mot de passe peut être cracké en <strong>2 secondes</strong> avec une attaque 
+          par dictionnaire utilisant MD5. Il est fortement recommandé de choisir un mot de passe 
+          plus complexe combinant majuscules, minuscules, chiffres et symboles.
+        </p>
+      </div>
+
+      <div class="alert">
+        <div class="alert-title">Mot de passe compromis</div>
+        <p class="alert-content">
+          Ce mot de passe apparaît 127,453 fois dans les bases de données de mots de passe 
+          compromis recensés par Have I Been Pwned.
+        </p>
+      </div>
+    </section>
+
+    <section class="data-table">
+      <div class="section-label">Détails techniques</div>
+      
+      <div class="table-row">
+        <div class="row-label">Longueur</div>
+        <div class="row-value">12 caractères</div>
+      </div>
+      
+      <div class="table-row">
+        <div class="row-label">Entropie</div>
+        <div class="row-value">52 bits</div>
+      </div>
+      
+      <div class="table-row">
+        <div class="row-label">Jeux de caractères</div>
+        <div class="row-value">4 (a-z, A-Z, 0-9, symboles)</div>
+      </div>
+      
+      <div class="table-row">
+        <div class="row-label">Combinaisons possibles</div>
+        <div class="row-value">2.5 × 10¹²</div>
+      </div>
+      
+      <div class="table-row">
+        <div class="row-label">Attaque la plus rapide</div>
+        <div class="row-value highlight">Dictionnaire (MD5) — 2 sec</div>
+      </div>
+      
+      <div class="table-row">
+        <div class="row-label">Attaque la plus lente</div>
+        <div class="row-value">Brute force (Argon2id) — 45 ans</div>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        Time2Crack utilise des benchmarks issus de <a href="#">Hive Systems</a>, 
+        <a href="#">Kaspersky</a> et <a href="#">zxcvbn</a>. La vérification des mots de passe 
+        compromis est effectuée via l'API <a href="#">Have I Been Pwned</a> en utilisant 
+        la k-anonymité (seuls les 5 premiers caractères du hash SHA-1 sont transmis).
+      </p>
+      <p style="margin-top: 16px;">
+        Version 1.0 — Calcul 100% local — Code source disponible sur GitHub
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    const input = document.querySelector('.password-field');
+    
+    input.addEventListener('input', () => {
+      console.log('Analyzing password in real-time...');
+      // Simulation d'analyse temps réel
+    });
+  </script>
+</body>
+</html>

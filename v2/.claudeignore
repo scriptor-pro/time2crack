@@ -1,0 +1,93 @@
+# Dependencies and build artifacts
+node_modules/
+dist/
+build/
+*.tgz
+package-lock.json
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+*.code-workspace
+
+# Logs and temp files
+*.log
+*.tmp
+.cache/
+
+# Testing artifacts and reports
+tests/calibration-diff.json
+tests/attack-detection-report.md
+tests/regression-snapshot.json
+tests/accuracy-dataset-*.json
+*.coverage
+.nyc_output/
+
+# Large data files (not needed for development)
+data/rockyou-ranked.txt
+data/wordlists/*.txt
+data/rockyou-coherence-*.json
+data/corpora/
+data/corpus-en/
+data/corpus-fr/
+data/corpus-nl/
+data/corpus-es/
+data/corpus-pt/
+data/corpus-de/
+
+# Generated calibration models (regenerated, not hand-edited)
+data/calibration/markov-*.json
+data/calibration/pcfg-en.json
+data/calibration/pcfg-fr.json
+
+# Generated/temporary files
+rockyou-*.html
+rockyou-*.json
+*.swp
+
+# Prototype HTML files (archive, not maintained)
+prototype-*.html
+test-includes.html
+preview-grid-options.html
+
+# Analysis scripts (one-off use, not needed in context)
+scripts/analyze-*.mjs
+
+# Analysis and reports (one-off, archived in memory)
+BRUTE_FORCE_ANALYSIS.txt
+brute-force-analysis.png
+rockyou-sample-report.md
+seclist-ncsc-report.md
+virginia-tech-report.md
+CALIBRATION_REPORT_*.md
+COMPLIANCE_ACTION_PLAN.md
+COMBINATOR_FORMULA_CORRECTION.md
+DECISION_CALIBRATION_FR.md
+DICT_LOADER_FEATURE.md
+FRENCH_WORDLISTS_GUIDE.md
+MASK_AUDIT_*.md
+SCIENTIFIC_AUDIT.md
+OPTION_A_EXECUTION_PLAN.md
+
+# Documentation that's not actively maintained
+TECHNICAL_DEBT_*.md
+IMPLEMENTATION_CHECKLIST.md
+DEBT_FIXING_ROADMAP.md
+EXECUTIVE_SUMMARY.md
+TIME2CRACK_V2_ARCHITECTURE.md
+ADDING_NEW_LANGUAGE.md
+../explained/
+
+# GSD/Workflow metadata (not relevant to code context)
+.planning/
+.audit/
+
+# Session artifacts
+TOKEN_CONSUMPTION_LOG.md
+sample_dataset.txt

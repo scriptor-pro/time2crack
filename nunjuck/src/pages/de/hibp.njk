@@ -1,0 +1,188 @@
+---
+lang: de
+permalink: "/de/hibp.html"
+layout: base.njk
+currentPage: hibp
+pageSlug: hibp.html
+mainClass: hibp-page
+pageTitle: "HIBP-Prüfung — Time2Crack"
+pageDescription: "Prüfen Sie mit HIBP, ob ein Passwort in einem Datenleck auftaucht, über eine anonyme, datenschonende Anfrage."
+---
+
+<h2>HIBP Verification — Verstehen k-Anonymität</h2>
+<p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6; max-width: 100%;">
+      Time2CrackVerwendung API <a class="external-link" href="https://haveibeenpwned.com/" rel="noopener noreferrer" target="_blank">Habe ich Pwned (HIBP)</a>
+      um zu überprüfen, ob Ihr Passwort in einem Datenleck beeinträchtigt wurde.
+wir senden nicht <strong>Nie</strong> Ihr volles Passwort. Stattdessen verwenden wir eine Technik namens
+      <strong>k-Anonymität</strong> Nur die ersten 5 Zeichen des SHA-1 Hash des Passworts werden gesendet.
+    </p>
+ ABSCHNITT 
+<div class="hibp-container">
+<div class="hibp-section">
+<h3>Was Sie sehen können</h3>
+<p>Ihr Passwort bleibt <strong>immer in Ihrem Browser</strong>Nichts wird an den Server gesendet.</p>
+<p>Nur <strong>hash SHA-1 Ihres Passworts</strong> wird lokal (in JavaScript) berechnet.</p>
+<p>Dann nur die <strong>Erste 5 Zeichen</strong> dieser Hash werden an HIBP gesendet.</p>
+</div>
+<div class="hibp-section">
+<h3>Was HIBP nicht sehen kann</h3>
+<p>HIBP sieht nicht <strong>nicht</strong> Ihr volles Passwort.</p>
+<p>HIBP sieht nicht <strong>nicht</strong> die Hash SHA-1 komplett.</p>
+<p>HiBP erhält nur 5 Zeichen und Rückgaben <strong>Alle Hashs</strong> entsprechend diesem Präfix (k-Anonymität).</p>
+</div>
+</div>
+<div class="info-box">
+<strong>Was ist k-Anonymität?</strong>
+<p>
+        k-anonymität ist eine Technik der Vertraulichkeit, die einen Datensatz unter k-Datensätzen inakzeptabel macht.
+In diesem Fall gibt HIBP beim Senden von 5 Zeichen einer SHA-1 Hash alle Hashs ab diesen 5 Zeichen zurück
+(in der Regel 400-500 Ergebnisse). Ihr echter Hash ist unter allen anderen verborgen. Selbst HIBP weiß nicht, was Hash ist Ihr.
+      </p>
+</div>
+ INTERAKTIVE DEMONSTRIERUNG 
+<div class="demo-section">
+<h3>- Interaktive Demonstration</h3>
+<p style="color: #4b5563; line-height: 1.6;">
+        Geben Sie unten ein Passwort ein und sehen Sie genau das, was an HiBP gesendet wird.
+      </p>
+<div class="input-group">
+<label for="password-input">Passwort (test: passwort123):</label>
+<input aria-label="Passwort Eingabefeld" id="password-input" placeholder="Geben Sie ein Passwort ein..." type="password" value="password123">
+</div>
+<div class="button-group">
+<button class="btn btn-primary" onclick="calculateHash()">Hash SHA-1 berechnen</button>
+<button class="btn btn-secondary" onclick="clearDemo()">Zurück zur Übersicht</button>
+</div>
+ Schritt 1: PASS MOT 
+<div class="demo-step">
+<div class="demo-step-number">1</div>
+<div class="demo-step-content">
+<h4>Passwort (in Ihrem Browser)</h4>
+<p>Ihr Passwort <strong>immer bleiben</strong>Nie gesendet.</p>
+<div class="hash-display" id="password-display" style="display:none;">
+<div class="hash-label">Passwort:</div>
+<span id="password-value"></span>
+</div>
+</div>
+</div>
+ SCHRITT 2: COMPLETE SHA-1 
+<div class="demo-step">
+<div class="demo-step-number">2.</div>
+<div class="demo-step-content">
+<h4>Komplett Hash SHA-1 (vor Ort berechnet)</h4>
+<p>Der Hash SHA-1 wird berechnet <strong>in Ihrem Browser</strong> in JavaScript. HIBP sieht es nie vollständig.</p>
+<div class="hash-display" id="full-hash-display" style="display:none;">
+<div class="hash-label">SHA-1 (40 Zeichen):</div>
+<span id="full-hash-value"></span>
+</div>
+</div>
+</div>
+ Schritt 3: 5 FIRST-KARACTERISTIK 
+<div class="demo-step">
+<div class="demo-step-number">3</div>
+<div class="demo-step-content">
+<h4>Präfix SHA-1 (5 erste Zeichen)</h4>
+<p>Nur <strong>Diese 5 Zeichen</strong> werden über sichere HTTPS an HiBP gesendet.</p>
+<div class="hash-display" id="prefix-display" style="display:none;">
+<div class="hash-label">Präfix (5 Zeichen) an HIBP gesendet:</div>
+<span id="prefix-value" style="color: #059669; font-weight: 600;"></span>
+</div>
+</div>
+</div>
+ Schritt 4: HIBP RESPONSE 
+<div class="demo-step">
+<div class="demo-step-number">ANHANG</div>
+<div class="demo-step-content">
+<h4>Antwort von HiBP (alle Hashs)</h4>
+<p>HIBP gibt <strong>Alle Hashs</strong> Dein wahrer Hash ist unter ihnen verborgen.</p>
+<button class="btn btn-primary" id="hibp-btn" onclick="fetchHIBP()" style="display:none; width: 100%; margin-top: 0.75rem;">
+            HIBP →
+          </button>
+<div class="result-box" id="hibp-result">
+<div class="result-title">Ergebnisse von HIBP</div>
+<div id="hibp-content"></div>
+</div>
+</div>
+</div>
+<div class="warning-box">
+<strong>Wichtig</strong>
+<p>
+          Auch wenn das Präfix "55D97" mit dem Passwort123 übereinstimmt, weiß HIBP nicht <strong>nicht</strong>
+          Du weißt nur, wer du bist.
+        </p>
+</div>
+</div>
+ DETAILED FLUX 
+<h3 style="margin-top: 3rem;">WieTime2Crackverwendet HIBP</h3>
+<div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.5rem;">
+<div class="demo-step">
+<div class="demo-step-number">1</div>
+<div class="demo-step-content">
+<h4>Sie geben ein Passwort ein</h4>
+<p>Ihr Passwort bleibt in Ihrem Browser. Nichts wird überall gesendet.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">2.</div>
+<div class="demo-step-content">
+<h4>Time2CrackSHA-1 berechnen</h4>
+<p>In JavaScript berechnen wir den SHA-1 Hash des Passworts. Dies ist die lokale Berechnung, keine Übertragung.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">3</div>
+<div class="demo-step-content">
+<h4>Präfix an HIBP senden</h4>
+<p>Nur die ersten 5 Zeichen der Hash werden über eine verschlüsselte HTTPS-Anforderung an HIBP gesendet.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">ANHANG</div>
+<div class="demo-step-content">
+<h4>HIBP liefert alle Ergebnisse</h4>
+<p>HIBP gibt alle Hashs (meist 400-500) ab diesem Präfix zurück.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">5.</div>
+<div class="demo-step-content">
+<h4>Lokale Verifizierung</h4>
+<p>Time2Crackvergleichen Sie Ihre komplette Hash auf alle HIBP-Ergebnisse <strong>in Ihrem Browser</strong>. Wenn gefunden, ist das Passwort kompromittiert.</p>
+</div>
+</div>
+</div>
+ FAQ 
+<h3 style="margin-top: 3rem;">Häufig gestellte Fragen</h3>
+<div id="faq-container"></div>
+ ERGEBNISSE 
+<h3 style="margin-top: 3rem; margin-bottom: 1rem;">Ressourcen</h3>
+<div style="background: #f9fafb; border-radius: 8px; padding: 1.5rem; line-height: 1.8;">
+<p>
+<strong>Habe ich Pwned (HIBP):</strong>
+<a class="external-link" href="https://haveibeenpwned.com/" rel="noopener noreferrer" target="_blank">
+          mit einem Gehalt an
+        </a>
+        — Kompromierte Passwortdatenbank.
+      </p>
+<p>
+<strong>DIBP API Dokumentation:</strong>
+<a class="external-link" href="https://haveibeenpwned.com/API/v3" rel="noopener noreferrer" target="_blank">
+          habenibeenpwned.com/API/v3
+        </a>
+        — Technische Dokumentation der k-Anonymität API.
+      </p>
+<p>
+<strong>k-anonymität:</strong>
+<a class="external-link" href="https://en.wikipedia.org/wiki/K-anonymity" rel="noopener noreferrer" target="_blank">
+          Wikipedia — k-anonymity
+        </a>
+        — Konzept der Datengeheimnis.
+      </p>
+<p>
+<strong>Passwort-Sicherheit:</strong>
+<a class="external-link" href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" rel="noopener noreferrer" target="_blank">
+          OWASP Passwortspeicher Cheat Sheet
+        </a>
+        - Gute Lagerpraxis.
+      </p>
+</div>

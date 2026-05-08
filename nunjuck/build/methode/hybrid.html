@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hybrid — Attack Methods — Time2Crack</title>
+  <link rel="preload" href="/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.min.css"></noscript>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap"></noscript>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+<meta name="description" content="Combine a dictionary attack with masks or rules to expand candidates. Effective against predictable tweaks on real words.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#2563EB">
+
+<meta property="og:title" content="Hybrid — Attack Methods — Time2Crack">
+<meta property="og:description" content="Combine a dictionary attack with masks or rules to expand candidates. Effective against predictable tweaks on real words.">
+<meta property="og:image" content="https://time2crack.eu/logo.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://time2crack.eu/en/methode/hybrid.html">
+<meta property="og:site_name" content="Time2Crack">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="pt_PT">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:locale:alternate" content="pl_PL">
+<meta property="og:locale:alternate" content="nl_NL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hybrid — Attack Methods — Time2Crack">
+<meta name="twitter:description" content="Combine a dictionary attack with masks or rules to expand candidates. Effective against predictable tweaks on real words.">
+<meta name="twitter:image" content="https://time2crack.eu/logo.png">
+
+<link rel="canonical" href="https://time2crack.eu/en/methode/hybrid.html">
+<link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/hybrid.html">
+<link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/hybrid.html">
+<link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/hybrid.html">
+<link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/hybrid.html">
+<link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/hybrid.html">
+<link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/hybrid.html">
+<link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/hybrid.html">
+<link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/hybrid.html">
+<link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/hybrid.html">
+<link rel="alternate" hreflang="x-default" href="https://time2crack.eu/en/methode/hybrid.html">
+  <script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header__top">
+    <h1><a href="/en/index.html" class="site-logo"><img src="/logo.png" alt="" class="site-logo__icon" aria-hidden="true">Time2Crack</a></h1>
+    <div class="lang-selector">
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Select language" aria-expanded="false" aria-controls="lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+        <span class="lang-toggle__label" id="lang-label">English</span>
+        <span class="dropdown-arrow">▼</span>
+      </button>
+      <menu id="lang-menu" class="lang-menu" hidden role="menu" aria-label="Select language">
+        <button type="button" data-lang="fr" class="lang-menu__item" role="menuitem">Français</button>
+        <button type="button" data-lang="en" class="lang-menu__item lang-menu__item--active" role="menuitem">English</button>
+        <button type="button" data-lang="es" class="lang-menu__item" role="menuitem">Español</button>
+        <button type="button" data-lang="pt" class="lang-menu__item" role="menuitem">Português</button>
+        <button type="button" data-lang="de" class="lang-menu__item" role="menuitem">Deutsch</button>
+        <button type="button" data-lang="it" class="lang-menu__item" role="menuitem">Italiano</button>
+        <button type="button" data-lang="tr" class="lang-menu__item" role="menuitem">Türkçe</button>
+        <button type="button" data-lang="pl" class="lang-menu__item" role="menuitem">Polski</button>
+        <button type="button" data-lang="nl" class="lang-menu__item" role="menuitem">Nederlands</button>
+      </menu>
+    </div>
+  </div>
+  <nav class="site-nav" aria-label="Main navigation">
+    <div class="site-nav__primary">
+      <a href="/en/index.html" class="site-nav__link nav-home">Test a password</a>
+      <a href="/en/generator.html" class="site-nav__link nav-generator">Generate a password</a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><span class="hamburger__icon"></span></button>
+    <div class="site-nav__secondary">
+      <a href="/en/faq.html" class="site-nav__link">FAQ</a>
+      <a href="/en/about.html" class="site-nav__link nav-about">About</a>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Science">Science <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Science submenu">
+          <li role="none"><a href="/en/how-time2crack-works.html" role="menuitem" class="site-nav__dropdown-item">How it works</a></li>
+          <li role="none" class="site-nav__dropdown-item--group">
+            <span class="site-nav__dropdown-group-title">Attack methods</span>
+            <ul class="site-nav__dropdown-submenu" role="menu">
+              <li role="none"><a href="/en/methode/bruteforce.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/en/methode/dictionary.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/en/methode/hybrid.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/en/methode/mask.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/en/methode/markov.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/en/methode/pcfg.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/en/methode/combinator.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+            </ul>
+          </li>
+          <li role="none"><a href="/en/sources.html" role="menuitem" class="site-nav__dropdown-item">Sources</a></li>
+        </ul>
+      </div>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Security">Security <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Security submenu">
+          <li role="none"><a href="/en/hibp.html" role="menuitem" class="site-nav__dropdown-item">HIBP</a></li>
+          <li role="none"><a href="/en/privacy.html" role="menuitem" class="site-nav__dropdown-item">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <aside id="drawer" class="drawer" role="complementary" aria-hidden="true" aria-label="Secondary navigation">
+    <div class="drawer__header">
+      <button class="drawer__close" id="drawer-close-btn" aria-label="Close menu">✕</button>
+    </div>
+    <nav class="drawer__nav" aria-label="Secondary navigation">
+      <a href="/en/faq.html" class="drawer__link">FAQ</a>
+      <a href="/en/about.html" class="drawer__link">About</a>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Science</summary>
+        <a href="/en/how-time2crack-works.html" class="drawer__link">How it works</a>
+        <details class="drawer__details drawer__details--nested">
+          <summary class="drawer__summary drawer__summary--nested">Attack methods</summary>
+          <a href="/en/methode/bruteforce.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/en/methode/dictionary.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/en/methode/hybrid.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/en/methode/mask.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/en/methode/markov.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/en/methode/pcfg.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/en/methode/combinator.html" class="drawer__link drawer__link--nested"></a>
+        </details>
+        <a href="/en/sources.html" class="drawer__link">Sources</a>
+      </details>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Security</summary>
+        <a href="/en/hibp.html" class="drawer__link">HIBP</a>
+        <a href="/en/privacy.html" class="drawer__link">Privacy</a>
+      </details>
+    </nav>
+    <footer class="drawer__footer">
+      <p>v2.2.1 • Local crack estimator 🔐</p>
+    </footer>
+  </aside>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
+  <div class="privacy-notice" role="note" aria-label="Privacy note">
+    <span class="privacy-notice__icon" aria-hidden="true">🔒</span>
+    <div class="privacy-notice__text">
+      <strong>Everything stays in your browser.</strong>
+      No password is transmitted. The computation is entirely local. The only external request is an anonymous leak check (first 5 characters of the SHA-1 hash, never the password).
+    </div>
+  </div>
+</header>
+<main class="methode-page">
+  <div id="method-lang-selector" class="method-lang-selector">
+  <button id="method-lang-toggle" class="lang-toggle" type="button" aria-label="Select language" aria-expanded="false" aria-controls="method-lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+    <span class="lang-toggle__label">English</span>
+    <span class="dropdown-arrow">▼</span>
+  </button>
+  <menu id="method-lang-menu" class="lang-menu" hidden role="menu">
+    <button type="button" class="lang-menu__item" onclick="window.location='/fr/methode/.html'" role="menuitem">Français</button>
+    <button type="button" class="lang-menu__item lang-menu__item--active" onclick="window.location='/en/methode/.html'" role="menuitem">English</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/es/methode/.html'" role="menuitem">Español</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/pt/methode/.html'" role="menuitem">Português</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/de/methode/.html'" role="menuitem">Deutsch</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/it/methode/.html'" role="menuitem">Italiano</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/tr/methode/.html'" role="menuitem">Türkçe</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/pl/methode/.html'" role="menuitem">Polski</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/nl/methode/.html'" role="menuitem">Nederlands</button>
+  </menu>
+</div>
+
+<h1 style="display:none">Hybrid attack — Comprehensive operation</h1>
+<blockquote>
+Project reference document Time2Crack
+</blockquote>
+<blockquote>Recipients: developers, security researchers, advanced users</blockquote>
+<hr>
+<h2>Contents</h2>
+<li><a href="#1-vue-densemble">Overview</a></li>
+<li><a href="#2-contexte-historique-et-académique">Historical and academic background</a></li>
+<li><a href="#3-fondements-conceptuels--pourquoi-lhybride-fonctionne">Conceptual Foundations: Why the Hybrid Works</a></li>
+<li><a href="#4-architecture-dune-attaque-hybride-moderne">Architecture of a modern hybrid attack</a></li>
+<li><a href="#5-les-jeux-de-règles-de-mutation">The game of mutation rules</a></li>
+<li><a href="#6-règles-best64--le-jeu-de-référence">Best64 rules: the reference game</a></li>
+<li><a href="#7-taxonomie-complète-des-transformations">Complete Taxonomy of Transformations</a></li>
+<li><a href="#8-priorisation-par-fréquence--le-cœur-de-lefficacité">Frequency priority: the heart of efficiency</a></li>
+<li><a href="#9-implémentation-dans-time2crack--addhybridattacks">Implementation in Time2Crack: <code>addHybridAttacks()</code></a></li>
+<li><a href="#10-les-trois-keyspaces-hybrides-et-leur-justification">The three hybrid keyspaces and their justification</a></li>
+<li><a href="#11-calibration-haute-fidélité">High fidelity calibration</a></li>
+<li><a href="#12-relation-avec-les-attaques-dérivées">Relationship to derived attacks</a></li>
+<li><a href="#13-benchmarks-par-algorithme-de-hachage">Benchmarks by hash algorithm</a></li>
+<li><a href="#14-exemples-concrets-de-cracking-hybride">Concrete examples of hybrid cracking</a></li>
+<li><a href="#15-limites-de-lattaque-hybride">Hybrid attack limits</a></li>
+<li><a href="#16-défenses-efficaces">Effective defences</a></li>
+<li><a href="#17-références-bibliographiques">References</a></li>
+<hr>
+<h2>1. Overview</h2>
+<p>Hybrid attack is the cracking method that combines <strong>a dictionary wordlist</strong> with <strong>a set of transformation rules</strong>Instead of testing each word in the dictionary as it is (pure dictionary attack), it generates on the fly all plausible variants of each word — capitalizations, character substitutions, prefix/suffix additions, inversions — and systematically tests them.</p>
+<strong>Why is it so effective?</strong> Humans do not choose "password" as a password, they choose "Password1", "p@ssw0rd", "PASSWORD123" or "password!". These variants seem stronger because they are not in the raw dictionary list — yet they are among the first generated by any modern hybrid cracking tool. The attacker exploits exactly the same "secure" heuristics that the user applies.
+<p>Hybrid attack is historically the responsible method for the majority of real "mean" password crackings — those that appear to be strong without being strong. According to Ma et al. (2014, IEEE S&amp;P), <strong>the first 8 to 10 rules applied to a current word suffice to crack the median password</strong> population.</p>
+<p>In Time2Crack, the hybrid attack modeled:
+</p><li>The detection that the password is or is derived from a dictionary word</li>
+<li>Estimation of the number of candidates an attacker should test before finding the exact variant</li>
+<li>Calculation of the corresponding time according to the target hash algorithm</li><p></p>
+<hr>
+<h2>2. Historical and academic background</h2>
+<h3>2.1 Origins: John the Ripper and mutation rules</h3>
+<p>The hybrid attack is formally born with <strong>John the Ripper</strong> (Solar Designer, 1996), the first public tool to combine a wordlist with a configurable rule engine. Prior to John the Ripper, dictionary attacks tested raw words; John introduced the notion that each word generates a family of candidates.</p>
+<strong>Chronology of milestones</strong> :
+YearEvent
+-------------------
+1979Morris &amp; Thompson: users substitute numbers for letters to "secure" their passwords
+1996John the Ripper 1.0: first public rule engine, JtR syntax (<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)
+2000Alec Muffett documents that 80% of real cracking goes through wordlist+rules, not brute force
+2006Hashcat 0.01: migration on GPU, rules go from 1M→1000M candidates/second
+2009RockYou: 14.3M clear passwords allow empirical calibration of the most effective rules
+2012Gosney (Passwordscon): 8 GPU GTX 580, best64 rules, crack 90% LinkedIn in &lt; 6 days
+2013Löfstrand: publishes "best64.rule", 64 rules covering 85-90% of current human transformations
+2014Ma et al. (IEEE S&amp;P): first academic study quantifying effectiveness by rule rank
+2016Hashcat open source: integrated best64, MD5 speed 2 TH/s on 8× GTX 1080
+2019Hashcat 6.0: OneRuleToRuleThemAll game (52k rules) generated by ML on corpus of passwords
+2023NSA Advisory: explicitly recommends testing corporate passwords with hybrid tools
+<h3>2.2 Founding empirical studies</h3>
+<strong>Klein (1990)</strong> — Analysis of 15,000 Unix passwords. Recognizes that 24.2% are crackable per pure dictionary, but that 32% additional are crackable with simple transformations (capitalization, addition of final digit). Total: 56.2% with a primitive hybrid tool.
+<strong>Weir et al. (2009, IEEE S&amp;P)</strong> — Proposes the PCFG model but valid by the way that the hashcat rules cover 78% of the transformations observed in RockYou. Demonstrates that the passwords "Password1" and "P@ssw0rd" are among the first 100 candidates generated by best64 on the word "password".
+<strong>Ma et al. (2014, IEEE S&amp;P)</strong> — The most cited study on the effectiveness of hybrid rules.
+<ul>
+<li>Rule 1 (<code>: → mot brut</code>) : crack 18% of dict-based passwords</li>
+</ul>
+<li>Rules 1–10: crack 51%</li>
+<li>Rules 1–64 (full best64): crack 79%</li>
+<li>Rules 1–500: crack 88%</li>
+<li><strong>Key conclusion</strong> The first 10 rules make the majority of the work.</li>
+<strong>Durmuth et al. (2015, ESORICS)</strong> — Evaluates the JtR vs Hashcat vs PCFG rules. Concludes that the Hashcat best64 rules are empirically the most effective for observed clear passwords, surpassing PCFG by 12% on RockYou cover.
+<h3>2.3 LinkedIn flight as a school case</h3>
+<p>The 2012 LinkedIn leak (6.5 million non-salted SHA-1s) perfectly illustrates the power of the hybrid. In 72 hours, the hashcat community had cracked:
+</p><li>100% passwords in top-10M wordlists (pure dictionary)</li>
+<li>90% more via best64 + Combineatorattack</li>
+<li>Resistant passwords: only those without any dictionary structure</li><p></p>
+<p>Post-crack analysis revealed that "linkedin1", "Linkedin1", "l!nked!n" and "LINKEDIN" — all variants of "linkedin" — collectively represented tens of thousands of compromised accounts.</p>
+<hr>
+<h2>3. Conceptual Foundations: Why the Hybrid Works</h2>
+<h3>3.1 The human behaviour of "secure"</h3>
+<p>When a system imposes rules of complexity (majuscule, number, symbol), users do not generate random — they <strong>apply predictable transformations to memorizable words</strong> :</p>
+Human strategyExampleRelated hybrid rule
+----------------------------------------------------------
+Capitalizing the first letter"sunshine" → "Sunshine"<code>c</code> (capitalize first)
+Count all"sunshine" → "SUNSHINE"<code>u</code> (uppercase all)
+Add a digit at the end"sunshine" → "sunshine1"<code>$1</code> (appends "1")
+Add year"sunshine" → "sunshine2024"<code>$2 $0 $2 $4</code>
+Replace e→3"sunshine" → "suns3ine"<code>s e 3</code> (substitute e by 3)
+Replace a→@"password" → "p@ssword"<code>s a @</code>
+Reverse word"sunshine" → "enihsnus"<code>r</code> (reverses)
+Double word"sun" → "sunsun"<code>d</code> (duplicate)
+Add ! final"sunshine" → "sunshine!"<code>$!</code>
+Combine multiple"password" → "P@ssw0rd1"<code>c s a @ s o 0 $1</code>
+<p>These transformations <strong>seem creative</strong> to the user. <strong>exactly the first ones that the attacker tries</strong> They correspond to the constraints imposed by security policies.</p>
+<h3>3.2 The concept of efficient reduced space</h3>
+<p>A 10-character password with letters+digits+symbols has a raw keyspace-force of 94^10, 5,4 × 10^19 combinations. Too large to travel in a reasonable time.</p>
+<p>But if this password is "Password1!" — a trivial transformation of "password" — it is among the <strong>500 first candidates</strong> The attacker does not travel 5.4 × 10^19 combinations: he travels 500.</p>
+<p>This is the fundamental reduction of the hybrid attack: <strong>the real space of human choices is astronomically smaller than the theoretical space of possible characters</strong>.</p>
+<h3>3.3 The Law of Power of Transformation</h3>
+<p>Just as raw passwords follow a law of power (Zipf), the transformations that humans apply also follow a very concentrated distribution. Ma et al. (2014) empirically showed:</p>
+<li>~5% of transformations ("add 1 at the end", "capitalize the first letter") cover ~50% of real cases</li>
+<li>~20% of transformations cover ~85% of cases</li>
+<li>The remaining 80% of transformations cover only 15% of cases</li>
+<p>This concentration allows a set of 64 well chosen rules (best64) to reach a coverage of 79-85%, where 64 random rules would reach only 10-15%.</p>
+<h3>3.4 Interaction with the popularity of the basic word</h3>
+<p>The more common the base word, the earlier the derived password is in the attacker's priority list. The attacker orders his candidates in decreasing probability:</p>
+<pre><code class="language-plaintext">Candidats générés par l'attaquant (ordre de test) :
+<li>password (gross, most common word)</li>
+<li>Password (capitalize first)</li>
+<li>password1 ($1)</li>
+<li>PASSWORD (uppercase all)</li>
+<li>password! ($!)</li>
+<li>p@ssword (substitute a→@)</li>
+<li>passw0rd (substitute o→0)</li>
+<li>Password1 (c + $1)</li>
+<li>P@ssword (c + s a @)</li>
+<li>password123 ($12$3)</li>
+...
+<li>p@ssW0rd! (combination complex)</li></code></pre>
+<p>"password" is the most common word → its derivatives are tested first. "papillon" is less common → its derivatives are tested much later. This prioritization is the central mechanism that explains the three distinct keyspaces in Time2Crack.</p>
+<hr>
+<h2>4. Architecture of a modern hybrid attack</h2>
+<h3>4.1 General pipeline</h3>
+<pre><code class="language-plaintext">Phase 1 : Sélection de la wordlist
+    ├── Passwords fuités triés par fréquence (RockYou, HIBP, Collections)
+    ├── Dictionnaire linguistique (fr.txt, en.txt, de.txt...)
+    ├── Wordlists thématiques (prénoms, villes, marques, séries TV)
+    └── Wordlists contextuelles (domaine cible, noms d'employés, termes métier)
+<p>Phase 2: Selection of the Rules Game
+- - best64.rule (balanced reference, 64 rules)
+OneRuleToRuleThemAll.rule (52,000 rules, ML-generated)
+D3ad0ne.rule (34,000 rules, empirical)
+- JtR rules (generalized.rule, specific.rule, extra.rule)
+- - Custom rules (adapted to the target domain)</p>
+<p>Phase 3: Expansion (wordlist × rules)
+For each word w in wordlist:
+For each rule r in ruleset:
+│ applicant = application(r, w)
+Promotional │ If candidate 
+Promotional │ queue<em>of the</em>candidates.push(candidate)
+--Order: (w1, rule1), (w1, rule2)... (w2, rule1)...
+or: (w1, rule1), (w2, rule1)... according to strategy</p>
+<p>Phase 4: Haching and Comparison (GPU)
+- - Sending by batch of ~10M candidates to the GPU
+- - Parallel calculation of hashs (SIMD, 168 GH/s for MD5)
+- Comparison with target hash(es)
+If match: FINDED — log(candidate, hash, rule)</p>
+<p>Phase 5: Reporting
+- - Cracked candidate + rule used + rank in list</p></code></pre>
+<h3>4.2 Hashcat modes of operation</h3>
+<p>Hashcat implements the hybrid in two distinct ways:</p>
+<strong>Mode -a 0 (wordlist + rules)</strong> : for every word of the wordlist, apply all the rules. This is the classic hybrid mode.
+<pre><code class="language-bash">hashcat -a 0 -m 0 hashes.txt rockyou.txt -r best64.rule</code></pre>
+<strong>Mode -a 6 (wordlist + mask)</strong> : combines a wordlist with a positional mask. Generates all combinations <code>mot + suffixe<em>masked</em></code>.
+<pre><code class="language-bash">hashcat -a 6 -m 0 hashes.txt wordlist.txt ?d?d?d?d
+<h1 style="display:none">Test "sunshine0000", "sunshine0001", ..., "sunshine9999"</h1></code></pre>
+<strong>Mode -a 7 (mask + wordlist)</strong> : inverse — masked prefix + word.
+<pre><code class="language-bash">hashcat -a 7 -m 0 hashes.txt ?d?d wordlist.txt
+<h1 style="display:none">Test "00sunshine", "01sunshine", ..., "99sunshine"</h1></code></pre>
+<p>Time2Crack mainly models the mode <code>-a 0</code> (transfer rules), which covers the vast majority of actual hybrid attacks documented.</p>
+<h3>4.3 Order of candidates and prioritization strategy</h3>
+<p>The order in which candidates are tested is critical.</p>
+<strong>Strategy word-first</strong> (default hashcat): all rules are applied to W1 before switching to W2.
+<pre><code class="language-plaintext">(W1, R1), (W1, R2), ..., (W1, Rn), (W2, R1), (W2, R2)...</code></pre>
+Advantage: if W1 is very likely (e.g. "password"), you quickly discover its variants.
+<strong>Rule-first strategy</strong> : all wordlists are run for R1 before going to R2.
+<pre><code class="language-plaintext">(W1, R1), (W2, R1), ..., (Wm, R1), (W1, R2), (W2, R2)...</code></pre>
+Advantage: the most effective rule (<code>: → mot brut</code>) is applied first on all words. Often more effective for diverse corpus.
+<p>In practice, hashcat uses word-first by default but experienced operators choose according to the target profile.</p>
+<hr>
+<h2>5. Sets of mutation rules</h2>
+<h3>5.1 Syntax of hashcat rules</h3>
+<p>The hashcat rules are expressed in a minimum language where each character represents an operation on the candidate string:</p>
+<strong>Case modifiers</strong> :
+<li><code>:</code> — Identity (gross word, no transformation)</li>
+<li><code>l</code> — lowercase all ("PASSWORD" → "password")</li>
+<li><code>u</code> — uppercase all ("password" → "PASSWORD")</li>
+<li><code>c</code> — Capitalize first, lowercase rest ("PASSWORD" → "Password")</li>
+<li><code>C</code> — Lowercase first, uppercase rest ("Password" → "pASSWORD")</li>
+<li><code>t</code> — Toggle box of all characters ("Password" → "pASSWORD")</li>
+<li><code>TN</code> — Toggle box from character to position N</li>
+<strong>Removals and reversals</strong> :
+<li><code>r</code> — Reverse ("password" → "drowssap")</li>
+<li><code>d</code> — Duplicate ("password" → "passwordpassword")</li>
+<li><code>f</code> — Reflect (word + reverse) ("sun" → "sunnos")</li>
+<li><code>{</code> — Rotate left ("password" → "asswordp")</li>
+<li><code>}</code> — Rotate right ("password" → "dpasswor")</li>
+<li><code>[</code> — Remove first character ("password" → "assword")</li>
+<li><code>]</code> — Remove last character ("password" → "passwor")</li>
+<strong>Character additions</strong> :
+<li><code>$X</code> — Append character X ("password" + <code>$1</code> → "password1")</li>
+<li><code>^X</code> — Prepend character X ("password" + <code>^1</code> → "1password")</li>
+<li><code>iNX</code> — Insert character X at position N</li>
+<strong>Substitutions</strong> :
+<li><code>sXY</code> — Replace all X by Y ("password" + <code>s a @</code> → "p@ssword")</li>
+<li><code>SNX</code> — Replace character at position N by X</li>
+<strong>Truncations</strong> :
+<li><code>'N</code> — Truncate at position N (password + <code>'4</code> → "pass")</li>
+<li><code>DN</code> — Delete character at position N</li>
+<strong>Conditional</strong> :
+<li><code><n< code=""> - Apply the rule only if length &lt; N</n<></code></li>
+<li><code>&gt;N</code> — Apply the rule only if length &gt; N</li>
+<li><code>=N</code> — Apply the rule only if length = N</li>
+<h3>5.2. Composite rules</h3>
+<p>Rules can be chained on a single line to create complex transformations:</p>
+<pre><code class="language-plaintext">c $1          → "Password1" (capitalize + append 1)
+c $! $1       → "Password!1" (capitalize + append ! + 1)
+s a @ s e 3   → "p@ssw3rd" (substitute a→@ et e→3)
+r $1          → "1drowssap" (reverse + append 1)
+u $2 $0 $2 $3 → "PASSWORD2023" (uppercase + append year)</code></pre>
+<p>Power is in the composition: 64 simple rules generate thousands of distinct transformations by combination.</p>
+<h3>5.3 Main Rules</h3>
+<strong>best64.rule</strong> (Löfstrand, 2013) — 64 rules selected empirically on RockYou to maximize crack rate. Considered industry benchmark.
+<strong>OneRuleToRuleThemAll</strong> (NotSoSecure, 2019) — 52,218 rules generated by automatic learning on cracked password corpus. Crack rate greater than best64 of ~8% on modern corpus, at the cost of a calculation time ~800× longer.
+<strong>d3ad0ne.rule</strong> — 34,096 Community rules, focus on patterns not covered by best64 ( accents, extended characters, non-English patterns).
+<strong>live.rule</strong> — 99 000+ rules, the most exhaustive. Used for long-term cracking when others failed.
+<strong>Generalized2.rule (JtR)</strong> — Automatically generated by statistical analysis of already cracked passwords. Recalculated periodically as new leaks occur.
+<hr>
+<h2>6. Best64 rules: the reference game</h2>
+<p>Best64 is the set of 64 standard rules of reference in academic literature and industry. Here are the most important rules and their empirical justification:</p>
+<h3>6.1 The 20 most effective rules (in order of performance)</h3>
+RankRuleTransformation% passwords covered (May 2014)
+-----------------------------------------------------------
+1<code>:</code>Gross Word~18%
+2<code>c</code>Capitalize first~11%
+3<code>u</code>Uppercase all~6%
+4<code>$1</code>Append "1"~5%
+5<code>l</code>Lowercase all~4%
+6<code>$!</code>Append "!"~3%
+7<code>s a @</code>a→@~2.8%
+8<code>c $1</code>Capitalize + "1"~2.5%
+9<code>$2</code>Append "2"~2.1%
+10<code>r</code>Reverse~1.9%
+11<code>$!</code> + <code>c</code>Capitalize + "!"~1.7%
+12<code>s o 0</code>o→0~1.6%
+13<code>d</code>Duplicate~1.4%
+14<code>s e 3</code>e→3~1.3%
+15<code>$1 $2 $3</code>Append "123"~1.2%
+16<code>c $1 $2 $3</code>Capitalize + "123"~1.1%
+17<code>$0</code>Append "0"~1.0%
+18<code>^1</code>Prep "1"~0.9%
+19<code>s i 1</code>i→1~0.8%
+20<code>c $! $1</code>Capitalize + "!1"~0.7%
+<strong>Cumulation rules 1–10</strong> : ~55% of dict-based passwords
+<strong>Cumulation rules 1–20</strong> : ~68% of dict-based passwords
+<strong>Cumulation rules 1–64</strong> : ~79% of dict-based passwords
+<h3>6.2 Why are these rules so effective?</h3>
+<p>Each top-10 rule corresponds to a common security policy constraint:
+</p><li>"Shall have a capital capital" → users capitalize the first letter (<code>c</code>)</li>
+<li>"must have a number" → users add "1" at the end (<code>$1</code>)</li>
+<li>"Shall have a symbol" → users add "!" (<code>$!</code>)</li>
+<li>"must have letters AND numbers" → <code>c $1</code> or <code>c $1 $2 $3</code></li><p></p>
+<p>Password policies do not really increase security if users implement predictable transformations — they only move passwords to the second or third rule of best64.</p>
+<hr>
+<h2>7. Complete Taxonomy of Transformations</h2>
+<h3>7.1 Category 1: Case transformations</h3>
+<p>Most common. Exploit the obligation to have a capital capital:</p>
+<li>Capitalize first letter : "sunshine" → "Sunshine" (<strong>most common rule after the word raw</strong>)</li>
+<li>All uppercase : "sunshine" → "SUNSHINE"</li>
+<li>Toggle alternating : "sunshine" → "sUnShInE"</li>
+<li>Last letter uppercase : "sunshine" → "sunshine"</li>
+<li>CamelCase: "sunshinE" (approximated by <code>c</code> changes)</li>
+<strong>Prevalence</strong> : Klein (1990) notes that 41% of "passwords with capitals" consist simply of the word with the first letter in capitals.
+<h3>7.2 Category 2: Digital Suffixes and Prefixes</h3>
+<p>Exploit the obligation to have a figure:</p>
+<li>Append single digit : word+"0" to word+"9"</li>
+<li>Append two digit : word+"00" to word+"99" (100 combinations)</li>
+<li>Append year : word+"1990" to word+"2024" (35 frequent combinations)</li>
+<li>Append "123" or "1234" (very common)</li>
+<li>Prepend single digit : "1"+mot à "9"+mot</li>
+<li>Prepend year : "2024"+word</li>
+<strong>Prevalence</strong> Veras et al. (2014) find that ~73% of "mandatory" passwords add the figure in suffix. Only ~12% prefix it.
+<h3>7.3 Category 3: Leet substitutions</h3>
+<p>Systematic replacement of letters with similar numbers or symbols:</p>
+SubstitutionEmpirical frequency
+------------------------------------
+a → @23% of passwords with @
+e → 331% of passwords with 3
+i → 119% of passwords with 1
+o → 027% of passwords with 0
+s → $14% of passwords with $
+l → 18%
+t → 76%
+g → 94%
+<p>Combined substitutions ("P@ssw0rd") appear complex but are generated in a few rules: <code>c s a @ s o 0</code>They are among the <strong>500 first candidates</strong> On "password".</p>
+<h3>7.4 Category 4: Symbolic Suffixes</h3>
+<p>Exploit the obligation to have a special character:</p>
+<li>Append "!": the most frequently added symbol (~35% of symbolic additions)</li>
+<li>Append "?": ~8%</li>
+<li>Append "#" : ~6%</li>
+<li>Append "@": ~5%</li>
+<li>Append ".": ~4%</li>
+<li>Append "!!": ~3%</li>
+<li>Prepends "!": less frequent (~10% of cases vs 35% for suffix)</li>
+<strong>Kombinaison</strong> : word + "1!" is so common that it is systematically generated by best64. "sunshine1!" is among the first 200 candidates generated on "sunshine".
+<h3>7.5 Category 5: Structural transformations</h3>
+<p>Less frequent but useful for some profiles:</p>
+<li>Inversion: "sun" → "naked" (current for certain groups)</li>
+<li>Duplication: "sun" → "sunsun" (passwords for systems limiting to 8 tanks solved to 16)</li>
+<li>Rotation : "password" → "asswordp"</li>
+<li>Truncation + addition : "passw" + "1"</li>
+<h3>7.6 Category 6: Compound transformations (advanced level)</h3>
+<p>Complex rules combine several operations:</p>
+<pre><code class="language-plaintext">c $1 s a @        → "P@ssword1" (capitalize + append 1 + substitute a→@)
+u $! $1 $2 $3     → "SUNSHINE!123" (uppercase + append !123)
+r c $1            → "Drowssap1" (reverse + capitalize + append 1)
+s e 3 s a @ c $!  → "P@ssw3rd!" (multiple substitutions + capitalize + !)</code></pre>
+<p>These transformations seem very complex but remain detectable by a good set of rules. OneRuleToRuleThemAll contains thousands of these.</p>
+<hr>
+<h2>8. Frequency Priority: The Heart of Effectiveness</h2>
+<h3>8.1. The frequency of the basic word determines the priority</h3>
+<p>An intelligent attacker does not apply the rules uniformly to all words. He prioritizes:</p>
+<li><strong>Most common words</strong> (top-100 RockYou/HIBP) × all rules</li>
+<li><strong>Words moderately common</strong> (top-10k) × most effective rules</li>
+<li><strong>Less frequent words</strong> (all dictionary) × first few rules</li>
+<p>This strategy is implemented in hashcat via the sorting of the wordlist by decreasing frequency combined with the word-first strategy. It explains why "Password1" (derived from "password", the word #1) is cracked in milliseconds, while "Soleil1" (derived from "sun", word ~5000 from the French dictionary) may take a few seconds.</p>
+<h3>8.2 Median position in search space</h3>
+<p>The key measure is <strong>the median number of candidates tested before finding the target password</strong>. Ma et al. (2014) provide empirical measurements:</p>
+ThirdExampleMedian applicants before finding
+-------------------------------------------------------------------
+TOP100"password1", "P@ssword"~450–500
+Common dict (top-10k)"Sunshine1", "sunshine!"~5 000–15 000
+Less common"Paillon2024"~50 000–200,000
+Without dictionary"Xk7#mP9q"N/A (inapplicable hybrid)
+<p>These measurements are the direct basis of Time2Crack constants:
+</p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
+const HYBRID<em>KEYSPACE</em>DICT = 8<em>000; // Ma et al. 2014 — median current dictator
+const HYBRID</em>KEYSPACE<em>FULL = 128e6; // Gosney 2012 — best64 × 2M exhaustive words</em></code></pre><p></p>
+<h3>8.3 Conditions necessary for the hybrid to be applicable</h3>
+<p>Hybrid attack requires the password to be <strong>structurally derivable from a dictionary word</strong>Time2Crack detects this condition via <code>hybridVuln</code> :</p>
+<pre><code class="language-javascript">const hybridVuln = dictWord || (common &amp;&amp; /[a-z]/i.test(pw));</code></pre>
+<li><code>dictWord = true</code> : the password is or derives from a language wordlist</li>
+<li><code>common &amp;&amp; lettre</code> : the password appears in COMMON (HIBP top-400) and contains letters — so almost certainly derived from a word</li>
+<p>If <code>dictWord</code> neither <code>hybridVuln</code> are true — the password contains no detectable dictionary root — hybrid attack returns <code>null</code> (not applicable). A purely random password like "xK9#mQ7@" is not vulnerable to hybrid.</p>
+<hr>
+<h2>9. Implementation in Time2Crack: <code>addHybridAttacks()</code></h2>
+<h3>9.1 Complete annotated code</h3>
+<pre><code class="language-javascript">function addHybridAttacks(rows, hybridVuln, weak, common, dictWord) {
+  if (hybridVuln || weak) {
+    // Sélection du keyspace selon la popularité du mot de base :
+    // common → mot dans HIBP top-400 → position ~500 dans la liste de l'attaquant
+    // dictWord → mot dans la wordlist → position ~8000
+    // sinon (hybridVuln sans dictWord ni common) → scan exhaustif ~128M
+    const hybridKS = common ? HYBRIDKEYSPACE<em>COMMON
+dictWord? HYBRID</em>KEYSPACE<em>DICT
+: HYBRID</em>KEYSPACE<em>FULL;
+<p>for (const a of ALGOS) {
+rows.push({
+atk: t("aHybrid"),
+hash: a.name,
+rate: a.rate,
+// budgetTime : the keyspace IS the number of guesses — no division by 2
+// (unlike BrutTime, here candidates are ordered by probability)
+dry: weak ? weakGuessTime(a.rate): budgetTime(hybridKS, a.rate),
+note: weak ? t("nWeakPassword") : t("nDictMut")
+cat: "hybrid",
+});
+}
+} else {
+// Password without structure dictionary → hybrid inapplicable
+rows.push({
+atk: t("aHybrid"),
+hash: "(all)",
+rate: 0,
+dry: null, // N/A in the table
+note: t(nStructUnrecog),
+cat: "hybrid",
+});
+}
+}</p></em></code></pre>
+<h3>9.2 <code>budgetTime</code> vs <code>bruteTime</code></h3>
+<p>The distinction between the two functions is fundamental:</p>
+<pre><code class="language-javascript">// bruteTime : l'attaquant ne sait pas où est le mot de passe dans l'espace.
+// Il teste en moyenne la moitié avant de le trouver. → keyspace/2
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls);
+}
+<p>// budgetTime: the attacker tests candidates in descending order of probability.
+// Keyspace IS the number of candidates expected before finding (median position).
+// No division by 2 — the median is already incorporated into the Ma 2014 constants.
+budget functionTime(guess, rate) {
+const ls = Math.log(guesses) - Math.log(rate);
+returns Math.exp(ls);
+}</p></code></pre>
+<p>For the hybrid, <code>budgetTime</code> is correct because the 500/8000/128M candidates are empirical estimates of the <strong>median position</strong>, not total space to travel.</p>
+<h3>9.3 Relationship with <code>isDictWord()</code></h3>
+<p>Detection <code>dictWord</code> which conditions the choice of hybrid keyspace is produced by <code>isDictWord()</code> :</p>
+<pre><code class="language-javascript">function isDictWord(pw) {
+  if (!DICTWORDS || !DICT<em>(WORDS.size) return false;
+const l = pw.normalize("NFC").toLowerCase();
+<p>// Direct test: Is the password as it is in the dictionary?
+if (DICT)</p></em>WORDS.has(l)) return true;
+<p>// Leetified test: "s0le1l" → "sun" in the dico?
+const dl = deLeet(pw);
+if (dl!)<em>WORDS.has(dl) return true;</em></p>
+<p>// Test substring: "sunshine123" contains "sunshine" in the dico?
+for (const w of DICTWORDS) {
+if (l.includes(w) &amp;&amp; w.length &gt;= 4) return true;
+}</p>
+<p>return false;
+}</p></code></pre>
+<p>This detection determines not only whether the hybrid is applicable, but also <strong>which keyspace</strong> (common vs dict) is used to calculate time.</p>
+<hr>
+<h2>10. The three hybrid keyspaces and their justification</h2>
+<h3>10.1 HYBRID<em>KEYSPACE</em>COMMON = 500</h3>
+<strong>Background</strong> The password is in COMMON — the hardcoded list HIBP top-~400. These are some of the most common passwords in the world ("password", "letmein", "sunshine", "iloveyou"...).
+<strong>Justification</strong> Ma et al. (2014) empirically measured that the median position of a top-1000 password in a hybrid list sorted by probability is ~450 candidates. The number 500 is a slightly conservative estimate to cover up to ~400 rank.
+<strong>Interpretation</strong> : an attacker applying best64 to a wordlist sorted by frequency tests on average 500 candidates before finding the password. At 2,000 GH/s (MD5, 12× RTX 4090), 500 candidates = <strong>0.25 picoseconds</strong>. Practically instantaneous.
+<strong>Example</strong> : "Sunshine1" → "sunshine" is in COMMON → HYBRID<em>KEYSPACE</em>COMMON = 500 → <code>budgetTime(500, 2027e9)</code> 0.25 nanoseconds.
+<h3>10.2 HYBRID<em>KEYSPACE</em>DICT = 8,000</h3>
+<strong>Background</strong> The password is derived from a word from the language wordlist, but not from COMMON. These are common vocabulary words ("sun", "mountain", "paillon"...) with transformations.
+<strong>Justification</strong> Ma et al. (2014) measure a median position of 2,000 to 15,000 depending on the popularity of the word in RockYou. The empirical median is ~8,000. This keyspace reflects that the attacker tests the word and its variants after exhausting the more common candidates.
+<strong>Interpretation</strong> : 8,000 candidates at 2,000 GH/s (MD5) = <strong>4 nanoseconds</strong>. Always near-instantaneous for fast hashs. For bcrypt (69 kH/s): 8,000 / 69 000  <strong>0.12 seconds</strong>.
+<strong>Example</strong> : "Soleil2024" → "sun" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8,000 → a few nanoseconds on MD5, 0.12s on bcrypt.
+<h3>10.3 HYBRID<em>KEYSPACE</em>FULL = 128,000,000</h3>
+<strong>Background</strong> : <code>hybridVuln</code> is true (password has a dictionary structure) but neither <code>common</code> neither <code>dictWord</code> The attacker must browse the entire wordlist with all the rules.
+<strong>Justification</strong> : Gosney (Passwordscon 2012) documents a wordlist of 3.5M words × best64 (64 rules) = 224M candidates in total. In practice, realistic wordlists make 2M words and the partial best64 runs stop at ~128M candidates before climbing towards wider rules.
+<strong>Formula</strong> : <code>2<em>000</em>000 mots × 64 règles = 128<em>000</em>000 candidats</code>
+<strong>Interpretation</strong> : 128M candidates at 2000 GH/s (MD5) <strong>64 microseconds</strong>. On bcrypt (69 kH/s): ~31 minutes.
+<hr>
+<h2>11. High fidelity calibration</h2>
+<h3>11.1 Role of high fidelity mode</h3>
+<p>When high fidelity mode (HF) is activated in Time2Crack, an additional multiplier is applied to the calculated times to refine accuracy. For hybrid attack, this multiplier takes into account factors not captured by the basic keyspaces.</p>
+<h3>HF multiplicators for hybrid</h3>
+<p>In <code>applyHighFidelityCalibration()</code> :</p>
+<pre><code class="language-javascript">case "hybrid":
+  // Mots très courants : crackés encore plus tôt que la médiane Ma 2014
+  // car les attaquants modernes trient word-first + règle-first simultanément.
+  // Réduction de 30% sur les temps déjà courts.
+  m <em>= context.common ? 0.7
+: context.dictWord ? 0.8
+- 1.0;
+Break;</em></code></pre>
+<strong>Justification</strong> :
+<li>For <code>common</code> : modern tools (hashcat with <code>--markov-threshold</code>) pre-set the rules by empirical effectiveness. The best candidates arrive even earlier. Reduction of 30%.</li>
+<li>For <code>dictWord</code> : less effect because the position in the wordlist is less concentrated. Reduction of 20%.</li>
+<li>For <code>hybridVuln</code> only (FULL keyspace): no reduction — full keyspace is already a conservative estimate.</li>
+<h3>11.3 Interaction with the monotony guard</h3>
+<p>The monotony guard ensures that no specialized attack claims to be <strong>faster</strong> that the raw force on the alphabetical substring of the password:</p>
+<pre><code class="language-javascript">// Pour chaque row non-brute :
+const floorAlpha = bruteTime(Math.pow(26, alphaOnly.length), algo.rate);
+if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
+<p>For short words (e.g., "cat" = 3 letters, floor = 26^3/rate </p>
+<hr>
+<h2>12. Relationship with derived attacks</h2>
+<h3>12.1 Hybrid vs. Pure Dictionary</h3>
+CriteriaPure DictionaryHybrid
+-------------------------------------
+Candidates testedCorrect List WordsWords + all their variants
+Cover (RockYou)~18%~79-85% (with best64)
+Keyspace (200k words)200 000200 000 × 64 = 12.8M
+ApplicabilityPassword = exact wordPassword derived from a word
+Vulnerable example"sunshine" (exact)"Sunshine1!", "sunsh1ne"
+Resistant example"Sunshine1""xK9#mQ7@" (no root)
+<h3>12.2 Hybrid vs Rule-Based</h3>
+<p>The rule-based attack in Time2Crack is conceptually similar but with a much wider set of rules:</p>
+<pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000; // vs 128M for full hybrid</em></code></pre>
+<p>The difference: the best64 model hybrid (64 rules, focus on common human transformations). The rule-based attack models wider games like d3ad0ne (34k rules) or OneRuleToRuleThemAll (52k rules), used when best64 fails. The rule-based is the "second line" hybrid — slower but more comprehensive.</p>
+<h3>12.3 Hybrid vs PCFG</h3>
+<p>PCFG (Probabilistic Context-Free Grammar, Weir 2009) models the grammatical structure of the password to generate candidates.</p>
+CriteriaHybridPCFG
+--------------------------
+ApproachBasic word + transformation rulesGlobal grammatical structure
+ForceExisting words mutatedStructures type "word+Digits"
+Example"sunshine" → "Sunshine1"Detects the "Caps+lower+digit" structure
+ComplementarityTriggers on <code>dictWord</code>Triggers on detected structure
+Keyspace (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> dynamically calculated
+<p>PCFG can attack passwords without root dictionary if their <strong>structure</strong> is common (ex: "Thelonious8" → no word of the dico but structure Capitalize+lower+digit very predictable).</p>
+<h3>12.4 Hybrid vs Morphological (morph)</h3>
+<p>The morphological attack tests linguistic variants (flexions, variations). It is a generalization of the hybrid for languages with rich morphology:</p>
+<li>Hybrid : "sun" → "Sun1", "s0leil", "sun!"</li>
+<li>Morphological : "sun" → "sun", "sun", "solar", "sun"</li>
+<p>The hybrid operates on the surface of the word (character transformations), the morphological operates on the lexical structure (derivation, bending), and they are complementary.</p>
+<hr>
+<h2>13. Benchmarks by hash algorithm</h2>
+<h3>13.1 Time for the three hybrid keyspaces (12× RTX 4090)</h3>
+AlgorithmRate (H/s)COMMON (500)DICT (8k)FULL (128M)
+----------------------------------------------------------------
+MD52 027 GH/s0.25 ps3.9 ns63 μs
+SHA-1610 GH/s0.82 ps13 ns210 μs
+SHA-256272 GH/s1.84 ps29 ns470 μs
+NTLM3,462 GH/s0,14 ps2.3 ns37 μs
+bcrypt (cost 10)69 kH/s7.2 ms0.12 s31 min
+Argon2id800 H/s0.625 s10 s44 hours
+<strong>Reading</strong> : for MD5 and NTLM, even the FULL keyspace (128M candidates) is cracked in a few dozen microseconds. The hash algorithm is almost irrelevant for common words.
+<strong>Argon2id</strong> is the only algorithm that resists significantly even for common words: 0.625 seconds for a COMMON word, 10 seconds for a dictWord. These times remain short in absolute value but represent a slowdown of x10^12 vs MD5 — making large-scale attacks economically inviable.
+<h3>13.2 Impact of the attacking profile</h3>
+<p>Time2Crack offers two profiles (Experienced 12 GPU, Professional 100 GPU). For the hybrid, the profile difference is directly proportional:</p>
+ProfileGPUsMultiplierFULL bcrypt
+--------------------------------------------
+Experienced12× RTX 40901×31 min
+Professional~100 GPU~8×~4 min
+<p>For MD5, SHA-1, NTLM: the profile changes the time from microseconds to nanoseconds — without any practical impact, both are instantaneous.</p>
+<hr>
+<h2>14. Concrete examples of hybrid cracking</h2>
+<h3>14.1 Example 1: "Password1" (COMMON)</h3>
+<strong>Analysis</strong> :
+<li><code>isCommon("Password1")</code> → false (not in exact HIBP)</li>
+<li><code>isDictWord("Password1")</code> → true ("password" in DICTWORDS in lower case)</li>
+<li><code>COMMON.has("password")</code> → true → <code>common = true</code></li>
+<li>Result: HYBRID<em>KEYSPACE</em>COMMON = 500</li>
+<strong>MD5 time</strong> : 500 / 2,027e12 <strong>0.25 picoseconds</strong> (snapshot)
+<strong>Time bcrypt cost 10</strong> : 500 / 69 000 <strong>7.2 milliseconds</strong>
+<strong>Rules tested before finding</strong> : <code>:</code> (gross word "password" → no), <code>c</code> ("Password" → no), <code>c $1</code> ("Password1" → <strong>FIND</strong>, row ~8)
+<h3>14.2 Example 2: "Sun2024" (DICT)</h3>
+<strong>Analysis</strong> :
+<li><code>isCommon("Soleil2024")</code> → false</li>
+<li><code>isDictWord("Soleil2024")</code> → true ("sun" in fr.txt)</li>
+<li><code>COMMON.has("soleil")</code> → false → <code>common = false</code>, <code>dictWord = true</code></li>
+<li>Result: HYBRID<em>KEYSPACE</em>DICT = 8,000</li>
+<strong>MD5 time</strong> : 8 000 / 2.027e12 <strong>3.9 nanoseconds</strong>
+<strong>Time bcrypt cost 10</strong> : 8 000 / 69 000 <strong>0.12 seconds</strong>
+<strong>Test rules</strong> : the attacker arrives at "sun" at ~5000 in the wordlist fr sorted by frequency, then applies <code>c $2 $0 $2 $4</code> ("Sun2024") in the row ~3 of its rules → overall position ~15 003.
+<h3>14.3 Example 3: "p@pillon!" (DICT with substitutions)</h3>
+<strong>Analysis</strong> :
+<li><code>isDictWord("p@pillon!")</code> : de-leetification → "paillon" → in fr.txt → <code>dictWord = true</code></li>
+<li>Result: HYBRID<em>KEYSPACE</em>DICT = 8,000</li>
+<strong>Test rules</strong> : "paillon" at ~15,000 of the dictionary fr. Rule <code>s a @ $!</code> → "p@pillon!" in row ~12. Overall position: ~180,000. Always good in HYBRID<em>KEYSPACE</em>DICT.
+<h3>14.4 Example 4: "xK9#mQ7@" (resistant)</h3>
+<strong>Analysis</strong> :
+<li><code>isDictWord("xK9#mQ7@")</code> → false (no root dictionary)</li>
+<li><code>isCommon("xK9#mQ7@")</code> → false</li>
+<li><code>hybridVuln = false</code></li>
+<li>Outcome: <code>sec = null</code> → <strong>hybrid not applicable</strong></li>
+<p>This password cannot be cracked by hybrid attack. It has no dictionary root. The attacker must use pure brute force, PCFG or statistical attacks (Markov, Neural).</p>
+<h3>14.5 Example 5: "LinkedInB3st!"</h3>
+<strong>Analysis</strong> :
+<li><code>isDictWord("LinkedInB3st!")</code> : "linkedin" → wordlist en.txt + <code>deLeet("b3st")</code> → "best" → <code>dictWord = true</code></li>
+<li>Result: HYBRID<em>KEYSPACE</em>DICT = 8,000</li>
+<p>Interesting case: the password contains two roots ("linkedin" and "best" via de-leetification). Hybrid attack is applicable because at least one root is detected. In practice, a combinator attack (two words glued) would be even more effective here.</p>
+<hr>
+<h2>15. Hybrid Attack Limits</h2>
+<h3>15.1 Intrinsic limits</h3>
+<strong>Dependence on the quality of the wordlist</strong> : if the basic word is not in the wordlist, the hybrid cannot work. A password based on a very specialized term (neologism, obscure technical term, word of a rare language) can resist if it is absent from all common wordlists.
+<strong>Incomplete coverage of transformations</strong> : even OneRuleToRuleThemAll with 52k rules does not cover 100% of imaginable transformations. Some very rare transformations (base64 partial encodings, invented patterns) escape the rules.
+<strong>Combinatory Explosion with Long Wordlists</strong> At 2,000 GH/s (MD5), it takes ~250 seconds — but with bcrypt (69 kH/s), ~230,000 years. The scalability of the hybrid is constrained by the length of the wordlist and the slowness of the hash algorithm.
+<h3>15.2 What Time2Crack does not capture</h3>
+<strong>Context Wordlists</strong> : an attacker targeting a specific company will build a wordlist with the name of the company, products, employee names, business terms. "Renault2024!" would be cracked instantly by an attacker targeting Renault — but Time2Crack does not model this context (this is the role of the "Targeted OSINT" attack).
+<strong>Multi-pass composite rules</strong> Some passwords resist best64 but give in to two-pass rules (apply one rule, then apply another rule on the result). Time2Crack model only one rule pass.
+<strong>Cache Effects and Memorization</strong> : hashcat maintains a table of candidates already tested to avoid duplicates, which accelerates runs in practice. Not modelled in Time2Crack (conservative).
+<h3>15.3 Cases where the hybrid is overestimated</h3>
+<p>Time2Crack can overestimate hybrid speed in two cases:</p>
+<li><strong>Long passwords</strong> A 20-character password based on a word dictionary ("incomprehensibleities1!") is detected as a dictionary, but hybrid tools usually filter candidates too long. The real keyspace is perhaps 10× larger.</li>
+<li><strong>Languages with rich morphology</strong> Turkish, Finnish, Hungarian have more complex wordlists. "Güneş2024" can pass under radars if the Turkish wordlist does not include all morphological forms.</li>
+<hr>
+<h2>16. Effective defences</h2>
+<h3>16.1 What resists hybridization</h3>
+<p>Hybrid attack fails if <strong>the password does not derive from any existing dictionary word</strong>Effective strategies:</p>
+<strong>Random passwords</strong> "xK9#mQ7@vP2!" contains no dictionary root. No hybrid rule can generate it. Resistance: maximum.
+<strong>Password generators</strong> : password managers (Bitwarden, 1Password, KeePass) generate random strings. No root dictionary → hybrid inapplicable.
+<strong>Passphrases of really random words</strong> : "tabouret-marmot-ginger-flash" — four random words. Hybrid attack in classical mode does not generate combinations of 4 words (this is the role of the combinator). Passphrase resists the standard hybrid.
+<h3>16.2 What is NOT Resistance to Hybrid</h3>
+<p>The most common "strengthening" strategies do not resist:</p>
+StrategyExampleResistance
+-----------------------------------
+Capitalizing the first letterSunshineRule <code>c</code>, row 2
+Add a digit"sunshine1"Rule <code>$1</code>, row 4
+Add symbol"Sunshine!"Rule <code>$!</code>, row 6
+Replace e→3"suns3ine"Rule <code>s e 3</code>, top-20
+Combine all"Suns3ine!"A composite rule, top-100
+Choose a rare word"Papillon123"
+Double word"sunsun"Rule <code>d</code>, top-30
+Reverse"enihsnus"Rule <code>r</code>, top-15
+<strong>Conclusion</strong> Any strategy based on "take a word + modify it" is vulnerable to the hybrid. The exception is such a complex and rare modification that it is not covered by any rule — but if the user has to remember this complex transformation, he usually ends up choosing something predictable.
+<h3>16.3. Resistant hash algorithms</h3>
+<p>Even if a password is vulnerable to the structural hybrid, the hash algorithm can make the attack economically inviable:</p>
+AlgorithmTime for DICT (8k guesses)Practice attack
+-----------------------------------------------------------
+MD5 / NTLM&lt; 1 nanosecondInstant
+SHA-256~30 nanosecondsInstant
+bcrypt cost 10~0.12 secondsTrivial
+bcrypt cost 14~32 secondsFeasible
+Argon2id (default)~10 secondsFeasible
+Argon2id (strong parametrate)~100 secondsSlow but possible
+<strong>Argon2id</strong> with high parameters (t=4, m=65536) is the only algorithm that makes the hybrid really expensive, even on weak passwords.
+<h3>16.4 Practical recommendations</h3>
+<li><strong>Use a password manager</strong> : generates pure random, inapplicable hybrid</li>
+<li><strong>If required</strong> : 4+ words actually random passphrase (from EFF)</li>
+<li><strong>Never "secure" a word by substitution</strong> : the hybrid automatically generates them</li>
+<li><strong>Require bcrypt cost ≥ 12 or Argon2id</strong> server side: the only real slower</li>
+<li><strong>Enable MFA</strong> : makes offline cracking theoretical without operational impact</li>
+<hr>
+<h2>17. References</h2>
+<h3>Academic publications</h3>
+<strong>Klein, D.V. (1990)</strong>
+"Foiling the Cracker": A Survey of, and Improvements to, Password Security<em>
+Proceedings of the USENIX Security Workshop, 1990.
+— First empirical study quantifying the impact of mutation rules on cracking coverage. Notes that 56% of passwords are crackable with dictionary + simple transformations.
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009)</strong>
+</em>Password Tracking Using Probabilistic Context-Free Grammars<em>
+IEEE Symposium on Security and Privacy (S&amp;P), 2009.
+— Founded the PCFG model and valid by the way that the hashcat rules cover 78% of the human transformations observed in RockYou.
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014)</strong>
+</em>A Study of Probabilistic Password Models<em>
+IEEE Symposium on Security and Privacy (S&amp;P), 2014.
+— <strong>Direct reference study</strong> for Time2Crack: empirical measurement of median positions (500 for top-100, 2000–15000 for current dict) in a hybrid scan ordered by probability on 10M real passwords.
+<strong>Durmuth, M., Chaabane, A., Perito, D., &amp; Castelluccia, C. (2015)</strong>
+</em>When Privacy meetings Security: Leveraging Personal Information for Password Tracking<em>
+ESORICS 2015.
+— Compare rules JtR vs Hashcat vs PCFG. Concludes that best64 surpasses PCFG by 12% on RockYou.
+<strong>Veras, R., Collins, C., &amp; Thorpe, J. (2014)</strong>
+</em>On the Semantic Patterns of Passwords and their Security Impact<em>
+NDSS 2014.
+— Language analysis of semantic patterns.
+<strong>Ur, B., Bees, J., Segreti, S. M., Bauer, L., Christin, N., &amp; Cranor, L. F. (2015)</strong>
+</em>Do Users' Perceptions of Password Security Match Reality?<em>
+ACM CHI 2015.
+— Demonstrates that users systematically overestimate the strength of mutated passwords. "P@ssw0rd" receives a subjective score of "strong" but is cracked in &lt; 1s.
+<strong>Wheeler, D.L. (2016)</strong>
+</em>zxcvbn: Low-Budget Password Strength Estimate<em>
+25th USENIX Security Symposium, 2016.
+— Force estimation library integrating mutation rule detection. Reference for the implementation of detection heuristics.
+<h3>Industrial conferences and presentations</h3>
+<strong>Gosney, J (2012)</strong>
+</em>8x Nvidia GTX 580 Cluster Hashcat Benchmarks / LinkedIn crack session<em>
+Passwordscon 2012, Oslo.
+— Document the LinkedIn crack: best64 + wordlist 3.5M = 224M candidates, 90% cracked in 6 days.<em>KEYSPACE</em>FULL = 128M.
+<strong>Löfstrand, K. (2013)</strong>
+</em>best64.rule — Empirical selection of 64 hashcat rules<em>
+Internal, published on GitHub.
+— Set of 64 rules selected empirically on RockYou to maximize crack rate. Industry reference standard.
+<strong>Steube, J. (2016–present)</strong>
+</em>Hashcat Advanced Password Recovery<em>
+https://hashcat.net/hashcat/
+— Official mode documentation -a 0, -a 6, -a 7. Syntax of rules. Official GPU benchmarks on 12× RTX 4090.
+<strong>NotSoSecure (2019)</strong>
+</em>OneRuleToRuleThemAll — ML-generated hashcat rule set<em>
+https://github.com/NotSoSecure/password<em>cracking</em>rules
+— 52 218 rules generated by automatic learning on corpus of cracked passwords.
+<h3>Reference tools</h3>
+<strong>John the Ripper</strong> (Solar Designer, 1996–present)
+https://www.openwall.com/john/
+— Pioneer of the wordlist+rules hybrid. JtR syntax always used in parallel with Hashcat.
+<strong>Hashcat</strong> (Steube, 2009–present)
+https://hashcat.net/hashcat/
+— Reference GPU implementation. Modes -a 0/6/7 for hybrid. best64 integrated.
+<strong>RockYou wordlist</strong> (2009)
+14,3M clear passwords. Standard calibration corpora for all hybrid rule sets.
+<strong>SecLists</strong> (Daniel Miessler, 2012–present)
+https://github.com/danielmiessler/SecLists
+— Collection of wordlists by language, domain, theme. Main source of Time2Crack language wordlists.
+<h3>Web sources cited in the Time2Crack application</h3>
+<strong>Chick3nman (Hashcat benchmarks/rules).</strong>
+https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb4222fd
+— Related source <code>descHybrid</code> (app.js) for the order of magnitude of the mutation rules applied.
+<strong>IEEE Xplore (hybrid reference).</strong>
+https://ieeexplore.ieee.org/document/6956583
+— Related source <code>descHybrid</code> (app.js) concerning the empirical effectiveness of mutated passwords.
+<hr>
+</em>Document generated as part of the Time2Crack project — 2026<em>
+</em>See also: BRUTEFORCE<em>ATTACK</em>EXPLAINED.md, MARKOV<em>ATTACK</em>EXPLAINED.md, DICTIONARY<em>ATTACK</em>EXPLAINED.md*
+
+  
+<script src="/includes.js" defer></script>
+
+</main>
+<footer id="site-footer" class="site-footer">
+  <p>Local computation · HIBP check · Open source</p>
+  <div class="footer-social">
+    <a href="https://linkedin.com/company/time2crack" class="footer-social__link" aria-label="Follow us on LinkedIn">
+      <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" width="24" height="24">
+        <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+      </svg>
+    </a>
+    <a href="https://bsky.social/profile/time2crack.bsky.social" class="footer-social__link" aria-label="Follow us on Bluesky">
+      <img src="/bluesky-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+    <a href="https://fosstodon.org/@time2crack" class="footer-social__link" aria-label="Follow us on Mastodon">
+      <img src="/mastodon-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+  </div>
+</footer>
+<script src="/includes.js" defer></script>
+</body>
+</html>

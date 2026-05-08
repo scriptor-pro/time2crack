@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crack Time - Propositions Winner</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:400,500,600,700|ibm-plex-mono:500&display=swap&subset=latin" />
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --card: #ffffff;
+      --ink: #12151a;
+      --muted: #5f6774;
+      --line: #d9dde4;
+      --accent: #0b6bcb;
+      --good: #177245;
+      --warn: #9a5f00;
+      --bad: #a02121;
+      --radius: 14px;
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 0%, #ffffff 0%, var(--bg) 56%);
+      line-height: 1.45;
+    }
+
+    .shell {
+      width: min(980px, 100% - 24px);
+      margin: 20px auto 40px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .intro {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.15rem, 4vw, 1.6rem);
+      letter-spacing: 0.01em;
+    }
+
+    .intro p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .controls label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .controls input,
+    .controls select {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 10px 12px;
+      font: inherit;
+    }
+
+    .control-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+    }
+
+    .proposal {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .proposal header {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .proposal h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+    }
+
+    .proposal-body { padding: 12px; }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: linear-gradient(180deg, #ffffff, #fbfcff);
+    }
+
+    .hero .label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .hero .value {
+      margin-top: 4px;
+      font-size: clamp(1.35rem, 5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .hero .note {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .risk-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      border: 1px solid transparent;
+    }
+    .risk-critical { color: #fff; background: var(--bad); }
+    .risk-warning { color: #fff; background: var(--warn); }
+    .risk-safe { color: #fff; background: var(--good); }
+
+    .ranked {
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .ranked li {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: start;
+      background: #fff;
+    }
+
+    .pos {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: #eef3fa;
+      color: #2d3d58;
+      margin-top: 2px;
+    }
+
+    .atk-name {
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .atk-desc {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .atk-time {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.85rem;
+      color: #27374f;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .bars {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .bar-row {
+      display: grid;
+      gap: 6px;
+    }
+
+    .bar-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.83rem;
+    }
+
+    .bar-track {
+      height: 10px;
+      border-radius: 999px;
+      background: #edf1f6;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #5aa0ea, #0b6bcb);
+    }
+
+    details {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    details summary {
+      cursor: pointer;
+      min-height: 44px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+
+    .winner-banner {
+      padding: 9px 12px;
+      background: linear-gradient(90deg, #0b6bcb, #2a8be8);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 0.02em;
+    }
+
+    @media (min-width: 760px) {
+      .control-grid { grid-template-columns: 1.4fr 1fr 1fr; }
+      .proposal-grid { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+      .proposal.winner { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="intro">
+      <h1>Section "Temps de craquage" - 3 propositions + Winner</h1>
+      <p>Simplicite et lisibilite d'abord. Les attaques non applicables ne sont jamais affichees. Chaque attaque a une description concise.</p>
+    </section>
+
+    <section class="controls" aria-label="Parametres de test">
+      <div class="control-grid">
+        <div>
+          <label for="pw">Mot de passe de test</label>
+          <input id="pw" type="text" value="Password123" autocomplete="off" spellcheck="false" />
+        </div>
+        <div>
+          <label for="algo">Algorithme</label>
+          <select id="algo"></select>
+        </div>
+        <div>
+          <label for="profile">Profil attaquant</label>
+          <select id="profile"></select>
+        </div>
+      </div>
+    </section>
+
+    <section class="proposal-grid">
+      <article class="proposal" id="proposal-a">
+        <header>
+          <h2>Proposition A - Verdict + classement</h2>
+          <span class="tag">Tres lisible</span>
+        </header>
+        <div class="proposal-body">
+          <div class="hero">
+            <div class="label">Temps le plus court observe</div>
+            <div class="value" id="a-fast">-</div>
+            <p class="note" id="a-note">-</p>
+            <span class="risk-chip" id="a-risk">-</span>
+          </div>
+          <ol class="ranked" id="a-list"></ol>
+        </div>
+      </article>
+
+      <article class="proposal" id="proposal-b">
+        <header>
+          <h2>Proposition B - Echelle visuelle</h2>
+          <span class="tag">Comparaison rapide</span>
+        </header>
+        <div class="proposal-body">
+          <div class="hero">
+            <div class="label">Attaque dominante</div>
+            <div class="value" id="b-fast">-</div>
+            <p class="note" id="b-note">-</p>
+          </div>
+          <div class="bars" id="b-bars"></div>
+        </div>
+      </article>
+
+      <article class="proposal winner" id="proposal-winner">
+        <div class="winner-banner">Winner - section recommandee (hero + top 3 + detail complet)</div>
+        <div class="proposal-body">
+          <div class="hero">
+            <div class="label">Verdict principal</div>
+            <div class="value" id="w-fast">-</div>
+            <p class="note" id="w-note">-</p>
+            <span class="risk-chip" id="w-risk">-</span>
+          </div>
+
+          <ol class="ranked" id="w-top"></ol>
+
+          <details>
+            <summary>Voir toutes les attaques applicables</summary>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Attaque</th>
+                    <th>Description concise</th>
+                    <th>Temps estime</th>
+                  </tr>
+                </thead>
+                <tbody id="w-table"></tbody>
+              </table>
+            </div>
+          </details>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const ALGOS = [
+      { key: "md5", name: "MD5", rate: 168.9e9, salted: false },
+      { key: "sha1", name: "SHA-1", rate: 50.86e9, salted: false },
+      { key: "sha256", name: "SHA-256", rate: 22.68e9, salted: false },
+      { key: "ntlm", name: "NTLM", rate: 288.5e9, salted: false },
+      { key: "bcrypt", name: "bcrypt", rate: 184000, salted: true },
+      { key: "argon2", name: "Argon2id", rate: 800, salted: true },
+    ];
+
+    const PROFILES = [
+      { key: "amateur", name: "Amateur (1 GPU)", mult: 1 },
+      { key: "experienced", name: "Experimente (12 GPU)", mult: 12 },
+      { key: "professional", name: "Professionnel (100 GPU)", mult: 100 },
+      { key: "nation", name: "Nation-state (10000 GPU)", mult: 10000 },
+    ];
+
+    const ATTACKS = [
+      {
+        key: "brute",
+        name: "Brute force",
+        desc: "Teste toutes les combinaisons, sans hypothese.",
+        run: (ctx) => ctx.combos,
+        applicable: () => true,
+      },
+      {
+        key: "dict",
+        name: "Dictionnaire",
+        desc: "Teste des mots connus et mots de passe fuités.",
+        run: (ctx) => (ctx.common ? 1000 : 14e9),
+        applicable: (ctx) => ctx.hasWord,
+      },
+      {
+        key: "hybrid",
+        name: "Hybride",
+        desc: "Dictionnaire + variantes: maj, chiffres, symboles.",
+        run: () => 14e9 * 1000,
+        applicable: (ctx) => ctx.hasWord && (ctx.hasDigit || ctx.hasSymbol),
+      },
+      {
+        key: "mask",
+        name: "Mask",
+        desc: "Cible les structures previsibles (Mot+Annee, etc.).",
+        run: () => 1e8,
+        applicable: (ctx) => ctx.structured,
+      },
+      {
+        key: "rainbow",
+        name: "Rainbow table",
+        desc: "Recherche instantanee sur hashes non sales.",
+        run: () => 1,
+        applicable: (ctx) => !ctx.algo.salted && ctx.common,
+      },
+      {
+        key: "cred",
+        name: "Credential stuffing",
+        desc: "Reutilise des couples deja compromis.",
+        run: () => 100,
+        applicable: (ctx) => ctx.common,
+      },
+      {
+        key: "spray",
+        name: "Password spraying",
+        desc: "Teste quelques mots faibles sur beaucoup de comptes.",
+        run: () => 1000,
+        applicable: (ctx) => ctx.common || ctx.length < 10,
+      },
+      {
+        key: "markov",
+        name: "Markov",
+        desc: "Priorise les sequences probables observees en fuite.",
+        run: (ctx) => Math.max(1e7, ctx.combos * 0.01),
+        applicable: (ctx) => ctx.hasWord || ctx.hasSequence,
+      },
+      {
+        key: "pcfg",
+        name: "PCFG",
+        desc: "Priorise les structures grammaticales frequentes.",
+        run: (ctx) => Math.max(5e7, ctx.combos * 0.05),
+        applicable: (ctx) => ctx.structured || ctx.hasWord,
+      },
+      {
+        key: "combi",
+        name: "Combinator",
+        desc: "Assemble plusieurs mots dictionnaire en phrase.",
+        run: () => 5e10,
+        applicable: (ctx) => ctx.passphrase,
+      },
+    ];
+
+    const pwEl = document.getElementById("pw");
+    const algoEl = document.getElementById("algo");
+    const profileEl = document.getElementById("profile");
+
+    function fmtTime(seconds) {
+      if (!Number.isFinite(seconds)) return "-";
+      if (seconds < 1e-6) return "quasi instantane";
+      if (seconds < 1) return "< 1 s";
+      if (seconds < 60) return `${Math.round(seconds)} s`;
+      if (seconds < 3600) return `${Math.round(seconds / 60)} min`;
+      if (seconds < 86400) return `${Math.round(seconds / 3600)} h`;
+      if (seconds < 31557600) return `${Math.round(seconds / 86400)} j`;
+      if (seconds < 3155760000) return `${(seconds / 31557600).toFixed(1)} ans`;
+      return `${seconds.toExponential(2)} s`;
+    }
+
+    function riskClass(sec) {
+      if (sec < 3600) return ["Critique", "risk-critical"];
+      if (sec < 31557600) return ["Risque moyen", "risk-warning"];
+      return ["Resistant", "risk-safe"];
+    }
+
+    function analyze(pw, algo, profile) {
+      const lower = /[a-z]/.test(pw);
+      const upper = /[A-Z]/.test(pw);
+      const digit = /\d/.test(pw);
+      const symbol = /[^a-zA-Z0-9]/.test(pw);
+      const length = pw.length;
+      const charset = (lower ? 26 : 0) + (upper ? 26 : 0) + (digit ? 10 : 0) + (symbol ? 33 : 0);
+      const combos = length ? Math.pow(Math.max(charset, 2), length) : 0;
+      const hasWord = /[a-z]{4,}/i.test(pw);
+      const common = /^(password|123456|123456789|qwerty|azerty|admin|welcome|letmein|iloveyou)$/i.test(pw);
+      const structured = /^[A-Z]?[a-z]{3,}\d{1,4}[!@#$%^&*]?$/.test(pw);
+      const hasSequence = /(0123|1234|2345|abcd|bcde|qwer|asdf|zxcv)/i.test(pw);
+      const passphrase = /[a-z]{4,}[\s\-_][a-z]{4,}/i.test(pw) || /[a-z]{12,}/i.test(pw);
+      const speed = algo.rate * profile.mult;
+
+      const ctx = {
+        length,
+        combos,
+        hasWord,
+        common,
+        structured,
+        hasSequence,
+        passphrase,
+        hasDigit: digit,
+        hasSymbol: symbol,
+        algo,
+      };
+
+      const applicable = ATTACKS.filter((a) => a.applicable(ctx)).map((a) => ({
+        ...a,
+        seconds: a.run(ctx) / speed,
+      }));
+
+      applicable.sort((a, b) => a.seconds - b.seconds);
+      return applicable;
+    }
+
+    function renderA(rows) {
+      const fast = rows[0];
+      document.getElementById("a-fast").textContent = fmtTime(fast.seconds);
+      document.getElementById("a-note").textContent = `${fast.name} est l'attaque la plus probable et rapide.`;
+
+      const [risk, klass] = riskClass(fast.seconds);
+      const chip = document.getElementById("a-risk");
+      chip.textContent = risk;
+      chip.className = `risk-chip ${klass}`;
+
+      const list = document.getElementById("a-list");
+      list.innerHTML = "";
+      rows.forEach((r, i) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="pos">${i + 1}</span>
+          <div>
+            <div class="atk-name">${r.name}</div>
+            <p class="atk-desc">${r.desc}</p>
+          </div>
+          <div class="atk-time">${fmtTime(r.seconds)}</div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function renderB(rows) {
+      const fast = rows[0];
+      document.getElementById("b-fast").textContent = fmtTime(fast.seconds);
+      document.getElementById("b-note").textContent = `${fast.name} domine dans ce scenario.`;
+
+      const maxLog = Math.log10(rows[rows.length - 1].seconds + 1);
+      const bars = document.getElementById("b-bars");
+      bars.innerHTML = "";
+
+      rows.forEach((r) => {
+        const percent = maxLog === 0 ? 100 : (Math.log10(r.seconds + 1) / maxLog) * 100;
+        const row = document.createElement("div");
+        row.className = "bar-row";
+        row.innerHTML = `
+          <div class="bar-top">
+            <span>${r.name}</span>
+            <span>${fmtTime(r.seconds)}</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.max(6, percent)}%"></div></div>
+          <div class="atk-desc">${r.desc}</div>
+        `;
+        bars.appendChild(row);
+      });
+    }
+
+    function renderWinner(rows) {
+      const fast = rows[0];
+      document.getElementById("w-fast").textContent = fmtTime(fast.seconds);
+      document.getElementById("w-note").textContent = `Dominant: ${fast.name}.`;
+
+      const [risk, klass] = riskClass(fast.seconds);
+      const chip = document.getElementById("w-risk");
+      chip.textContent = risk;
+      chip.className = `risk-chip ${klass}`;
+
+      const top = document.getElementById("w-top");
+      top.innerHTML = "";
+      rows.slice(0, 3).forEach((r, i) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="pos">${i + 1}</span>
+          <div>
+            <div class="atk-name">${r.name}</div>
+            <p class="atk-desc">${r.desc}</p>
+          </div>
+          <div class="atk-time">${fmtTime(r.seconds)}</div>
+        `;
+        top.appendChild(li);
+      });
+
+      const table = document.getElementById("w-table");
+      table.innerHTML = "";
+      rows.forEach((r) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r.name}</td><td>${r.desc}</td><td>${fmtTime(r.seconds)}</td>`;
+        table.appendChild(tr);
+      });
+    }
+
+    function populateControls() {
+      algoEl.innerHTML = ALGOS.map((a) => `<option value="${a.key}">${a.name}</option>`).join("");
+      profileEl.innerHTML = PROFILES.map((p) => `<option value="${p.key}">${p.name}</option>`).join("");
+      algoEl.value = "sha256";
+      profileEl.value = "experienced";
+    }
+
+    function renderAll() {
+      const algo = ALGOS.find((a) => a.key === algoEl.value);
+      const profile = PROFILES.find((p) => p.key === profileEl.value);
+      const pw = pwEl.value.trim();
+      const rows = analyze(pw, algo, profile);
+
+      if (!rows.length) {
+        return;
+      }
+
+      renderA(rows);
+      renderB(rows);
+      renderWinner(rows);
+    }
+
+    populateControls();
+    renderAll();
+    pwEl.addEventListener("input", renderAll);
+    algoEl.addEventListener("change", renderAll);
+    profileEl.addEventListener("change", renderAll);
+  </script>
+</body>
+</html>

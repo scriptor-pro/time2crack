@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototypes — Hiérarchie Visuelle du Tableau</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap">
+  </noscript>
+
+  <style>
+    :root {
+      --color-bg: #f8fafc;
+      --color-surface: #ffffff;
+      --color-text: #0f172a;
+      --color-text-muted: #64748b;
+      --color-border: #e2e8f0;
+      --radius-md: 12px;
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --time-instant: #dc2626;
+      --time-fast: #ea580c;
+      --time-moderate: #d97706;
+      --time-strong: #059669;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 32px 24px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--color-text-muted);
+      font-size: 16px;
+    }
+
+    /* ================================ */
+    /* PROTOTYPE CONTAINER */
+    /* ================================ */
+
+    .prototype-section {
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      margin-bottom: 48px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .prototype-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--color-text);
+    }
+
+    .prototype-subtitle {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    /* ================================ */
+    /* OPTION A: COLORER PAR INTENSITÉ */
+    /* ================================ */
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead {
+      background: var(--color-text);
+      color: white;
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    /* OPTION A: Time intensity colors */
+    .time-instant {
+      color: #7f1d1d;
+      font-weight: 700;
+      background: #fee2e2;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .time-fast {
+      color: #92400e;
+      font-weight: 600;
+      background: #fff7ed;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .time-moderate {
+      color: #78350f;
+      font-weight: 500;
+      background: #fffbeb;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .time-strong {
+      color: #065f46;
+      font-weight: 700;
+      background: #dcfce7;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* ================================ */
+    /* OPTION B: GROUP BY ATTACK */
+    /* ================================ */
+
+    .grouped-table {
+      width: 100%;
+      font-size: 13px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .group-header {
+      background: linear-gradient(135deg, #e0eeff 0%, #d6e3ff 100%);
+      padding: 12px 16px;
+      font-weight: 700;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 12px;
+    }
+
+    .group-header:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+
+    .grouped-table tbody tr {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .grouped-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .grouped-table tbody tr:last-child td {
+      border-radius: 0 0 8px 8px;
+    }
+
+    .grouped-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .grouped-table tbody tr.best-in-group {
+      background: #fee2e2;
+      font-weight: 700;
+    }
+
+    .grouped-table tbody tr.best-in-group:hover {
+      background: #fecaca;
+    }
+
+    .grouped-table tbody tr:not(.best-in-group) {
+      opacity: 0.7;
+    }
+
+    /* ================================ */
+    /* OPTION C: HIGHLIGHT BEST + ROWS */
+    /* ================================ */
+
+    .highlighted-table {
+      width: 100%;
+      font-size: 13px;
+      border-collapse: collapse;
+    }
+
+    .highlighted-table thead {
+      background: var(--color-text);
+      color: white;
+    }
+
+    .highlighted-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .highlighted-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .highlighted-table tbody tr.is-best {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      font-weight: 700;
+      border-left: 4px solid #dc2626;
+    }
+
+    .highlighted-table tbody tr.is-best:hover {
+      background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+    }
+
+    .highlighted-table tbody tr.is-best td:first-child::before {
+      content: "⚡ ";
+      color: #dc2626;
+      font-weight: 700;
+    }
+
+    .highlighted-table tbody tr:not(.is-best) {
+      opacity: 0.6;
+      background: #fafafa;
+    }
+
+    .highlighted-table tbody tr:not(.is-best):hover {
+      opacity: 0.85;
+      background: #f1f5f9;
+    }
+
+    /* ================================ */
+    /* LEGEND & INFO */
+    /* ================================ */
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .legend-color {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .legend-color.instant {
+      background: #fee2e2;
+      border: 2px solid #dc2626;
+    }
+
+    .legend-color.fast {
+      background: #fff7ed;
+      border: 2px solid #ea580c;
+    }
+
+    .legend-color.moderate {
+      background: #fffbeb;
+      border: 2px solid #d97706;
+    }
+
+    .legend-color.strong {
+      background: #dcfce7;
+      border: 2px solid #059669;
+    }
+
+    /* ================================ */
+    /* PROS & CONS */
+    /* ================================ */
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .pros {
+      background: #dcfce7;
+      border-left: 4px solid #059669;
+      padding: 16px;
+      border-radius: 6px;
+    }
+
+    .cons {
+      background: #fee2e2;
+      border-left: 4px solid #dc2626;
+      padding: 16px;
+      border-radius: 6px;
+    }
+
+    .pros strong,
+    .cons strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .pros strong {
+      color: #065f46;
+    }
+
+    .cons strong {
+      color: #7f1d1d;
+    }
+
+    .pros ul,
+    .cons ul {
+      font-size: 12px;
+      list-style: none;
+      line-height: 1.6;
+    }
+
+    .pros li {
+      color: #047857;
+    }
+
+    .cons li {
+      color: #991b1b;
+    }
+
+    .pros li::before,
+    .cons li::before {
+      content: "• ";
+      margin-right: 6px;
+    }
+
+    /* ================================ */
+    /* RESPONSIVE */
+    /* ================================ */
+
+    @media (max-width: 768px) {
+      header {
+        margin-bottom: 32px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .prototype-section {
+        padding: 20px;
+        margin-bottom: 32px;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      td,
+      th {
+        padding: 10px 12px;
+      }
+
+      .pros-cons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ================================ */
+    /* COMPARISON */
+    /* ================================ */
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 32px;
+      font-size: 13px;
+    }
+
+    .comparison-table th {
+      background: #f1f5f9;
+      padding: 12px;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .comparison-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .comparison-table tbody tr:nth-child(odd) {
+      background: #fafafa;
+    }
+
+    .score-high {
+      color: #059669;
+      font-weight: 700;
+    }
+
+    .score-medium {
+      color: #d97706;
+      font-weight: 700;
+    }
+
+    .score-low {
+      color: #dc2626;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 Hiérarchie Visuelle du Tableau — 3 Options</h1>
+      <p class="subtitle">Comment améliorer la scannabilité de 60 lignes de données</p>
+    </header>
+
+    <!-- ================================ -->
+    <!-- OPTION A: COLORER PAR INTENSITÉ -->
+    <!-- ================================ -->
+    <div class="prototype-section">
+      <div class="prototype-title">Option A: Colorer par Intensité</div>
+      <div class="prototype-subtitle">Chaque temps reçoit une couleur selon sa sévérité</div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Attaque</th>
+              <th>Algorithme</th>
+              <th>Temps estimé</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Brute Force</td>
+              <td>MD5</td>
+              <td><span class="time-instant">&lt; 1 ms</span></td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>SHA-1</td>
+              <td><span class="time-fast">30 secondes</span></td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>SHA-256</td>
+              <td><span class="time-moderate">2 minutes</span></td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>NTLM</td>
+              <td><span class="time-instant">&lt; 1 ms</span></td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>bcrypt</td>
+              <td><span class="time-strong">15 jours</span></td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>Argon2id</td>
+              <td><span class="time-strong">300 jours</span></td>
+            </tr>
+            <tr>
+              <td>Dictionary</td>
+              <td>MD5</td>
+              <td><span class="time-instant">&lt; 1 ms</span></td>
+            </tr>
+            <tr>
+              <td>Dictionary</td>
+              <td>SHA-1</td>
+              <td><span class="time-moderate">2 heures</span></td>
+            </tr>
+            <tr>
+              <td>Hybrid</td>
+              <td>bcrypt</td>
+              <td><span class="time-strong">300+ jours</span></td>
+            </tr>
+            <tr>
+              <td>Markov</td>
+              <td>SHA-256</td>
+              <td><span class="time-moderate">1 semaine</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color instant"></div>
+          <span><strong>Instant</strong> (&lt; 1 sec)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color fast"></div>
+          <span><strong>Rapide</strong> (1 sec - 1 heure)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color moderate"></div>
+          <span><strong>Modéré</strong> (1 heure - 1 mois)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color strong"></div>
+          <span><strong>Fort</strong> (&gt; 1 mois)</span>
+        </div>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <strong>✅ Avantages</strong>
+          <ul>
+            <li>Couleur = intention immédiate</li>
+            <li>Scannable en 1 coup d'œil</li>
+            <li>Hiérarchie visuelle claire</li>
+            <li>Contraste WCAG AAA</li>
+            <li>Simple à implémenter</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <strong>❌ Inconvénients</strong>
+          <ul>
+            <li>60 couleurs peuvent surcharger</li>
+            <li>Demande CSS dynamique (classes)</li>
+            <li>Pas de groupement logique</li>
+            <li>Toutes lignes au même poids</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- OPTION B: GROUPER PAR ATTAQUE -->
+    <!-- ================================ -->
+    <div class="prototype-section">
+      <div class="prototype-title">Option B: Grouper par Type d'Attaque</div>
+      <div class="prototype-subtitle">Chaque attaque est un groupe, la plus rapide est surlignée</div>
+
+      <div class="table-wrapper">
+        <table class="grouped-table">
+          <tbody>
+            <tr>
+              <td colspan="3" class="group-header">⚡ Force Brute</td>
+            </tr>
+            <tr class="best-in-group">
+              <td>Brute Force</td>
+              <td>MD5</td>
+              <td>&lt; 1 ms</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>NTLM</td>
+              <td>&lt; 1 ms</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>SHA-1</td>
+              <td>30 secondes</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>SHA-256</td>
+              <td>2 minutes</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>bcrypt</td>
+              <td>15 jours</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>Argon2id</td>
+              <td>300 jours</td>
+            </tr>
+
+            <tr>
+              <td colspan="3" class="group-header">📖 Dictionnaire</td>
+            </tr>
+            <tr class="best-in-group">
+              <td>Dictionary</td>
+              <td>MD5</td>
+              <td>&lt; 1 ms</td>
+            </tr>
+            <tr>
+              <td>Dictionary</td>
+              <td>SHA-1</td>
+              <td>2 heures</td>
+            </tr>
+            <tr>
+              <td>Dictionary</td>
+              <td>bcrypt</td>
+              <td>50+ jours</td>
+            </tr>
+
+            <tr>
+              <td colspan="3" class="group-header">🔀 Hybrid</td>
+            </tr>
+            <tr class="best-in-group">
+              <td>Hybrid</td>
+              <td>MD5</td>
+              <td>&lt; 1 ms</td>
+            </tr>
+            <tr>
+              <td>Hybrid</td>
+              <td>bcrypt</td>
+              <td>300+ jours</td>
+            </tr>
+
+            <tr>
+              <td colspan="3" class="group-header">📊 Markov</td>
+            </tr>
+            <tr class="best-in-group">
+              <td>Markov</td>
+              <td>SHA-256</td>
+              <td>1 semaine</td>
+            </tr>
+            <tr>
+              <td>Markov</td>
+              <td>bcrypt</td>
+              <td>200+ jours</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <strong>✅ Avantages</strong>
+          <ul>
+            <li>Structure logique claire</li>
+            <li>Meilleur pour comparaison intra-groupe</li>
+            <li>Highlight du "meilleur" visible</li>
+            <li>Moins de couleurs à gérer</li>
+            <li>Facile de scanner par attaque</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <strong>❌ Inconvénients</strong>
+          <ul>
+            <li>Plus de hauteur (headers)</li>
+            <li>Moins compact</li>
+            <li>Demande des headers colspan</li>
+            <li>Peut être visuel surchargé</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- OPTION C: HIGHLIGHT BEST + ROWS -->
+    <!-- ================================ -->
+    <div class="prototype-section">
+      <div class="prototype-title">Option C: Highlight "Best Attack" + Fade Others</div>
+      <div class="prototype-subtitle">La plus rapide brille, les autres s'estompent</div>
+
+      <div class="table-wrapper">
+        <table class="highlighted-table">
+          <thead>
+            <tr>
+              <th>Attaque</th>
+              <th>Algorithme</th>
+              <th>Temps estimé</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-best">
+              <td>Brute Force</td>
+              <td>MD5</td>
+              <td>&lt; 1 ms</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>SHA-1</td>
+              <td>30 secondes</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>SHA-256</td>
+              <td>2 minutes</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>NTLM</td>
+              <td>&lt; 1 ms</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>bcrypt</td>
+              <td>15 jours</td>
+            </tr>
+            <tr>
+              <td>Brute Force</td>
+              <td>Argon2id</td>
+              <td>300 jours</td>
+            </tr>
+            <tr class="is-best">
+              <td>Dictionary</td>
+              <td>MD5</td>
+              <td>&lt; 1 ms</td>
+            </tr>
+            <tr>
+              <td>Dictionary</td>
+              <td>SHA-1</td>
+              <td>2 heures</td>
+            </tr>
+            <tr>
+              <td>Hybrid</td>
+              <td>bcrypt</td>
+              <td>300+ jours</td>
+            </tr>
+            <tr>
+              <td>Markov</td>
+              <td>SHA-256</td>
+              <td>1 semaine</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="font-size: 13px; color: var(--color-text-muted); margin-top: 16px; text-align: center;">
+        Les lignes avec ⚡ sont les plus rapides pour chaque attaque.<br>
+        Les autres s'estompent pour laisser ressortir les menaces réelles.
+      </p>
+
+      <div class="pros-cons">
+        <div class="pros">
+          <strong>✅ Avantages</strong>
+          <ul>
+            <li>Attention focalisée sur le danger</li>
+            <li>Très visual (rouge + fade)</li>
+            <li>Montre clairement "meilleur"</li>
+            <li>Moins de couleurs</li>
+            <li>Animation possible (fade)</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <strong>❌ Inconvénients</strong>
+          <ul>
+            <li>Les autres algos moins visibles</li>
+            <li>Peut être frustrante (fade)</li>
+            <li>Dépend de la détection JS</li>
+            <li>Pas de structure logique</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- COMPARISON TABLE -->
+    <!-- ================================ -->
+    <div class="prototype-section">
+      <h2 style="font-size: 18px; margin-bottom: 20px;">📊 Comparaison des Options</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Critère</th>
+            <th>Option A<br>(Colorer par intensité)</th>
+            <th>Option B<br>(Grouper par attaque)</th>
+            <th>Option C<br>(Highlight best)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Scannabilité</strong></td>
+            <td><span class="score-high">9/10</span></td>
+            <td><span class="score-high">9/10</span></td>
+            <td><span class="score-high">8/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Impact visuel</strong></td>
+            <td><span class="score-high">8/10</span></td>
+            <td><span class="score-medium">7/10</span></td>
+            <td><span class="score-high">9/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Compacité</strong></td>
+            <td><span class="score-high">10/10</span></td>
+            <td><span class="score-medium">6/10</span></td>
+            <td><span class="score-high">10/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Complexité CSS</strong></td>
+            <td><span class="score-high">4/10</span></td>
+            <td><span class="score-medium">5/10</span></td>
+            <td><span class="score-medium">5/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Complexité JS</strong></td>
+            <td><span class="score-high">3/10</span></td>
+            <td><span class="score-high">2/10</span></td>
+            <td><span class="score-medium">6/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Accessibilité</strong></td>
+            <td><span class="score-high">10/10</span></td>
+            <td><span class="score-high">9/10</span></td>
+            <td><span class="score-medium">7/10</span> (opacity)</td>
+          </tr>
+          <tr>
+            <td><strong>Mobile-friendly</strong></td>
+            <td><span class="score-high">9/10</span></td>
+            <td><span class="score-medium">7/10</span></td>
+            <td><span class="score-high">9/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Pour débutants</strong></td>
+            <td><span class="score-high">10/10</span></td>
+            <td><span class="score-medium">7/10</span></td>
+            <td><span class="score-high">9/10</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #059669; border-radius: 8px; padding: 20px; margin-top: 32px;">
+        <strong style="color: #065f46; display: block; margin-bottom: 8px;">👉 Recommandation Finale</strong>
+        <p style="color: #047857; font-size: 13px; line-height: 1.6;">
+          <strong>Combiner Option A + Option C :</strong> Colorer par intensité PLUS surligner la meilleure attaque par algo.
+          C'est l'équilibre parfait : vous voyez toutes les données (Option A) ET l'action critique (Option C).
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

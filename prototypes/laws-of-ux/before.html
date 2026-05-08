@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time2Crack - BEFORE (Current UI)</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .prototype-badge {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ff5a5a;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="prototype-badge">BEFORE (Current)</div>
+
+  <header>
+    <div class="logo">
+      <svg class="logo-icon" width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <rect x="9" y="23" width="38" height="25" rx="5" fill="#FFFFFF" stroke="#FF6600" stroke-width="2.6"/>
+        <path d="M18 23V16.8C18 11.4 22.4 7 27.8 7C33.2 7 37.6 11.4 37.6 16.8V23" stroke="#FF6600" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="28" cy="35.5" r="8" fill="#FFFFFF" stroke="#FF6600" stroke-width="2.3"/>
+        <line x1="28" y1="35.5" x2="28" y2="30.5" stroke="#FF6600" stroke-width="2.3" stroke-linecap="round"/>
+        <line x1="28" y1="35.5" x2="32.2" y2="37.7" stroke="#FF6600" stroke-width="2.3" stroke-linecap="round"/>
+        <circle cx="28" cy="35.5" r="1.4" fill="#FF6600"/>
+      </svg>
+      <h1><span class="brand-time">Time</span><span class="brand-two">2</span><span class="brand-crack">Crack</span></h1>
+    </div>
+  </header>
+
+  <main>
+    <section class="input-section">
+      <label for="password-input">Enter a password to test</label>
+      <div class="password-wrapper">
+        <input 
+          type="password" 
+          id="password-input" 
+          placeholder="Type a password..."
+          value="Password123"
+          readonly
+        />
+        <button type="button" class="visibility-toggle" aria-label="Show password">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="action-buttons">
+        <button class="action-btn action-btn--primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <span>Test</span>
+        </button>
+        <button class="action-btn action-btn--secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"/>
+            <polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+          <span>Generate</span>
+        </button>
+        <button class="action-btn action-btn--copy action-btn--icon-only" aria-label="Copy">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="strength-bar-wrapper">
+        <div class="bar-label">
+          <span id="strength-label">Weak</span>
+        </div>
+        <div class="strength-bar-track">
+          <div class="strength-bar-fill strength-bar--weak" style="width: 30%"></div>
+        </div>
+      </div>
+
+      <p class="app-description">
+        Free open-source password strength checker. 100% local calculation, zero data transmission.
+      </p>
+    </section>
+
+    <!-- PROBLEM: App description breaks visual flow between input and results -->
+
+    <div class="results visible">
+      <div class="result-cards-row">
+        <div class="result-card result-card--danger">
+          <div class="time-to-crack-line">
+            <h2 class="time-to-crack-title">Time to crack:</h2>
+            <div class="big-duration">2 minutes</div>
+          </div>
+          <div class="big-date">Today, 3:47 PM</div>
+          <p class="result-sentence">Dictionary attack with MD5 hashing</p>
+        </div>
+        <div class="result-card result-card--safe">
+          <div class="card-badge card-badge--safe">Slowest crack</div>
+          <div class="label">Brute Force + Argon2id</div>
+          <div class="big-duration big-duration--safe">437 years</div>
+          <div class="big-date">April 2462</div>
+          <p class="result-sentence">Highly resistant to brute force</p>
+        </div>
+      </div>
+
+      <!-- PROBLEM: Vulnerability tags + HIBP banner not grouped -->
+      <div class="vuln-tags">
+        <span class="vuln-tag vuln-tag--critical">Dictionary word detected</span>
+        <span class="vuln-tag vuln-tag--warning">Common password pattern</span>
+        <span class="vuln-tag vuln-tag--warning">Predictable structure</span>
+        <span class="vuln-tag vuln-tag--info">Contains digits</span>
+        <span class="vuln-tag vuln-tag--info">Mixed case</span>
+      </div>
+
+      <div class="hibp-banner">
+        <div class="hibp-icon">⚠</div>
+        <div class="hibp-content">
+          <strong class="hibp-title">This password has been leaked!</strong>
+          <p class="hibp-text">This password appears <strong>2,417,386 times</strong> in data breaches indexed by Have I Been Pwned.</p>
+        </div>
+      </div>
+
+      <!-- PROBLEM: Attack table shows ALL 60 cells immediately -->
+      <details class="attack-table-wrapper" open>
+        <summary>
+          <span class="summary-main">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>Crack time by attack type and hashing algorithm</span>
+          </span>
+          <svg class="ui-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="table-scroll">
+          <table class="attack-table">
+            <thead>
+              <tr>
+                <th scope="col">Attack type</th>
+                <th scope="col">Algorithm</th>
+                <th scope="col">
+                  Speed (12 GPU)
+                  <!-- PROBLEM: Info icon too small (14px) -->
+                  <button class="info-tooltip-trigger" aria-label="Info" style="width: 14px; height: 14px; padding: 0;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M12 16v-4"/>
+                      <path d="M12 8h.01"/>
+                    </svg>
+                  </button>
+                </th>
+                <th scope="col">Time to crack</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- All 10 attack types shown immediately -->
+              <tr>
+                <td>Brute Force</td>
+                <td>MD5</td>
+                <td>2.0 TH/s</td>
+                <td class="time-cell time-cell--safe">437 years</td>
+              </tr>
+              <tr>
+                <td>Brute Force</td>
+                <td>SHA-256</td>
+                <td>272 GH/s</td>
+                <td class="time-cell time-cell--safe">3.2k years</td>
+              </tr>
+              <tr>
+                <td>Dictionary</td>
+                <td>MD5</td>
+                <td>2.0 TH/s</td>
+                <td class="time-cell time-cell--critical">2 minutes</td>
+              </tr>
+              <tr>
+                <td>Dictionary</td>
+                <td>Argon2id</td>
+                <td>800 H/s</td>
+                <td class="time-cell time-cell--warning">4 days</td>
+              </tr>
+              <tr>
+                <td>Hybrid</td>
+                <td>MD5</td>
+                <td>2.0 TH/s</td>
+                <td class="time-cell time-cell--warning">3.3 hours</td>
+              </tr>
+              <tr>
+                <td>Mask</td>
+                <td>NTLM</td>
+                <td>3.5 TH/s</td>
+                <td class="time-cell time-cell--warning">12 minutes</td>
+              </tr>
+              <tr>
+                <td>Rainbow Table</td>
+                <td>MD5</td>
+                <td>Instant</td>
+                <td class="time-cell time-cell--critical">Instant</td>
+              </tr>
+              <tr>
+                <td>Credential Stuffing</td>
+                <td>N/A</td>
+                <td>14B entries</td>
+                <td class="time-cell time-cell--critical">&lt; 1 second</td>
+              </tr>
+              <tr>
+                <td>Markov</td>
+                <td>bcrypt</td>
+                <td>2.2 MH/s</td>
+                <td class="time-cell time-cell--safe">2.1 years</td>
+              </tr>
+              <!-- PROBLEM: PCFG (technical jargon) has no explanation -->
+              <tr>
+                <td>PCFG</td>
+                <td>SHA-1</td>
+                <td>610 GH/s</td>
+                <td class="time-cell time-cell--warning">8 hours</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>BEFORE:</strong> Current Time2Crack UI (v0.9.33)</p>
+    <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #9a9aa1;">
+      <strong>Issues:</strong> 60-cell table shown immediately (Hick's Law violation) • 
+      App description breaks flow (Law of Proximity) • 
+      14px info icon (Fitts's Law violation) • 
+      No jargon explanations (Cognitive Load) • 
+      Security warnings not grouped (Law of Common Region)
+    </p>
+  </footer>
+</body>
+</html>

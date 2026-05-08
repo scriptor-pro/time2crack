@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototypes Navigation - Time2Crack</title>
+  <style>
+    :root {
+      --bg: #161619;
+      --surface: #1d1f24;
+      --text: #e8e6e3;
+      --text-muted: #9a9aa1;
+      --accent: #ff6600;
+      --accent-hover: #ff7f1a;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 3rem 2rem;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--accent) 0%, #ffaa00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+    }
+
+    .prototypes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .prototype-card {
+      background: var(--surface);
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .prototype-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(255, 102, 0, 0.2);
+    }
+
+    .prototype-icon {
+      font-size: 3rem;
+      line-height: 1;
+    }
+
+    .prototype-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .prototype-description {
+      color: var(--text-muted);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .prototype-features {
+      list-style: none;
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .prototype-features li {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .prototype-features li::before {
+      content: "→";
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .comparison-table {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .comparison-table h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    th {
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-pro {
+      background: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+    }
+
+    .badge-con {
+      background: rgba(255, 90, 90, 0.2);
+      color: #ff5a5a;
+    }
+
+    @media (max-width: 768px) {
+      .prototypes-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Prototypes Navigation</h1>
+    <p class="subtitle">Comparez les deux approches pour afficher les temps de craquage et descriptions d'attaques</p>
+
+    <div class="prototypes-grid">
+      <a href="tabs-horizontal.html" class="prototype-card">
+        <div class="prototype-icon">📑</div>
+        <div class="prototype-title">Tabs Horizontaux</div>
+        <div class="prototype-description">
+          Navigation par onglets : cliquez pour basculer entre "Temps de craquage" et "Descriptions". 
+          Une seule section visible à la fois.
+        </div>
+        <ul class="prototype-features">
+          <li>Design moderne et familier</li>
+          <li>Économie d'espace vertical</li>
+          <li>Navigation rapide et claire</li>
+          <li>Animation fluide entre vues</li>
+        </ul>
+      </a>
+
+      <a href="accordeons-empiles.html" class="prototype-card">
+        <div class="prototype-icon">📚</div>
+        <div class="prototype-title">Accordéons Empilés</div>
+        <div class="prototype-description">
+          Deux sections indépendantes : chacune peut être ouverte ou fermée. 
+          Possibilité de voir les deux simultanément.
+        </div>
+        <ul class="prototype-features">
+          <li>Vue simultanée possible</li>
+          <li>Pas de JavaScript requis</li>
+          <li>Accessibilité native HTML</li>
+          <li>Mémorisation état navigateur</li>
+        </ul>
+      </a>
+    </div>
+
+    <div class="comparison-table">
+      <h2>Comparaison Détaillée</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Critère</th>
+            <th>Tabs</th>
+            <th>Accordéons</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Espace vertical</strong></td>
+            <td><span class="badge badge-pro">Compact</span></td>
+            <td><span class="badge badge-con">Étendu</span></td>
+          </tr>
+          <tr>
+            <td><strong>Vue simultanée</strong></td>
+            <td><span class="badge badge-con">Non</span></td>
+            <td><span class="badge badge-pro">Oui</span></td>
+          </tr>
+          <tr>
+            <td><strong>Navigation</strong></td>
+            <td>1 clic pour changer</td>
+            <td>1 clic par section</td>
+          </tr>
+          <tr>
+            <td><strong>Mobile-friendly</strong></td>
+            <td><span class="badge badge-pro">Swipe possible</span></td>
+            <td><span class="badge badge-pro">Touch-friendly</span></td>
+          </tr>
+          <tr>
+            <td><strong>Complexité JS</strong></td>
+            <td>~20 lignes</td>
+            <td>Aucune (HTML natif)</td>
+          </tr>
+          <tr>
+            <td><strong>Design</strong></td>
+            <td>Moderne, premium</td>
+            <td>Classique, fiable</td>
+          </tr>
+          <tr>
+            <td><strong>Cas d'usage</strong></td>
+            <td>Contenu mutuellement exclusif</td>
+            <td>Contenu complémentaire</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

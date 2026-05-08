@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype 2: Pills - Functional</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #e0e0e0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #fff;
+      margin-bottom: 8px;
+      font-size: 28px;
+      font-weight: 800;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    /* Password Input */
+    .input-section {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    #passwordInput {
+      width: 100%;
+      padding: 18px 50px 18px 18px;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 17px;
+      font-family: 'Courier New', monospace;
+      transition: all 0.3s;
+    }
+
+    #passwordInput::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    #passwordInput:focus {
+      outline: none;
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .toggle-visibility:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Attacker Selector */
+    .attacker-selector-wrapper {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .selector-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.8);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+    }
+
+    .pills-container {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      flex: 1;
+      min-width: 200px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pill::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .pill:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .pill:hover::before {
+      opacity: 1;
+    }
+
+    .pill.active {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: #fff;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+      transform: translateY(-4px);
+    }
+
+    .pill.active .pill-emoji,
+    .pill.active .pill-label,
+    .pill.active .pill-info,
+    .pill.active .pill-badge {
+      color: #667eea;
+    }
+
+    .pill-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .pill-emoji {
+      font-size: 36px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .pill-badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .pill.active .pill-badge {
+      background: #667eea;
+      color: white;
+    }
+
+    .pill-label {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .pill-info {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+    }
+
+    /* Result Card */
+    .result-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 36px;
+      margin-bottom: 24px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff6b6b, #ee5a6f);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s;
+    }
+
+    .result-card.updating::before {
+      transform: scaleX(1);
+    }
+
+    .result-card.empty {
+      opacity: 0.4;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .result-card.empty .card-label,
+    .result-card.empty .card-value,
+    .result-card.empty .card-detail {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .card-icon {
+      font-size: 40px;
+    }
+
+    .card-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #667eea;
+      font-weight: 800;
+    }
+
+    .card-value {
+      font-size: 56px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .card-detail {
+      font-size: 15px;
+      color: #667eea;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+
+    .card-algorithm {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+      .pills-container {
+        flex-direction: column;
+      }
+      .pill {
+        min-width: 100%;
+      }
+      .card-value {
+        font-size: 42px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Prototype 2: Pills</h1>
+    <p class="subtitle">Design moderne et visuel</p>
+
+    <!-- Password Input -->
+    <div class="input-section">
+      <div class="input-label">🔐 Entrez votre mot de passe</div>
+      <div class="password-wrapper">
+        <input 
+          type="password" 
+          id="passwordInput" 
+          placeholder="Testez la sécurité..."
+          autocomplete="off"
+        >
+        <button class="toggle-visibility" id="toggleBtn">👁️</button>
+      </div>
+    </div>
+
+    <!-- Attacker Selector -->
+    <div class="attacker-selector-wrapper">
+      <div class="selector-title">Sélectionnez le niveau de menace</div>
+
+      <div class="pills-container">
+        <div class="pill active" data-profile="experienced">
+          <div class="pill-header">
+            <span class="pill-emoji">💼</span>
+            <span class="pill-badge">Défaut</span>
+          </div>
+          <div class="pill-label">Expérimenté</div>
+          <div class="pill-info">12× RTX 4090 GPUs<br>Cybercriminel dédié</div>
+        </div>
+
+        <div class="pill" data-profile="professional">
+          <div class="pill-header">
+            <span class="pill-emoji">🏢</span>
+            <span class="pill-badge">~8× Plus rapide</span>
+          </div>
+          <div class="pill-label">Professionnel</div>
+          <div class="pill-info">~100 GPUs via cloud<br>Crime organisé</div>
+        </div>
+
+        <div class="pill" data-profile="nationstate">
+          <div class="pill-header">
+            <span class="pill-emoji">🏛️</span>
+            <span class="pill-badge">~800× Plus rapide</span>
+          </div>
+          <div class="pill-label">État-nation</div>
+          <div class="pill-info">~10,000 GPUs<br>Agences gouvernementales</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Card -->
+    <div class="result-card empty" id="resultCard">
+      <div class="card-header">
+        <span class="card-icon">⚡</span>
+        <span class="card-label">Temps d'attaque le plus rapide</span>
+      </div>
+      <div class="card-value" id="crackTime">—</div>
+      <div class="card-detail">
+        <span id="attackType">En attente...</span>
+        <span class="card-algorithm" id="algorithm" style="display: none;">MD5</span>
+      </div>
+    </div>
+
+    <!-- Stats Panel -->
+    <div class="stats-panel">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">Longueur</div>
+          <div class="stat-value" id="statLength">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Charset</div>
+          <div class="stat-value" id="statCharset">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Entropie</div>
+          <div class="stat-value" id="statEntropy">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Combinaisons</div>
+          <div class="stat-value" id="statCombos">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Same calculation logic as Prototype 1
+    const HASH_RATES = {
+      experienced: {
+        md5: 2.027e12, sha1: 610.3e9, sha256: 272.2e9,
+        ntlm: 3.462e12, bcrypt: 2.2e6, argon2: 800
+      },
+      professional: {
+        md5: 2.027e12 * 8.33, sha1: 610.3e9 * 8.33, sha256: 272.2e9 * 8.33,
+        ntlm: 3.462e12 * 8.33, bcrypt: 2.2e6 * 8.33, argon2: 800 * 8.33
+      },
+      nationstate: {
+        md5: 2.027e12 * 833, sha1: 610.3e9 * 833, sha256: 272.2e9 * 833,
+        ntlm: 3.462e12 * 833, bcrypt: 2.2e6 * 833, argon2: 800 * 833
+      }
+    };
+
+    let currentProfile = 'experienced';
+    let currentPassword = '';
+
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const pills = document.querySelectorAll('.pill');
+    const resultCard = document.getElementById('resultCard');
+    const crackTime = document.getElementById('crackTime');
+    const attackType = document.getElementById('attackType');
+    const algorithm = document.getElementById('algorithm');
+    const statLength = document.getElementById('statLength');
+    const statCharset = document.getElementById('statCharset');
+    const statEntropy = document.getElementById('statEntropy');
+    const statCombos = document.getElementById('statCombos');
+
+    toggleBtn.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      toggleBtn.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const profile = pill.dataset.profile;
+        if (profile === currentProfile) return;
+
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentProfile = profile;
+
+        if (currentPassword) calculateCrackTime(currentPassword);
+        localStorage.setItem('attackerProfile', profile);
+      });
+    });
+
+    passwordInput.addEventListener('input', (e) => {
+      currentPassword = e.target.value;
+      if (!currentPassword) {
+        resetDisplay();
+        return;
+      }
+      calculateCrackTime(currentPassword);
+    });
+
+    function resetDisplay() {
+      resultCard.classList.add('empty');
+      crackTime.textContent = '—';
+      attackType.textContent = 'En attente...';
+      algorithm.style.display = 'none';
+      statLength.textContent = '—';
+      statCharset.textContent = '—';
+      statEntropy.textContent = '—';
+      statCombos.textContent = '—';
+    }
+
+    function calculateCrackTime(password) {
+      const length = password.length;
+      const hasLower = /[a-z]/.test(password);
+      const hasUpper = /[A-Z]/.test(password);
+      const hasDigit = /[0-9]/.test(password);
+      const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+
+      let charset = 0;
+      if (hasLower) charset += 26;
+      if (hasUpper) charset += 26;
+      if (hasDigit) charset += 10;
+      if (hasSymbol) charset += 32;
+
+      const entropy = length * Math.log2(charset || 1);
+      const combinations = Math.pow(charset || 1, length);
+
+      const rates = HASH_RATES[currentProfile];
+      let fastestTime = Infinity;
+      let fastestAlgo = 'MD5';
+
+      Object.entries(rates).forEach(([algo, rate]) => {
+        const timeSeconds = combinations / rate;
+        if (timeSeconds < fastestTime) {
+          fastestTime = timeSeconds;
+          fastestAlgo = algo.toUpperCase();
+        }
+      });
+
+      resultCard.classList.remove('empty');
+      resultCard.classList.add('updating');
+
+      setTimeout(() => {
+        crackTime.textContent = formatTime(fastestTime);
+        attackType.textContent = 'Brute force';
+        algorithm.textContent = fastestAlgo;
+        algorithm.style.display = 'inline-block';
+
+        statLength.textContent = length;
+        statCharset.textContent = charset;
+        statEntropy.textContent = entropy.toFixed(1) + ' bits';
+        statCombos.textContent = formatNumber(combinations);
+
+        resultCard.classList.remove('updating');
+      }, 150);
+    }
+
+    function formatTime(seconds) {
+      if (seconds < 0.001) return 'Instantané';
+      if (seconds < 1) return (seconds * 1000).toFixed(0) + ' ms';
+      if (seconds < 60) return seconds.toFixed(1) + ' sec';
+      if (seconds < 3600) return (seconds / 60).toFixed(1) + ' min';
+      if (seconds < 86400) return (seconds / 3600).toFixed(1) + ' heures';
+      if (seconds < 2592000) return (seconds / 86400).toFixed(1) + ' jours';
+      if (seconds < 31536000) return (seconds / 2592000).toFixed(1) + ' mois';
+      
+      const years = seconds / 31536000;
+      if (years < 100) return years.toFixed(1) + ' ans';
+      if (years < 10000) return (years / 100).toFixed(1) + ' siècles';
+      if (years < 1000000) return (years / 1000).toFixed(1) + ' millénaires';
+      
+      return '> univers';
+    }
+
+    function formatNumber(num) {
+      if (num < 1000) return num.toFixed(0);
+      if (num < 1e6) return (num / 1e3).toFixed(1) + 'K';
+      if (num < 1e9) return (num / 1e6).toFixed(1) + 'M';
+      if (num < 1e12) return (num / 1e9).toFixed(1) + 'B';
+      if (num < 1e15) return (num / 1e12).toFixed(1) + 'T';
+      return (num / 1e15).toFixed(1) + 'P';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('attackerProfile');
+      if (saved && HASH_RATES[saved]) {
+        pills.forEach(p => {
+          if (p.dataset.profile === saved) p.click();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markov — Métodos de ataque — Time2Crack</title>
+  <link rel="preload" href="/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.min.css"></noscript>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap"></noscript>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+<meta name="description" content="Gere candidatos a partir de probabilidades de transição aprendidas com senhas reais. Bom equilíbrio entre cobertura e velocidade.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#2563EB">
+
+<meta property="og:title" content="Markov — Métodos de ataque — Time2Crack">
+<meta property="og:description" content="Gere candidatos a partir de probabilidades de transição aprendidas com senhas reais. Bom equilíbrio entre cobertura e velocidade.">
+<meta property="og:image" content="https://time2crack.eu/logo.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://time2crack.eu/pt/methode/markov.html">
+<meta property="og:site_name" content="Time2Crack">
+<meta property="og:locale" content="pt_PT">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:locale:alternate" content="pl_PL">
+<meta property="og:locale:alternate" content="nl_NL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Markov — Métodos de ataque — Time2Crack">
+<meta name="twitter:description" content="Gere candidatos a partir de probabilidades de transição aprendidas com senhas reais. Bom equilíbrio entre cobertura e velocidade.">
+<meta name="twitter:image" content="https://time2crack.eu/logo.png">
+
+<link rel="canonical" href="https://time2crack.eu/pt/methode/markov.html">
+<link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/markov.html">
+<link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/markov.html">
+<link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/markov.html">
+<link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/markov.html">
+<link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/markov.html">
+<link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/markov.html">
+<link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/markov.html">
+<link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/markov.html">
+<link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/markov.html">
+<link rel="alternate" hreflang="x-default" href="https://time2crack.eu/en/methode/markov.html">
+  <script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header__top">
+    <h1><a href="/pt/index.html" class="site-logo"><img src="/logo.png" alt="" class="site-logo__icon" aria-hidden="true">Time2Crack</a></h1>
+    <div class="lang-selector">
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Selecionar idioma" aria-expanded="false" aria-controls="lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+        <span class="lang-toggle__label" id="lang-label">Português</span>
+        <span class="dropdown-arrow">▼</span>
+      </button>
+      <menu id="lang-menu" class="lang-menu" hidden role="menu" aria-label="Selecionar idioma">
+        <button type="button" data-lang="fr" class="lang-menu__item" role="menuitem">Français</button>
+        <button type="button" data-lang="en" class="lang-menu__item" role="menuitem">English</button>
+        <button type="button" data-lang="es" class="lang-menu__item" role="menuitem">Español</button>
+        <button type="button" data-lang="pt" class="lang-menu__item lang-menu__item--active" role="menuitem">Português</button>
+        <button type="button" data-lang="de" class="lang-menu__item" role="menuitem">Deutsch</button>
+        <button type="button" data-lang="it" class="lang-menu__item" role="menuitem">Italiano</button>
+        <button type="button" data-lang="tr" class="lang-menu__item" role="menuitem">Türkçe</button>
+        <button type="button" data-lang="pl" class="lang-menu__item" role="menuitem">Polski</button>
+        <button type="button" data-lang="nl" class="lang-menu__item" role="menuitem">Nederlands</button>
+      </menu>
+    </div>
+  </div>
+  <nav class="site-nav" aria-label="Navegação principal">
+    <div class="site-nav__primary">
+      <a href="/pt/index.html" class="site-nav__link nav-home">Testar uma senha</a>
+      <a href="/pt/generator.html" class="site-nav__link nav-generator">Gerar uma senha</a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="drawer"><span class="hamburger__icon"></span></button>
+    <div class="site-nav__secondary">
+      <a href="/pt/faq.html" class="site-nav__link">FAQ</a>
+      <a href="/pt/about.html" class="site-nav__link nav-about">Sobre</a>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Ciência">Ciência <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Ciência submenu">
+          <li role="none"><a href="/pt/how-time2crack-works.html" role="menuitem" class="site-nav__dropdown-item">Como funciona</a></li>
+          <li role="none" class="site-nav__dropdown-item--group">
+            <span class="site-nav__dropdown-group-title">Métodos de ataque</span>
+            <ul class="site-nav__dropdown-submenu" role="menu">
+              <li role="none"><a href="/pt/methode/bruteforce.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/dictionary.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/hybrid.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/mask.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/markov.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/pcfg.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pt/methode/combinator.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+            </ul>
+          </li>
+          <li role="none"><a href="/pt/sources.html" role="menuitem" class="site-nav__dropdown-item">Fontes</a></li>
+        </ul>
+      </div>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Segurança">Segurança <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Segurança submenu">
+          <li role="none"><a href="/pt/hibp.html" role="menuitem" class="site-nav__dropdown-item">HIBP</a></li>
+          <li role="none"><a href="/pt/privacy.html" role="menuitem" class="site-nav__dropdown-item">Privacidade</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <aside id="drawer" class="drawer" role="complementary" aria-hidden="true" aria-label="Navegação secundária">
+    <div class="drawer__header">
+      <button class="drawer__close" id="drawer-close-btn" aria-label="Fechar menu">✕</button>
+    </div>
+    <nav class="drawer__nav" aria-label="Navegação secundária">
+      <a href="/pt/faq.html" class="drawer__link">FAQ</a>
+      <a href="/pt/about.html" class="drawer__link">Sobre</a>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Ciência</summary>
+        <a href="/pt/how-time2crack-works.html" class="drawer__link">Como funciona</a>
+        <details class="drawer__details drawer__details--nested">
+          <summary class="drawer__summary drawer__summary--nested">Métodos de ataque</summary>
+          <a href="/pt/methode/bruteforce.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/dictionary.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/hybrid.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/mask.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/markov.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/pcfg.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pt/methode/combinator.html" class="drawer__link drawer__link--nested"></a>
+        </details>
+        <a href="/pt/sources.html" class="drawer__link">Fontes</a>
+      </details>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Segurança</summary>
+        <a href="/pt/hibp.html" class="drawer__link">HIBP</a>
+        <a href="/pt/privacy.html" class="drawer__link">Privacidade</a>
+      </details>
+    </nav>
+    <footer class="drawer__footer">
+      <p>v2.2.1 • Estimador de crack local 🔐</p>
+    </footer>
+  </aside>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
+  <div class="privacy-notice" role="note" aria-label="Aviso de privacidade">
+    <span class="privacy-notice__icon" aria-hidden="true">🔒</span>
+    <div class="privacy-notice__text">
+      <strong>Tudo fica no seu navegador.</strong>
+      Nenhuma senha é transmitida. A computação é totalmente local. A única solicitação externa é uma verificação anônima de vazamento (primeiros 5 caracteres do hash SHA-1, nunca a senha).
+    </div>
+  </div>
+</header>
+<main class="methode-page">
+  <div id="method-lang-selector" class="method-lang-selector">
+  <button id="method-lang-toggle" class="lang-toggle" type="button" aria-label="Selecionar idioma" aria-expanded="false" aria-controls="method-lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+    <span class="lang-toggle__label">Português</span>
+    <span class="dropdown-arrow">▼</span>
+  </button>
+  <menu id="method-lang-menu" class="lang-menu" hidden role="menu">
+    <button type="button" class="lang-menu__item" onclick="window.location='/fr/methode/.html'" role="menuitem">Français</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/en/methode/.html'" role="menuitem">English</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/es/methode/.html'" role="menuitem">Español</button>
+    <button type="button" class="lang-menu__item lang-menu__item--active" onclick="window.location='/pt/methode/.html'" role="menuitem">Português</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/de/methode/.html'" role="menuitem">Deutsch</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/it/methode/.html'" role="menuitem">Italiano</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/tr/methode/.html'" role="menuitem">Türkçe</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/pl/methode/.html'" role="menuitem">Polski</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/nl/methode/.html'" role="menuitem">Nederlands</button>
+  </menu>
+</div>
+
+<h1 style="display:none">Ataque de Markov (probabilístico) — Operação global</h1>
+<blockquote>
+Documento de referência do projeto Time2Crack
+</blockquote>
+<blockquote>Destinatários: desenvolvedores, pesquisadores de segurança, usuários avançados</blockquote>
+<hr>
+<h2>Índice</h2>
+<li><a href="#1-vue-densemble">Visão geral</a></li>
+<li><a href="#2-contexte-historique-et-académique">Formação histórica e académica</a></li>
+<li><a href="#3-fondements-mathématiques--les-chaînes-de-markov">Fundamentos matemáticos: as correntes de Markov</a></li>
+<li><a href="#4-architecture-dun-cracktool-markov">Arquitetura de um cracktool de Markov</a></li>
+<li><a href="#5-phase-1--entraînement-sur-corpus-de-mots-de-passe-réels">Fase 1 – treinamento de corpus de senhas reais</a></li>
+<li><a href="#6-phase-2--génération-ordonnée-de-candidats">Fase 2 — Geração ordenada de candidatos</a></li>
+<li><a href="#7-réduction-de-lespace-de-recherche--la-clé-de-lefficacité">Redução do espaço de pesquisa: a chave para a eficácia</a></li>
+<li><a href="#8-variantes-et-implémentations-notables">Variações e implementações notáveis</a></li>
+<li><a href="#9-comportement-face-à-différents-types-de-mots-de-passe">Comportamento contra diferentes tipos de senhas</a></li>
+<li><a href="#10-intégration-dans-time2crack--modélisation-et-paramètres">Integração no Time2Crack: Modelação e Parâmetros</a></li>
+<li><a href="#11-comparaison-avec-les-autres-attaques-probabilistes">Comparação com outros ataques probabilísticos</a></li>
+<li><a href="#12-limites-de-lattaque-markov">Limites do ataque de Markov</a></li>
+<li><a href="#13-défenses-efficaces">Defesas eficazes</a></li>
+<li><a href="#14-références-bibliographiques">Referências</a></li>
+<hr>
+<h2>Resumo</h2>
+<p>Markov Attack é um método de quebra de senha <strong>probabilística e estatística</strong> Em vez de testar todas as combinações possíveis em ordem alfabética — como faz a força bruta — classifica os candidatos dos mais prováveis, concentrando o esforço de cálculo onde as senhas humanas estão realmente localizadas.</p>
+<strong>Em termos simples</strong> : um atacante que tem GPU suficiente e um modelo de Markov bem treinado irá testar "letmein", "p@ssword" e "sun2024" antes de testar "aaaaaaa", "aaaaab" ou "xqzfkw" - porque os humanos criam senhas que parecem palavras, não ruído branco.
+<strong>Eficiência medida</strong> : Dürmuth et al. (2015) pesquisa sobre o RockYou corpus (14 milhões de senhas) mostra que um modelo Markov 5 reduz o espaço de busca real para <strong>0,6% do espaço bruto</strong> Para senhas com uma estrutura humana típica — uma redução de 99,4 %.
+<hr>
+<h2>2. Antecedentes históricos e acadêmicos</h2>
+<h3>2.1 Origens</h3>
+<p>A aplicação dos canais de Markov para quebra de senhas é anterior às publicações acadêmicas formais. Profissionais de segurança ofensivos usaram modelos semelhantes desde os anos 2000, mas datam de formalização rigorosa principalmente a partir dos anos 2010.</p>
+<strong>Cronologia dos marcos</strong> :
+AnoEvento
+----------------------
+2005Nakashima &amp; Oyama: primeira aplicação formal de n-grams para senhas
+2009Weir et al. (IEEE S&amp;P): PCFG — concorrente directo, posições probabilidades estruturais
+2012Ma et al. (USENIX Security): Estudo comparativo de modelos probabilísticos em senhas 70M
+2013Durmuth: primeira análise da OMEN em vários corpus
+2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESÓRICO 2015) — principal referência académica
+2016Wheeler (zxcvbn) confirma a eficácia dos n-gramas na estimativa da entropia real
+2018OMEN+: versão melhorada com suavização e interpolação
+2019–2022Trabalho híbrido de Markov + redes neurais (PassGAN, FuzzyPSM)
+<h3>2.2 Organismo de referência</h3>
+<p>O treinamento do modelo de Markov é baseado em bases de dados de senha de vazamentos de dados conhecidos:</p>
+<ul>
+<li><strong>RockYou (2009)</strong> 14,3 milhões de senhas simples — corpus universal de referência</li>
+</ul>
+<li><strong>LinkedIn (2012)</strong> : 6,5 milhões de haxixes SHA-1 não salgados (incluindo 4,4M rachados)</li>
+<li><strong>Adobe (2013)</strong> : 153 milhões de identificadores (3 hashs DES — rachados por análise de frequência)</li>
+<li><strong>Colecção #1–5 (2019)</strong> : 2,7 bilhões de pares de identificação/senha</li>
+<li><strong>Fui enganado (2024)</strong> : ~14 bilhões de credenciais agregadas</li>
+<p>Esses corpus revelam a distribuição estatística real das senhas humanas, que difere radicalmente de uma distribuição uniforme.</p>
+<hr>
+<h2>3. Fundações Matemáticas: Correntes de Markov</h2>
+<h3>3.1 Definição formal</h3>
+<p>Cadeia de ordem Markov <em>k</em> num alfabeto <em>k</em> Caracteres anteriores:</p>
+<pre><code class="language-plaintext">P(cₙ | c₁c₂...cₙ₋₁) = P(cₙ | cₙ₋ₖ...cₙ₋₁)</code></pre>
+<p>Para senhas, geralmente inclui 95 caracteres ASCII imprimíveis (26 minúsculas + 26 maiúsculas + 10 dígitos + 33 símbolos).</p>
+<strong>Ordem 1 (bigrama)</strong> :
+<pre><code class="language-plaintext">P("password") = P("p") × P("a"|"p") × P("s"|"a") × P("s"|"s") × ...</code></pre>
+<strong>Ordem 5 (ótima de acordo com Dürmuth 2015)</strong> :
+<pre><code class="language-plaintext">P("password") = P("p") × P("a"|"p") × P("s"|"pa") × P("s"|"pas")
+                × P("w"|"pass") × P("o"|"passw") × P("r"|"passwo")
+                × P("d"|"passwor")</code></pre>
+<p>A ordem 5 captura contextos como "após "passw", o seguimento mais provável é "o" — informação inacessível a um modelo de ordem 1.</p>
+<h3>3.2 A matriz de transição</h3>
+<p>Para uma ordem de 1 sobre 95 caracteres, a matriz de transição é tamanho <strong>95 × 95 = 9,025 entradas</strong>Para a Ordem 5, vai para <strong>955 × 95 = ~7.7 × 1010 inputs teóricos</strong> — mas a maioria dos n-gramas de ordem 5 nunca aparece nos dados reais.</p>
+<h3>3.3 Probabilidade de log e ordenação</h3>
+<p>Para evitar sobreposições flutuantes em senhas de 8 caracteres (probabilidades da ordem de 10-20), as ferramentas funcionam em <strong>probabilidades de log</strong> :</p>
+<pre><code class="language-plaintext">log P("password") = log P("p") + log P("a"|"p") + log P("s"|"a") + ...</code></pre>
+<p>Este valor é o <strong>pontuação Markov</strong> Os candidatos são gerados em ordem decrescente de pontuação, ou seja, o mais provável, pelo menos.</p>
+<h3>3.4 Por que a Ordem 5?</h3>
+<p>Pesquisa empírica (Dürmuth 2015, confirmada por Ma et al. 2012) mostra que:</p>
+<li><strong>Ordem 1</strong> : captura frequências de caracteres individuais (e, a, o comum em minúsculo), redução ~50%</li>
+<li><strong>Ordem 2</strong> : captura bigrams comuns (pa, ss, wo, rd), redução ~75%</li>
+<li><strong>Ordem 3</strong> : captura trigramas (não, ass, ssw), redução ~90%</li>
+<li><strong>Ordem 4</strong> : diminuição do início dos retornos, redução ~95 %</li>
+<li><strong>Ordem 5</strong> : Óptima empírica em RockYou, redução ~99,4%</li>
+<li><strong>Ordem 6+</strong> : overfitting, modelo memoriza senhas de treinamento sem generalizar</li>
+<hr>
+<h2>4. Arquitetura de um cracktool de Markov</h2>
+<h3>4.1 Principais componentes</h3>
+<pre><code class="language-plaintext">┌─────────────────────────────────────────────────────────────┐
+│                    OUTIL DE CRACKING MARKOV                 │
+├─────────────────┬───────────────────┬───────────────────────┤
+│  Phase          │  Composant        │  Rôle                 │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Entraînement   │ Corpus Parser     │ Lit les mots de passe │
+│                 │ N-gram Counter    │ Compte les transitions│
+│                 │ Probability Table │ Normalise en probas   │
+│                 │ Model Serializer  │ Sauvegarde le modèle  │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Génération     │ Candidate Gen     │ Énumère par score     │
+│                 │ Length Controller │ Filtre par longueur   │
+│                 │ Threshold Filter  │ Coupe les improbables │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Attaque        │ Hash Engine       │ Compare aux cibles    │
+│                 │ GPU Interface     │ Hashcat backend       │
+└─────────────────┴───────────────────┴───────────────────────┘</code></pre>
+<h3>4.2 Integração com Hashcat</h3>
+<p>A implementação mais generalizada na prática é através da <strong>Hashcat stdin mode</strong> (<code>-a 0</code> com um gerador externo) ou através de módulos Python como <code>statsgen</code> (do kit de ferramentas PACK):</p>
+<pre><code class="language-bash"># Exemple d'attaque Markov pratique
+python statsgen.py rockyou.txt --output markov<em>model.stats
+python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes.txt</em></code></pre>
+<p>Ferramentas dedicadas como <strong>OMEN</strong> (Open Markov Estimator of Next passwords) gera diretamente listas de candidatos ordenados.</p>
+<hr>
+<h2>5. Fase 1 — Corpo de treino de senha real</h2>
+<h3>5.1. Extração de n-gramas</h3>
+<p>Para cada senha no corpus, todos os n-gramas são extraídos (com um marcador inicial). <code>^</code> e fim <code>$</code>) :</p>
+<p>Exemplo com "olá" (ordem 2):
+</p><pre><code class="language-plaintext">^h, he, el, ll, lo, o$</code></pre><p></p>
+<p>Exemplo com "P@ss1!" (ordem 2):
+</p><pre><code class="language-plaintext">^P, P@, @s, ss, s1, 1!, !$</code></pre><p></p>
+<h3>5.2 Contagem e normalização</h3>
+<p>Para cada contexto (n-1 caracteres anteriores), as ocorrências de cada caractere a seguir são contadas e normalizadas:</p>
+<pre><code class="language-plaintext">Contexte "pa" → {s: 847, r: 12, t: 8, l: 3, ...}
+→ P(s|pa) = 847/870 = 0.973
+→ P(r|pa) = 12/870 = 0.014</code></pre>
+<p>Essas distribuições revelam hábitos de linguagem humana: depois de "pa", as pessoas escrevem maciçamente "s" (senha, passe, pablo...).</p>
+<h3>Suavização</h3>
+<p>O problema de n-gramas não observados: se "xq" nunca aparece no corpus, P(c)xq) = 0 para qualquer c — que bloqueia a geração. As técnicas de suavização mais utilizadas:</p>
+<li><strong>Adicionar um (Laplace)</strong> : adicionar 1 a todas as contas</li>
+<li><strong>Boa Turing</strong> : redistribuir a probabilidade dos n-gramas vistos uma vez para aqueles nunca vistos</li>
+<li><strong>Kneser-Ney</strong> : método de ponta, utilizado em OMEN+</li>
+<p>A suavização também permite que o modelo gere candidatos fora do corpus de treinamento — crucial para cobrir senhas ligeiramente novas.</p>
+<h3>5.4 O que o modelo aprende</h3>
+<p>Depois de treinar no RockYou, um modelo de 5-ordem Markov internaliza padrões como:</p>
+<li><strong>Sufixos digitais</strong> : números aparecem massivamente no final da senha (→ "123", "2024", "1!")</li>
+<li><strong>Início atual</strong> : "pa", "my", "lo", "ch", "123", "abc" são começos frequentes</li>
+<li><strong>Pagamento inicial</strong> : a parte superior na primeira posição é muito mais provável do que no meio da cadeia</li>
+<li><strong>Símbolos raros no meio</strong> : "@", "#", "!" aparecem principalmente em substituição de letras ou sufixo</li>
+<li><strong>Repetições Humanas</strong> : "aa", "ll", "ee" são mais frequentes que duplicatas de consoantes raras</li>
+<hr>
+<h2>6. Fase 2 — Geração ordenada de candidatos</h2>
+<h3>6.1 O problema da enumeração da pontuação</h3>
+<p>Gerando candidatos em ordem decrescente de probabilidade Markov é um problema não trivial. Nós não podemos simplesmente calcular as probabilidades de todos os candidatos possíveis (948 x 6 × 1015 para 8 tanques) e, em seguida, ordená-los.</p>
+<p>A solução: <strong>Busca heurística com cauda prioritária</strong> O algoritmo é semelhante ao Dijkstra:</p>
+<li>Inicializar a linha com os começos mais prováveis (<code>^a</code>, <code>^p</code>, <code>^1</code>...)</li>
+<li>Em cada fase, depila o candidato parcial mais provável</li>
+<li>Estendê-lo com cada caractere possível, calcular a pontuação do candidato estendido</li>
+<li>Se o comprimento do alvo atingido, emitir candidato</li>
+<li>Caso contrário, arquivar de volta</li>
+<p>Esta abordagem garante uma classificação aproximadamente decrescente sem memorizar todo o espaço.</p>
+<h3>6.2. Limiar</h3>
+<p>Para evitar gerar bilhões de candidatos improváveis, a <strong>Pontuação mínima</strong> abaixo do qual um candidato parcial é eliminado (slading).</p>
+<pre><code class="language-plaintext">Si log P(candidatpartiel) &lt; THRESHOLD → abandon de cette branche</code></pre>
+<p>Limiar é um parâmetro crítico: muito alto → você perde senhas no limite; muito baixo → você gera muitos candidatos e retarda o ataque.</p>
+<h3>6. 3 Gestão do comprimento</h3>
+<p>Os modelos Markov são treinados e geralmente operam <strong>por comprimento fixo</strong>Um ataque típico:</p>
+<li>Comprimento 6: gerar N candidatos em ordem decrescente de probabilidade</li>
+<li>Comprimento 7 : Ídem</li>
+<li>Comprimento 8: Idem (comprimento mais comum no corpus)</li>
+<li>Comprimentos 9-12: cobertura decrescente</li>
+<p>Distribuição de comprimento em RockYou: 8 tanques = 24%, 7 tanques = 21%, 9 tanques = 12%, 6 tanques = 10%...</p>
+<hr>
+<h2>7. Redução do espaço de pesquisa: a chave para a eficácia</h2>
+<h3>7.1 Quantificação empírica (Dürmuth 2015)</h3>
+<p>Para uma senha de 8 caracteres com o alfabeto completo (94 tanques):</p>
+MétodoEspaço de investigaçãoFactor de redução
+-----------------------------------------------------
+Resistência bruta948 6 × 10151× (referência)
+Ordem de Markov 1~3 × 1015~2×
+Ordem de Markov 3~6 × 1013~100×
+Ordem de Markov 5~3,6 × 1010~166 000×
+Ordem de Markov 5 (humano típico)~4 × 107<strong>~150 milhões×</strong>
+<p>A diferença entre "espaço reduzido" e "espaço humano típico" pode ser explicada pelo fato de que as senhas humanas reais estão concentradas em <strong>topo- k% mais provável</strong> Dependendo do modelo.</p>
+<h3>7.2 Por que os humanos são previsíveis</h3>
+<p>Os factores de previsibilidade utilizados por Markov:</p>
+<strong>Restrições linguísticas</strong> senhas são derivadas de palavras existentes. "letmein", "sunshine", "iloveyou" seguem regras fonóticas do inglês — as transições de letras são altamente prováveis.
+<strong>Restrições cognitivas</strong> Os humanos não se lembram de sequências realmente aleatórias. Uma senha aleatória como "xqzfw9@" raramente é escolhida espontaneamente.
+<strong>Padrões culturais</strong> Esses padrões criam clusters de alta densidade no espaço de senha.
+<strong>Substituições previsíveis</strong> Essas mudanças são tão comuns que fazem parte do modelo.
+<strong>Posição dos números e símbolos</strong> : os números no final da senha (passwd123) são 10× mais frequentes do que os números no início. Os símbolos do sufixo (passwd!) são 5× mais frequentes do que na posição central.
+<h3>7.3 O caso dos padrões de teclado</h3>
+<p>As sequências de teclado (qwerty, asdf, zxcv, 1234, azerty...) são particularmente vulneráveis.</p>
+<li>As transições de caracteres seguem as restrições da topologia do teclado</li>
+<li>De cada chave, apenas 4-8 vizinhos imediatos são relevantes</li>
+<li>Um modelo Markov impulsionado no corpus, incluindo estes padrões atinge uma redução de <strong>99,7 %</strong> (vs 99,4% para palavras humanas gerais)</li>
+<p>No Time2Crack (versão atual), esta distinção não é mais um rolamento fixo. <code>kbPat</code> como sinal num estimador de classificação (<code>markovExpectedGuesses</code>) então interpolo continuamente entre regimes "humanos" e "leandom-like".</p>
+<hr>
+<h2>8. Variações e implementações notáveis</h2>
+<h3>8.1 OMEN (Estimador de Markov Aberto das Próximas Senhas)</h3>
+<strong>Desenvolvido por</strong> : Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge (ESORICS 2015)
+<strong>Disponibilidade</strong> : Código aberto (GitHub)
+<strong>Principais inovações</strong> : escalonamento otimizado por pontuação de nível (síntese por etapas de probabilidade)
+<p>A OMEN utiliza uma discretização das probabilidades em <strong>níveis inteiros</strong> acelerar a geração:
+</p><li>Cada n-grama recebe uma pontuação inteira (0 = muito provável, 10 = improvável)</li>
+<li>A soma das pontuações de uma senha é a sua <strong>pontuação global</strong></li>
+<li>As senhas são geradas em ordem crescente de pontuação global</li><p></p>
+<p>Esta abordagem elegantemente resolve o problema da enumeração ordenada sem cauda de prioridade cara.</p>
+<h3>8.2 OMEN+</h3>
+<p>Extensão do OMEN com:
+</p><li><strong>Alisando o Kneser-Ney</strong> para uma melhor generalização</li>
+<li><strong>Interpolação de várias ordens</strong> : combina previsões de ordem 3, 4 e 5</li>
+<li><strong>Adaptação do limiar</strong> baseado na distribuição de corpus empíricos</li><p></p>
+<p>Desempenho relatado: +15 a +20% senhas rachadas vs original OMEN com orçamento igual.</p>
+<h3>8.3 Statsgen / PACK (Análise de Senha e Kit de Cracking)</h3>
+<strong>Desenvolvido por</strong> : Peter Kacherginsky (iphelix)
+<strong>Aproximação</strong> : mais leve do que a OMEN, gera máscaras e estatísticas compatíveis com Hashcat
+<strong>Utilização típica</strong> : análise de um conjunto de senhas rachadas para adaptar ataques futuros
+<h3>8.4 JohnTheRipper — Modo Markov</h3>
+<p>John TheRipper integra <strong>modo Markov nativo</strong> (desenvolvido por Samuele Giovanni Tonon):</p>
+<pre><code class="language-bash">john --markov --min-length=6 --max-length=8 hashes.txt</code></pre>
+<p>Parâmetro <code>--markov-threshold</code> (0-400): controla o limiar de corte. 150 = parâmetro padrão recomendado.</p>
+<p>O modo JtR Markov usa estatísticas pré- calculadas armazenadas em arquivos <code>.mkv</code> (arquivos de estatísticas de marcov) gerados por <code>calc<em>stat</em></code>.</p>
+<h3>8.5 Modelos híbridos de Markov</h3>
+<strong>Markov + regras</strong> : gerar candidatos Markov, em seguida, aplicar regras de transformação Hashcat
+<strong>Markov + dicionário</strong> : use senhas de Markov como base para ataques híbridos
+<strong>Markov + PCFG</strong> : combinar a ordem probabilística Markov com a tensão estrutural PCFG
+<p>Essas hibridizações são usadas em configurações de cracking profissional para maximizar a cobertura de orçamento da CPU/GPU.</p>
+<h3>8.6 Modelos de linguagem modernos (LLM/LSTM) — sucessores de Markov</h3>
+<p>As redes LSTM e Transformer podem ser vistas como generalizações de canais Markov:
+</p><li>Ordem de Markov k = k tokens janela de contexto fixa</li>
+<li>LSTM = janela de contexto variável e não ligada (memória de longo prazo)</li>
+<li>Transformar = atenção global a toda a sequência</li><p></p>
+<p>PassGAN (2017), FLA (2019), PassBERT (2022) superou os modelos clássicos de Markov em 20-30% nas taxas de crack no corpus moderno.</p>
+<hr>
+<h2>9. Comportamento contra diferentes tipos de senhas</h2>
+<h3>9.1 Senhas de palavras naturais</h3>
+<strong>Exemplos</strong> Deixa-me entrar, dragão, amo-te
+<strong>Vulnerabilidade</strong> : extremo
+<strong>Mecanismo</strong> : o modelo atribui probabilidade muito alta às sequências do inglês atual. <strong>Topo 0,001 %</strong> Os candidatos gerados.
+<strong>Tempo</strong> : milissegundos em MD5/SHA-1
+<h3>9.2 Palavras com substituições de leetspeak</h3>
+<strong>Exemplos</strong> : p@ ssw0rd, L3tm3In, $unsh1ne
+<strong>Vulnerabilidade</strong> : Alta
+<strong>Mecanismo</strong> O modelo aprendeu que "@" muitas vezes segue "p" (porque "p@ss..." é muito comum no corpus), que "0" muitas vezes segue "w" (w0rd...), etc As substituições mais comuns são integradas na probabilidade de transição.
+<strong>Tempo</strong> : segundos para minutos
+<h3>9.3 Palavras com sufixo digital</h3>
+<strong>Exemplos</strong> Senha123, raio de sol2024, dragão1!
+<strong>Vulnerabilidade</strong> : Alta
+<strong>Mecanismo</strong> Os sufixos numéricos são tão comuns que o modelo tem uma alta probabilidade para a letra→ transições no final da sequência.
+<strong>Tempo</strong> : segundos para alguns minutos
+<h3>9.4 Nomes e nomes próprios</h3>
+<strong>Exemplos</strong> : Thomas92, AnneM@rie, NICOLAS
+<strong>Vulnerabilidade</strong> moderada a alta
+<strong>Mecanismo</strong> : Os nomes comuns (em inglês) são bem representados no corpus de referência. Os nomes menos comuns no corpus inglês (francês, polonês, etc.) beneficiam menos do modelo.
+<strong>Tempo</strong> : minutos a horas dependendo da popularidade do primeiro nome
+<h3>9.5 Passe palavras de estrutura aleatória aparente mas mnemotechnic</h3>
+<strong>Exemplos</strong> : Tr0ub4dor&amp;3 (do artigo XKCD), Il0v3myC@t!
+<strong>Vulnerabilidade</strong> moderado
+<strong>Mecanismo</strong> Estas senhas têm uma estrutura humana (palavra de base + substituições + sufixo), mas a base e as transformações específicas não estão no topo- k dos candidatos a Markov. O modelo irá, eventualmente, alcançá-los, mas eles caem no 10-30% do espaço.
+<strong>Tempo</strong> : horas a dias de acordo com o algoritmo de comprimento e hash
+<h3>9.6 Padrões de teclado</h3>
+<strong>Exemplos</strong> : qwerty, 1234567, azerty, qweasdzxc
+<strong>Vulnerabilidade</strong> : extremo (pior que palavras naturais)
+<strong>Mecanismo</strong> : transições de teclado são tão representadas no corpus que o modelo as classifica entre os primeiros milhares de candidatos — às vezes as primeiras dezenas.
+<strong>Tempo</strong> : microssegundos a milissegundos
+<h3>9.7 Senhas Realmente Aleatórias</h3>
+<strong>Exemplos</strong> : xQz7@ mK9, 4# pL$2nR, kRf9!Ws3
+<strong>Vulnerabilidade</strong> : baixo a zero
+<strong>Mecanismo</strong> : As transições de caracteres nessas senhas têm probabilidades muito baixas em um modelo treinado em senhas humanas. Elas são encontradas nas últimas porcentagens do espaço gerado.
+<strong>Comportamento</strong> O verdadeiro "custo" da segurança é entropia grosseira.
+<strong>Tempo</strong> : comparável ou superior à força bruta
+<h3>9. 8 Frases- senhas</h3>
+<strong>Exemplos</strong> : cavalo-bateria-estaca-correcto, monchieneestlouisXIV
+<strong>Vulnerabilidade</strong> : variável
+<strong>Mecanismo complexo</strong> :
+<li>Um modelo de Markov pode capturar transições inter-palavras em uma frase-passe curta (2 palavras) se estas combinações são comuns no corpus</li>
+<li>Mas para frases longas (4+ palavras), o espaço candidato ordenado por Markov só irá alcançá-los depois de esgotar todas as senhas curtas típicas</li>
+<li>Ataque <strong>combinador</strong> é geralmente mais eficaz do que Markov em frases- senha</li>
+<hr>
+<h2>10. Integração em Time2Crack: Modelação e Parâmetros</h2>
+<h3>Lógica geral de cálculo (v2)</h3>
+<p>Time2Crack agora modelos Markov em <strong>classificação esperada</strong> (rank-based) em vez de com fatores de redução fixos.</p>
+<p>Linha de cálculo:</p>
+<li>Unicode tokenization em segmentos <code>L</code>/<code>D</code>/<code>S</code>,</li>
+<li>estimativa de um posto humano via esqueleto + forma + linhas de fichas,</li>
+<li>modulação por sinais estruturais (<code>kbPat</code>, <code>seq</code>, <code>dt</code>, <code>rep</code>, <code>hybridVuln</code>),</li>
+<li>interpolação contínua para um regime "aleato" de acordo com <code>charset</code> e comprimento,</li>
+<li>conversão de tempo via <code>budgetTime(rangestime, vitesse<em>hash)</em></code>.</li>
+<h3>10.2 Tokenization Unicode e perfil calibrado por idioma</h3>
+<p>O modelo Markov v2 usa classes Unicode (<code>\p{L}</code>, <code>\p{N}</code>, de outra forma símbolo) e um perfil calibrado por idioma (carregado desde <code>data/markov-calibration.json</code>, com retrocesso interno).</p>
+<p>O perfil contém:</p>
+<li><code>skeletonRanks</code> (<code>L8D2</code>, <code>L8D2S1</code>, ...),</li>
+<li><code>shapeRanks</code> (<code>LD</code>, <code>LDS</code>, ...),</li>
+<li><code>tokenRanks</code> por classe/comprimento,</li>
+<li>multiplicadores de línguas (<code>shapeMultipliers</code>),</li>
+<li>multiplicadores de sinais (<code>signalMultipliers</code>).</li>
+<h3>10.3. Interpolação contínua (fim dos limiares íngremes)</h3>
+<p>O modelo antigo usou rolamentos (0.003 / 0,006 / 0.25/ 0.9). O modelo v2 substitui esta lógica por interpolação contínua entre:</p>
+<li><code>humanRank</code> (superfície estrutural provável),</li>
+<li><code>randomRank</code> (área próxima do bruto, delimitada).</li>
+<p>O peso aleatório é uma função contínua do comprimento, tanque e força dos sinais humanos, evitando descontinuidades artificiais.</p>
+<h3>10.4 Pontuação de confiança e aplicabilidade</h3>
+<p>Modelo de Pontuação Time2Crack (função <code>annotateScenarioApplicability()</code>) atribuições a Markov:</p>
+<strong>Confiança básica</strong> : 0,75 (linha 4800)
+Interpretação: O ataque de Markov é considerado <strong>moderadamente fiável</strong> — mais fiáveis do que a estimativa neural (0,7) ou PRINCE (0,7), menos do que o dicionário (0,9) ou as tabelas de sulcos (0,95).
+<strong>Pontuação de aplicabilidade</strong> (linha 4873-4874):
+<pre><code class="language-javascript">case "markov":
+  return context.looksHuman ? 0.76 : 0.34;</code></pre>
+<li><code>looksHuman = true</code> → pontuação 0.76: Markov ataque é <strong>muito aplicável</strong>, o modelo explorará as regularidades humanas</li>
+<li><code>looksHuman = false</code> → pontuação 0.34: aplicável, mas sem grande vantagem sobre a força bruta</li>
+<strong>Pontuação de evidência</strong> (linha 4829-4830):
+<pre><code class="language-javascript">case "markov":
+  return Number(!!context.looksHuman) + Number(!!context.kbPat)
+       + Number(!!context.seq)        + Number(!!context.rep);</code></pre>
+Cada sinal de "caracter humano" da senha aumenta a pontuação óbvia de Markov.
+<h3>10,5 HF de ajustamento</h3>
+<p>Com Markov v2, os sinais estruturais já estão integrados na classificação estimada. O ajuste HF é, portanto, neutro para Markov, a fim de evitar a dupla contagem.</p>
+<h3>10.6 Prioridade no empate</h3>
+<p>Quando vários ataques dão tempos semelhantes (&lt; 1ms de diferença), o Time2Crack escolhe o mais relevante de acordo com uma prioridade semântica:</p>
+<pre><code class="language-javascript">const tieBreakPriority = {
+  // ...
+  markov: 8,    // Statistical n-gram — broad coverage
+  // ...
+};</code></pre>
+<p>Markov é um ataque de complemento útil que explora regularidades estatísticas. Ele tem precedência sobre a força bruta para senhas com estrutura humana, mas dá precedência a ataques de dicionário e híbridos que são mais diretos.</p>
+<h3>10.7 Caso ultrafraco</h3>
+<p>Para senhas ultra- baixas (detectado por <code>isWeakPassword()</code>), Markov usa um tempo baseado em uma classificação mínima (<code>weakGuessTime</code>) em vez de uma constante fixa:</p>
+<pre><code class="language-javascript">if (weak) {
+  rows.push({ ..., sec: weakGuessTime(a.rate), note: t("nWeakPassword"), cat: "markov" });
+}</code></pre>
+<p>Raciocínio: uma senha ultra-low (senha, 123456, qwerty...) está no <strong>absoluto superior- 100</strong> Espaço de Markov — será testado primeiro, a precisão do cálculo é irrelevante.</p>
+<hr>
+<h2>11. Comparação com outros ataques probabilísticos</h2>
+<h3>11, 1 Markov vs PCFG</h3>
+DimensãoMarkovPCFG
+------------------------------
+<strong>Unidade de análise</strong>Transições de caracteres individuaisEstruturas de segmentos (L/D/S)
+<strong>Informações capturadas</strong>Regularidades locais (n-grama)Global (gramática)
+<strong>Forçar</strong>Palavras naturais, padrões contínuosPalavras + números, estruturas compostas
+<strong>Limite</strong>Não captura estruturas globaisNão capturar transições locais
+<strong>Complementaridade</strong>Ideal para palavras purasIdeal para senha123
+<strong>Exemplo ideal</strong>"Sunshine"Sunshine# 93
+<strong>Ordem no tempo2Crack</strong>Markov = 8, PCFG = 6PCFG mais preciso se a estrutura detectada
+<h3>11.2 Markov vs. Ataque baseado em regras</h3>
+DimensãoMarkovCom base em regras
+-------------------------------------
+<strong>Aproximação</strong>Geração ab initio probabilisticTransformação de um dicionário existente
+<strong>Cobertura</strong>Todas as senhas prováveisTraduções de palavras de dicionário
+<strong>Forçar</strong>Palavras raras ou ligeiramente sem dicionárioTransformações tradicionais de palavras conhecidas
+<strong>Limite</strong>Menos eficaz do que as regras ditadoras para mutações atuaisDepende inteiramente da qualidade do dicionário
+<h3>11. 3 Markov vs Redes Neurais (PassGAN, LSTM)</h3>
+DimensãoMarkov (Ordem 5)Rede neuronal
+--------------------------------------------------------------------------------
+<strong>Complexidade</strong>O(k ×) por previsãoO(n2 × d) (Transformador)
+<strong>Dados necessários</strong>1-10M exemplos suficientes10M-1B para bons resultados
+<strong>Interpretabilidade</strong>Total (quadros de probabilidades)Caixa preta
+<strong>Generalização</strong>Limitado ao contexto local kPotencial global
+<strong>Taxa de fissuração</strong>Referência+20-30% em senhas modernas
+<strong>Velocidade de geração</strong>Muito rápido.Mais lento
+<h3>11.4 Posicionamento global</h3>
+<p>Em um fluxo de trabalho de cracking profissional, a ordem típica é:</p>
+<li><strong>Dicionário</strong> (credlist) — senhas exatas conhecidas</li>
+<li><strong>Recheio credencial</strong> — pares ID/mdp reutilizados</li>
+<li><strong>Pulverização de senha</strong> — top-20 comum</li>
+<li><strong>Híbrido</strong> — regras dico + Hashcat</li>
+<li><strong>PCFG</strong> — se a estrutura L+D for detectada</li>
+<li><strong>Máscara</strong> — se for detectado um padrão posicional</li>
+<li><strong>Markov</strong> — cobertura estatística geral</li>
+<li><strong>Neuural</strong> — se disponível</li>
+<li><strong>Resistência bruta</strong> — último recurso</li>
+<p>Markov é frequentemente o <strong>linha de fundo</strong> força bruta frontal: efetivamente cobre senhas humanas que escaparam de ataques mais direcionados.</p>
+<hr>
+<h2>12. Limites do Ataque de Markov</h2>
+<h3>12.1 Dependência do corpo de formação</h3>
+<p>O modelo é tão bom quanto seu corpus. Um corpus dominado por senhas inglesas (RockYou, LinkedIn) não entende as regularidades:
+</p><li>Senhas em línguas de alta densidade morfológica (Polish, Checo, Finlandês)</li>
+<li>Senhas baseadas em culturas não representadas (mandarim transliterado, árabe romanizado)</li>
+<li>Senhas de campos especializados ausentes de vazamentos (gíria médica, jargão técnico raro)</li><p></p>
+<strong>Solução parcial</strong> : formar modelos específicos por linguagem e campo (abordagem que exige corpus diversificados).
+<h3>12.2 Independência interposicional de longo alcance</h3>
+<p>Um modelo Markov 5 não vê mais de 5 caracteres. Para uma senha de 12 caracteres, não pode correlacionar o 12o caracter com o 1o. Uma frase-passe como "stargate2004!" tem uma estrutura global ("palavra + ano +!") que Markov percebe localmente, mas não globalmente — PCFG é melhor aqui.</p>
+<h3>12.3 Insensibilidade às estruturas composicionais</h3>
+<p>"HorseStapleBattery" (majusculum inicial + 3 palavras concatenadas) é difícil para Markov porque transições inter-palavras (e→S, e→B) são inesperadas. O ataque combinador ou PCFG é mais adequado.</p>
+<h3>12. 4 Ineficácia da senha aleatória</h3>
+<p>Uma senha gerada por <code>/dev/urandom</code> com mais de 12 caracteres alfanuméricos não tem estrutura explorável por Markov. O tempo de ataque Markov converge para a força bruta.</p>
+<h3>12.5 Sensibilidade à política de senhas atualizada</h3>
+<p>Se uma organização impôs regras rigorosas (comprimento ≥ 16, obrigatório 1 capital + 1 dígito + 1 símbolo), as senhas resultantes podem ter uma distribuição diferente do corpus de formação — reduzindo a eficácia do modelo.</p>
+<hr>
+<h2>13. Defesas eficazes</h2>
+<h3>13.1 O que neutraliza completamente Markov</h3>
+<strong>Geradores de senhas aleatórios</strong> : qualquer gerenciador de senhas (Bitwarden, 1Password, KeePass) com um gerador criptograficamente seguro produz sequências sem estrutura explorável por Markov. Uma senha de 16 caracteres aleatórios está fora de alcance, independentemente do ataque.
+<strong>Comprimento suficiente com aleatório</strong> : mesmo com um tanque reduzido (apenas a-z), 16 caracteres aleatórios representam 26^16
+<h3>13.2 O que reduz consideravelmente a eficácia de Markov</h3>
+<strong>Frases longas de palavras raras</strong> : 4+ palavras incomuns separadas estão fora dos principais candidatos Markov, especialmente se as palavras vêm de diferentes línguas ou vocabulários especializados.
+<strong>Evite substitutos comuns de leetspeak</strong> : Substituções a→@, e→3, etc. são integradas no modelo, mas transformações não-padrão (a→
+<strong>Evite padrões de teclado e palavras naturais</strong> : A vulnerabilidade máxima de Markov.
+<h3>13.3 O que não defende contra Markov</h3>
+<strong>Requisitos de complexidade (majuscule + dígito + símbolo)</strong> : se estes elementos são adicionados a uma palavra natural (P@ssw0rd!), o modelo captura estes padrões. <strong>segurança falsa</strong> Percebido.
+<strong>Substituições básicas de leetspeak</strong> : totalmente capturado pelo modelo (transições "@"→"s", "3"→"y"...).
+<strong>Sufixos/prefixos digitais</strong> : "palavra + 123" ou "palavra + 2024" padrões estão entre os primeiros testados.
+<h3>13.4 Recomendação final</h3>
+<p>A defesa mais eficaz contra Markov (e qualquer ataque probabilístico) é<strong>eliminar qualquer estrutura humana previsível</strong>, que equivale a delegar a criação de senha para um gerador aleatório seguro.</p>
+<hr>
+<h2>14. Referências</h2>
+<h3>Acadêmicos (avaliados pelos pares)</h3>
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., Nürnberger, S., &amp; Rüegge, A. (2015).</strong>
+OMEN: Senha mais rápida adivinhando usando um Enumerador Markov ordenado.
+<em>Software e Sistemas Seguros de Engenharia (ESSOS 2015)</em>, LNCS 8978, pp. 119–132.
+→ Referência principal para calibração probabilística Markov usada no Time2Crack (RockYou 14M, Ordem 5)
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong>
+Um estudo de modelos de senha probabilísticos.
+<em>Simpósio IEE sobre Segurança e Privacidade (S&amp;P 2014)</em>.
+→ Comparação empírica Markov, PCFG, n-grams em senhas 70M
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong>
+Rastreamento de senhas usando Gramática Probabilística Livre de Contexto.
+<em>Simpósio IEE sobre Segurança e Privacidade (S&amp;P 2009)</em>.
+→ Trabalhos de fundação de métodos probabilísticos estruturais (competidor Markov)
+<strong>Wheeler, D.L. (2016).</strong>
+zxcvbn: Estimativa de Força de Senha de Baixo Orçamento.
+<em>25o Simpósio de Segurança USENIX</em>.
+→ Confirma a eficácia de n-grams para estimativa realista da força de senha
+<strong>Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M. (2021).</strong>
+Redução de Bias na Modelação de Força de Senha do Mundo Real através de Aprendizagem Profunda e Dicionários Dinâmicos.
+<em>30o Simpósio de Segurança USENIX</em>.
+→ Comparação quantitativa Markov vs aprendizagem profunda no corpus moderno
+<strong>Hitaj, B., Gasti, P., Ateniese, G., &amp; Perez-Cruz, F. (2019).</strong>
+PassGAN: Uma abordagem de aprendizagem profunda para adivinhar senha.
+<em>ACNS 2019</em>.
+→ Sucessor Neural de Markov, ponto de comparação para Time2Crack <code>descNeural</code>
+<h3>Implementação de código aberto</h3>
+<strong>OMEN</strong> https://github.com/RUB-SysSec/OMEN
+<strong>John TheRipper (modo Markov)</strong> https://www.openwall.com/john/doc/MARKOV.shtml
+<strong>EMBALAGEM (statsgen/maskgen)</strong> https://github.com/iphelix/pack
+<strong>Hashcat</strong> https://hashcat.net/hashcat/
+<h3>Fontes de corpus</h3>
+<strong>RockYou (2009)</strong> : 14,3M senhas da falha da rede social RockYou
+<strong>Fui enganado?</strong> https://hapibeenpwned.com — ~14 bilhões de credenciais agregadas (Troy Hunt)
+<strong>SecListas</strong> : https://github.com/danielmiessler/SecLists — dicionários de referência e listas de palavras
+<h3>Fontes da Web citadas no aplicativo Time2Crack</h3>
+<strong>Springer (capítulo Markov/cracking probabilístico).</strong>
+https://link.springer.com/chapter/10.1007/978-3-3-19-24174-67
+→ Fonte relacionada em <code>descMarkov</code> (app.js) para a redução efetiva do espaço de pesquisa por priorização estatística.
+<hr>
+<em>Documento gerado para o projeto Time2Crack — última atualização : 2026-04-01</em>
+<em>Baseado na implementação em app.js (Markov v2 rank-based) e publicações acadêmicas citadas</em>
+
+<script src="/includes.js" defer></script>
+
+</main>
+<footer id="site-footer" class="site-footer">
+  <p>Cálculo local · verificação HIBP · Código aberto</p>
+  <div class="footer-social">
+    <a href="https://linkedin.com/company/time2crack" class="footer-social__link" aria-label="Siga-nos no LinkedIn">
+      <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" width="24" height="24">
+        <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+      </svg>
+    </a>
+    <a href="https://bsky.social/profile/time2crack.bsky.social" class="footer-social__link" aria-label="Siga-nos no Bluesky">
+      <img src="/bluesky-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+    <a href="https://fosstodon.org/@time2crack" class="footer-social__link" aria-label="Siga-nos no Mastodon">
+      <img src="/mastodon-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+  </div>
+</footer>
+<script src="/includes.js" defer></script>
+</body>
+</html>

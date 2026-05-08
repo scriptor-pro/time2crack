@@ -1,0 +1,301 @@
+---
+lang: nl
+permalink: "/nl/sources.html"
+layout: base.njk
+currentPage: sources
+pageSlug: sources.html
+mainClass: sources-page
+pageTitle: "Wetenschappelijke bronnen — Time2Crack"
+pageDescription: "Bekijk de wetenschappelijke referenties en benchmarks die Time2Crack valideren, van cryptografie tot wachtwoordsterkte."
+---
+
+<div class="sources-container">
+<h2 style="margin-bottom: 1rem;">Wetenschappelijke bronnen</h2>
+<p style="color: #666; margin-bottom: 2rem;">
+        Time2Crack is gebaseerd op academisch onderzoek in cryptografie, computerbeveiliging en wachtwoord force estimation.
+Deze pagina toont de wetenschappelijke bronnen die onze algoritmen, beoordelingsmethoden en kalibraties valideren.
+      </p>
+ Inhoudsopgave 
+<div class="sources-toc">
+<h3>Snelle navigatie</h3>
+<ul>
+<li><a href="#section-password-strength">Schatting van wachtwoordsterkte</a></li>
+<li><a href="#section-evaluation-metrics">Evaluatiemethoden</a></li>
+<li><a href="#section-attack-models">Aanvalsmodellen</a></li>
+<li><a href="#section-markov-pcfg">Markov en PCFG</a></li>
+<li><a href="#section-calibration">Kalibratie en dataset</a></li>
+<li><a href="#section-hash-rates">Hash snelheden</a></li>
+</ul>
+</div>
+ Afdeling 1: Wachtwoord Sterkteschatting 
+<div class="section-sources" id="section-password-strength">
+<h2>Schatting van wachtwoordsterkte</h2>
+<div class="reference">
+<span class="reference-authors">Wheeler, D.L.</span> (2016).
+          <span class="reference-title">zxcvbn: Low-Budget Wachtwoord Sterkteschatting.</span>
+          In <span class="reference-source">Werkzaamheden van het 25e USENIX Security Symposium</span> 157/173).
+USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/conference/usenixsecurity16/sec16_paper_wheeler.pdf" target="_blank">https://www.usenix.org/system/files/conference/usenixsecurity16/sec16 paper wheeler.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Opzetmethode voor de realistische schatting van wachtwoordkracht.
+Wheeler (2016) stelt dat entropie-gebaseerde meters (NIST, OWASP) de veiligheid aanzienlijk overschatten.
+Time2Crack volgt deze aanpak: schat de kosten van de bekendste aanval, niet theoretische entropie.
+        </div>
+<div class="reference">
+<span class="reference-authors">Pasquini, D., Continuously, A., Durmuth, M., &amp; Buscher, M.</span> (2021).
+          <span class="reference-title">Het verminderen van Bias in het modelleren van Real-World Password Strength voor boom-gebaseerde modellen.</span>
+          In <span class="reference-source">Werkzaamheden van het 30e USENIX Security Symposium</span> 3007
+USENIX Association.
+          <span class="reference-url"><a href="https://arxiv.org/pdf/2105.14170.pdf" target="_blank">https://arxiv.org/pdf/2105.14170.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Kritische analyse van vooroordelen in password force modellen.
+Time2Crack gebruikt rockyou2021 (32,6M gewogen wachtwoorden)
+om deze vooroordelen te minimaliseren.
+        </div>
+</div>
+ Deel 2: Metricsevaluatie 
+<div class="section-sources" id="section-evaluation-metrics">
+<h2>Evaluatiemethoden</h2>
+<div class="reference">
+<span class="reference-authors">Wang, D, &amp; Ding, S.</span> (2023).
+          <span class="reference-title">Geen enkele zilveren kogel: Het meten van de nauwkeurigheid van wachtwoordsterktemeters.</span>
+          In <span class="reference-source">Werkzaamheden van het 32e USENIX Security Symposium</span> 2575-259).
+USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/sec23fall-prepub-291_wang-ding.pdf" target="_blank">https://www.usenix.org/system/files/sec23fall-prepub-291 wang-ding.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Grote vergelijkende studie (USENIX 2023) van 12 wachtwoordsterktemeters uit 14 echte dataset.
+Bepaalt dat:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li><strong>Gewogen Speerman correlatie ρ</strong> is de standaard metriek om nauwkeurigheid te evalueren</li>
+<li>Wetenschappelijke doelstelling: <strong>ρ &gt; 0,85</strong> voor een goede kalibratie</li>
+<li>Er bestaat geen meter zonder compromis (zxcvbn: ρ=0,76, Hive Systems: ρ=0,68)</li>
+</ul>
+          Time2Crack-doelstellingen ρ &gt; 0,80 in het algemeen.
+        </div>
+<div class="reference">
+<span class="reference-authors">Golla, M., &amp; Dürmuth, M.</span> (2018)
+          <span class="reference-title">Over de nauwkeurigheid van Wachtwoord Krachtmeters.</span>
+          In <span class="reference-source">Werkzaamheden van de 25e ACM-conferentie over computer- en communicatiebeveiliging</span> 1567-1580).
+ACM.
+          <span class="reference-url"><a href="https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf" target="_blank">https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Systematische evaluatiekader voor wachtwoordsterktemeters (2018).
+Aanbevelen: Spearman correlatie + Kullback-Leibler divergentie voor offline aanvallen.
+Time2Crack bevat deze twee metrics.
+        </div>
+<div class="reference">
+<span class="reference-authors">Castelluccia, C., Durmuth, M., &amp; Perito, D.</span> (2017).
+          <span class="reference-title">Adaptive Password-Strength Meters van Markov Models.</span>
+          In <span class="reference-source">Werkzaamheden van het NDSS-symposium</span>.
+Internet Society.
+          <span class="reference-url"><a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/06_3.pdf" target="_blank">https://www.ndss-symposium.org/wp-content/uploads/2017/09/06 3.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Introduceert metriek <strong>α - Raadselwerk (Gα)</strong> :
+deel van wachtwoorden gekraakt met G pogingen.
+Evaluatie van de praktische veiligheid van het model.
+        </div>
+</div>
+ Sectie 3: Aanvalmodellen 
+<div class="section-sources" id="section-attack-models">
+<h2>Aanvalsmodellen</h2>
+<div class="reference">
+<span class="reference-authors">Ma, J., Yang, W., Luo, M., &amp; Li, N.</span> (2014).
+          <span class="reference-title">Een studie van Probabilistische Password Modellen.</span>
+          In <span class="reference-source">Werkzaamheden van het 35e IEEE Symposium over beveiliging en privacy</span> 689/704).
+IEEE.
+          <span class="reference-url"><a href="https://www.ieee-security.org/TC/SP2014/papers/A%20Study%20of%20Probabilistic%20Password%20Models.pdf" target="_blank">https://www.ieee-security.org/TC/SP2014/papers/A%20Study%20of%20Probabilistic%20Password%20Models.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Oprichting vergelijking van probabilistische modellen (Markov, PCFG, neuraal).
+Bepaalt dat aanvallen door combinatie van woorden worden onderschat door naïeve formules
+(rij vermenigvuldiging = valse onafhankelijkheid hypothese).
+Time2Crack corrigeert dit met rock you empirische kalibratie.
+        </div>
+<div class="reference">
+<span class="reference-authors">Dürmuth, M., Brostoff, S., &amp; Oprea, A.</span> (2015).
+          <span class="reference-title">Het succes van webapplicaties ondanks de moeilijkheid van wachtwoordcreatie regels.</span>
+          In <span class="reference-source">Werkzaamheden van het 22e NDSS-symposium</span>.
+Internet Society.
+          <span class="reference-url"><a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2015_09-4_durhmuth_paper.pdf" target="_blank">https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2015 09-4 durhmuth paper.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Ur, B., Alfayez, P.G., Bhamasamy, S.M., &amp; Cranor, L.F.</span> (2015).
+          <span class="reference-title">Ontwerp en evaluatie van een data-gedreven wachtwoordmeter.</span>
+          In <span class="reference-source">Werkzaamheden van de ACM SIGCHI Conferentie over menselijke factoren in computersystemen</span> 3775.
+ACM.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-ur.pdf" target="_blank">https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-ur.pdf</a></span>
+</div>
+</div>
+ Afdeling 4: Markov en PCFG 
+<div class="section-sources" id="section-markov-pcfg">
+<h2>Modellen Markov en PCFG</h2>
+<div class="reference">
+<span class="reference-authors">Weir, M., Aggarwal, S., Collins, M., &amp; Stern, H.</span> (2009).
+          <span class="reference-title">Testen Metrics voor Wachtwoord Creatie Beleid door het nemen van grote verzamelingen van onthulde wachtwoorden.</span>
+          In <span class="reference-source">Werkzaamheden van de 17e ACM-conferentie over computer- en communicatiebeveiliging</span> 162.
+ACM.
+          <span class="reference-url"><a href="https://www.researchgate.net/publication/221614956" target="_blank">https://www.researchgate.net/publication/221614956</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Oprichtende methodologie van PCFG (Probabilistic Context-Free Grammar).
+Opgericht:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li>Structuurindeling (L=letter, D=cijfer, S=symbool)</li>
+<li>Skeletdrempel 20-50 voor het vastleggen van reële structuren</li>
+<li>Validatie op echte datasets (LinkedIn, Yahoo, RockYou)</li>
+</ul>
+          Time2Crack maakt gebruik van SKELETON BEDREIGING=100 (herzien tot 30-50).
+        </div>
+<div class="reference">
+<span class="reference-authors">Dürmuth, M., Freeman, D., &amp; Yazan, B.</span> (2014).
+          <span class="reference-title">Wachtwoord raden met Neural Networks.</span>
+          In <span class="reference-source">Werkzaamheden van het 25e USENIX Security Symposium</span>.
+USENIX Association.
+          <span class="reference-url"><a href="https://courses.csail.mit.edu/6.857/2017/project/13.pdf" target="_blank">https://courses.csail.mit.edu/6857/2017/project/13.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Houshmand, S., &amp; Aggarwal, S.</span> (2015).
+          <span class="reference-title">Volgende Gen PCFG Password Cracking.</span>
+          In <span class="reference-source">IEEE-transacties inzake informatieforensisch onderzoek en beveiliging</span>, 10(8), 1776
+IEEE.
+          <span class="reference-url"><a href="https://ieeexplore.ieee.org/document/7098389" target="_blank">https://ieeexplore.ieee.org/document/7098389</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Next-gen PCFG uitbreiding met prestatieverbeteringen en nauwkeurigheid.
+Geldige aanpak PCFG op miljoenen wachtwoorden.
+        </div>
+<div class="reference">
+<span class="reference-authors">Narayanan, A., &amp; Shmatikov, V.</span> (2005).
+          <span class="reference-title">Fast Dictionary Attacks op wachtwoorden met behulp van Time-Space Tradeoff.</span>
+          In <span class="reference-source">Werkzaamheden van de twaalfde ACM-conferentie over computer- en communicatiebeveiliging</span> (blz. 364
+ACM.
+          <span class="reference-url"><a href="https://www.usenix.org/legacy/event/sec05/tech/full_papers/narayanan/narayanan.pdf" target="_blank">https://www.usenix.org/legacy/event/sec05/tech/full papers/narayanan/narayanan.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Stichtingen van aanvallen door woordenboek en groove tafels.
+Stelt in dat woordenboek + mutaties ~95% van wachtwoorden in de praktijk omvat.
+        </div>
+</div>
+ Deel 5: Kalibratie en datasets 
+<div class="section-sources" id="section-calibration">
+<h2>Kalibratie en dataset</h2>
+<div class="reference">
+<span class="reference-authors">Zhang, Y., Monrose, F., &amp; Reiter, M.K.</span> (2010).
+          <span class="reference-title">De veiligheid van het moderne wachtwoord vervaldatum: een algoritmisch kader en empirisch onderzoek.</span>
+          In <span class="reference-source">Werkzaamheden van de 17e ACM-conferentie over computer- en communicatiebeveiliging</span> 176.
+ACM.
+          <span class="reference-url"><a href="https://users.cs.jmu.edu/reiter/papers/10ccs.pdf" target="_blank">https://users.cs.jmu.edu/reiter/papers/10ccs.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Nationaal Instituut voor Normen en Technologie (NIST)</span> (2024).
+          <span class="reference-title">SP 800-132: Afgeleide sleutelwoorden (PBKDF2)</span>
+          US Department of Commerce
+          <span class="reference-url"><a href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf" target="_blank">https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistsspecialpublication800-132.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Nationaal Instituut voor Normen en Technologie (NIST)</span> (2024).
+          <span class="reference-title">SP 800-63-3: Digitale Identiteitsrichtlijnen - Authenticatie en Lifecycle Management.</span>
+          US Department of Commerce
+          <span class="reference-url"><a href="https://pages.nist.gov/800-63-3/sp800-63b.html" target="_blank">https://pages.nist.gov/800-63-3/sp800-63b.html</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> NIST aanbevelingen voor het selecteren van wachtwoorden en hash algoritmen.
+Opgericht:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li>bcrypt, scrypt, PBKDF2, Argon2 als aanvaardbare algoritmen</li>
+<li>MD5, SHA-1 ongezouten zijn niet aanvaardbaar (regenboogtabellen)</li>
+<li>woordenboeken van 100k+ aanbevolen woorden voor aanvallen</li>
+</ul>
+</div>
+<div class="reference">
+<span class="reference-authors">Bijenkorven</span> (2025).
+          <span class="reference-title">Hive Systems Wachtwoord Tabel 2025.</span>
+<span class="reference-url"><a href="https://www.hivesystems.io/password-table" target="_blank">https://www.hivesystems.io/password-table</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Industriële benchmarkreferentie met 12× RTX 4090 GPU's.
+Time2Crack gebruikt dit profiel als "ervaren aanvaller" (12 GPU cluster).
+        </div>
+<div class="reference">
+<span class="reference-authors">Sprengers, Mr.</span> (2011).
+          <span class="reference-title">GPU-gebaseerde wachtwoord kraken</span> (Master's thesis)
+Radboud Universiteit Nijmegen.
+          <span class="reference-url"><a href="https://www.ru.nl/" target="_blank">https://www.ru.nl/</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> GPU snelheidsstudie voor hash kraken. Stelt benchmarks
+voor MD5, SHA-1, NTLM, bcrypt met moderne GPU.
+        </div>
+</div>
+ Afdeling 6: Hashtarieven 
+<div class="section-sources" id="section-hash-rates">
+<h2>Hash snelheden en benchmarks</h2>
+<div class="reference">
+<span class="reference-authors">Hashcat-project</span> (2025).
+          <span class="reference-title">Hashcat - Advanced Password Recovery (Officiële Benchmarks v6.2.6).</span>
+<span class="reference-url"><a href="https://hashcat.net/hashcat/" target="_blank">https://hashcat.net/hashcat/</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Officiële Hashcat Benchmarks op RTX 4090 voor alle hash-algoritmen.
+Time2Crack gebruikt deze nummers als enkele GPU snelheden en vermenigvuldigt ze met 12 voor het ervaren profiel.
+        </div>
+<div class="reference">
+<span class="reference-authors">Gosney, J.</span> (2016).
+          <span class="reference-title">8x Nvidia GTX 1080 Hashcat Benchmarks.</span>
+          GitHub Gist.
+          <span class="reference-url"><a href="https://gist.github.com/epixoip/" target="_blank">https://gist.github.com/epixoip/</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Eerste systeem van meer dan 330 GH/s NTLM (8 GPU cluster).
+Gevalideerd door de industrie als multi-GPU referentie.
+        </div>
+<div class="reference">
+<span class="reference-authors">Amazon Web Services</span> (2024).
+          <span class="reference-title">Amazon EC2 P4d Processies - GPU Computing.</span>
+<span class="reference-url"><a href="https://aws.amazon.com/ec2/instance-types/p4/" target="_blank">https://aws.amazon.com/ec2/e instance-types/p4/</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Commerciële GPU-infrastructuur beschikbaar (100-1000 GPU clusters).
+Time2Crack gebruikt voor professionele profilering (~100 GPU).
+        </div>
+</div>
+ Aanvullende verwijzingen 
+<div class="section-sources">
+<h2>Aanvullende verwijzingen</h2>
+<div class="reference">
+<span class="reference-authors">Oechsle, D., Bauer, L., Grupe, J., &amp; ... Durmuth, M.</span> (2021).
+          <span class="reference-title">Naar een stevige statistische analyse van Empirical Password Dataset.</span>
+<span class="reference-source">arXiv preprint</span> ArXiv:2105.14170.
+          <span class="reference-url"><a href="https://arxiv.org/abs/2105.14170" target="_blank">https://arxiv.org/abs/2105.14170</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Klebanov, S., &amp; Malone, D.</span> (2012).
+          <span class="reference-title">Onderzoek naar de verspreiding van wachtwoordkeuzes.</span>
+          In <span class="reference-source">Werkzaamheden van de 21e Internationale Wereldwijde Webconferentie</span> 569
+ACM.
+          <span class="reference-url"><a href="https://www.maths.tcd.ie/~dwmalone/p/www2012.pdf" target="_blank">https://www.maths.tcd.ie/~dwmalone/p/www2012.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Castelluccia, C., Durmuth, M., &amp; Perito, D.</span> (2015).
+          <span class="reference-title">Wachtwoord raden via Neural Language Modeling.</span>
+          In <span class="reference-source">IEEE-transacties inzake informatieforensisch onderzoek en beveiliging</span>, 10(6), 1285
+IEEE.
+          <span class="reference-url"><a href="https://link.springer.com/chapter/10.1007/978-3-030-30619-9_7" target="_blank">https://link.springer.com/hoofdstuk/10.1007/978-3-030-30619-9 7</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Asgharpour, F., Bardas, A.G., &amp; Liu, D.</span> (2017).
+          <span class="reference-title">Het vergelijken en combineren van Voelanalysemethoden.</span>
+          In <span class="reference-source">Werkzaamheden van de COLLING</span> 1637-1648).
+ACL.
+        </div>
+</div>
+<div class="back-to-top">
+<p><strong>Update:</strong> 17 april 2026</p>
+<p><a href="index.html">← Terug naar gereedschap</a></p>
+</div>
+</div>

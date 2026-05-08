@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brute Force — Angriffsmethoden — Time2Crack</title>
+  <link rel="preload" href="/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.min.css"></noscript>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap"></noscript>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+<meta name="description" content="Prüfen Sie systematisch alle möglichen Kombinationen. Der erschöpfendste Angriff und eine gute Referenz.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#2563EB">
+
+<meta property="og:title" content="Brute Force — Angriffsmethoden — Time2Crack">
+<meta property="og:description" content="Prüfen Sie systematisch alle möglichen Kombinationen. Der erschöpfendste Angriff und eine gute Referenz.">
+<meta property="og:image" content="https://time2crack.eu/logo.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://time2crack.eu/de/methode/bruteforce.html">
+<meta property="og:site_name" content="Time2Crack">
+<meta property="og:locale" content="de_DE">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="pt_PT">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:locale:alternate" content="pl_PL">
+<meta property="og:locale:alternate" content="nl_NL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Brute Force — Angriffsmethoden — Time2Crack">
+<meta name="twitter:description" content="Prüfen Sie systematisch alle möglichen Kombinationen. Der erschöpfendste Angriff und eine gute Referenz.">
+<meta name="twitter:image" content="https://time2crack.eu/logo.png">
+
+<link rel="canonical" href="https://time2crack.eu/de/methode/bruteforce.html">
+<link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/bruteforce.html">
+<link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/bruteforce.html">
+<link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/bruteforce.html">
+<link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/bruteforce.html">
+<link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/bruteforce.html">
+<link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/bruteforce.html">
+<link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/bruteforce.html">
+<link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/bruteforce.html">
+<link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/bruteforce.html">
+<link rel="alternate" hreflang="x-default" href="https://time2crack.eu/en/methode/bruteforce.html">
+  <script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header__top">
+    <h1><a href="/de/index.html" class="site-logo"><img src="/logo.png" alt="" class="site-logo__icon" aria-hidden="true">Time2Crack</a></h1>
+    <div class="lang-selector">
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Sprache wählen" aria-expanded="false" aria-controls="lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+        <span class="lang-toggle__label" id="lang-label">Deutsch</span>
+        <span class="dropdown-arrow">▼</span>
+      </button>
+      <menu id="lang-menu" class="lang-menu" hidden role="menu" aria-label="Sprache wählen">
+        <button type="button" data-lang="fr" class="lang-menu__item" role="menuitem">Français</button>
+        <button type="button" data-lang="en" class="lang-menu__item" role="menuitem">English</button>
+        <button type="button" data-lang="es" class="lang-menu__item" role="menuitem">Español</button>
+        <button type="button" data-lang="pt" class="lang-menu__item" role="menuitem">Português</button>
+        <button type="button" data-lang="de" class="lang-menu__item lang-menu__item--active" role="menuitem">Deutsch</button>
+        <button type="button" data-lang="it" class="lang-menu__item" role="menuitem">Italiano</button>
+        <button type="button" data-lang="tr" class="lang-menu__item" role="menuitem">Türkçe</button>
+        <button type="button" data-lang="pl" class="lang-menu__item" role="menuitem">Polski</button>
+        <button type="button" data-lang="nl" class="lang-menu__item" role="menuitem">Nederlands</button>
+      </menu>
+    </div>
+  </div>
+  <nav class="site-nav" aria-label="Hauptnavigation">
+    <div class="site-nav__primary">
+      <a href="/de/index.html" class="site-nav__link nav-home">Passwort testen</a>
+      <a href="/de/generator.html" class="site-nav__link nav-generator">Passwort generieren</a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Menü öffnen" aria-expanded="false" aria-controls="drawer"><span class="hamburger__icon"></span></button>
+    <div class="site-nav__secondary">
+      <a href="/de/faq.html" class="site-nav__link">FAQ</a>
+      <a href="/de/about.html" class="site-nav__link nav-about">Über</a>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Wissenschaft">Wissenschaft <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Wissenschaft submenu">
+          <li role="none"><a href="/de/how-time2crack-works.html" role="menuitem" class="site-nav__dropdown-item">Wie es funktioniert</a></li>
+          <li role="none" class="site-nav__dropdown-item--group">
+            <span class="site-nav__dropdown-group-title">Angriffsmethoden</span>
+            <ul class="site-nav__dropdown-submenu" role="menu">
+              <li role="none"><a href="/de/methode/bruteforce.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/de/methode/dictionary.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/de/methode/hybrid.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/de/methode/mask.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/de/methode/markov.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/de/methode/pcfg.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/de/methode/combinator.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+            </ul>
+          </li>
+          <li role="none"><a href="/de/sources.html" role="menuitem" class="site-nav__dropdown-item">Quellen</a></li>
+        </ul>
+      </div>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Sicherheit">Sicherheit <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Sicherheit submenu">
+          <li role="none"><a href="/de/hibp.html" role="menuitem" class="site-nav__dropdown-item">HIBP</a></li>
+          <li role="none"><a href="/de/privacy.html" role="menuitem" class="site-nav__dropdown-item">Datenschutz</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <aside id="drawer" class="drawer" role="complementary" aria-hidden="true" aria-label="Sekundäre Navigation">
+    <div class="drawer__header">
+      <button class="drawer__close" id="drawer-close-btn" aria-label="Menü schließen">✕</button>
+    </div>
+    <nav class="drawer__nav" aria-label="Sekundäre Navigation">
+      <a href="/de/faq.html" class="drawer__link">FAQ</a>
+      <a href="/de/about.html" class="drawer__link">Über</a>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Wissenschaft</summary>
+        <a href="/de/how-time2crack-works.html" class="drawer__link">Wie es funktioniert</a>
+        <details class="drawer__details drawer__details--nested">
+          <summary class="drawer__summary drawer__summary--nested">Angriffsmethoden</summary>
+          <a href="/de/methode/bruteforce.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/de/methode/dictionary.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/de/methode/hybrid.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/de/methode/mask.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/de/methode/markov.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/de/methode/pcfg.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/de/methode/combinator.html" class="drawer__link drawer__link--nested"></a>
+        </details>
+        <a href="/de/sources.html" class="drawer__link">Quellen</a>
+      </details>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Sicherheit</summary>
+        <a href="/de/hibp.html" class="drawer__link">HIBP</a>
+        <a href="/de/privacy.html" class="drawer__link">Datenschutz</a>
+      </details>
+    </nav>
+    <footer class="drawer__footer">
+      <p>v2.2.1 • Lokaler Crack-Schätzer 🔐</p>
+    </footer>
+  </aside>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
+  <div class="privacy-notice" role="note" aria-label="Datenschutzhinweis">
+    <span class="privacy-notice__icon" aria-hidden="true">🔒</span>
+    <div class="privacy-notice__text">
+      <strong>Alles bleibt in deinem Browser.</strong>
+      Kein Passwort wird übertragen. Die Berechnung ist vollständig lokal. Die einzige externe Anfrage ist eine anonyme Leck-Prüfung (erste 5 Zeichen des SHA-1-Hash, niemals das Passwort).
+    </div>
+  </div>
+</header>
+<main class="methode-page">
+  <div id="method-lang-selector" class="method-lang-selector">
+  <button id="method-lang-toggle" class="lang-toggle" type="button" aria-label="Sprache wählen" aria-expanded="false" aria-controls="method-lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+    <span class="lang-toggle__label">Deutsch</span>
+    <span class="dropdown-arrow">▼</span>
+  </button>
+  <menu id="method-lang-menu" class="lang-menu" hidden role="menu">
+    <button type="button" class="lang-menu__item" onclick="window.location='/fr/methode/.html'" role="menuitem">Français</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/en/methode/.html'" role="menuitem">English</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/es/methode/.html'" role="menuitem">Español</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/pt/methode/.html'" role="menuitem">Português</button>
+    <button type="button" class="lang-menu__item lang-menu__item--active" onclick="window.location='/de/methode/.html'" role="menuitem">Deutsch</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/it/methode/.html'" role="menuitem">Italiano</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/tr/methode/.html'" role="menuitem">Türkçe</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/pl/methode/.html'" role="menuitem">Polski</button>
+    <button type="button" class="lang-menu__item" onclick="window.location='/nl/methode/.html'" role="menuitem">Nederlands</button>
+  </menu>
+</div>
+
+<h1 style="display:none">Der Angriff der Brute Force — umfassende Operation</h1>
+<blockquote>
+Referenzdokument des ProjektsTime2Crack
+</blockquote>
+<blockquote>Empfänger: Entwickler, Sicherheitswissenschaftler, Fortgeschrittene</blockquote>
+<hr>
+<h2>Inhalt</h2>
+<li><a href="#1-vue-densemble">Überblick</a></li>
+<li><a href="#2-contexte-historique-et-académique">Historischer und akademischer Hintergrund</a></li>
+<li><a href="#3-fondements-mathématiques--keyspace-et-entropie">Math: Schlüsselraum und Entropie</a></li>
+<li><a href="#4-architecture-dune-attaque-brute-force-moderne">Architektur eines brutalen Angriffs moderne Kraft</a></li>
+<li><a href="#5-vitesses-de-calcul-par-algorithme-de-hachage">Berechnungsgeschwindigkeiten durch Hash-Algorithmus</a></li>
+<li><a href="#6-détection-du-charset-dans-time2crack">Erkennung des Tanks inTime2Crack</a></li>
+<li><a href="#7-calcul-du-temps-de-cracking--brutetime">Berechnung der Rißzeit: RohTime()</a></li>
+<li><a href="#8-réduction-par-date-détectée--detectdateandreduce">Datumsreduktion festgestellt: detektierenAndReduce()</a></li>
+<li><a href="#9-le-monotonicity-guard--plancher-des-autres-attaques">Einschallschutz: Boden anderer Angriffe</a></li>
+<li><a href="#10-calibration-hf-et-rôle-de-la-force-brute">HF-Kalibrierung und die Rolle der Bruttokraft</a></li>
+<li><a href="#11-comparaison-avec-les-autres-attaques">Vergleich mit anderen Angriffen</a></li>
+<li><a href="#12-limites-théoriques-et-pratiques">Theoretische und praktische Einschränkungen</a></li>
+<li><a href="#13-ce-que-la-force-brute-ne-dit-pas">Welche brutale Kraft sagt nicht</a></li>
+<li><a href="#14-défenses-efficaces">Effektive Verteidigung</a></li>
+<li><a href="#15-références-bibliographiques">Referenzen</a></li>
+<hr>
+<h2>1. Überblick</h2>
+<p>Crude Force ist der grundlegendste Angriff bei Passwort-Cracking: es besteht aus Tests <strong>systematisch alle möglichen Kombinationen</strong> Keine Intelligenz, keine heuristische — nur die rohe Rechenleistung gegen die Größe des Raumes zu reisen.</p>
+<p>InTime2CrackDie Bruttokraft spielt eine doppelte Rolle:</p>
+<li><strong>Modellierter Angriff</strong> Es stellt die maximale theoretische Zeit dar, die ein Angreifer setzen würde, vorausgesetzt, keine andere ausnutzbare Verwundbarkeit.</li>
+<li><strong>Boden (Monotonitätsschutz)</strong> : es dient als unteres Terminal für alle anderen Angriffe — kein spezialisierter Angriff kann legitim eine Zeit weniger anzeigen als die, die rohe Kraft auf die alphabetische Teilkette des Passworts nehmen würde.</li>
+<strong>In der Praxis</strong>, brute force ist fast nie der schnellste Angriff auf ein echtes menschliches Passwort —PCFG,MarkovAber für ein wirklich zufälliges und langes Passwort stellt es die Realität dar: Der Angreifer hat keine Wahl, sondern den Raum vollständig zu durchsuchen.
+<hr>
+<h2>2. Historischer und akademischer Hintergrund</h2>
+<h3>2.1 Ursprung</h3>
+<p>Die Rohkraft vor dem Computer: Das Prinzip der Prüfung aller möglichen Kombinationen wird seit den ersten mechanischen Verschlüsselungsmaschinen (Enigma während des Zweiten Weltkrieges) verwendet. Die Bombe von Alan Turing war in einem weiten Sinne ein Gerät der Rohkraft, die durch eine Hypothese von Krippen erzwungen wurde.</p>
+<p>Mit dem Aufkommen von Computern wurde die unix-Passwortkraft von den 1970er bis 1980er Jahren formalisiert:</p>
+<table>
+<tbody><tr><td>Jahr</td><td>Veranstaltung</td></tr>
+<tr><td>-----</td><td>---------</td></tr>
+<tr><td>1979</td><td>Morris &amp; Thompson: Erster akademischer Artikel über Unix-Passwortsicherheit, mit Rohkraftanalyse auf /etc/passwd</td></tr>
+<tr><td>1988</td><td>Morris Worm: erste Masse feat unter anderem ein Wörterbuch und rohe Kraft Passwort Riß</td></tr>
+<tr><td>1993</td><td>Crack 5.0 (Alec Muffett): erstes öffentliches Rißwerkzeug durch Rohkraft auf Unix</td></tr>
+<tr><td>2004</td><td>Ophcrack: Nuttische + Rohkraft auf LM/NTLM hashes Windows</td></tr>
+<tr><td>2007</td><td>GPU-beschleunigte Risse (Elcomsoft): erste öffentliche Nutzung der GPU zur Beschleunigung der Bruttokraft</td></tr>
+<tr><td>2012</td><td>Hashcat Open Source: Referenzwerkzeug, maximaler GPU-Betrieb</td></tr>
+<tr><td>2016</td><td>Hive Systems: Jährliche Veröffentlichung der Tabellen "Brutskraft durch GPU" wird industrielle Referenz</td></tr>
+</tbody></table>
+<h3>2.2 Benchmarks</h3>
+<p>Die GPU-Revolution änderte die Größenordnung der Rohkraft. Auf der CPU, ein Angreifer der 1990er Jahre getestet ~10.000 MD5/Sekunde Passwörter. Ein RTX 4090 in 2024 in Test <strong>168,9 Milliarden pro Sekunde</strong> — eine Beschleunigung von 16 Millionen Mal in 30 Jahren.</p>
+<strong>Schlüssel akademische Quellen</strong> :
+<ul>
+<li><strong>Gosney, J (2012)</strong> : erste multi-GPU öffentliche Benchmark auf LM/NTLM, mit 180 GH/s mit 8 GPU</li>
+<li><strong>Hive Systems (2025)</strong> : Jahrestabellen kalibriert auf 12× RTX 4090, zitiert von Forbes, CNBC, BBC</li>
+<li><strong>(2011)</strong> : Radboud Universität Dissertation über GPU-Cracking, mathematische Formalisierung</li>
+</ul>
+<hr>
+<h2>3. Mathe Grundlagen: Schlüsselraum und Entropie</h2>
+<h3>3.1 Schlüsselbereich</h3>
+<p>Keyspace (keyspace) ist die Gesamtzahl der möglichen Passwörter für eine bestimmte Länge und Tank:</p>
+<pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
+<p>Beispiele:</p>
+<table>
+<tbody><tr><td>Charleroi</td><td>Größe</td><td>Länge</td><td>Schlüsselbereich</td><td>Bewertung</td></tr>
+<tr><td>--------</td><td>------</td><td>---------</td><td>---------</td><td>---------</td></tr>
+<tr><td>Einzelziffern</td><td>10.</td><td>8)</td><td>108 = 100,000,000</td><td>~108 ~</td></tr>
+<tr><td>Minuscules alleine</td><td>26</td><td>8)</td><td>268 Mio.</td><td>~2 × 1011 ~</td></tr>
+<tr><td>Alphanumerisch</td><td>ANHANG</td><td>8)</td><td>628 Mio.</td><td>~2 × 1014 ~</td></tr>
+<tr><td>Vollständiges ASCII</td><td>ANHANG</td><td>8)</td><td>958 Milliarden</td><td>~6 × 1015 ~</td></tr>
+<tr><td>Vollständiges ASCII</td><td>ANHANG</td><td>12</td><td>9512 - 5.4 × 1023</td><td>~5 × 1023 ~</td></tr>
+<tr><td>Vollständiges ASCII</td><td>ANHANG</td><td>ANHANG</td><td>9516 — 4.4 × 1031</td><td>~4 × 1031 ~</td></tr>
+</tbody></table>
+<h3>3.2 binäre Entropie</h3>
+<p>Entropie (gemessen in Bits) ist die logarithmische Formulierung von Schlüsselraum:</p>
+<pre><code class="language-plaintext">entropie = length × log₂(charset_size)</code></pre>
+<p>InTime2Crack(Funktion) <code>entropy()</code>)</p>
+<pre><code class="language-javascript">function entropy(pw) {
+  return pw.length * Math.log2(getCharset(pw).size);
+}</code></pre>
+<p>Die Beziehung zwischen Entropie und Schlüsselraum:</p>
+<pre><code class="language-plaintext">keyspace = 2^entropie
+entropie = log₂(keyspace)</code></pre>
+<strong>Detaillierte Beispiele</strong> :
+<table>
+<tbody><tr><td>Passwort vergessen?</td><td>Charleroi</td><td>Länge</td><td>Entropie</td><td>Schlüsselbereich</td></tr>
+<tr><td>-----------</td><td>--------</td><td>---------</td><td>---------</td><td>---------</td></tr>
+<tr><td>"12345678"</td><td>10 (Ziffer)</td><td>8)</td><td>26.6 Bits</td><td>ANHANG</td></tr>
+<tr><td>"Passwort"</td><td>26 (unter)</td><td>8)</td><td>37,6 Bit</td><td>268</td></tr>
+<tr><td>Passwort vergessen?</td><td>62 (Alphanum)</td><td>ANHANG</td><td>53.6 Bits</td><td>629</td></tr>
+<tr><td>"P@ssw0rd!"</td><td>95 (vollständig ASCII)</td><td>ANHANG</td><td>59,3 Bits</td><td>959</td></tr>
+<tr><td>xQz7@mK9</td><td>95 (vollständig ASCII)</td><td>12</td><td>79 Bit</td><td>ANHANG</td></tr>
+</tbody></table>
+<h3>3.3 Mathematische Hoffnung: Schlüsselraum / 2</h3>
+<p>Kreuzkraft testet nicht immer <code>keyspace</code> Integer-Kombinationen — im Durchschnitt findet es das Passwort in der Mitte, da das Ziel im Raum gleichverteilt ist.<strong>mathematische Erwartung</strong> die Zahl der Versuche ist daher:</p>
+<pre><code class="language-plaintext">tentatives_attendues = keyspace / 2</code></pre>
+<p>Das ist genau das, was Modelle <code>bruteTime()</code> inTime2Crack:</p>
+<pre><code class="language-javascript">// "For brute force: expected value is keyspace/2 (uniform random search)"
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls); // = (keyspace / 2) / rate
+}</code></pre>
+<p>Diese Teilung um 2 ist unter der Annahme richtig, dass der Angreifer den Raum linear (nicht-repetitiv) fährt. <code>keyspace/2</code> Versuche.</p>
+<hr>
+<h2>14. Wirksame Verteidigung</h2>
+<h3>14.1 Benutzerseite: Länge und Zufall</h3>
+<p>Die Bruttokraft wird durch zwei kombinierte Faktoren besiegt:</p>
+<strong>Länge</strong> : jedes zusätzliche Zeichen multipliziert den Schlüsselraum durch <code>charset_size</code>Von 8 bis 12 Zeichen (charset 95) multipliziert den Schlüsselraum durch <strong>954 - 81 Mio</strong>.
+<br>
+<strong>Echt zufällig</strong> : ein kryptographisch sicherer Generator (CSPRNG) produziert Passwörter, die nicht von einer probabilistischen Reduktion profitieren.Markov,PCFGund Neural haben keinen Vorteil gegenüber einem wirklich zufälligen Passwort.
+<br>
+<strong>Praktische Empfehlung</strong> :
+<ul>
+<li>Passwort-Manager + Random Generation ≥ 16 Zeichen mit komplettem Float = aus dem Bereich jeder Rohkraft in einem menschlichen Lebenshorizont</li>
+</ul>
+<h3>14.2 Serverseite: widerstandsfähige Algorithmen</h3>
+<p>Die Wahl des Hash-Algorithmus multipliziert oder teilt die Rohkraftzeit durch Faktoren bis zu <strong>mehrere Millionen</strong> :</p>
+<table>
+<tbody><tr><td>Empfehlung</td><td>Algorithmen</td><td>Begründung</td></tr>
+<tr><td>------------</td><td>----------</td><td>------</td></tr>
+<tr><td>Empfohlen</td><td>Argon2id</td><td>Memory-hart, GPU-beständig</td></tr>
+<tr><td>Empfohlen</td><td>bcrypt (Kosten ≥ 12)</td><td>Vorsichtig langsam, salzig</td></tr>
+<tr><td>Akzeptabel</td><td>Scrypt</td><td>Speicherhart, aber weniger standardisiert</td></tr>
+<tr><td>Inadäquat</td><td>SHA-256 gesalzen</td><td>Zu schnell auch mit Salz</td></tr>
+<tr><td>Gefährlich</td><td>MD5, SHA-1, NTLM</td><td>Nicht salzig, extrem schnell</td></tr>
+</tbody></table>
+<hr>
+<h2>15. Bibliographische Referenzen</h2>
+<h3>Wissenschaft</h3>
+<strong>Morris, R., &amp; Thompson, K. (1979).</strong>
+Passwort-Sicherheit: Eine Fallgeschichte.
+<em>Mitteilungen der ACM, 22(11), 594-597.</em>
+→ Artikel zu Unix Passwort-Sicherheit
+<br>
+<strong>Sprengers, M. (2011).</strong>
+GPU-basiertes Passwort-Tracking (Master's Theses).
+<em>Radboud Universität Nijmegen.</em>
+→ Mathematische Formalisierung von GPU-Cracking, Benchmarks auf einzelne GPU
+<br>
+<strong>Wheeler, D.L. (2016).</strong>
+zxcvbn: Low-Budget-Passwortstärkeschätzung.
+<em>25. USENIX Security Symposium.</em>
+→ Daten zum effektiven Schlüsselbereich (Tabelle 2: -30% für strukturierte Passwörter)
+<br>
+<strong>Dürmuth, M. et al. (2015).</strong>
+OMEN: BestellungMarkovEnumerator. <em>ESORICS 2015.</em>
+→ Vergleichende Referenz für probabilistische Terminals vs Bruttokraft
+<h3>Industrie</h3>
+<strong>Hive Systems. (2025).</strong>
+<em>2025 Hive Systems Passworttabelle.</em>
+https://www.hivesystems.io/password-table
+→ Jährliche Benchmarks auf 12× RTX 4090, Standardreferenz
+<br>
+<strong>Gosney, J (2012).</strong>
+<em>8x Nvidia GTX 1080 Hashcat Benchmarks.</em> GitHub Gist.
+→ Erster öffentlicher Multi-GPU-Benchmark, historische Referenz
+<br>
+<strong>Hashcat. (2024).</strong>
+<em>Offizielle Hashcat Benchmarks v6.2.6.</em>
+http://hashcat.net/hashcat/
+→ Offizielle Geschwindigkeiten nach Algorithmus, KonstantenquelleTime2Crack
+<br>
+<strong>NIST SP 800-63B. (2017, aktualisiert 2024).</strong>
+<em>Digital Identity Guidelines: Authentication and Lifecycle Management.</em>
+→ Offizielle Empfehlungen zur Passwortlänge und Komplexität
+<br>
+<strong>OWASP. (2024).</strong>
+<em>Passwort speichern Cheat Sheet.</em>
+https://cheatssheetseries.owasp.org/cheatssheets/Password Storage Cheat Sheet.html
+→ Empfehlungen zu bcrypt (Kosten ≥ 12), Argon2id als moderne Standards
+<hr>
+<em>ProjektdokumentTime2Crack— Letzte Aktualisierung : 2026-04-18</em>
+<em>Basierend auf der Implementierung in app.js, rohe FunktionenTime(), getCharset() und Monotonitätsschutz</em>
+
+<script src="/includes.js" defer></script>
+
+</main>
+<footer id="site-footer" class="site-footer">
+  <p>Lokale Berechnung · HIBP-Prüfung · Open Source</p>
+  <div class="footer-social">
+    <a href="https://linkedin.com/company/time2crack" class="footer-social__link" aria-label="Folgen Sie uns auf LinkedIn">
+      <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" width="24" height="24">
+        <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+      </svg>
+    </a>
+    <a href="https://bsky.social/profile/time2crack.bsky.social" class="footer-social__link" aria-label="Folgen Sie uns auf Bluesky">
+      <img src="/bluesky-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+    <a href="https://fosstodon.org/@time2crack" class="footer-social__link" aria-label="Folgen Sie uns auf Mastodon">
+      <img src="/mastodon-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+  </div>
+</footer>
+<script src="/includes.js" defer></script>
+</body>
+</html>

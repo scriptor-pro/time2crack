@@ -1,0 +1,59 @@
+. Sources Académiques & Linguistiques 🎓
+  - OpenOffice Dictionaries : Dictionnaires d'orthographe (200k-500k mots par langue)
+  - SCOWL : Spell Checker Oriented Word Lists (50-100k mots, très fiables)
+  - Wiktionary Dumps : Extraire les entrées pour chaque langue (~100k-300k par langue)
+  - Hunspell Dictionaries : Utilisés par LibreOffice/OpenOffice (complètes)
+
+  2. Données Linguistiques Spécialisées 🌍
+  - Noms propres courants (premières/dernières/noms de villes)
+  - Marques commerciales (Apple, Samsung, Sony, Netflix, etc.)
+  - Termes techniques (informatique, médecine, finance par langue)
+  - Mots composés (pour détection hybrid améliée)
+  - Slang & Argot (très utilisés dans les passwords)
+
+  3. Données de Fuites Connues 🔓
+  - RockYou (432M mots) : Plus grande liste de mots de passe leakée
+  - Have I Been Pwned : HIBP publishes wordlists (~100M leaks analysés)
+  - Cracked.to & leaked databases : Patterns courants réels
+  - LinkedIn dumps : Usernames courants (noms propres)
+
+  4. Mutations & Variations ✨
+  - Pluriels/Singuliers : generate via morphologie (ajouter -s, -es, -ies)
+  - Conjugaisons : pour verbes courants (-ing, -ed, -er)
+  - Diminutifs/Augmentatifs : -ette, -ino (FR), -ita/-ito (ES)
+  - Accents supprimés : café → cafe, naïve → naive
+  - Leet speak variations : password → p@ssw0rd, p4ssw0rd, p@ssw04d
+
+  5. Données Anonymisées de Cyberincidents 🔐
+  - Passwords breaches anonymisés : Patterns sans données sensibles
+  - CIS Top 25 weak passwords : Admin, Welcome123, etc.
+  - OWASP Top passwords : Listes validées par la communauté
+
+  6. Contexte Régional & Culturel 🌏
+  Pour chaque langue, ajouter :
+  - Noms propres régionaux : villes, célébrités, sportifs
+  - Dates/Fêtes locales : 14juillet, Noël, Carnaval
+  - Termes culturels : Allez l'OM, Godella (local slang)
+  - Expressions populaires : "azerty" (FR), "qwerty" (EN)
+
+  7. Approche par Fréquence 📊
+  - Trier par fréquence réelle : Mots très courants en premier
+  - Filtrer par popularité : Top 50k vs 500k vs 1M
+  - Ajouter scoring : Poids selon probabilité d'utilisation
+  - Contexte temporel : Trends 2024 (IA, Crypto, etc.)
+
+  8. Outils & Scripts Automatisés 🛠
+
+  # Télécharger RockYou
+  curl -O https://downloads.skullsecurity.org/passwords/rockyou.txt.gz
+
+  # Extraire Wiktionary
+  python3 scripts/extract-wiktionary.py --lang=fr --output=fr-wiktionary.txt
+
+  # Fusionner & déduper (comme tu viens de le faire)
+  cat *.txt | sort -u > merged.txt
+
+  # Filtrer par longueur (>= 4 chars)
+  grep -E '^.{4,}$' merged.txt > filtered.txt
+
+  # Trier par fréquence

@@ -1,0 +1,36 @@
+---
+lang: en
+permalink: "/index.html"
+layout: base.njk
+currentPage: index
+pageSlug: index.html
+mainClass: index-page
+pageTitle: "Password Strength Estimator & Crack Time Calculator — Time2Crack"
+pageDescription: "Analyze your password strength with 7 attack models and 6 hashing algorithms. 100% local computation, no password transmitted."
+criticalCss: true
+---
+<script>
+window.RESOURCE_BASE = '/';
+(function() {
+  const storedLang = localStorage.getItem('time2crack-lang') || 'en';
+  if (storedLang !== 'en' && !window.location.pathname.startsWith('/en/')) {
+    window.location.href = '/' + storedLang + '/index.html';
+  }
+})();
+</script>
+<section class="hero">
+<h1>Test Your Password Strength</h1>
+<p class="hero__subtitle">Scientific password crack time estimation — 7 attack models, local analysis</p>
+</section>
+<section class="input-section">
+<div class="input-group">
+<label for="pw-input">Enter a password to test:</label>
+<input type="password" id="pw-input" placeholder="Your password (never sent anywhere)" autocomplete="off">
+<button id="hibp-check-btn" class="hibp-btn">Is this password known to hackers?</button>
+</div>
+</section>
+<section id="results" class="results--empty">
+<!-- Placeholder structure shown when no password is entered (muted/grayed out) -->
+<!-- JavaScript will populate this dynamically -->
+</section>
+<script src="/app.js" type="module"></script>

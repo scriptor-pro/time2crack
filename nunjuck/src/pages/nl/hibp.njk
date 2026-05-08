@@ -1,0 +1,188 @@
+---
+lang: nl
+permalink: "/nl/hibp.html"
+layout: base.njk
+currentPage: hibp
+pageSlug: hibp.html
+mainClass: hibp-page
+pageTitle: "HIBP-verificatie — Time2Crack"
+pageDescription: "Controleer via HIBP of een wachtwoord voorkomt in een datalek met een anonieme, privacyvriendelijke aanvraag."
+---
+
+<h2>HIPB Verificatie </h2>
+<p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6; max-width: 100%;">
+      Time2Crack gebruikt API <a class="external-link" href="https://haveibeenpwned.com/" rel="noopener noreferrer" target="_blank">Heb ik gepowned (HIBP)</a>
+      om te controleren of uw wachtwoord is aangetast in een datalek. Om uw privacy te beschermen,
+We sturen niet <strong>Nooit</strong> uw volledige wachtwoord. In plaats daarvan gebruiken we een techniek genaamd
+      <strong>k-anonimiteit</strong> Alleen de eerste 5 tekens van de SHA-1 hash van het wachtwoord worden verzonden.
+    </p>
+ TOELICHTING 
+<div class="hibp-container">
+<div class="hibp-section">
+<h3>Wat je kunt zien</h3>
+<p>Uw wachtwoord blijft <strong>altijd in uw browser</strong>Er wordt niets naar de server gestuurd.</p>
+<p>Alleen <strong>hash SHA-1 van uw wachtwoord</strong> lokaal wordt berekend (in JavaScript).</p>
+<p>Dan alleen de <strong>Eerste 5 tekens</strong> van deze hash worden naar HIPP gestuurd.</p>
+</div>
+<div class="hibp-section">
+<h3>Wat HIPP niet kan zien</h3>
+<p>HIBP ziet geen <strong>niet</strong> uw volledige wachtwoord.</p>
+<p>HIBP ziet geen <strong>niet</strong> de hash SHA-1 compleet.</p>
+<p>HiBP ontvangt slechts 5 tekens en retourneert <strong>Alle hash</strong> correspondeert met dit voorvoegsel (k-anonimiteit).</p>
+</div>
+</div>
+<div class="info-box">
+<strong>Wat is k-anonimiteit?</strong>
+<p>
+        k-anonimiteit is een techniek van vertrouwelijkheid die een record onaanvaardbaar maakt onder k records.
+In dit geval, bij het versturen van 5 tekens van een SHA-1 hash, geeft HIPP alle hash's terug, te beginnen met deze 5 tekens
+(meestal 400-500 resultaten). Uw echte hash is verborgen onder alle anderen. Zelfs HIPP weet niet wat hash is van u.
+      </p>
+</div>
+ INTERACTIEVE DEMONSTERING 
+<div class="demo-section">
+<h3>- Interactieve demonstratie</h3>
+<p style="color: #4b5563; line-height: 1.6;">
+        Voer hieronder een wachtwoord in en zie precies wat naar HiBP wordt verzonden.
+      </p>
+<div class="input-group">
+<label for="password-input">Wachtwoord (test: wachtwoord123):</label>
+<input aria-label="Wachtwoordinvoerveld" id="password-input" placeholder="Een wachtwoord invoeren..." type="password" value="password123">
+</div>
+<div class="button-group">
+<button class="btn btn-primary" onclick="calculateHash()">Bereken hash SHA-1</button>
+<button class="btn btn-secondary" onclick="clearDemo()">Reset</button>
+</div>
+ STAP 1: PASSEN MOT 
+<div class="demo-step">
+<div class="demo-step-number">1</div>
+<div class="demo-step-content">
+<h4>Wachtwoord (in uw browser)</h4>
+<p>Uw wachtwoord <strong>altijd lokaal blijven</strong>Nooit verstuurd.</p>
+<div class="hash-display" id="password-display" style="display:none;">
+<div class="hash-label">Wachtwoord:</div>
+<span id="password-value"></span>
+</div>
+</div>
+</div>
+ STAP 2: VOLLEDIG SHA-1 
+<div class="demo-step">
+<div class="demo-step-number">2</div>
+<div class="demo-step-content">
+<h4>Complete Hash SHA-1 (lokaal berekend)</h4>
+<p>De hash SHA-1 wordt berekend <strong>in uw browser</strong> in JavaScript. HIPP ziet het nooit volledig.</p>
+<div class="hash-display" id="full-hash-display" style="display:none;">
+<div class="hash-label">Complete SHA-1 (40 tekens):</div>
+<span id="full-hash-value"></span>
+</div>
+</div>
+</div>
+ STAP 3: 5 EERSTE KENMERKEN 
+<div class="demo-step">
+<div class="demo-step-number">3</div>
+<div class="demo-step-content">
+<h4>Voorvoegsel SHA-1 (5 eerste tekens)</h4>
+<p>Alleen <strong>deze 5 tekens</strong> worden verzonden naar HiBP via beveiligde HTTPS.</p>
+<div class="hash-display" id="prefix-display" style="display:none;">
+<div class="hash-label">Prefix (5 tekens) verzonden naar HIPP:</div>
+<span id="prefix-value" style="color: #059669; font-weight: 600;"></span>
+</div>
+</div>
+</div>
+ STAP 4: HIPP-ANTWOORD 
+<div class="demo-step">
+<div class="demo-step-number">4</div>
+<div class="demo-step-content">
+<h4>Reactie van HiBP (alle hashs)</h4>
+<p>HIPB keert terug <strong>Alle hash</strong> Jullie ware hasj is tussen hen verborgen.</p>
+<button class="btn btn-primary" id="hibp-btn" onclick="fetchHIBP()" style="display:none; width: 100%; margin-top: 0.75rem;">
+            Controleer HIPP →
+          </button>
+<div class="result-box" id="hibp-result">
+<div class="result-title">Van HIPP ontvangen resultaten</div>
+<div id="hibp-content"></div>
+</div>
+</div>
+</div>
+<div class="warning-box">
+<strong>Belangrijk</strong>
+<p>
+          Zelfs als het voorvoegsel "55D97" overeenkomt met het wachtwoord123, weet HIPP niet <strong>niet</strong>
+          Je weet alleen welke van jou is.
+        </p>
+</div>
+</div>
+ GEGEVENS 
+<h3 style="margin-top: 3rem;">Hoe Time2Crack HiBP gebruikt</h3>
+<div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.5rem;">
+<div class="demo-step">
+<div class="demo-step-number">1</div>
+<div class="demo-step-content">
+<h4>U typt een wachtwoord</h4>
+<p>Uw wachtwoord blijft in uw browser. Er wordt niets verstuurd.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">2</div>
+<div class="demo-step-content">
+<h4>Time2Crack berekent SHA-1</h4>
+<p>In JavaScript berekenen we de SHA-1 hash van het wachtwoord. Dit is lokale berekening, geen transmissie.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">3</div>
+<div class="demo-step-content">
+<h4>Stuur het voorvoegsel naar HIPP</h4>
+<p>Alleen de eerste 5 karakters van de hash worden via een gecodeerd HTTPS verzoek naar HIPP gestuurd.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">4</div>
+<div class="demo-step-content">
+<h4>HIPP geeft alle resultaten terug</h4>
+<p>HIPP geeft alle hash (meestal 400-500) terug, te beginnen met dit voorvoegsel.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">5</div>
+<div class="demo-step-content">
+<h4>Lokale verificatie</h4>
+<p>Time2Crack vergelijkt uw complete hash met alle HiBP resultaten <strong>in uw browser</strong>. Indien gevonden, is het wachtwoord aangetast.</p>
+</div>
+</div>
+</div>
+ Veelgestelde vragen 
+<h3 style="margin-top: 3rem;">Veelgestelde vragen</h3>
+<div id="faq-container"></div>
+ MIDDELEN 
+<h3 style="margin-top: 3rem; margin-bottom: 1rem;">Middelen</h3>
+<div style="background: #f9fafb; border-radius: 8px; padding: 1.5rem; line-height: 1.8;">
+<p>
+<strong>Heb ik geploegd (HBP):</strong>
+<a class="external-link" href="https://haveibeenpwned.com/" rel="noopener noreferrer" target="_blank">
+          haveibeenpwned.com
+        </a>
+        Gecompromitteerde wachtwoord database.
+      </p>
+<p>
+<strong>DIBP API Documentatie:</strong>
+<a class="external-link" href="https://haveibeenpwned.com/API/v3" rel="noopener noreferrer" target="_blank">
+          haveibeenpwned.com/API/v3
+        </a>
+        Technische documentatie van de k-anonimiteit API.
+      </p>
+<p>
+<strong>k-anonimiteit:</strong>
+<a class="external-link" href="https://en.wikipedia.org/wiki/K-anonymity" rel="noopener noreferrer" target="_blank">
+          Wikipedia k-anonimiteit
+        </a>
+        Begrip vertrouwelijkheid van gegevens.
+      </p>
+<p>
+<strong>Wachtwoordbeveiliging:</strong>
+<a class="external-link" href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" rel="noopener noreferrer" target="_blank">
+          OWASP Wachtwoord opslag Cheat Sheet
+        </a>
+        - Goede opslagpraktijken.
+      </p>
+</div>

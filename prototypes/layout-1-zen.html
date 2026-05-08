@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout 1 : Zen Mode — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #0a0a0a;
+      --text-muted: #737373;
+      --accent: #000000;
+      --border: #e5e5e5;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+      padding: 120px 24px 80px;
+      margin: 0 auto;
+    }
+
+    /* Header minimaliste */
+    header {
+      text-align: center;
+      margin-bottom: 120px;
+    }
+
+    .logo {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    /* Input zone - ÉNORME */
+    .input-zone {
+      margin-bottom: 160px;
+      text-align: center;
+    }
+
+    .input-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      display: block;
+      letter-spacing: 0.02em;
+    }
+
+    .password-input {
+      width: 100%;
+      font-size: 28px;
+      font-weight: 300;
+      padding: 24px 32px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      text-align: center;
+      letter-spacing: 0.08em;
+      transition: all 0.3s ease;
+      outline: none;
+      font-family: 'SF Mono', 'Monaco', monospace;
+    }
+
+    .password-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .password-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.4;
+      font-weight: 300;
+    }
+
+    /* Strength bar - ultra simple */
+    .strength-indicator {
+      width: 120px;
+      height: 2px;
+      background: var(--border);
+      margin: 32px auto 0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.4s ease, background 0.4s ease;
+    }
+
+    /* Résultat principal - GIGANTESQUE */
+    .main-result {
+      text-align: center;
+      margin-bottom: 160px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .main-result.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .result-prefix {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .result-time {
+      font-size: clamp(64px, 12vw, 120px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--danger);
+      margin-bottom: 24px;
+    }
+
+    .result-time.safe {
+      color: var(--success);
+    }
+
+    .result-description {
+      font-size: 16px;
+      color: var(--text-muted);
+      font-weight: 400;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Advanced details - replié par défaut */
+    .advanced-section {
+      margin-top: 80px;
+      padding-top: 80px;
+      border-top: 1px solid var(--border);
+    }
+
+    .toggle-advanced {
+      width: 100%;
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 16px;
+      text-align: center;
+      letter-spacing: 0.05em;
+      transition: color 0.2s ease;
+    }
+
+    .toggle-advanced:hover {
+      color: var(--accent);
+    }
+
+    .advanced-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .advanced-content.open {
+      max-height: 2000px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px 32px;
+      margin-top: 64px;
+    }
+
+    .detail-item {
+      text-align: center;
+    }
+
+    .detail-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Footer ultra-minimal */
+    footer {
+      margin-top: auto;
+      padding: 48px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      width: 100%;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 80px 20px 60px;
+      }
+
+      header {
+        margin-bottom: 80px;
+      }
+
+      .input-zone {
+        margin-bottom: 100px;
+      }
+
+      .password-input {
+        font-size: 20px;
+        padding: 20px 24px;
+      }
+
+      .main-result {
+        margin-bottom: 100px;
+      }
+
+      .result-time {
+        font-size: clamp(48px, 15vw, 80px);
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .advanced-section {
+        margin-top: 60px;
+        padding-top: 60px;
+      }
+    }
+
+    /* Animation d'entrée */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container > * {
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    .container > *:nth-child(1) { animation-delay: 0.1s; }
+    .container > *:nth-child(2) { animation-delay: 0.2s; }
+    .container > *:nth-child(3) { animation-delay: 0.3s; }
+    .container > *:nth-child(4) { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Time2Crack</div>
+      <p class="tagline">Testez la résistance de votre mot de passe</p>
+    </header>
+
+    <div class="input-zone">
+      <label class="input-label">Entrez votre mot de passe</label>
+      <input 
+        type="password" 
+        class="password-input" 
+        placeholder="•••••••"
+        autocomplete="off"
+      />
+      <div class="strength-indicator">
+        <div class="strength-fill"></div>
+      </div>
+    </div>
+
+    <div class="main-result visible">
+      <p class="result-prefix">Temps de craquage le plus rapide</p>
+      <div class="result-time">2 secondes</div>
+      <p class="result-description">
+        Votre mot de passe peut être cracké instantanément avec une attaque par dictionnaire. 
+        Il est recommandé d'utiliser un mot de passe plus complexe.
+      </p>
+    </div>
+
+    <div class="advanced-section">
+      <button class="toggle-advanced" onclick="toggleAdvanced()">
+        Détails techniques ↓
+      </button>
+      <div class="advanced-content" id="advanced">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-value">12</div>
+            <div class="detail-label">Caractères</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-value">52 bits</div>
+            <div class="detail-label">Entropie</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-value">MD5</div>
+            <div class="detail-label">Attaque la plus rapide</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-value">45 ans</div>
+            <div class="detail-label">Craquage le plus lent</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Calcul local • Aucune donnée transmise • Version 1.0
+    <div style="margin-top: 16px;">
+      <script src="https://liberapay.com/BaudouinVH/widgets/button.js"></script>
+      <noscript><a href="https://liberapay.com/BaudouinVH/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+    </div>
+  </footer>
+
+  <script>
+    function toggleAdvanced() {
+      const content = document.getElementById('advanced');
+      const button = document.querySelector('.toggle-advanced');
+      
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        button.textContent = 'Détails techniques ↓';
+      } else {
+        content.classList.add('open');
+        button.textContent = 'Détails techniques ↑';
+      }
+    }
+
+    // Simulation de la barre de force
+    const input = document.querySelector('.password-input');
+    const fill = document.querySelector('.strength-fill');
+    
+    input.addEventListener('input', (e) => {
+      const length = e.target.value.length;
+      const percentage = Math.min((length / 16) * 100, 100);
+      fill.style.width = percentage + '%';
+      
+      if (percentage < 30) {
+        fill.style.background = '#ef4444';
+      } else if (percentage < 70) {
+        fill.style.background = '#f59e0b';
+      } else {
+        fill.style.background = '#10b981';
+      }
+    });
+  </script>
+</body>
+</html>

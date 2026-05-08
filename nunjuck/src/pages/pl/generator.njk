@@ -1,0 +1,134 @@
+---
+lang: pl
+permalink: "/pl/generator.html"
+layout: base.njk
+currentPage: generator
+pageSlug: generator.html
+mainClass: generator-page
+pageTitle: "Bezpieczny generator haseł — Time2Crack"
+pageDescription: "Generuj silne hasła z Time2Crack. Wybieraj zestawy znaków, unikaj niejednoznaczności i twórz sekrety dopasowane do potrzeb."
+---
+
+<div class="generator-container">
+<h2>Zabezpieczony generator haseł</h2>
+<p><small><a href="index.html">Sprawdź siłę swoich haseł →</a> • <a href="how-time2crack-works.html">Zrozumienie modelu →</a></small></p>
+ RAPID ŚWIADCZENIA 
+<div class="presets">
+<button aria-label="Niskie: 8 znaków, małe i cyfry" class="preset-btn" data-preset="weak" title="Minimum 8 znaków, dolny przypadek + cyfry">Niski</button>
+<button aria-label="Średnia: 16 znaków, wszystkie rodzaje" class="preset-btn" data-preset="medium" title="16 znaków, uppercase + lowercase + cyfry">Średnia</button>
+<button aria-label="Silny: 20 znaków, wszystkie typy" class="preset-btn" data-preset="strong" title="20 znaków, uppercase + lowercase + cyfry + symbole">Silny</button>
+<button aria-label="Paranoja: 32 znaki, bez znaków dwuznacznych" class="preset-btn" data-preset="paranoia" title="32 znaki bez znaków niejednoznacznych (l, I, O, 0)">- Paranoja</button>
+</div>
+ KONTROLE GŁÓWNE 
+<div class="generator-controls">
+<div class="control-group">
+<label for="length">
+            Długość: <span id="length-display">16</span> znaki
+            <span class="entropy-badge" id="entropy-badge">105 bitów</span>
+</label>
+<input aria-label="Długość hasła" id="length" max="128" min="8" type="range" value="16">
+<small>Maksymalnie: 128 znaków (maksymalne teoretyczne zabezpieczenie)</small>
+</div>
+<fieldset class="control-group">
+<legend>Znaki zawierające:</legend>
+<div class="charset-grid">
+<label class="charset-option">
+<input aria-label="Majuskule" checked="" id="include-uppercase" type="checkbox">
+<span class="charset-label">Majuskule</span>
+<span class="charset-range">(A- Z)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Minuskule" checked="" id="include-lowercase" type="checkbox">
+<span class="charset-label">Minuskule</span>
+<span class="charset-range">(a- z)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Dane liczbowe" checked="" id="include-numbers" type="checkbox">
+<span class="charset-label">Dane liczbowe</span>
+<span class="charset-range">(0- 9)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Symbole" checked="" id="include-symbols" type="checkbox">
+<span class="charset-label">Symbole</span>
+<span class="charset-range">(!</span>
+</label>
+</div>
+</fieldset>
+<fieldset class="control-group">
+<legend>Zaawansowane opcje:</legend>
+<label>
+<input aria-label="Unikaj dwuznaczności" checked="" id="exclude-ambiguous" type="checkbox">
+            Unikaj znaków niejednoznacznych (l, I, O, 0)
+          </label>
+<small>Poprawa czytelności w przypadku ręcznej kopii</small>
+</fieldset>
+</div>
+ WSKAŹNIK WYPOSAŻENIA 
+<div class="strength-meter">
+<div class="strength-bar">
+<div class="strength-fill" id="strength-fill"></div>
+</div>
+<div class="strength-text">
+<span id="strength-label">Średni</span>
+<span id="entropy-text">105 bitów</span>
+</div>
+</div>
+ BUDYNKI 
+<div class="generator-buttons">
+<button class="btn btn-primary" id="generate-btn">Generuj</button>
+<button class="btn btn-secondary" disabled="" id="copy-btn">Kopiuj</button>
+</div>
+ WYNIK 
+<div class="generator-output">
+<input aria-label="Wygenerowane hasło" class="password-output" id="generated-password" placeholder="Wygenerowane hasło pojawi się tutaj" readonly="" type="text">
+</div>
+<div class="feedback" id="generator-feedback" style="display: none;"></div>
+ WYNIKI RACKINGU 
+<div class="cracking-results" id="cracking-results" style="display: none;">
+<h3>Odporność na ataki</h3>
+<p class="cracking-subtitle">Szacowany czas, aby złamać to hasło (SHA- 256, GPU doświadczenie)</p>
+ Brute Time Formed Force 
+<div class="brute-force-display">
+<div class="brute-time-label">Siły czasu brutto:</div>
+<div class="brute-time-formatted" id="brute-time-formatted">-</div>
+<div class="brute-time-breakdown" id="brute-time-breakdown"></div>
+</div>
+<div class="attacks-grid" id="attacks-grid">
+<div class="attack-card">
+<div class="attack-name">Siła brutto</div>
+<div class="attack-time" id="attack-brute">-</div>
+<div class="attack-rank" id="rank-brute">-</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Słownik</div>
+<div class="attack-time" id="attack-dict">-</div>
+<div class="attack-rank" id="rank-dict">-</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Hybryd</div>
+<div class="attack-time" id="attack-hybrid">-</div>
+<div class="attack-rank" id="rank-hybrid">-</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Maska</div>
+<div class="attack-time" id="attack-mask">-</div>
+<div class="attack-rank" id="rank-mask">-</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Markov Przewodniczący</div>
+<div class="attack-time" id="attack-markov">-</div>
+<div class="attack-rank" id="rank-markov">-</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">PCFG</div>
+<div class="attack-time" id="attack-pcfg">-</div>
+<div class="attack-rank" id="rank-pcfg">-</div>
+</div>
+</div>
+<div class="best-attack">
+<span class="label">Lepszy atak:</span>
+<span class="value" id="best-attack-name">-</span>
+<span class="time" id="best-attack-time">-</span>
+</div>
+</div>
+</div>

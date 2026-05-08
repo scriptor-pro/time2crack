@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype Accessible - Sélecteur d'Attaquant | Time2Crack</title>
+  <meta name="description" content="Testez la sécurité de votre mot de passe contre différents niveaux d'attaquants">
+  <style>
+    /* ============================================================
+       TOKENS DE DESIGN - WCAG 2.1 AA Compliant
+       ============================================================ */
+    :root {
+      /* Type Scale (Minor Third - 1.200) */
+      --text-xs:   0.694rem;  /* 11px */
+      --text-sm:   0.833rem;  /* 13px */
+      --text-base: 1.000rem;  /* 16px */
+      --text-lg:   1.200rem;  /* 19px */
+      --text-xl:   1.440rem;  /* 23px */
+      --text-2xl:  1.728rem;  /* 28px */
+      --text-3xl:  2.074rem;  /* 33px */
+      
+      /* Line Heights */
+      --leading-tight:  1.25;
+      --leading-normal: 1.5;
+      --leading-loose:  1.75;
+      
+      /* Font Weights */
+      --font-normal: 400;
+      --font-medium: 500;
+      --font-semibold: 600;
+      --font-bold: 700;
+      --font-extrabold: 800;
+      
+      /* Colors - WCAG AA (4.5:1 minimum on dark) */
+      --bg-primary:     #0f0f1e;
+      --bg-secondary:   #1a1a2e;
+      --bg-tertiary:    #242438;
+      
+      --text-primary:   #ffffff;  /* 21:1 */
+      --text-secondary: #e0e0e0;  /* 14:1 */
+      --text-tertiary:  #b8b8c8;  /* 8:1 - WCAG AA ✓ */
+      --text-muted:     #9090a0;  /* 5.2:1 - WCAG AA ✓ */
+      
+      --accent-primary:   #ff6600;
+      --accent-hover:     #ff7a1a;
+      --accent-active:    #e55a00;
+      --accent-focus:     #ff8833;
+      
+      --success: #44ff88;
+      --warning: #ffaa00;
+      --danger:  #ff4444;
+      
+      /* Spacing */
+      --space-xs: 0.25rem;  /* 4px */
+      --space-sm: 0.5rem;   /* 8px */
+      --space-md: 1rem;     /* 16px */
+      --space-lg: 1.5rem;   /* 24px */
+      --space-xl: 2rem;     /* 32px */
+      
+      /* Radius */
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+      
+      /* Focus ring */
+      --focus-ring: 0 0 0 3px var(--accent-focus);
+      --focus-offset: 2px;
+      
+      /* Transitions */
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================================
+       BASE STYLES
+       ============================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      color: var(--text-secondary);
+      padding: var(--space-lg);
+      min-height: 100vh;
+      line-height: var(--leading-normal);
+    }
+
+    /* ============================================================
+       SKIP LINK (Accessibility)
+       ============================================================ */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--accent-primary);
+      color: white;
+      padding: var(--space-sm) var(--space-md);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      font-weight: var(--font-semibold);
+      z-index: 9999;
+    }
+
+    .skip-link:focus {
+      top: var(--space-md);
+      left: var(--space-md);
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+
+    .header {
+      margin-bottom: var(--space-xl);
+    }
+
+    h1 {
+      color: var(--accent-primary);
+      font-size: var(--text-3xl);
+      font-weight: var(--font-extrabold);
+      line-height: var(--leading-tight);
+      margin-bottom: var(--space-xs);
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+      line-height: var(--leading-normal);
+    }
+
+    /* ============================================================
+       SECTIONS
+       ============================================================ */
+    .section {
+      background: rgba(26, 26, 46, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+      border: 1px solid rgba(255, 102, 0, 0.2);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-label {
+      font-size: var(--text-sm);
+      font-weight: var(--font-semibold);
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-md);
+      display: block;
+    }
+
+    /* ============================================================
+       PASSWORD INPUT
+       ============================================================ */
+    .password-wrapper {
+      position: relative;
+      margin-bottom: var(--space-md);
+    }
+
+    #passwordInput {
+      width: 100%;
+      padding: var(--space-md) 3.5rem var(--space-md) var(--space-md);
+      background: var(--bg-tertiary);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: var(--text-base);
+      font-family: 'Courier New', 'Courier', monospace;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    #passwordInput::placeholder {
+      color: var(--text-muted);
+    }
+
+    #passwordInput:hover {
+      border-color: rgba(255, 102, 0, 0.3);
+    }
+
+    #passwordInput:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: var(--focus-ring);
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: var(--space-md);
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-tertiary);
+      cursor: pointer;
+      font-size: var(--text-lg);
+      padding: var(--space-sm);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-visibility:hover {
+      background: rgba(255, 102, 0, 0.2);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .toggle-visibility:focus {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-color: var(--accent-primary);
+    }
+
+    /* Strength Bar */
+    .strength-bar-wrapper {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .strength-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: all var(--transition-slow);
+      border-radius: 3px;
+    }
+
+    .strength-label {
+      font-size: var(--text-sm);
+      font-weight: var(--font-semibold);
+      min-width: 120px;
+      text-align: right;
+    }
+
+    /* ============================================================
+       ATTACKER SELECTOR (Radio Group)
+       ============================================================ */
+    .selector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .info-button {
+      background: rgba(255, 102, 0, 0.1);
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      color: var(--accent-primary);
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: var(--text-sm);
+      font-weight: var(--font-bold);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-button:hover {
+      background: rgba(255, 102, 0, 0.2);
+      transform: scale(1.05);
+    }
+
+    .info-button:focus {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* Radio Group */
+    .segmented-control {
+      display: flex;
+      gap: 0;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      position: relative;
+    }
+
+    .segment {
+      flex: 1;
+      text-align: center;
+      padding: var(--space-md) var(--space-sm);
+      cursor: pointer;
+      position: relative;
+      transition: all var(--transition-base);
+      border-radius: calc(var(--radius-md) - 4px);
+      user-select: none;
+      min-height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .segment:hover:not([aria-checked="true"]) {
+      background: rgba(255, 102, 0, 0.05);
+    }
+
+    .segment:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--accent-focus);
+      z-index: 1;
+    }
+
+    .segment[aria-checked="true"] {
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-hover) 100%);
+      color: white;
+      font-weight: var(--font-semibold);
+      box-shadow: 0 4px 12px rgba(255, 102, 0, 0.4);
+    }
+
+    .segment[aria-checked="true"] .segment-emoji,
+    .segment[aria-checked="true"] .segment-label,
+    .segment[aria-checked="true"] .segment-info {
+      color: white;
+    }
+
+    .segment-emoji {
+      display: block;
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-xs);
+      line-height: 1;
+    }
+
+    .segment-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: var(--font-semibold);
+      margin-bottom: 2px;
+      color: var(--text-secondary);
+    }
+
+    .segment-info {
+      display: block;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: var(--leading-tight);
+    }
+
+    /* ============================================================
+       RESULT CARD
+       ============================================================ */
+    .result-card {
+      background: rgba(26, 26, 46, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      border: 2px solid rgba(255, 68, 68, 0.3);
+      margin-bottom: var(--space-lg);
+      box-shadow: var(--shadow-md);
+      transition: all var(--transition-base);
+    }
+
+    .result-card.empty {
+      opacity: 0.5;
+      border-style: dashed;
+    }
+
+    .result-card[aria-busy="true"] {
+      opacity: 0.6;
+      transform: scale(0.98);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .card-icon {
+      font-size: var(--text-3xl);
+      line-height: 1;
+    }
+
+    .card-label {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      font-weight: var(--font-semibold);
+    }
+
+    .card-value {
+      font-size: 3rem;
+      font-weight: var(--font-extrabold);
+      margin-bottom: var(--space-sm);
+      color: var(--danger);
+      letter-spacing: -0.02em;
+      line-height: var(--leading-tight);
+    }
+
+    .card-detail {
+      font-size: var(--text-base);
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .card-algorithm {
+      background: rgba(255, 68, 68, 0.15);
+      color: var(--danger);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: var(--font-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ============================================================
+       STATS GRID
+       ============================================================ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-md);
+      background: rgba(26, 26, 46, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      border: 1px solid rgba(255, 102, 0, 0.2);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: var(--space-md);
+      background: rgba(36, 36, 56, 0.5);
+      border-radius: var(--radius-md);
+    }
+
+    .stat-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-sm);
+      font-weight: var(--font-medium);
+    }
+
+    .stat-value {
+      font-size: var(--text-xl);
+      font-weight: var(--font-bold);
+      color: var(--accent-primary);
+    }
+
+    /* ============================================================
+       TOOLTIP
+       ============================================================ */
+    .tooltip {
+      position: fixed;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      max-width: 320px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      display: none;
+    }
+
+    .tooltip[aria-hidden="false"] {
+      display: block;
+      animation: fadeIn 200ms ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tooltip-title {
+      color: var(--accent-primary);
+      font-weight: var(--font-bold);
+      margin-bottom: var(--space-md);
+      font-size: var(--text-base);
+    }
+
+    .tooltip-item {
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tooltip-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .tooltip-item-header {
+      font-weight: var(--font-semibold);
+      margin-bottom: var(--space-xs);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+
+    .tooltip-item-detail {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      line-height: var(--leading-normal);
+    }
+
+    /* ============================================================
+       SCREEN READER ONLY
+       ============================================================ */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* ============================================================
+       REDUCED MOTION
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 640px) {
+      .segment-label {
+        font-size: var(--text-xs);
+      }
+      .segment-info {
+        font-size: 0.65rem;
+      }
+      .card-value {
+        font-size: 2.5rem;
+      }
+      .container {
+        padding: var(--space-md);
+      }
+    }
+
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip Link -->
+  <a href="#main" class="skip-link">Passer au contenu principal</a>
+
+  <div class="container">
+    <header class="header">
+      <h1>🔐 Sélecteur d'Attaquant Accessible</h1>
+      <p class="subtitle">Version optimisée WCAG 2.1 AA - Testez en toute sécurité</p>
+    </header>
+
+    <main id="main">
+      <!-- Password Input -->
+      <section class="section" aria-labelledby="password-label">
+        <label for="passwordInput" id="password-label" class="section-label">
+          🔑 Testez votre mot de passe
+        </label>
+        <div class="password-wrapper">
+          <input 
+            type="password" 
+            id="passwordInput" 
+            placeholder="Entrez un mot de passe..."
+            autocomplete="off"
+            aria-describedby="password-hint"
+          >
+          <button 
+            type="button"
+            class="toggle-visibility" 
+            id="toggleBtn"
+            aria-label="Afficher le mot de passe"
+            aria-pressed="false"
+          >
+            <span aria-hidden="true">👁️</span>
+          </button>
+        </div>
+        <div id="password-hint" class="sr-only">
+          Le mot de passe n'est jamais envoyé au serveur. Tous les calculs sont effectués localement.
+        </div>
+        <div class="strength-bar-wrapper" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Force du mot de passe">
+          <div class="strength-bar">
+            <div class="strength-fill" id="strengthFill"></div>
+          </div>
+          <div class="strength-label" id="strengthLabel" aria-live="polite">—</div>
+        </div>
+      </section>
+
+      <!-- Attacker Selector -->
+      <section class="section" aria-labelledby="attacker-label">
+        <div class="selector-header">
+          <span id="attacker-label" class="section-label">🎯 Niveau d'attaquant</span>
+          <button 
+            type="button"
+            class="info-button" 
+            id="infoBtn"
+            aria-label="Afficher les informations sur les niveaux d'attaquants"
+            aria-expanded="false"
+            aria-controls="tooltip"
+          >
+            <span aria-hidden="true">?</span>
+          </button>
+        </div>
+
+        <div 
+          class="segmented-control" 
+          role="radiogroup" 
+          aria-labelledby="attacker-label"
+        >
+          <div 
+            class="segment" 
+            role="radio"
+            aria-checked="true"
+            aria-label="Expérimenté, 12 GPUs"
+            tabindex="0"
+            data-profile="experienced"
+          >
+            <span class="segment-emoji" aria-hidden="true">💼</span>
+            <span class="segment-label">Expérimenté</span>
+            <span class="segment-info">12 GPUs</span>
+          </div>
+          <div 
+            class="segment" 
+            role="radio"
+            aria-checked="false"
+            aria-label="Professionnel, environ 100 GPUs"
+            tabindex="-1"
+            data-profile="professional"
+          >
+            <span class="segment-emoji" aria-hidden="true">🏢</span>
+            <span class="segment-label">Professionnel</span>
+            <span class="segment-info">~100 GPUs</span>
+          </div>
+          <div 
+            class="segment" 
+            role="radio"
+            aria-checked="false"
+            aria-label="État-nation, environ 10000 GPUs"
+            tabindex="-1"
+            data-profile="nationstate"
+          >
+            <span class="segment-emoji" aria-hidden="true">🏛️</span>
+            <span class="segment-label">État-nation</span>
+            <span class="segment-info">~10k GPUs</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Result Card -->
+      <div 
+        class="result-card empty" 
+        id="resultCard"
+        role="region"
+        aria-labelledby="result-label"
+        aria-live="polite"
+        aria-busy="false"
+      >
+        <div class="card-header">
+          <span class="card-icon" aria-hidden="true">⚡</span>
+          <span class="card-label" id="result-label">Temps d'attaque le plus rapide</span>
+        </div>
+        <div class="card-value" id="crackTime">—</div>
+        <div class="card-detail">
+          <span id="attackType">Entrez un mot de passe pour commencer</span>
+          <span class="card-algorithm" id="algorithm" style="display: none;">MD5</span>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid" role="list" aria-label="Statistiques du mot de passe">
+        <div class="stat-item" role="listitem">
+          <div class="stat-label">Longueur</div>
+          <div class="stat-value" id="statLength">—</div>
+        </div>
+        <div class="stat-item" role="listitem">
+          <div class="stat-label">Charset</div>
+          <div class="stat-value" id="statCharset">—</div>
+        </div>
+        <div class="stat-item" role="listitem">
+          <div class="stat-label">Entropie</div>
+          <div class="stat-value" id="statEntropy">—</div>
+        </div>
+        <div class="stat-item" role="listitem">
+          <div class="stat-label">Combinaisons</div>
+          <div class="stat-value" id="statCombos">—</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Tooltip -->
+  <div 
+    class="tooltip" 
+    id="tooltip"
+    role="tooltip"
+    aria-hidden="true"
+  >
+    <div class="tooltip-title">Capacités d'attaquant</div>
+    
+    <div class="tooltip-item">
+      <div class="tooltip-item-header">💼 Expérimenté (baseline)</div>
+      <div class="tooltip-item-detail">
+        12× RTX 4090 GPUs<br>
+        ~3,462 GH/s NTLM<br>
+        Cybercriminel dédié
+      </div>
+    </div>
+
+    <div class="tooltip-item">
+      <div class="tooltip-item-header">🏢 Professionnel (~8× plus rapide)</div>
+      <div class="tooltip-item-detail">
+        ~100 GPUs via cloud<br>
+        ~28.8 TH/s NTLM<br>
+        Crime organisé, groupes APT
+      </div>
+    </div>
+
+    <div class="tooltip-item">
+      <div class="tooltip-item-header">🏛️ État-nation (~800× plus rapide)</div>
+      <div class="tooltip-item-detail">
+        ~10,000 GPUs estimés<br>
+        ~2.88 PH/s NTLM<br>
+        Agences gouvernementales (NSA, GCHQ)
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Hash rates (per profile)
+    const HASH_RATES = {
+      experienced: {
+        md5: 2.027e12, sha1: 610.3e9, sha256: 272.2e9,
+        ntlm: 3.462e12, bcrypt: 2.2e6, argon2: 800
+      },
+      professional: {
+        md5: 2.027e12 * 8.33, sha1: 610.3e9 * 8.33, sha256: 272.2e9 * 8.33,
+        ntlm: 3.462e12 * 8.33, bcrypt: 2.2e6 * 8.33, argon2: 800 * 8.33
+      },
+      nationstate: {
+        md5: 2.027e12 * 833, sha1: 610.3e9 * 833, sha256: 272.2e9 * 833,
+        ntlm: 3.462e12 * 833, bcrypt: 2.2e6 * 833, argon2: 800 * 833
+      }
+    };
+
+    let currentProfile = 'experienced';
+    let currentPassword = '';
+
+    // DOM elements
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthLabel = document.getElementById('strengthLabel');
+    const segments = document.querySelectorAll('.segment');
+    const infoBtn = document.getElementById('infoBtn');
+    const tooltip = document.getElementById('tooltip');
+    const resultCard = document.getElementById('resultCard');
+    const crackTime = document.getElementById('crackTime');
+    const attackType = document.getElementById('attackType');
+    const algorithm = document.getElementById('algorithm');
+    const statLength = document.getElementById('statLength');
+    const statCharset = document.getElementById('statCharset');
+    const statEntropy = document.getElementById('statEntropy');
+    const statCombos = document.getElementById('statCombos');
+
+    // Password visibility toggle
+    toggleBtn.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      toggleBtn.setAttribute('aria-pressed', isPassword);
+      toggleBtn.setAttribute('aria-label', isPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+      toggleBtn.querySelector('[aria-hidden]').textContent = isPassword ? '🙈' : '👁️';
+    });
+
+    // Segment (radio) handlers
+    segments.forEach(segment => {
+      // Click handler
+      segment.addEventListener('click', () => selectSegment(segment));
+
+      // Keyboard handler (Space, Enter)
+      segment.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          selectSegment(segment);
+        }
+        // Arrow navigation
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          const next = segment.nextElementSibling || segments[0];
+          selectSegment(next);
+          next.focus();
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prev = segment.previousElementSibling || segments[segments.length - 1];
+          selectSegment(prev);
+          prev.focus();
+        }
+      });
+    });
+
+    function selectSegment(segment) {
+      const profile = segment.dataset.profile;
+      if (profile === currentProfile) return;
+
+      // Update ARIA
+      segments.forEach(s => {
+        s.setAttribute('aria-checked', 'false');
+        s.setAttribute('tabindex', '-1');
+      });
+      segment.setAttribute('aria-checked', 'true');
+      segment.setAttribute('tabindex', '0');
+
+      currentProfile = profile;
+
+      if (currentPassword) {
+        calculateCrackTime(currentPassword);
+      }
+
+      localStorage.setItem('attackerProfile', profile);
+    }
+
+    // Info button handler
+    infoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = infoBtn.getAttribute('aria-expanded') === 'true';
+      toggleTooltip(!isExpanded);
+    });
+
+    // Keyboard support for info button
+    infoBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleTooltip(false);
+        infoBtn.focus();
+      }
+    });
+
+    function toggleTooltip(show) {
+      infoBtn.setAttribute('aria-expanded', show);
+      tooltip.setAttribute('aria-hidden', !show);
+
+      if (show) {
+        const rect = infoBtn.getBoundingClientRect();
+        tooltip.style.top = `${rect.bottom + 10}px`;
+        tooltip.style.left = `${Math.max(10, rect.left - 250)}px`;
+      }
+    }
+
+    // Close tooltip on outside click or Escape
+    document.addEventListener('click', (e) => {
+      if (!tooltip.contains(e.target) && e.target !== infoBtn) {
+        toggleTooltip(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && tooltip.getAttribute('aria-hidden') === 'false') {
+        toggleTooltip(false);
+        infoBtn.focus();
+      }
+    });
+
+    // Password input handler
+    passwordInput.addEventListener('input', (e) => {
+      currentPassword = e.target.value;
+      
+      if (!currentPassword) {
+        resetDisplay();
+        return;
+      }
+
+      calculateCrackTime(currentPassword);
+    });
+
+    function resetDisplay() {
+      resultCard.classList.add('empty');
+      resultCard.setAttribute('aria-busy', 'false');
+      crackTime.textContent = '—';
+      attackType.textContent = 'Entrez un mot de passe pour commencer';
+      algorithm.style.display = 'none';
+      strengthFill.style.width = '0%';
+      strengthLabel.textContent = '—';
+      statLength.textContent = '—';
+      statCharset.textContent = '—';
+      statEntropy.textContent = '—';
+      statCombos.textContent = '—';
+    }
+
+    function calculateCrackTime(password) {
+      const length = password.length;
+      const hasLower = /[a-z]/.test(password);
+      const hasUpper = /[A-Z]/.test(password);
+      const hasDigit = /[0-9]/.test(password);
+      const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+
+      let charset = 0;
+      if (hasLower) charset += 26;
+      if (hasUpper) charset += 26;
+      if (hasDigit) charset += 10;
+      if (hasSymbol) charset += 32;
+
+      const entropy = length * Math.log2(charset || 1);
+      const combinations = Math.pow(charset || 1, length);
+
+      const rates = HASH_RATES[currentProfile];
+      let fastestTime = Infinity;
+      let fastestAlgo = 'MD5';
+
+      Object.entries(rates).forEach(([algo, rate]) => {
+        const timeSeconds = combinations / rate;
+        if (timeSeconds < fastestTime) {
+          fastestTime = timeSeconds;
+          fastestAlgo = algo.toUpperCase();
+        }
+      });
+
+      resultCard.classList.remove('empty');
+      resultCard.setAttribute('aria-busy', 'true');
+
+      setTimeout(() => {
+        crackTime.textContent = formatTime(fastestTime);
+        attackType.textContent = 'Brute force';
+        algorithm.textContent = fastestAlgo;
+        algorithm.style.display = 'inline-block';
+
+        statLength.textContent = length;
+        statCharset.textContent = charset;
+        statEntropy.textContent = entropy.toFixed(1) + ' bits';
+        statCombos.textContent = formatNumber(combinations);
+
+        updateStrengthBar(entropy);
+
+        resultCard.setAttribute('aria-busy', 'false');
+      }, 150);
+    }
+
+    function updateStrengthBar(entropy) {
+      let percentage = 0;
+      let label = '';
+      let color = '';
+
+      if (entropy < 28) {
+        percentage = (entropy / 28) * 20;
+        label = 'Très faible';
+        color = '#ff4444';
+      } else if (entropy < 36) {
+        percentage = 20 + ((entropy - 28) / 8) * 20;
+        label = 'Faible';
+        color = '#ff6600';
+      } else if (entropy < 60) {
+        percentage = 40 + ((entropy - 36) / 24) * 30;
+        label = 'Moyen';
+        color = '#ffaa00';
+      } else if (entropy < 128) {
+        percentage = 70 + ((entropy - 60) / 68) * 20;
+        label = 'Fort';
+        color = '#44ff88';
+      } else {
+        percentage = 90 + Math.min(10, (entropy - 128) / 128 * 10);
+        label = 'Très fort';
+        color = '#00ff88';
+      }
+
+      strengthFill.style.width = Math.min(100, percentage) + '%';
+      strengthFill.style.background = color;
+      strengthLabel.textContent = label;
+      strengthLabel.style.color = color;
+      
+      // Update ARIA
+      const progressBar = strengthFill.parentElement.parentElement;
+      progressBar.setAttribute('aria-valuenow', Math.round(percentage));
+      progressBar.setAttribute('aria-valuetext', `${label}, ${Math.round(percentage)}%`);
+    }
+
+    function formatTime(seconds) {
+      if (seconds < 0.001) return 'Instantané';
+      if (seconds < 1) return (seconds * 1000).toFixed(0) + ' ms';
+      if (seconds < 60) return seconds.toFixed(1) + ' sec';
+      if (seconds < 3600) return (seconds / 60).toFixed(1) + ' min';
+      if (seconds < 86400) return (seconds / 3600).toFixed(1) + ' heures';
+      if (seconds < 2592000) return (seconds / 86400).toFixed(1) + ' jours';
+      if (seconds < 31536000) return (seconds / 2592000).toFixed(1) + ' mois';
+      
+      const years = seconds / 31536000;
+      if (years < 100) return years.toFixed(1) + ' ans';
+      if (years < 10000) return (years / 100).toFixed(1) + ' siècles';
+      if (years < 1000000) return (years / 1000).toFixed(1) + ' millénaires';
+      
+      return '> univers';
+    }
+
+    function formatNumber(num) {
+      if (num < 1000) return num.toFixed(0);
+      if (num < 1e6) return (num / 1e3).toFixed(1) + 'K';
+      if (num < 1e9) return (num / 1e6).toFixed(1) + 'M';
+      if (num < 1e12) return (num / 1e9).toFixed(1) + 'B';
+      if (num < 1e15) return (num / 1e12).toFixed(1) + 'T';
+      return (num / 1e15).toFixed(1) + 'P';
+    }
+
+    // Load saved profile
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('attackerProfile');
+      if (saved && HASH_RATES[saved]) {
+        const segment = Array.from(segments).find(s => s.dataset.profile === saved);
+        if (segment) selectSegment(segment);
+      }
+    });
+  </script>
+</body>
+</html>

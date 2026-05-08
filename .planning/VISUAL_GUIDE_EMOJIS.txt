@@ -1,0 +1,155 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                       UI IMPROVEMENTS VISUAL GUIDE                         ║
+║                              2026-03-22                                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ IMPROVEMENT #1: EMOJI BADGE DIFFERENTIATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEFORE (Difficult to distinguish):
+┌─────────────────────────────────────────────────────────────┐
+│  Quality              Pattern              Leaked           │
+│   [✓ Good]            [✓ Strong]           [✓ Not leaked]   │
+│   (all green, no visual differentiation)                    │
+└─────────────────────────────────────────────────────────────┘
+
+AFTER (Instantly recognizable):
+┌──────────────────────────────────────────────────────────────┐
+│  ⭐ Quality          📊 Pattern          🔒 Leaked          │
+│   [✓ Good]           [✓ Strong]          [✓ Not leaked]    │
+│   (each has distinctive emoji + meaning)                    │
+└──────────────────────────────────────────────────────────────┘
+
+EMOJI MEANINGS:
+  ⭐ QUALITY       → Star = Excellence/Rating
+  📊 PATTERN       → Chart = Data/Complexity Analysis
+  🔒 LEAKED        → Lock = Security/Privacy Status
+
+USER COMPREHENSION:
+  Before: "What's the difference between these three?"
+  After:  "Ah! Quality score, Pattern analysis, and Leak status"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ IMPROVEMENT #2: REMOVE STATUS CLUTTER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEFORE (5 items with unused "Status"):
+┌──────────────────────────────────────────┐
+│  🔍 Advanced details                  [▼] │
+├──────────────────────────────────────────┤
+│  ●  10        CHARACTERS                  │
+│  ●  168       CHARSET SIZE                │
+│  ●  87        ENTROPY BITS                │
+│  ●  1.7e14    COMBINATIONS                │
+│  ●  Ed.5      STATUS        ← UNNECESSARY │
+└──────────────────────────────────────────┘
+
+AFTER (4 focused items):
+┌──────────────────────────────────────────┐
+│  🔍 Advanced details                  [▼] │
+├──────────────────────────────────────────┤
+│  ●  10        CHARACTERS                  │
+│  ●  168       CHARSET SIZE                │
+│  ●  87        ENTROPY BITS                │
+│  ●  1.7e14    COMBINATIONS                │
+└──────────────────────────────────────────┘
+
+BENEFIT:
+  ✅ Less visual clutter
+  ✅ Cleaner information hierarchy
+  ✅ More focused user attention
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ IMPROVEMENT #3: HEATMAP FULL-WIDTH EXPANSION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEFORE (max-width: 69ch on desktop):
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Advanced details                                                          │
+│ ┌──────────────────────────────────────────┐                             │
+│ │ M y P a s s w o r d 1 2 3 ...            │  ← wasted space on right    │
+│ │ [char markers & colors]                  │                             │
+│ │ Legend: ✔ Unpredictable ◐ Moderate ✘... │                             │
+│ └──────────────────────────────────────────┘                             │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+AFTER (max-width: 90ch on desktop):
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Advanced details                                                          │
+│ ┌────────────────────────────────────────────────────────────────────┐   │
+│ │ M y P a s s w o r d 1 2 3 4 5 6 ... [more chars visible] ...     │   │
+│ │ [char markers & colors]                                            │   │
+│ │ Legend: ✔ Unpredictable ◐ Moderate ✘ Predictable                 │   │
+│ └────────────────────────────────────────────────────────────────────┘   │
+│                                                                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+BENEFIT:
+  ✅ Better use of screen real estate on desktop
+  ✅ More characters visible per line in heatmap
+  ✅ Improved readability and UX
+  ✅ Mobile behavior unchanged (responsive flex-wrap)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ TESTING ROADMAP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MOBILE TESTING:
+  Device 320px (iPhone SE)
+    ┌─────────────────────────┐
+    │ ⭐ Quality │ 📊 Pattern │
+    │ 🔒 Leaked  │              │
+    │ [badges stack nicely]     │
+    └─────────────────────────┘
+
+  Device 375px (iPhone 12/13/14)
+    ┌──────────────────────────────────┐
+    │ ⭐ Quality │ 📊 Pattern │ 🔒 Leak │
+    │ [badges fit in one line]         │
+    └──────────────────────────────────┘
+
+  Device 480px (larger phones)
+    ┌───────────────────────────────────────────┐
+    │ ⭐ Quality │ 📊 Pattern │ 🔒 Leaked      │
+    │ [comfortable spacing]                     │
+    └───────────────────────────────────────────┘
+
+DESKTOP TESTING (1200px+):
+    ┌─────────────────────────────────────────────────────────┐
+    │ ⭐ Quality          📊 Pattern         🔒 Leaked       │
+    │   [✓ Good]           [✓ Strong]       [✓ Not leaked]  │
+    │ [full width utilization]                              │
+    └─────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ IMPLEMENTATION SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CHANGES MADE:
+  ✅ Added emojis to badge labels (index.html)
+  ✅ Improved emoji styling with flexbox (styles.css)
+  ✅ Removed STATUS item from Advanced Details (index.html)
+  ✅ Expanded heatmap width 69ch → 90ch (styles.css)
+
+FILES MODIFIED:
+  • index.html (2 changes: emojis added, STATUS removed)
+  • styles.css (2 changes: flexbox styling, heatmap width)
+
+COMMIT:
+  Hash: 35069c6
+  Message: "ui: add emoji badges... remove Status item... increase heatmap width"
+
+STATUS: ✅ READY FOR TESTING
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+To view changes live:
+  1. Open http://localhost:8000 in browser
+  2. Enter a password (e.g., "MyPassword123")
+  3. Check the badge differentiation (⭐📊🔒)
+  4. Click "Advanced details" to confirm STATUS item is gone
+  5. Verify heatmap uses full width on desktop (1200px+)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

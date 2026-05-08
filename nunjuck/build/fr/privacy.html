@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confidentialité &amp; Sécurité des Mots de Passe — Aucune Transmission de Données — Time2Crack</title>
+  <link rel="preload" href="/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.min.css"></noscript>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap"></noscript>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+<meta name="description" content="Comprenez comment Time2Crack traite vos données : calcul local dans le navigateur, aucune transmission du mot de passe, et contrôle minimal des fuites.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#2563EB">
+
+<meta property="og:title" content="Confidentialité &amp; Sécurité des Mots de Passe — Aucune Transmission de Données — Time2Crack">
+<meta property="og:description" content="Comprenez comment Time2Crack traite vos données : calcul local dans le navigateur, aucune transmission du mot de passe, et contrôle minimal des fuites.">
+<meta property="og:image" content="https://time2crack.eu/logo.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://time2crack.eu/fr/privacy.html">
+<meta property="og:site_name" content="Time2Crack">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="pt_PT">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:locale:alternate" content="pl_PL">
+<meta property="og:locale:alternate" content="nl_NL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Confidentialité &amp; Sécurité des Mots de Passe — Aucune Transmission de Données — Time2Crack">
+<meta name="twitter:description" content="Comprenez comment Time2Crack traite vos données : calcul local dans le navigateur, aucune transmission du mot de passe, et contrôle minimal des fuites.">
+<meta name="twitter:image" content="https://time2crack.eu/logo.png">
+
+<link rel="canonical" href="https://time2crack.eu/fr/privacy.html">
+<link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/privacy.html">
+<link rel="alternate" hreflang="en" href="https://time2crack.eu/en/privacy.html">
+<link rel="alternate" hreflang="es" href="https://time2crack.eu/es/privacy.html">
+<link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/privacy.html">
+<link rel="alternate" hreflang="de" href="https://time2crack.eu/de/privacy.html">
+<link rel="alternate" hreflang="it" href="https://time2crack.eu/it/privacy.html">
+<link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/privacy.html">
+<link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/privacy.html">
+<link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/privacy.html">
+<link rel="alternate" hreflang="x-default" href="https://time2crack.eu/en/privacy.html">
+  <script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header__top">
+    <h1><a href="/fr/index.html" class="site-logo"><img src="/logo.png" alt="" class="site-logo__icon" aria-hidden="true">Time2Crack</a></h1>
+    <div class="lang-selector">
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Sélectionner la langue" aria-expanded="false" aria-controls="lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+        <span class="lang-toggle__label" id="lang-label">Français</span>
+        <span class="dropdown-arrow">▼</span>
+      </button>
+      <menu id="lang-menu" class="lang-menu" hidden role="menu" aria-label="Sélectionner la langue">
+        <button type="button" data-lang="fr" class="lang-menu__item lang-menu__item--active" role="menuitem">Français</button>
+        <button type="button" data-lang="en" class="lang-menu__item" role="menuitem">English</button>
+        <button type="button" data-lang="es" class="lang-menu__item" role="menuitem">Español</button>
+        <button type="button" data-lang="pt" class="lang-menu__item" role="menuitem">Português</button>
+        <button type="button" data-lang="de" class="lang-menu__item" role="menuitem">Deutsch</button>
+        <button type="button" data-lang="it" class="lang-menu__item" role="menuitem">Italiano</button>
+        <button type="button" data-lang="tr" class="lang-menu__item" role="menuitem">Türkçe</button>
+        <button type="button" data-lang="pl" class="lang-menu__item" role="menuitem">Polski</button>
+        <button type="button" data-lang="nl" class="lang-menu__item" role="menuitem">Nederlands</button>
+      </menu>
+    </div>
+  </div>
+  <nav class="site-nav" aria-label="Navigation principale">
+    <div class="site-nav__primary">
+      <a href="/fr/index.html" class="site-nav__link nav-home">Tester un mot de passe</a>
+      <a href="/fr/generator.html" class="site-nav__link nav-generator">Générer un mot de passe</a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="drawer"><span class="hamburger__icon"></span></button>
+    <div class="site-nav__secondary">
+      <a href="/fr/faq.html" class="site-nav__link">FAQ</a>
+      <a href="/fr/about.html" class="site-nav__link nav-about">À propos</a>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Science">Science <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Science submenu">
+          <li role="none"><a href="/fr/how-time2crack-works.html" role="menuitem" class="site-nav__dropdown-item">Comment ça marche?</a></li>
+          <li role="none" class="site-nav__dropdown-item--group">
+            <span class="site-nav__dropdown-group-title">Méthodes d&#39;attaque</span>
+            <ul class="site-nav__dropdown-submenu" role="menu">
+              <li role="none"><a href="/fr/methode/bruteforce.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/fr/methode/dictionary.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/fr/methode/hybrid.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/fr/methode/mask.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/fr/methode/markov.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/fr/methode/pcfg.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/fr/methode/combinator.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+            </ul>
+          </li>
+          <li role="none"><a href="/fr/sources.html" role="menuitem" class="site-nav__dropdown-item">Sources</a></li>
+        </ul>
+      </div>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Sécurité">Sécurité <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Sécurité submenu">
+          <li role="none"><a href="/fr/hibp.html" role="menuitem" class="site-nav__dropdown-item">HIBP</a></li>
+          <li role="none"><a href="/fr/privacy.html" role="menuitem" class="site-nav__dropdown-item" aria-current="page">Confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <aside id="drawer" class="drawer" role="complementary" aria-hidden="true" aria-label="Navigation secondaire">
+    <div class="drawer__header">
+      <button class="drawer__close" id="drawer-close-btn" aria-label="Fermer le menu">✕</button>
+    </div>
+    <nav class="drawer__nav" aria-label="Navigation secondaire">
+      <a href="/fr/faq.html" class="drawer__link">FAQ</a>
+      <a href="/fr/about.html" class="drawer__link">À propos</a>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Science</summary>
+        <a href="/fr/how-time2crack-works.html" class="drawer__link">Comment ça marche?</a>
+        <details class="drawer__details drawer__details--nested">
+          <summary class="drawer__summary drawer__summary--nested">Méthodes d&#39;attaque</summary>
+          <a href="/fr/methode/bruteforce.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/fr/methode/dictionary.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/fr/methode/hybrid.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/fr/methode/mask.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/fr/methode/markov.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/fr/methode/pcfg.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/fr/methode/combinator.html" class="drawer__link drawer__link--nested"></a>
+        </details>
+        <a href="/fr/sources.html" class="drawer__link">Sources</a>
+      </details>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Sécurité</summary>
+        <a href="/fr/hibp.html" class="drawer__link">HIBP</a>
+        <a href="/fr/privacy.html" class="drawer__link">Confidentialité</a>
+      </details>
+    </nav>
+    <footer class="drawer__footer">
+      <p>v2.2.1 • Estimateur de crack local 🔐</p>
+    </footer>
+  </aside>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
+  <div class="privacy-notice" role="note" aria-label="Note de confidentialité">
+    <span class="privacy-notice__icon" aria-hidden="true">🔒</span>
+    <div class="privacy-notice__text">
+      <strong>Tout reste dans votre navigateur.</strong>
+      Aucun mot de passe n&#39;est transmis. Le calcul est entièrement local. La seule requête externe est une vérification anonyme de fuite (5 premiers caractères du hash SHA-1, jamais le mot de passe).
+    </div>
+  </div>
+</header>
+<main class="privacy-page">
+  
+<h1>Confidentialité &amp; Sécurité</h1>
+<p style="font-size: 1.05em; color: #666; margin-bottom: 2em;">
+      Comprendre exactement ce que Time2Crack fait et ne fait pas avec votre mot de passe
+    </p>
+ ========================================== 
+ CE QUE FAIT TIME2CRACK 
+ ========================================== 
+<section>
+<h2>✅ Ce que Time2Crack FAIT</h2>
+<div class="privacy-section">
+<h3>1. Analyse locale dans votre navigateur</h3>
+<ul class="does-list">
+<li><strong>Reçoit votre mot de passe</strong> uniquement quand vous le tapez dans le champ</li>
+<li><strong>Calcule en local</strong> tous les rangs d'attaque (force brute, dictionnaire, Markov, etc.)</li>
+<li><strong>Affiche les résultats</strong> directement sur votre écran</li>
+<li><strong>Oublie le mot de passe</strong> dès que vous quittez ou changez de page</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin-top: 1em;">
+          ℹ️ Votre navigateur n'envoie le mot de passe nulle part — il reste uniquement en mémoire RAM locale pendant l'analyse.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>2. Vérification optionnelle HIBP (Have I Been Pwned)</h3>
+<p>
+          Si vous cochez l'option "Vérifier les leaks connus", Time2Crack peut vérifier si votre mot de passe figure dans les fuites historiques. Cette vérification utilise le protocole <strong>k-anonymité</strong> pour protéger votre confidentialité.
+        </p>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Comment fonctionne la k-anonymité</h4>
+<div class="flow-diagram">
+<div class="flow-step">
+<div class="flow-number">1</div>
+<div class="flow-content">
+<p><strong>Calcul du hash SHA-1</strong> (sur votre ordinateur)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack calcule le hash SHA-1 complet de votre mot de passe, mais <strong>ne le quitte jamais</strong>.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">2</div>
+<div class="flow-content">
+<p><strong>Extraction du préfixe</strong> (5 premiers caractères)</p>
+<p style="color: #666; margin-top: 0.3em;">Seuls les 5 premiers caractères du hash sont envoyés à HIBP. C'est insuffisant pour identifier votre mot de passe.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">3</div>
+<div class="flow-content">
+<p><strong>Requête anonyme à HIBP</strong></p>
+<p style="color: #666; margin-top: 0.3em;">HIBP retourne tous les mots de passe qui commencent par ce préfixe (environ 500-1000 résultats anonymes).</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">4</div>
+<div class="flow-content">
+<p><strong>Comparaison locale</strong> (sur votre ordinateur)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack compare les 35 caractères restants du hash localement. Seul votre ordinateur sait si c'est un match.</p>
+</div>
+</div>
+</div>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Exemple concret : le mot de passe "password"</h4>
+<div class="example-box">
+<div class="example-title">🔍 Étape par étape</div>
+<div class="hash-row">
+<span class="hash-label">Mot de passe :</span>
+<span class="hash-value"><code>password</code></span>
+</div>
+<div class="hash-row">
+<span class="hash-label">Hash SHA-1 complet :</span>
+<span class="hash-value">
+<code>5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+</span>
+</div>
+<div style="margin: 1em 0; padding: 1em; background: #f0f0f0; border-radius: 4px; border-left: 4px solid #2196F3;">
+<p style="margin-top: 0; color: #666; font-size: 0.9em;"><strong>↓ SPLIT</strong></p>
+<div class="hash-row" style="margin-top: 0.8em;">
+<span class="hash-label"><span class="hash-sent">✅ Envoyé à HIBP</span> :</span>
+<span class="hash-value">
+<code class="hash-sent">5BAA6</code>
+<span style="color: #666; font-size: 0.85em;"> (5 caractères = ~2,000 hashes possibles)</span>
+</span>
+</div>
+<div class="hash-row">
+<span class="hash-label"><span class="hash-local">🔒 Conservé localement</span> :</span>
+<span class="hash-value">
+<code class="hash-local">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+<span style="color: #666; font-size: 0.85em;"> (35 caractères, jamais transmis)</span>
+</span>
+</div>
+</div>
+<div style="margin-top: 1em; padding: 1em; background: #e8f5e9; border-radius: 4px; border-left: 4px solid #388e3c;">
+<p style="margin: 0; color: #1b5e20; font-weight: 500;">
+              ✅ Résultat : HIBP retourne tous les hashes commençant par <code>5BAA6</code> (~500-1000 résultats).
+              <br>Time2Crack compare localement et détermine si c'est un match. <strong>Votre mot de passe complet ne quitte jamais votre appareil.</strong>
+</p>
+</div>
+</div>
+<p style="font-size: 0.9em; color: #666; margin-top: 1.5em;">
+<strong>Pourquoi 5 caractères suffisent pour la k-anonymité :</strong>
+          Avec 5 caractères hexadécimaux, il y a 16^5 = 1,048,576 combinaisons possibles. HIBP retourne environ 500-1000 résultats pour chaque préfixe, créant une masse critique où votre mot de passe est anonymisé parmi des centaines d'autres.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>3. Stockage des données</h3>
+<ul class="does-list">
+<li><strong>Utilise le localStorage de votre navigateur</strong> uniquement pour les paramètres utilisateur (langue, préférences)</li>
+<li><strong>Aucune sauvegarde de mots de passe</strong> ou de résultats de crack time</li>
+<li><strong>Efface automatiquement</strong> le mot de passe de la mémoire après l'analyse</li>
+</ul>
+</div>
+</section>
+ ========================================== 
+ CE QUE NE FAIT PAS TIME2CRACK 
+ ========================================== 
+<section>
+<h2>❌ Ce que Time2Crack NE FAIT PAS</h2>
+<div class="privacy-section">
+<h3>1. Transmission du mot de passe</h3>
+<ul class="does-list doesnt-list">
+<li>N'envoie <span class="highlight-red">jamais</span> votre mot de passe à nos serveurs ou à des tiers</li>
+<li>N'envoie <span class="highlight-red">jamais</span> votre mot de passe à HIBP ou à d'autres services</li>
+<li>N'envoie <span class="highlight-red">jamais</span> le hash SHA-1 complet (seuls 5 caractères)</li>
+<li>N'enregistre <span class="highlight-red">jamais</span> les mots de passe testés</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>2. Utilisation des données</h3>
+<ul class="does-list doesnt-list">
+<li>Ne garde <span class="highlight-red">aucune trace</span> de votre activité ou de vos mots de passe testés</li>
+<li>Ne crée <span class="highlight-red">aucun profil utilisateur</span> lié à vos données personnelles</li>
+<li>Ne partage <span class="highlight-red">aucune information</span> avec des tiers (annonceurs, partenaires, etc.)</li>
+<li>Ne vend <span class="highlight-red">jamais</span> vos données</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Stockage persistent</h3>
+<ul class="does-list doesnt-list">
+<li>N'héberge <span class="highlight-red">aucune base de données</span> de mots de passe utilisateur</li>
+<li>Ne sauvegarde <span class="highlight-red">aucun historique</span> de calculs ou de résultats</li>
+<li>N'exige <span class="highlight-red">aucun compte utilisateur</span> ou enregistrement</li>
+</ul>
+</div>
+<div class="warning-box">
+<div class="warning-title">⚠️ Important</div>
+<p style="margin: 0.5em 0 0;">
+          Même si Time2Crack ne transmet jamais votre mot de passe, <strong>ne testez pas votre vrai mot de passe ici si quelqu'un d'autre regarde votre écran</strong>. Utilisez un mot de passe de test ou consultez cet outil en privé.
+        </p>
+</div>
+</section>
+ ========================================== 
+ TABLEAU COMPARATIF 
+ ========================================== 
+<section>
+<h2>Résumé : Fait vs Ne Fait Pas</h2>
+<table class="comparison-table">
+<thead>
+<tr>
+<th>Action</th>
+<th class="does-column">Time2Crack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Calcule les temps de crack</strong></td>
+<td class="does-column">✅ Oui (localement)</td>
+</tr>
+<tr>
+<td><strong>Envoie le mot de passe complet</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Envoie le hash SHA-1 complet</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Envoie les 5 premiers caractères du hash (k-anonymité)</strong></td>
+<td class="does-column">✅ Oui (si vérification HIBP activée)</td>
+</tr>
+<tr>
+<td><strong>Sauvegarde les mots de passe</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Crée un compte utilisateur</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Partage les données avec des tiers</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Utilise des cookies de tracking</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Affiche des publicités</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Exécute du code client externalisé</strong></td>
+<td class="doesnt-column">❌ Non (zéro dépendances)</td>
+</tr>
+</tbody>
+</table>
+</section>
+ ========================================== 
+ VÉRIFICATION 
+ ========================================== 
+<section>
+<h2>Comment Vérifier Vous-Même</h2>
+<div class="privacy-section">
+<h3>1. Outils de développement du navigateur</h3>
+<ol style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Ouvrez les <strong>Outils de développement</strong> (F12 ou Cmd+Option+I)</li>
+<li>Allez dans l'onglet <strong>Réseau</strong> (Network)</li>
+<li>Entrez un mot de passe de test dans Time2Crack</li>
+<li>Observez les requêtes réseau : vous ne verrez <strong>que</strong> la requête HIBP avec le préfixe 5-char</li>
+<li>Le mot de passe complet n'apparaît <strong>jamais</strong> dans les requêtes</li>
+</ol>
+</div>
+<div class="privacy-section">
+<h3>2. Consulter le code source</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Time2Crack est <strong>100% open source</strong> sur Codeberg</li>
+<li>Le code contient <strong>zéro dépendances externes</strong> — c'est du JavaScript pur</li>
+<li>Vous pouvez inspecter <code>app.js</code> et vérifier que :
+            <ul style="margin-top: 0.5em;">
+<li>Les mots de passe restent toujours locaux</li>
+<li>Seul le préfixe HIBP 5-char est envoyé</li>
+<li>Aucun cookie de tracking ou d'analytics personnel</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Tester en mode hors ligne</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Vous pouvez utiliser Time2Crack <strong>complètement hors ligne</strong></li>
+<li>Téléchargez les fichiers et ouvrez <code>index.html</code> localement</li>
+<li>Tous les calculs fonctionnent sans connexion (sauf la vérification HIBP optionnelle)</li>
+</ul>
+</div>
+</section>
+ ========================================== 
+ FOOTER 
+ ========================================== 
+<section style="margin-top: 3em; padding-top: 2em; border-top: 1px solid #eee;">
+<p style="color: #999; font-size: 0.9em;">
+<strong>Questions ?</strong> Consultez la <a href="faq.html">FAQ</a> ou les <a href="sources.html">sources académiques</a> pour plus de détails sur la méthodologie de Time2Crack.
+      </p>
+</section>
+
+</main>
+<footer id="site-footer" class="site-footer">
+  <p>Calcul local · vérification HIBP · Open source</p>
+  <div class="footer-social">
+    <a href="https://linkedin.com/company/time2crack" class="footer-social__link" aria-label="Suivez-nous sur LinkedIn">
+      <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" width="24" height="24">
+        <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+      </svg>
+    </a>
+    <a href="https://bsky.social/profile/time2crack.bsky.social" class="footer-social__link" aria-label="Suivez-nous sur Bluesky">
+      <img src="/bluesky-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+    <a href="https://fosstodon.org/@time2crack" class="footer-social__link" aria-label="Suivez-nous sur Mastodon">
+      <img src="/mastodon-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+  </div>
+</footer>
+<script src="/includes.js" defer></script>
+</body>
+</html>

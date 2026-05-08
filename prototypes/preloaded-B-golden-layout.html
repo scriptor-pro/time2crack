@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype B — Preloaded Golden Layout</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+/* === OVERRIDE: tout visible dès le départ === */
+.results.is-empty .attacker-frame,
+.results.is-empty .secondary-panels,
+.results.is-empty .details-summary {
+  display: block !important;
+}
+.attacker-frame { display: block !important; }
+.results { opacity: 1 !important; pointer-events: auto !important; }
+.strength-bar-wrapper .bar-label { display: flex !important; }
+.live-details-visible[hidden] { display: grid !important; }
+.character-analysis-live-wrapper[hidden] { display: block !important; }
+
+/* === SPIRALE DORÉE : réorganisation des détails === */
+
+/* Zone B (détails) : heatmap 61.8% + stats 38.2% côte à côte */
+.details-summary {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+.phi-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+@media (min-width: 480px) {
+  .phi-split {
+    grid-template-columns: 61.8fr 38.2fr;
+  }
+}
+
+/* Heatmap dans un cadre */
+.heatmap-frame {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  background: var(--surface-alt);
+}
+.heatmap-frame-title {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+/* Stats 2x2 compact */
+.stats-compact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+.stats-compact .detail-item {
+  padding: 0.5rem 0.35rem;
+  min-height: auto;
+}
+.stats-compact .detail-value {
+  font-size: clamp(1rem, 3vw, 1.3rem);
+}
+.stats-compact .detail-label {
+  font-size: 0.55rem;
+}
+
+/* Séparateur phi */
+.phi-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  margin: 0.6rem 0;
+}
+
+/* === ÉTAT VIDE === */
+.big-duration.waiting {
+  font-size: clamp(1.6rem, 5vw, 2.2rem) !important;
+  color: var(--border-strong) !important;
+  font-weight: 700;
+}
+.big-date.waiting { color: var(--border-strong) !important; }
+.detail-value.waiting { color: var(--border-strong) !important; }
+.qp-badge.waiting {
+  background: var(--surface-elev) !important;
+  color: var(--text-muted) !important;
+  opacity: 0.6;
+}
+
+/* Heatmap placeholder */
+.heatmap-placeholder {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  min-height: 1.6rem;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+.heatmap-placeholder .dot {
+  width: 26px; height: 26px;
+  border-radius: 4px;
+  background: var(--surface-elev);
+  border: 1px solid var(--border);
+}
+
+/* Bandeau prototype */
+.proto-label {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: #2563EB; color: #fff;
+  text-align: center; font-size: 0.72rem; font-weight: 700;
+  padding: 0.3rem; z-index: 9999;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+body { padding-top: 1.8rem; }
+
+/* Masquer le details-grid original (remplacé par phi-split) */
+.details-summary > .details-grid.live-details-visible {
+  display: none !important;
+}
+.details-summary > .character-analysis-live-wrapper {
+  display: none !important;
+}
+
+/* Proposition B - section temps de craquage par attaque */
+.secondary-panels {
+  width: 100%;
+}
+
+.cracktime-proposal-b {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  padding: 0.8rem;
+}
+
+.ct-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.7rem;
+}
+
+.ct-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ct-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.ct-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+
+.ct-controls select {
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-elev);
+  color: var(--text);
+  font: inherit;
+  padding: 0.45rem 0.55rem;
+}
+
+@media (min-width: 520px) {
+  .ct-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.ct-fastest {
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  background: linear-gradient(180deg, var(--surface), var(--surface-alt));
+  margin-bottom: 0.6rem;
+}
+
+.ct-fastest-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-muted);
+}
+
+.ct-fastest-value {
+  margin-top: 0.28rem;
+  font-size: clamp(1.2rem, 4.5vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.12;
+  color: var(--text-lighter);
+}
+
+.ct-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.ct-row {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 0.5rem 0.55rem;
+}
+
+.ct-row-top {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4rem;
+  align-items: start;
+}
+
+.ct-name {
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.ct-time {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-lighter);
+}
+
+.ct-desc {
+  margin-top: 0.15rem;
+  font-size: 0.71rem;
+  color: var(--text-muted);
+}
+
+.ct-bar {
+  height: 7px;
+  border-radius: 999px;
+  margin-top: 0.4rem;
+  background: var(--surface-elev);
+  overflow: hidden;
+}
+
+.ct-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #50a2f8);
+}
+</style>
+</head>
+<body>
+
+<div class="proto-label">Prototype B — Spirale dorée · Layout actuel · Zone A (61.8%) + Zone B (38.2%)</div>
+
+<header class="site-header">
+  <div class="header-left">
+    <a href="#" class="logo-link" aria-label="Time2Crack">
+      <span class="logo-text"><span class="logo-time">Time</span><span class="logo-2">2</span><span class="logo-crack">Crack</span></span>
+    </a>
+  </div>
+</header>
+
+<main id="main-content" role="main">
+  <section class="input-section">
+    <p class="subtitle">Et si un hacker s'en prenait à votre mot de passe ? Tapez-le pour voir combien de temps il tiendrait. Tout est calculé sur votre appareil — rien ne quitte votre navigateur.</p>
+
+    <div class="password-wrapper-row">
+      <div class="password-wrapper">
+        <input type="password" id="password-input" autocomplete="off" spellcheck="false" placeholder="Testez votre mot de passe" />
+        <button type="button" id="toggle-visibility" aria-label="Afficher">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <button type="button" id="reset-btn" class="reset-btn-inline" aria-label="Reset">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      </button>
+    </div>
+
+    <div class="controls-row">
+      <span class="hint" id="password-hint">
+        <span id="hint-text">🔒 <strong>100 % local</strong> — aucun mot de passe n'est transmis.</span>
+      </span>
+    </div>
+
+    <!-- Strength Bar -->
+    <div class="strength-bar-wrapper">
+      <div class="bar-label" id="bar-label">
+        <span class="strength-icon" id="strength-icon">—</span>
+        <span id="strength-label">En attente</span>
+        <span id="strength-bits" class="strength-bits"></span>
+      </div>
+      <div class="strength-bar-segments">
+        <div class="segment segment-critical" data-level="0"></div>
+        <div class="segment segment-danger" data-level="1"></div>
+        <div class="segment segment-warning" data-level="2"></div>
+        <div class="segment segment-success" data-level="3"></div>
+        <div class="segment segment-excellent" data-level="4"></div>
+        <div class="segment segment-exceptional" data-level="5"></div>
+      </div>
+    </div>
+
+    <!-- ===== ZONE A : Input + Crack Time (61.8% d'attention) ===== -->
+    <div class="results visible" id="results">
+      <div class="attacker-frame" id="attacker-frame">
+        <!-- Onglets -->
+        <div class="attacker-tabs" role="tablist">
+          <div class="attacker-tab-wrapper is-active">
+            <button class="attacker-tab is-active" role="tab" aria-selected="true" id="tab-experienced">Expérimenté</button>
+            <div class="attacker-tab-description">12× RTX 4090 GPUs</div>
+          </div>
+          <div class="attacker-tab-wrapper">
+            <button class="attacker-tab" role="tab" aria-selected="false" id="tab-professional">Professionnel</button>
+            <div class="attacker-tab-description">~100 GPUs</div>
+          </div>
+        </div>
+
+        <!-- Panneau Expérimenté -->
+        <div class="attacker-panel is-active" id="panel-experienced">
+          <div class="label" id="result-label-fast">Attaquant expérimenté · 12× RTX 4090</div>
+          <div class="big-duration waiting" id="crack-duration-fast">Temps de craquage</div>
+          <div class="big-date waiting" id="crack-date-fast"></div>
+          <p class="result-sentence" id="result-sentence-fast" style="color: var(--text-muted); opacity: 0.5;">Entrez un mot de passe pour voir le résultat.</p>
+        </div>
+
+        <!-- Quality + Pattern + HIBP Status Bar -->
+        <div class="quality-pattern-bar" id="quality-pattern-bar">
+          <div class="qp-row">
+            <p class="qp-row-label">Analyse</p>
+            <div class="qp-row-badges">
+              <div class="qp-badge-wrapper">
+                <div>
+                  <span class="qp-label"><span aria-hidden="true">🎲</span> Entropie</span>
+                  <p class="entropy-desc">Longueur + Variété + Imprévisibilité</p>
+                </div>
+                <span class="qp-badge waiting" id="quality-badge">—</span>
+              </div>
+              <div class="qp-badge-wrapper">
+                <div>
+                  <span class="qp-label"><span aria-hidden="true">📊</span> Structure</span>
+                  <p class="entropy-desc">L'arrangement des caractères est-il reconnaissable ?</p>
+                </div>
+                <span class="qp-badge waiting" id="pattern-badge">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="qp-row">
+            <p class="qp-row-label">Votre mot de passe a-t-il déjà été piraté ?</p>
+            <div class="qp-row-badges">
+              <div class="qp-badge-wrapper">
+                <span class="qp-label"><span aria-hidden="true">🔒</span> HIBP</span>
+                <span class="qp-badge waiting" id="hibp-status-badge">En attente</span>
+              </div>
+              <div class="qp-badge-wrapper qp-rockyou-wrapper" id="qp-rockyou-wrapper">
+                <div>
+                  <span class="qp-label"><span aria-hidden="true">💀</span> RockYou</span>
+                  <p class="entropy-desc" id="rockyou-hint">Cliquer pour vérifier · 17 MB à télécharger</p>
+                </div>
+                <span class="qp-badge" id="rockyou-status-badge" style="cursor:pointer; border: 1px dashed var(--text-muted); background: transparent; color: var(--text-muted);">Vérifier RockYou</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SÉPARATEUR PHI ===== -->
+      <div class="phi-divider"></div>
+
+      <!-- ===== ZONE B : Détails (38.2%) ===== -->
+      <div class="details-summary">
+        <!-- Phi split: Heatmap 61.8% | Stats 38.2% -->
+        <div class="phi-split">
+          <!-- Heatmap -->
+          <div class="heatmap-frame">
+            <div class="heatmap-frame-title">Analyse caractère par caractère</div>
+            <div class="character-analysis-live" id="character-analysis-live">
+              <div class="heatmap-placeholder" id="heatmap-placeholder">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+              </div>
+            </div>
+            <div class="character-legend">
+              <span class="legend-item"><span class="char-badge char-strong">✔</span><span class="legend-label">Imprévisible</span></span>
+              <span class="legend-item"><span class="char-badge char-medium">◐</span><span class="legend-label">Modéré</span></span>
+              <span class="legend-item"><span class="char-badge char-weak">✘</span><span class="legend-label">Prévisible</span></span>
+            </div>
+          </div>
+
+          <!-- Stats 2x2 -->
+          <div class="stats-compact">
+            <div class="detail-item" role="listitem">
+              <div class="detail-value waiting" id="detail-length-live">—</div>
+              <div class="detail-label">Caractères</div>
+            </div>
+            <div class="detail-item" role="listitem">
+              <div class="detail-value waiting" id="detail-charset-live">—</div>
+              <div class="detail-label">Taille du jeu</div>
+            </div>
+            <div class="detail-item" role="listitem">
+              <div class="detail-value waiting" id="detail-entropy-live">—</div>
+              <div class="detail-label">Bits d'entropie</div>
+            </div>
+            <div class="detail-item" role="listitem">
+              <div class="detail-value waiting" id="detail-combos-live">—</div>
+              <div class="detail-label">Combinaisons</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Elements cachés originaux (overridden par CSS) -->
+        <div class="character-analysis-live-wrapper" id="character-analysis-live-wrapper" hidden></div>
+        <div class="details-grid live-details-visible" id="live-details-visible" hidden></div>
+      </div>
+
+      <!-- ===== VERSION ACTUELLE DES 3 SECTIONS (copie 100% index.html) ===== -->
+      <div class="phi-divider"></div>
+      <div class="secondary-panels">
+        <section class="cracktime-proposal-b" aria-label="Temps de craquage par type d'attaque">
+          <div class="ct-head">
+            <div class="ct-title">Temps de craquage par type d'attaque</div>
+            <div class="ct-sub">Proposition B - echelle visuelle des attaques applicables uniquement.</div>
+          </div>
+
+          <div class="ct-controls">
+            <select id="ct-algo" aria-label="Algorithme de hash">
+              <option value="md5">MD5</option>
+              <option value="sha1">SHA-1</option>
+              <option value="sha256" selected>SHA-256</option>
+              <option value="ntlm">NTLM</option>
+              <option value="bcrypt">bcrypt</option>
+              <option value="argon2">Argon2id</option>
+            </select>
+            <select id="ct-profile" aria-label="Profil attaquant">
+              <option value="1">Amateur (1 GPU)</option>
+              <option value="12" selected>Experimente (12 GPU)</option>
+              <option value="100">Professionnel (100 GPU)</option>
+              <option value="10000">Nation-state (10000 GPU)</option>
+            </select>
+          </div>
+
+          <div class="ct-fastest">
+            <span class="ct-fastest-label">Attaque dominante</span>
+            <div class="ct-fastest-value" id="ct-fastest">En attente</div>
+          </div>
+
+          <div class="ct-list" id="ct-list"></div>
+        </section>
+      </div>
+
+      <details class="attack-descriptions" id="attack-descriptions">
+        <summary>
+          <span class="summary-main">
+            <svg class="lucide lucide-info" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
+            </svg>
+            <span data-i18n="attackDescriptions">Descriptions des types d'attaque</span>
+          </span>
+          <svg class="lucide lucide-chevron-down ui-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </summary>
+
+        <div class="attack-desc-content">
+          <!-- Brute Force -->
+          <div class="attack-desc-item" id="attack-brute">
+            <h3 data-i18n="aBrute">Brute Force</h3>
+            <p data-i18n-html="descBrute">Teste tous les caractères possibles séquentiellement (aaa, aab, aac...). Extrêmement lent pour les longs mots de passe mais ne dépend d'aucune connaissance préalable. Vitesse : O(charset^length).</p>
+          </div>
+
+          <!-- Dictionary -->
+          <div class="attack-desc-item" id="attack-dict">
+            <h3 data-i18n="aDict">Dictionary Attack</h3>
+            <p data-i18n-html="descDict">Teste des mots courants et des variantes contre une base de ~14 milliards de mots de passe leakés (HIBP). Très efficace si le mot de passe contient des mots du dictionnaire. Vitesse : O(wordlist_size).</p>
+          </div>
+
+          <!-- Hybrid -->
+          <div class="attack-desc-item" id="attack-hybrid">
+            <h3 data-i18n="aHybrid">Hybrid Attack</h3>
+            <p data-i18n-html="descHybrid">Combine dictionnaire + mutations basées sur des règles (capitalization, number substitution, special characters). Ex: "password" → "P@ssw0rd!", "PASSWORD123", etc. Très efficace pour les mots avec modifications prévisibles.</p>
+          </div>
+
+          <!-- Mask -->
+          <div class="attack-desc-item" id="attack-mask">
+            <h3 data-i18n="aMask">Mask Attack</h3>
+            <p data-i18n-html="descMask">Cible les structures prévisibles (Uppercase + lowercase + digits + symbols dans des positions connues). Ex: "Name123!" ou "CapsWord+digits". Exploite les patterns humains courants.</p>
+          </div>
+
+          <!-- Rainbow Table -->
+          <div class="attack-desc-item" id="attack-rainbow">
+            <h3 data-i18n="aRainbow">Rainbow Table</h3>
+            <p data-i18n-html="descRainbow">Lookup instantané sur des tables pré-calculées de hashes (MD5, SHA-1, NTLM). Très rapide mais nécessite : (1) hashes non-salés, (2) tables déjà construites (~150 GB). Ineffectif contre bcrypt/Argon2id (salés et lents).</p>
+          </div>
+
+          <!-- Credential Stuffing -->
+          <div class="attack-desc-item" id="attack-cred">
+            <h3 data-i18n="aCred">Credential Stuffing</h3>
+            <p data-i18n-html="descCred">Teste des paires email/mot de passe connues de breaches précédentes. Exploite la réutilisation : si votre email/password était dans un leak, l'attaquant l'essaiera partout. Très efficace mais dépend de la réutilisation.</p>
+          </div>
+
+          <!-- Password Spraying -->
+          <div class="attack-desc-item" id="attack-spray">
+            <h3 data-i18n="aSpray">Password Spraying</h3>
+            <p data-i18n-html="descSpray">Teste les mots de passe les plus courants (top 1000) contre BEAUCOUP de comptes/emails. Ex: tester "123456", "password", "qwerty" sur 1 million d'emails. Très efficace pour les mots faibles à grande échelle.</p>
+          </div>
+
+          <!-- Markov -->
+          <div class="attack-desc-item" id="attack-markov">
+            <h3 data-i18n="aMarkov">Markov Attack</h3>
+            <p data-i18n-html="descMarkov">Utilise des chaînes de Markov pour prédire les séquences de caractères probables selon les patterns observés dans les mots de passe leakés. Privilégie les combinaisons statistiquement courantes. Efficace contre les structures "humaines".</p>
+          </div>
+
+          <!-- PCFG -->
+          <div class="attack-desc-item" id="attack-pcfg">
+            <h3 data-i18n="aPCFG">PCFG (Probabilistic Context-Free Grammar)</h3>
+            <p data-i18n-html="descPCFG">Exploite les structures grammaticales des mots de passe (Word+digits+symbol, Uppercase+lowercase, etc.). Teste d'abord les structures les plus probables. Peut craquer "excellent" (72 bits) en ~1 sec même si brute force prend 2^72 ans. Très puissant contre structures prévisibles.</p>
+          </div>
+
+          <!-- Combinator -->
+          <div class="attack-desc-item" id="attack-combi">
+            <h3 data-i18n="aCombi">Combinator Attack</h3>
+            <p data-i18n-html="descCombi">Concatène 2 mots du dictionnaire (passphrases). Ex: "correcthorsebatterystaple" = "correct" + "horse" + "battery" + "staple". Efficace contre les paraphrases qui semblent fortes mais combinent peu de mots.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="methodology" id="methodology">
+       <summary class="methodology-summary">
+         <span class="summary-main"
+           ><svg
+             class="lucide lucide-microscope"
+             width="18"
+             height="18"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true"
+           >
+             <path d="M6 18h8" />
+             <path d="M3 22h18" />
+             <path d="M14 22a7 7 0 0 0 0-14h-1" />
+             <path d="M9 14h2" />
+             <path d="M9 10h2" />
+             <path d="M10 6V4a1 1 0 0 1 1-1h1" />
+             <path d="M13 3h2" />
+             <path d="m14 8 2-2" />
+             <path d="m16 6 2 2" />
+           </svg>
+           <span data-i18n="methTitle">Methodology and sources</span></span
+         >
+         <svg
+           class="lucide lucide-chevron-down ui-chevron"
+           width="20"
+           height="20"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           stroke-width="2"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           aria-hidden="true"
+         >
+           <polyline points="6 9 12 15 18 9" />
+         </svg>
+       </summary>
+       <div id="meth-content" data-i18n-html="methContent"></div>
+       <ul class="source-list">
+         <li>
+           <strong
+             >Wheeler, D. (2016). "zxcvbn: Low-Budget Password Strength
+             Estimation"</strong
+           >USENIX Security '16 - peer-reviewed.<br /><a
+             href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler"
+             target="_blank"
+             rel="noopener"
+             >usenix.org</a
+           >
+         </li>
+         <li>
+           <strong>Hive Systems - Password Table 2025</strong>Hashcat
+           benchmarks 12× RTX 4090, bcrypt.<br /><a
+             href="https://www.hivesystems.com/blog/are-your-passwords-in-the-green"
+             target="_blank"
+             rel="noopener"
+             >hivesystems.com</a
+           >
+         </li>
+         <li>
+           <strong>Kaspersky (2024). 193M passwords study</strong>45% cracked
+           in &lt; 1 min.<br /><a
+             href="https://securelist.com/password-brute-force-time/112984/"
+             target="_blank"
+             rel="noopener"
+             >securelist.com</a
+           >
+         </li>
+         <li>
+           <strong
+             >Saputra et al. (2025). "Password Strength Study Using
+             Zxcvbn..."</strong
+           >Pilar Nusa Mandiri, Vol. 21 No. 1.<br /><a
+             href="https://www.researchgate.net/publication/389902836"
+             target="_blank"
+             rel="noopener"
+             >ResearchGate</a
+           >
+         </li>
+         <li>
+           <strong>Hashcat Benchmarks RTX 4090 (Chick3nman)</strong><br /><a
+             href="https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd"
+             target="_blank"
+             rel="noopener"
+             >GitHub Gist</a
+           >
+         </li>
+         <li>
+           <strong>Have I Been Pwned (Troy Hunt)</strong>14B+ compromised
+           credentials.<br /><a
+             href="https://haveibeenpwned.com/"
+             target="_blank"
+             rel="noopener"
+             >haveibeenpwned.com</a
+           >
+         </li>
+         <li>
+           <strong>Gosney, J. (2016). "8× GTX 1080 Hashcat Benchmarks"</strong
+           >Sagitta Brutalis system - 334 GH/s NTLM, first to break 330 GH/s.<br /><a
+             href="https://gist.github.com/epixoip/a83d38f412b4737e99bbef804a270c40"
+             target="_blank"
+             rel="noopener"
+             >GitHub Gist</a
+           >
+         </li>
+         <li>
+           <strong>Pasquini et al. (2021). "Reducing Bias in Modeling Real-world Password Strength"</strong
+           >USENIX Security '21 - Deep learning analysis of advanced attacker capabilities.<br /><a
+             href="https://arxiv.org/abs/2010.12269"
+             target="_blank"
+             rel="noopener"
+             >arXiv.org</a
+           >
+         </li>
+         <li>
+           <strong>Amazon Web Services (2024). "EC2 P4d Instances"</strong
+           >Cloud GPU clusters - Thousands of A100 GPUs for professional-scale attacks.<br /><a
+             href="https://aws.amazon.com/ec2/instance-types/p4/"
+             target="_blank"
+             rel="noopener"
+             >aws.amazon.com</a
+           >
+         </li>
+         <li>
+           <strong>Sprengers, M. (2011). "GPU-Based Password Cracking"</strong
+           >Master's thesis, Radboud University - Academic baseline for GPU performance.<br /><a
+             href="https://www.cs.ru.nl/masters-theses/2011/M_Sprengers___GPU-based_password_cracking.pdf"
+             target="_blank"
+             rel="noopener"
+             >Radboud University</a
+           >
+         </li>
+         <li>
+           <strong>Hatzivasilis & Papaefstathiou (2015). "Password Hashing Competition"</strong
+           >Multi-GPU cracking efficiency analysis.<br /><a
+             href="https://eprint.iacr.org/2015/265.pdf"
+             target="_blank"
+             rel="noopener"
+             >IACR ePrint</a
+           >
+         </li>
+       </ul>
+     </details>
+    </div>
+  </section>
+</main>
+
+<script>
+const input = document.getElementById('password-input');
+const toggle = document.getElementById('toggle-visibility');
+const resetBtn = document.getElementById('reset-btn');
+
+toggle.addEventListener('click', () => { input.type = input.type === 'password' ? 'text' : 'password'; });
+resetBtn.addEventListener('click', () => { input.value = ''; input.dispatchEvent(new Event('input')); input.focus(); });
+
+const levels = [
+  { max:20, icon:'💀', text:'Très faible', segs:1, dur:'Instantané', date:'Maintenant', color:'var(--critical)' },
+  { max:40, icon:'⚠️', text:'Faible', segs:2, dur:'2 minutes', date:'Maintenant', color:'var(--danger)' },
+  { max:60, icon:'◐', text:'Moyen', segs:3, dur:'3 jours', date:'Jeudi prochain', color:'var(--warning)' },
+  { max:80, icon:'✓', text:'Bon', segs:4, dur:'218 millions d\'années', date:'Après la mort du soleil', color:'var(--success)' },
+  { max:120, icon:'🔥', text:'Excellent', segs:5, dur:'10¹⁸ années', date:'Jamais', color:'var(--excellent)' },
+  { max:Infinity, icon:'✨', text:'Exceptionnel', segs:6, dur:'10⁴² années', date:'Jamais', color:'var(--exceptional)' },
+];
+const badgeColors = ['var(--critical)','var(--danger)','var(--warning)','var(--success)','var(--excellent)','var(--exceptional)'];
+
+const ctAlgo = document.getElementById('ct-algo');
+const ctProfile = document.getElementById('ct-profile');
+const ctFastest = document.getElementById('ct-fastest');
+const ctList = document.getElementById('ct-list');
+
+const ctAlgos = {
+  md5: { rate: 168.9e9, salted: false },
+  sha1: { rate: 50.86e9, salted: false },
+  sha256: { rate: 22.68e9, salted: false },
+  ntlm: { rate: 288.5e9, salted: false },
+  bcrypt: { rate: 184000, salted: true },
+  argon2: { rate: 800, salted: true },
+};
+
+const ctAttackDefs = [
+  {
+    name: 'Brute force',
+    desc: 'Teste toutes les combinaisons sans hypothese.',
+    applicable: () => true,
+    attempts: ({ combos }) => combos,
+  },
+  {
+    name: 'Dictionnaire',
+    desc: 'Teste des mots courants et des fuites connues.',
+    applicable: ({ hasWord }) => hasWord,
+    attempts: ({ common }) => (common ? 1000 : 14e9),
+  },
+  {
+    name: 'Hybride',
+    desc: 'Dictionnaire + variantes (majuscules/chiffres/symboles).',
+    applicable: ({ hasWord, hasDigit, hasSymbol }) => hasWord && (hasDigit || hasSymbol),
+    attempts: () => 14e9 * 1000,
+  },
+  {
+    name: 'Mask',
+    desc: 'Exploite une structure previsibles du mot de passe.',
+    applicable: ({ structured, hasSequence }) => structured || hasSequence,
+    attempts: () => 1e8,
+  },
+  {
+    name: 'Rainbow table',
+    desc: 'Recherche instantanee sur hash non sale deja precalcule.',
+    applicable: ({ common, salted }) => common && !salted,
+    attempts: () => 1,
+  },
+  {
+    name: 'Credential stuffing',
+    desc: 'Reutilise des identifiants deja compromis.',
+    applicable: ({ common }) => common,
+    attempts: () => 100,
+  },
+  {
+    name: 'Password spraying',
+    desc: 'Teste quelques mots faibles sur beaucoup de comptes.',
+    applicable: ({ common, len }) => common || len < 10,
+    attempts: () => 1000,
+  },
+  {
+    name: 'Markov',
+    desc: 'Priorise les sequences de caracteres probables.',
+    applicable: ({ hasWord, hasSequence }) => hasWord || hasSequence,
+    attempts: ({ combos }) => Math.max(1e7, combos * 0.01),
+  },
+  {
+    name: 'PCFG',
+    desc: 'Priorise les structures grammaticales frequentes.',
+    applicable: ({ structured, hasWord }) => structured || hasWord,
+    attempts: ({ combos }) => Math.max(5e7, combos * 0.05),
+  },
+  {
+    name: 'Combinator',
+    desc: 'Assemble plusieurs mots de dictionnaire en passphrase.',
+    applicable: ({ passphrase }) => passphrase,
+    attempts: () => 5e10,
+  },
+];
+
+function ctFmtTime(seconds) {
+  if (!Number.isFinite(seconds)) return 'n/a';
+  if (seconds < 1e-6) return 'quasi instantane';
+  if (seconds < 1) return '< 1 s';
+  if (seconds < 60) return `${Math.round(seconds)} s`;
+  if (seconds < 3600) return `${Math.round(seconds / 60)} min`;
+  if (seconds < 86400) return `${Math.round(seconds / 3600)} h`;
+  if (seconds < 31557600) return `${Math.round(seconds / 86400)} j`;
+  if (seconds < 3155760000) return `${(seconds / 31557600).toFixed(1)} ans`;
+  return `${seconds.toExponential(2)} s`;
+}
+
+function ctForecastDate(seconds) {
+  if (!Number.isFinite(seconds)) return 'Date hors horizon';
+  if (seconds < 60) return 'Maintenant';
+  if (seconds > 3155760000) return 'Au-dela de 100 ans';
+  const dt = new Date(Date.now() + seconds * 1000);
+  return dt.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function ctBuildRows(pw, len, combos, algoKey, profileMult) {
+  const algo = ctAlgos[algoKey];
+  const speed = algo.rate * profileMult;
+  const ctx = {
+    len,
+    combos,
+    salted: algo.salted,
+    hasWord: /[a-z]{4,}/i.test(pw),
+    hasDigit: /\d/.test(pw),
+    hasSymbol: /[^a-zA-Z0-9]/.test(pw),
+    common: /^(password|123456|123456789|qwerty|azerty|admin|welcome|letmein|iloveyou)$/i.test(pw),
+    structured: /^[A-Z]?[a-z]{3,}\d{1,4}[!@#$%^&*]?$/.test(pw),
+    hasSequence: /(0123|1234|2345|abcd|bcde|qwer|asdf|zxcv)/i.test(pw),
+    passphrase: /[a-z]{4,}[\s\-_][a-z]{4,}/i.test(pw) || /[a-z]{12,}/i.test(pw),
+  };
+
+  return ctAttackDefs
+    .filter((atk) => atk.applicable(ctx))
+    .map((atk) => ({
+      ...atk,
+      seconds: atk.attempts(ctx) / speed,
+    }))
+    .sort((a, b) => a.seconds - b.seconds);
+}
+
+function renderAttackProposalB(pw, len, combos) {
+  if (!len) {
+    ctFastest.textContent = 'En attente';
+    ctList.innerHTML = '';
+    return;
+  }
+
+  const rows = ctBuildRows(pw, len, combos, ctAlgo.value, Number(ctProfile.value));
+
+  if (!rows.length) {
+    ctFastest.textContent = 'En attente';
+    ctList.innerHTML = '';
+    return;
+  }
+
+  ctFastest.textContent = `${rows[0].name} - ${ctFmtTime(rows[0].seconds)}`;
+
+  const maxLog = Math.log10(rows[rows.length - 1].seconds + 1);
+  ctList.innerHTML = rows.map((row) => {
+    const pct = maxLog === 0 ? 100 : (Math.log10(row.seconds + 1) / maxLog) * 100;
+    return `
+      <article class="ct-row">
+        <div class="ct-row-top">
+          <div>
+            <div class="ct-name">${row.name}</div>
+            <p class="ct-desc">${row.desc}</p>
+          </div>
+          <div class="ct-time">${ctFmtTime(row.seconds)}</div>
+        </div>
+        <div class="ct-bar"><span style="width:${Math.max(6, pct)}%"></span></div>
+      </article>
+    `;
+  }).join('');
+}
+
+function charClass(c, i, pw) {
+  if (/[!@#$%^&*()\-_+=\[\]{}|\\;:'",.<>?/`~]/.test(c)) return 'char-strong';
+  if (/[A-Z]/.test(c)) return i === 0 ? 'char-weak' : 'char-strong';
+  if (/[0-9]/.test(c)) return (i < 3 || i === pw.length - 1) ? 'char-weak' : 'char-medium';
+  return 'char-medium';
+}
+
+input.addEventListener('input', () => {
+  const rawPw = input.value;
+  const pw = rawPw.length ? rawPw : 'DemoPassphrase2026!';
+  const n = pw.length;
+  let cs = 0;
+  if (/[a-z]/.test(pw)) cs += 26;
+  if (/[A-Z]/.test(pw)) cs += 26;
+  if (/[0-9]/.test(pw)) cs += 10;
+  if (/[^a-zA-Z0-9]/.test(pw)) cs += 33;
+  const ent = n > 0 ? Math.round(n * Math.log2(Math.max(cs, 2))) : 0;
+  const combos = n > 0 ? Math.pow(cs || 2, n) : 0;
+  const lvl = levels.find(l => ent < l.max) || levels[5];
+  const li = levels.indexOf(lvl);
+
+  // Strength bar
+  document.querySelectorAll('.segment').forEach((seg, i) => { seg.classList.toggle('active', i < lvl.segs); });
+
+  // Bar label
+  document.getElementById('strength-icon').textContent = lvl.icon;
+  document.getElementById('strength-label').textContent = lvl.text;
+  document.getElementById('strength-bits').textContent = '(' + ent + ' bits)';
+
+  // Crack time
+  const durEl = document.getElementById('crack-duration-fast');
+  const dateEl = document.getElementById('crack-date-fast');
+  const sentEl = document.getElementById('result-sentence-fast');
+  const continuousRows = ctBuildRows(pw, n, combos, 'sha256', 12);
+  const best = continuousRows[0];
+  const bestTime = best ? best.seconds : Number.POSITIVE_INFINITY;
+  durEl.textContent = ctFmtTime(bestTime);
+  durEl.className = 'big-duration';
+  if (bestTime < 3600) durEl.style.color = 'var(--critical)';
+  else if (bestTime < 31557600) durEl.style.color = 'var(--warning)';
+  else durEl.style.color = 'var(--success)';
+  dateEl.textContent = ctForecastDate(bestTime); dateEl.className = 'big-date';
+  sentEl.textContent = best
+    ? `Attaque dominante: ${best.name} via SHA-256 (profil experimente).`
+    : 'Aucune attaque applicable detectee.';
+  sentEl.style.color = ''; sentEl.style.opacity = '';
+
+  // Heatmap
+  const hm = document.getElementById('character-analysis-live');
+  hm.innerHTML = [...pw].map((c, i) => {
+    const cls = charClass(c, i, pw);
+    const sym = cls === 'char-strong' ? '✔' : cls === 'char-medium' ? '◐' : '✘';
+    const display = input.type === 'password' ? sym : c;
+    return '<span class="char-badge ' + cls + '">' + display + '</span>';
+  }).join('');
+
+  // Stats
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    el.textContent = val;
+    el.className = 'detail-value';
+  };
+  setVal('detail-length-live', n);
+  setVal('detail-charset-live', cs || '—');
+  setVal('detail-entropy-live', ent);
+  let cStr = '—';
+  if (combos < 1e6) cStr = Math.round(combos).toLocaleString('fr-FR');
+  else if (combos < 1e9) cStr = (combos / 1e6).toFixed(1) + ' millions';
+  else if (combos < 1e12) cStr = (combos / 1e9).toFixed(1) + ' milliards';
+  else cStr = combos.toExponential(1);
+  setVal('detail-combos-live', cStr);
+
+  // Badges
+  const qb = document.getElementById('quality-badge');
+  const pb = document.getElementById('pattern-badge');
+  const hb = document.getElementById('hibp-status-badge');
+  qb.textContent = lvl.text; qb.className = 'qp-badge'; qb.style.background = badgeColors[li]; qb.style.color = '#fff';
+  pb.textContent = ent < 40 ? 'Analyse : Trop court (< 8)' : ent < 80 ? 'Reconnaissable' : 'Aléatoire';
+  pb.className = 'qp-badge'; pb.style.background = ent < 40 ? 'var(--critical)' : ent < 80 ? 'var(--warning)' : 'var(--success)'; pb.style.color = '#fff';
+  hb.textContent = '⏳ Vérification...'; hb.className = 'qp-badge'; hb.style.background = 'var(--warning)'; hb.style.color = '#fff';
+  setTimeout(() => {
+    if (input.value === rawPw) {
+      const leaked = n < 8;
+      hb.textContent = leaked ? '💀 Trouvé - votre mot de passe est dans la base HIBP' : '✓ Non divulgué';
+      hb.style.background = leaked ? 'var(--critical)' : 'var(--success)';
+    }
+  }, 800);
+
+  renderAttackProposalB(pw, n, combos);
+});
+
+ctAlgo.addEventListener('change', () => {
+  input.dispatchEvent(new Event('input'));
+});
+
+ctProfile.addEventListener('change', () => {
+  input.dispatchEvent(new Event('input'));
+});
+
+input.dispatchEvent(new Event('input'));
+</script>
+</body>
+</html>

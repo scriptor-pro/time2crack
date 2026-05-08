@@ -1,0 +1,106 @@
+{
+  "lang": "pt",
+  "dir": "ltr",
+  "nav": {
+    "ariaLabel": "Navegação principal",
+    "langSelectLabel": "Selecionar idioma",
+    "openMenuLabel": "Abrir menu",
+    "closeMenuLabel": "Fechar menu",
+    "testPassword": "Testar uma senha",
+    "generatePassword": "Gerar uma senha",
+    "faq": "FAQ",
+    "about": "Sobre",
+    "science": "Ciência",
+    "security": "Segurança",
+    "howItWorks": "Como funciona",
+    "attackMethods": "Métodos de ataque",
+    "bruteForce": "Brute Force",
+    "dictionary": "Dictionary",
+    "hybrid": "Hybrid",
+    "mask": "Mask",
+    "markov": "Markov",
+    "pcfg": "PCFG",
+    "combinator": "Combinator",
+    "sources": "Fontes",
+    "hibp": "HIBP",
+    "privacy": "Privacidade",
+    "secondaryNavLabel": "Navegação secundária",
+    "drawerVersion": "v2.2.1 • Estimador de crack local 🔐"
+  },
+  "privacyNotice": {
+    "ariaLabel": "Aviso de privacidade",
+    "icon": "🔒",
+    "strong": "Tudo fica no seu navegador.",
+    "text": "Nenhuma senha é transmitida. A computação é totalmente local. A única solicitação externa é uma verificação anônima de vazamento (primeiros 5 caracteres do hash SHA-1, nunca a senha)."
+  },
+  "footer": {
+    "tagline": "Cálculo local · verificação HIBP · Código aberto",
+    "linkedinLabel": "Siga-nos no LinkedIn",
+    "blueskyLabel": "Siga-nos no Bluesky",
+    "mastodonLabel": "Siga-nos no Mastodon"
+  },
+  "pages": {
+    "index": {
+      "title": "Teste a força da sua senha — Time2Crack",
+      "description": "Analise a verdadeira força da sua senha com 7 modelos de ataque e 6 algoritmos hash. Cálculo 100% local, sem transmissão de senha."
+    },
+    "about": {
+      "title": "Sobre Time2Crack — Estimador científico de tempo de crack",
+      "description": "Descubra Time2Crack: a ferramenta de cálculo de tempo de crack mais precisa. Metodologia científica, fontes acadêmicas verificadas, análise local segura."
+    },
+    "privacy": {
+      "title": "Privacidade e segurança — Time2Crack",
+      "description": "Saiba como o Time2Crack trata os seus dados: cálculo local no navegador, sem transmissão da senha, e verificação mínima de fugas."
+    },
+    "sources": {
+      "title": "Fontes científicas — Time2Crack",
+      "description": "Consulte as referências científicas e benchmarks que validam o Time2Crack, da criptografia à estimativa de força."
+    },
+    "hibp": {
+      "title": "Verificação HIBP — Time2Crack",
+      "description": "Verifique se uma senha aparece numa fuga de dados com o HIBP através de uma consulta anónima e respeitadora da privacidade."
+    },
+    "faq": {
+      "title": "FAQ — Time2Crack",
+      "description": "Respostas às perguntas frequentes sobre o Time2Crack, o seu funcionamento local, a metodologia científica e os resultados."
+    },
+    "generator": {
+      "title": "Gerador seguro de senhas — Time2Crack",
+      "description": "Gere senhas fortes com o Time2Crack. Escolha conjuntos de caracteres, evite ambiguidades e crie segredos adequados ao seu uso."
+    },
+    "how-time2crack-works": {
+      "title": "Como o Time2Crack calcula o tempo — Time2Crack",
+      "description": "Compreenda como o Time2Crack estima o tempo de crack com os seus modelos de ataque, velocidades GPU calibradas e motor local."
+    },
+    "methodes": {
+      "bruteforce": {
+        "title": "Força bruta — Métodos de ataque — Time2Crack",
+        "description": "Teste sistematicamente todas as combinações possíveis. É o ataque mais exaustivo e uma boa referência."
+      },
+      "dictionary": {
+        "title": "Dicionário — Métodos de ataque — Time2Crack",
+        "description": "Teste senhas de listas selecionadas e variantes comuns. Rápido quando o segredo se baseia em palavras conhecidas."
+      },
+      "hybrid": {
+        "title": "Híbrido — Métodos de ataque — Time2Crack",
+        "description": "Combine dicionário, máscaras ou regras para ampliar os candidatos. Eficaz contra variações previsíveis."
+      },
+      "mask": {
+        "title": "Máscara — Métodos de ataque — Time2Crack",
+        "description": "Procure apenas padrões que correspondam a uma máscara conhecida, como letras, dígitos e símbolos em posições fixas."
+      },
+      "markov": {
+        "title": "Markov — Métodos de ataque — Time2Crack",
+        "description": "Gere candidatos a partir de probabilidades de transição aprendidas com senhas reais. Bom equilíbrio entre cobertura e velocidade."
+      },
+      "pcfg": {
+        "title": "PCFG — Métodos de ataque — Time2Crack",
+        "description": "Construa candidatos a partir de padrões gramaticais probabilísticos aprendidos da estrutura das senhas."
+      },
+      "combinator": {
+        "title": "Combinador — Métodos de ataque — Time2Crack",
+        "description": "Combine duas listas de palavras para criar um conjunto maior de candidatos. Útil quando a senha tem várias palavras."
+      }
+    }
+  }
+}

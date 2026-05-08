@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype 2: Pills with Badges - Attacker Selector</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+      color: #e0e0e0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #ff6600;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    /* Attacker Selector */
+    .attacker-selector-wrapper {
+      background: linear-gradient(135deg, #1e1e2e 0%, #252538 100%);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 30px;
+      border: 1px solid #3a3a52;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .selector-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    /* Pills Container */
+    .pills-container {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      flex: 1;
+      min-width: 180px;
+      background: #1a1a2e;
+      border: 2px solid #2a2a3e;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pill::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 102, 0, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .pill:hover {
+      transform: translateY(-2px);
+      border-color: #ff6600;
+      box-shadow: 0 8px 24px rgba(255, 102, 0, 0.2);
+    }
+
+    .pill:hover::before {
+      opacity: 1;
+    }
+
+    .pill.active {
+      background: linear-gradient(135deg, #ff6600 0%, #ff8833 100%);
+      border-color: #ff6600;
+      box-shadow: 0 8px 32px rgba(255, 102, 0, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .pill.active .pill-emoji,
+    .pill.active .pill-label,
+    .pill.active .pill-info,
+    .pill.active .pill-badge {
+      color: white;
+    }
+
+    .pill-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .pill-emoji {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .pill-badge {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ff6600;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .pill.active .pill-badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .pill-label {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #e0e0e0;
+    }
+
+    .pill-info {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    .pill-speed {
+      font-size: 11px;
+      color: #ff6600;
+      font-weight: 600;
+      margin-top: 8px;
+      display: block;
+    }
+
+    .pill.active .pill-speed {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Result Cards */
+    .result-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .result-card {
+      background: linear-gradient(135deg, #1e1e2e 0%, #252538 100%);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #3a3a52;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff4444, #ff6600);
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+
+    .result-card.updating::before {
+      transform: scaleX(1);
+    }
+
+    .card-fastest::before {
+      background: linear-gradient(90deg, #ff4444, #ff6600);
+    }
+
+    .card-slowest::before {
+      background: linear-gradient(90deg, #44ff88, #00ff88);
+    }
+
+    .card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .card-value {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .card-fastest .card-value {
+      color: #ff4444;
+    }
+
+    .card-slowest .card-value {
+      color: #44ff88;
+    }
+
+    .card-detail {
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      background: linear-gradient(135deg, #1e1e2e 0%, #252538 100%);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #3a3a52;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ff6600;
+    }
+
+    .stats-description {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #b0b0c0;
+      border-top: 1px solid #3a3a52;
+      padding-top: 16px;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .pills-container {
+        flex-direction: column;
+      }
+
+      .pill {
+        min-width: 100%;
+      }
+
+      .result-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Prototype 2: Pills with Badges</h1>
+    <p class="subtitle">Modern & Spacious Design</p>
+
+    <!-- Attacker Selector -->
+    <div class="attacker-selector-wrapper">
+      <div class="selector-title">Select Threat Level</div>
+
+      <div class="pills-container">
+        <div class="pill active" data-profile="experienced">
+          <div class="pill-header">
+            <span class="pill-emoji">💼</span>
+            <span class="pill-badge">Default</span>
+          </div>
+          <div class="pill-label">Experienced</div>
+          <div class="pill-info">12× RTX 4090 GPUs<br>Dedicated cybercriminal</div>
+          <span class="pill-speed">Baseline speed</span>
+        </div>
+
+        <div class="pill" data-profile="professional">
+          <div class="pill-header">
+            <span class="pill-emoji">🏢</span>
+            <span class="pill-badge">~8× Faster</span>
+          </div>
+          <div class="pill-label">Professional</div>
+          <div class="pill-info">~100 GPUs via cloud<br>Organized crime</div>
+          <span class="pill-speed">~28.8 TH/s NTLM</span>
+        </div>
+
+        <div class="pill" data-profile="nationstate">
+          <div class="pill-header">
+            <span class="pill-emoji">🏛️</span>
+            <span class="pill-badge">~800× Faster</span>
+          </div>
+          <div class="pill-label">Nation-state</div>
+          <div class="pill-info">~10,000 GPUs<br>Government agencies</div>
+          <span class="pill-speed">~2.88 PH/s NTLM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Cards -->
+    <div class="result-cards">
+      <div class="result-card card-fastest">
+        <div class="card-label">⚡ Fastest crack</div>
+        <div class="card-value" id="fastestTime">2.3 hours</div>
+        <div class="card-detail">NTLM brute force</div>
+      </div>
+
+      <div class="result-card card-slowest">
+        <div class="card-label">🛡️ Slowest crack</div>
+        <div class="card-value" id="slowestTime">47 centuries</div>
+        <div class="card-detail">Argon2id brute force</div>
+      </div>
+    </div>
+
+    <!-- Stats Panel -->
+    <div class="stats-panel">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">GPU Count</div>
+          <div class="stat-value" id="gpuCount">12</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">NTLM Speed</div>
+          <div class="stat-value" id="ntlmSpeed">3.5 TH/s</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">vs Baseline</div>
+          <div class="stat-value" id="vsBaseline">1×</div>
+        </div>
+      </div>
+      <div class="stats-description" id="profileDescription">
+        Represents a dedicated attacker with commercial-grade hardware. Well-documented baseline from Hive Systems 2025 and Hashcat benchmarks. Cited by Forbes, CNBC, BBC, and US Army.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Attacker profiles data
+    const PROFILES = {
+      experienced: {
+        label: 'Experienced',
+        gpus: '12',
+        ntlmSpeed: '3.5 TH/s',
+        vsBaseline: '1×',
+        description: 'Represents a dedicated attacker with commercial-grade hardware. Well-documented baseline from Hive Systems 2025 and Hashcat benchmarks. Cited by Forbes, CNBC, BBC, and US Army.',
+        fastest: '2.3 hours',
+        slowest: '47 centuries'
+      },
+      professional: {
+        label: 'Professional',
+        gpus: '~100',
+        ntlmSpeed: '28.8 TH/s',
+        vsBaseline: '8×',
+        description: 'Cloud-scale attacker using rental GPU clusters (AWS, Azure). Represents organized crime groups or Advanced Persistent Threat (APT) teams with significant resources.',
+        fastest: '17 minutes',
+        slowest: '5.6 centuries'
+      },
+      nationstate: {
+        label: 'Nation-state',
+        gpus: '~10,000',
+        ntlmSpeed: '2.88 PH/s',
+        vsBaseline: '800×',
+        description: 'Government-level threat actor with classified capabilities. Estimated based on publicly available cloud infrastructure. Actual capabilities are likely higher. Even at this level, bcrypt/Argon2id remain secure.',
+        fastest: '9.9 seconds',
+        slowest: '20 days'
+      }
+    };
+
+    let currentProfile = 'experienced';
+
+    // DOM elements
+    const pills = document.querySelectorAll('.pill');
+    const fastestTime = document.getElementById('fastestTime');
+    const slowestTime = document.getElementById('slowestTime');
+    const gpuCount = document.getElementById('gpuCount');
+    const ntlmSpeed = document.getElementById('ntlmSpeed');
+    const vsBaseline = document.getElementById('vsBaseline');
+    const profileDescription = document.getElementById('profileDescription');
+    const resultCards = document.querySelectorAll('.result-card');
+
+    // Pill click handler
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const profile = pill.dataset.profile;
+        if (profile === currentProfile) return;
+
+        // Update active state
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        // Update profile
+        updateProfile(profile);
+      });
+    });
+
+    // Update profile function
+    function updateProfile(profile) {
+      currentProfile = profile;
+      const data = PROFILES[profile];
+
+      // Add updating animation
+      resultCards.forEach(card => card.classList.add('updating'));
+
+      // Update after animation
+      setTimeout(() => {
+        fastestTime.textContent = data.fastest;
+        slowestTime.textContent = data.slowest;
+        gpuCount.textContent = data.gpus;
+        ntlmSpeed.textContent = data.ntlmSpeed;
+        vsBaseline.textContent = data.vsBaseline;
+        profileDescription.textContent = data.description;
+
+        // Remove updating class
+        setTimeout(() => {
+          resultCards.forEach(card => card.classList.remove('updating'));
+        }, 400);
+      }, 150);
+
+      // Save to localStorage
+      localStorage.setItem('attackerProfile', profile);
+    }
+
+    // Load saved profile on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('attackerProfile');
+      if (saved && PROFILES[saved]) {
+        pills.forEach(p => {
+          if (p.dataset.profile === saved) {
+            p.click();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

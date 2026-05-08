@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype : Tabs Horizontaux</title>
+  <style>
+    :root {
+      --bg: #161619;
+      --surface: #1d1f24;
+      --surface-elev: #20232a;
+      --border: #2a2a30;
+      --border-strong: #383944;
+      --text: #e8e6e3;
+      --text-muted: #9a9aa1;
+      --accent: #ff6600;
+      --accent-hover: #ff7f1a;
+      --confidence: #00c9a7;
+      --success: #2ecc71;
+      --danger: #ff5a5a;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: var(--accent);
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+    }
+
+    .result-card {
+      background: linear-gradient(135deg, #1f2330 0%, #181a20 100%);
+      border: 2px solid var(--danger);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .time-to-crack-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .big-duration {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--danger);
+      margin-bottom: 0.5rem;
+    }
+
+    .details-summary {
+      margin-bottom: 1.5rem;
+    }
+
+    .vuln-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .vuln-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      border: 1.5px solid var(--success);
+      background: rgba(46, 204, 113, 0.15);
+      color: var(--success);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hibp-safe {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      background: rgba(46, 204, 113, 0.1);
+      border: 2px solid var(--success);
+      border-radius: var(--radius-sm);
+      color: var(--success);
+      margin-bottom: 1.5rem;
+    }
+
+    .live-details {
+      background: var(--surface-elev);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-item {
+      text-align: center;
+    }
+
+    .detail-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* TABS NAVIGATION */
+    .tabs-container {
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .tabs-nav {
+      display: flex;
+      background: var(--surface-elev);
+      border-bottom: 1px solid var(--border-strong);
+      overflow-x: auto;
+    }
+
+    .tab-button {
+      flex: 1;
+      min-width: 150px;
+      padding: 1rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .tab-button:hover {
+      color: var(--text);
+      background: rgba(255, 102, 0, 0.05);
+    }
+
+    .tab-button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: rgba(255, 102, 0, 0.1);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 1.5rem;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ATTACK LIST */
+    .attack-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .attack-item {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s ease;
+    }
+
+    .attack-item:hover {
+      border-color: var(--accent);
+    }
+
+    .attack-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .attack-algo {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .attack-time {
+      text-align: right;
+      font-weight: 700;
+      color: var(--danger);
+    }
+
+    .attack-time.safe {
+      color: var(--success);
+    }
+
+    /* DESCRIPTIONS */
+    .description-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .description-item {
+      padding: 1.25rem;
+      background: var(--surface-elev);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-sm);
+    }
+
+    .description-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .description-text {
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+      .attack-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+
+      .attack-time {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Prototype : Tabs Horizontaux</h1>
+
+    <!-- Time to crack card -->
+    <div class="result-card">
+      <h2 class="time-to-crack-title">Time to crack:</h2>
+      <div class="big-duration">INSTANT</div>
+      <div>Now</div>
+      <p style="margin-top: 0.5rem; color: var(--text-muted);">via Dictionary — MD5</p>
+    </div>
+
+    <!-- Details summary (badges + HIBP) -->
+    <div class="details-summary">
+      <div class="vuln-tags">
+        <span class="vuln-tag">✓ Bonne diversité</span>
+        <span class="vuln-tag">✓ Excellente longueur</span>
+      </div>
+      <div class="hibp-safe">
+        <span style="font-size: 1.25rem;">✓</span>
+        <span>Ce mot de passe n'apparaît dans aucune fuite connue de Have I Been Pwned.</span>
+      </div>
+    </div>
+
+    <!-- Live details (always visible, full width) -->
+    <div class="live-details">
+      <div class="detail-item">
+        <div class="detail-value">16</div>
+        <div class="detail-label">Caractères</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-value">94</div>
+        <div class="detail-label">Taille charset</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-value">105</div>
+        <div class="detail-label">Bits d'entropie</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-value">2^105</div>
+        <div class="detail-label">Combinaisons</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-value" style="color: var(--success);">Excellent</div>
+        <div class="detail-label">État</div>
+      </div>
+    </div>
+
+    <!-- TABS CONTAINER -->
+    <div class="tabs-container">
+      <div class="tabs-nav">
+        <button class="tab-button active" data-tab="times">
+          ⚡ Temps de craquage
+        </button>
+        <button class="tab-button" data-tab="descriptions">
+          📖 Descriptions
+        </button>
+      </div>
+
+      <!-- Tab 1: Attack times -->
+      <div class="tab-content active" id="times">
+        <div class="attack-list">
+          <div class="attack-item">
+            <div>
+              <div class="attack-name">Dictionary</div>
+              <div class="attack-algo">MD5</div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">2,000 GH/s</div>
+            <div class="attack-time">INSTANT</div>
+          </div>
+          <div class="attack-item">
+            <div>
+              <div class="attack-name">Dictionary</div>
+              <div class="attack-algo">SHA-1</div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">610 GH/s</div>
+            <div class="attack-time">INSTANT</div>
+          </div>
+          <div class="attack-item">
+            <div>
+              <div class="attack-name">Hybrid</div>
+              <div class="attack-algo">MD5</div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">2,000 GH/s</div>
+            <div class="attack-time">3 secondes</div>
+          </div>
+          <div class="attack-item">
+            <div>
+              <div class="attack-name">Mask</div>
+              <div class="attack-algo">MD5</div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">2,000 GH/s</div>
+            <div class="attack-time">10 minutes</div>
+          </div>
+          <div class="attack-item">
+            <div>
+              <div class="attack-name">Rainbow Table</div>
+              <div class="attack-algo">MD5</div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Instant lookup</div>
+            <div class="attack-time">1 heure</div>
+          </div>
+          <div class="attack-item">
+            <div>
+              <div class="attack-name">Brute Force</div>
+              <div class="attack-algo">Argon2id</div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">800 H/s</div>
+            <div class="attack-time safe">13 millions d'années</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Descriptions -->
+      <div class="tab-content" id="descriptions">
+        <div class="description-list">
+          <div class="description-item">
+            <div class="description-title">
+              🔨 Brute Force
+            </div>
+            <div class="description-text">
+              Teste toutes les combinaisons possibles de caractères : 'aaa', 'aab', 'aac'... 
+              C'est la méthode la plus exhaustive mais aussi la plus lente. Chaque caractère supplémentaire 
+              multiplie le temps par 94×. C'est pourquoi les mots de passe longs (12+ caractères) résistent 
+              des millions d'années même contre cette attaque.
+            </div>
+          </div>
+          <div class="description-item">
+            <div class="description-title">
+              📖 Dictionary
+            </div>
+            <div class="description-text">
+              Utilise une base de 14+ milliards de mots de passe compromis issus de fuites de données 
+              (Have I Been Pwned). Teste d'abord les mots de passe les plus courants : 'password', '123456', 
+              'qwerty'. Cette attaque est instantanée car elle cible les patterns humains prévisibles.
+            </div>
+          </div>
+          <div class="description-item">
+            <div class="description-title">
+              🔀 Hybrid
+            </div>
+            <div class="description-text">
+              Combine attaque par dictionnaire et mutations. Prend un mot de base ('password') et applique 
+              ~1,000 variations : 'Password', 'password1', 'P@ssw0rd', 'password123'. Très efficace car 
+              les humains suivent des patterns prévisibles pour "renforcer" leurs mots de passe.
+            </div>
+          </div>
+          <div class="description-item">
+            <div class="description-title">
+              🎭 Mask
+            </div>
+            <div class="description-text">
+              Exploite les structures prévisibles : Majuscule + minuscules + chiffres (ex: 'Password123'). 
+              Au lieu de tester toutes les combinaisons, l'attaque se concentre sur les patterns humains 
+              typiques, réduisant l'espace de recherche de 99%.
+            </div>
+          </div>
+          <div class="description-item">
+            <div class="description-title">
+              🌈 Rainbow Table
+            </div>
+            <div class="description-text">
+              Tables précalculées de hashes pour les mots de passe courts (≤8 caractères). Permet une 
+              recherche instantanée : au lieu de calculer le hash, on le cherche dans une énorme base de 
+              données. Inefficace contre les algorithmes modernes avec sel (bcrypt, Argon2id).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.dataset.tab;
+        
+        // Remove active class from all buttons and contents
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Add active class to clicked button and corresponding content
+        button.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

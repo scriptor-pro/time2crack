@@ -1,0 +1,259 @@
+---
+lang: tr
+permalink: "/tr/privacy.html"
+layout: base.njk
+currentPage: privacy
+pageSlug: privacy.html
+mainClass: privacy-page
+pageTitle: "Gizlilik ve güvenlik — Time2Crack"
+pageDescription: "Time2Crack’in verilerinizi nasıl işlediğini öğrenin: tarayıcı içinde yerel hesaplama, şifre gönderimi yok ve minimum ihlal kontrolü."
+---
+
+<h1>Gizlilik &amp; Güvenlik</h1>
+<p style="font-size: 1.05em; color: #666; margin-bottom: 2em;">
+      Time2Crack'in ne yaptığını ve şifrenizle yapmadığınızı anlayın
+    </p>
+ =====
+What TIME2CRACK DOES
+===== 
+<section>
+<h2>What Time2Crack DOES</h2>
+<div class="privacy-section">
+<h3>1. Tarayıcınızda yerel tarama</h3>
+<ul class="does-list">
+<li><strong>Şifrenizi alın</strong> Sadece tarlada yazarken</li>
+<li><strong>Yerel olarak hesaplayın</strong> Tüm saldırı rütbeleri (eski, Markov vs.)</li>
+<li><strong>Show results results</strong> doğrudan ekranınızda</li>
+<li><strong>Şifreyi unutun</strong> Ne kadar kısa süre içinde terk veya değişiklik sayfası</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin-top: 1em;">
+          Tarayıcınız her yerde şifre göndermez - sadece tarama sırasında yerel RAM hafızada kalır.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>2. Seçmeli HIBP doğrulama (Pwned)</h3>
+<p>
+          "Bilinen Leaks" seçeneğini kontrol ederseniz, Time2Crack tarihi sızıntılarda görünürse kontrol edebilir. <strong>k-anonymity</strong> gizliliğinizi korumak için.
+        </p>
+<h4 style="margin-top: 1.2em; font-size: 1em;">K-anonymity nasıl çalışır</h4>
+<div class="flow-diagram">
+<div class="flow-step">
+<div class="flow-number">1 1 1</div>
+<div class="flow-content">
+<p><strong>Haveh SHA-1</strong> ( bilgisayarınızın dışında)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack, parolanızın tam SHA-1'i hesaplar, ancak <strong>Onu asla terk etmedi</strong>.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">2 2</div>
+<div class="flow-content">
+<p><strong>Prefix</strong> (5 ilk karakterler)</p>
+<p style="color: #666; margin-top: 0.3em;">Sadece on beş karakter HIBP'ye gönderilir. Şifrenizi tanımlamak için yetersizdir.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">3 3</div>
+<div class="flow-content">
+<p><strong>HIBP'ye anonim istek</strong></p>
+<p style="color: #666; margin-top: 0.3em;">HiBP bu ekle başlayan tüm şifreleri döndürür (yaklaşık 500-1000 anonim sonuç).</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">4 4 4</div>
+<div class="flow-content">
+<p><strong>Yerel Karşılaştırma</strong> ( bilgisayarınızın dışında)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack, yerel olarak kalan 35 karakterini karşılaştırır. Sadece bilgisayarınızız bir maç olup olmadığını bilir.</p>
+</div>
+</div>
+</div>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Beton örneği: şifre şifre şifre şifre</h4>
+<div class="example-box">
+<div class="example-title">Adım by step</div>
+<div class="hash-row">
+<span class="hash-label">Şifre:</span>
+<span class="hash-value"><code>password</code></span>
+</div>
+<div class="hash-row">
+<span class="hash-label">Tamam Hash SHA-1:</span>
+<span class="hash-value">
+<code>5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+</span>
+</div>
+<div style="margin: 1em 0; padding: 1em; background: #f0f0f0; border-radius: 4px; border-left: 4px solid #2196F3;">
+<p style="margin-top: 0; color: #666; font-size: 0.9em;"><strong>SPLIT</strong></p>
+<div class="hash-row" style="margin-top: 0.8em;">
+<span class="hash-label"><span class="hash-sent">HIBP</span> :</span>
+<span class="hash-value">
+<code class="hash-sent">5BAA6</code>
+<span style="color: #666; font-size: 0.85em;"> (5 karakter = -2,000 olası hashs)</span>
+</span>
+</div>
+<div class="hash-row">
+<span class="hash-label"><span class="hash-local">Yerel olarak korunmuş</span> :</span>
+<span class="hash-value">
+<code class="hash-local">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+<span style="color: #666; font-size: 0.85em;"> (35 karakter, asla aktarmaz)</span>
+</span>
+</div>
+</div>
+<div style="margin-top: 1em; padding: 1em; background: #e8f5e9; border-radius: 4px; border-left: 4px solid #388e3c;">
+<p style="margin: 0; color: #1b5e20; font-weight: 500;">
+               <code>5BAA6</code> (~500-1000 sonuçları).
+              <br>Time2Crack yerel olarak karşılaştırır ve bir maç olup olmadığını belirler. <strong>Tam şifreniz asla cihazınızdan ayrılmaz.</strong>
+</p>
+</div>
+</div>
+<p style="font-size: 0.9em; color: #666; margin-top: 1.5em;">
+<strong>Neden 5 karakter k-anonymity için yeterli:</strong>
+          5 hexadecimal karakterle, 16.5 = 1.048,576 olası kombinasyonlar vardır. HIBP her bir ek için yaklaşık 500-1000 sonuç döndürür, şifrenizin yüzlerce başkaları arasında anonim olduğu kritik bir kitle yaratır.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>3. Data depolama depolama</h3>
+<ul class="does-list">
+<li><strong>Tarayıcınızın yerel yönetimlerini kullanın</strong> Sadece kullanıcı ayarları için (dil, tercihler)</li>
+<li><strong>Parola yedekleme yedekleme</strong> veya çatlaklar zaman sonuçları</li>
+<li><strong>Otomatik olarak silinemez</strong> Analizden sonra bellek şifresi</li>
+</ul>
+</div>
+</section>
+ =====
+What TIME2CRACK DOES NOT DOES
+===== 
+<section>
+<h2>What Time2Crack DOES Not Do</h2>
+<div class="privacy-section">
+<h3>1. Şifre iletimi</h3>
+<ul class="does-list doesnt-list">
+<li>Don't send <span class="highlight-red">Never Never Never Never Never Never Never Never Never Never Never</span> Kullanıcılarımıza veya üçüncü taraflara şifreniz</li>
+<li>Don't send <span class="highlight-red">Never Never Never Never Never Never Never Never Never Never Never</span> Parolanız HIBP veya diğer hizmetler</li>
+<li>Don't send <span class="highlight-red">Never Never Never Never Never Never Never Never Never Never Never</span> Tamam hash SHA-1 (sadece 5 karakter)</li>
+<li>Record Record Record Record Record <span class="highlight-red">Never Never Never Never Never Never Never Never Never Never Never</span> Şifre test edilmiş şifreler test edilmiş şifreler test edilmiş şifreler test edilmiş şifreler test edilmiş şifreler test edilmiş şifreler test edilmiş</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>2. Veriler</h3>
+<ul class="does-list doesnt-list">
+<li>Keep Keep Keep Keep <span class="highlight-red">Hiçbir iz izi yok</span> Aktiviteniz veya şifreleriniz test edildi</li>
+<li>Creates Creates <span class="highlight-red">Hiçbir kullanıcı profili</span> Kişisel verilerinizle ilgili</li>
+<li>Paylaşmayın <span class="highlight-red">Bilgi yok</span> Üçüncü taraflarla (advertisers, ortakları, vs.)</li>
+<li>Satmayın <span class="highlight-red">Never Never Never Never Never Never Never Never Never Never Never</span> verileriniz</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Depolama devam ediyor</h3>
+<ul class="does-list doesnt-list">
+<li>Home Home Home Home Home <span class="highlight-red">Hiçbir veritabanı</span> kullanıcı şifreleri</li>
+<li>Kaydet Kaydet Kaydet <span class="highlight-red">Hiçbir tarih yok</span> Hesaplamalar veya sonuçlar</li>
+<li>gerektirmez <span class="highlight-red">Hiçbir kullanıcı hesabı</span> veya kayıt veya kayıt</li>
+</ul>
+</div>
+<div class="warning-box">
+<div class="warning-title">Önemli Önemli Önemli Önemli Önemli Önemli</div>
+<p style="margin: 0.5em 0 0;">
+          Time2Crack asla parolanızı iletmese bile, <strong>Burada gerçek şifrenizi test etmeyin, eğer birisi ekranınızda görünüyorsa</strong>Bir test şifresi kullanın veya bu aracı özel olarak danışın.
+        </p>
+</div>
+</section>
+ =====
+COM
+===== 
+<section>
+<h2>Özet: Gerçek vs. Done</h2>
+<table class="comparison-table">
+<thead>
+<tr>
+<th>Eylem</th>
+<th class="does-column">Time2Crack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hesaplama zamanı</strong></td>
+<td class="does-column">Evet (yerel olarak)</td>
+</tr>
+<tr>
+<td><strong>Tam şifre gönder</strong></td>
+<td class="doesnt-column">Hayır hayır hayır</td>
+</tr>
+<tr>
+<td><strong>Tamam SHA-1 hash</strong></td>
+<td class="doesnt-column">Hayır hayır hayır</td>
+</tr>
+<tr>
+<td><strong>Varh'ın ilk 5 karakterini gönderin (k-anonymity)</strong></td>
+<td class="does-column">Evet (eğer HIBP kontrol etkinleştirildi)</td>
+</tr>
+<tr>
+<td><strong>Parola Kaydet</strong></td>
+<td class="doesnt-column">Hayır hayır hayır</td>
+</tr>
+<tr>
+<td><strong>Bir kullanıcı hesabı oluşturun</strong></td>
+<td class="doesnt-column">Hayır hayır hayır</td>
+</tr>
+<tr>
+<td><strong>Verileri üçüncü taraflarla Paylaş</strong></td>
+<td class="doesnt-column">Hayır hayır hayır</td>
+</tr>
+<tr>
+<td><strong>Takip çerezleri</strong></td>
+<td class="doesnt-column">Hayır hayır hayır</td>
+</tr>
+<tr>
+<td><strong>Ekran reklamları</strong></td>
+<td class="doesnt-column">Hayır hayır hayır</td>
+</tr>
+<tr>
+<td><strong>Execute outsourced müşteri kodu</strong></td>
+<td class="doesnt-column">Hayır (zero bağımlılık)</td>
+</tr>
+</tbody>
+</table>
+</section>
+ =====
+►
+===== 
+<section>
+<h2>Nasıl Verilir</h2>
+<div class="privacy-section">
+<h3>1. Browser Development Tools</h3>
+<ol style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Açık açın <strong>Geliştirme araçları</strong> (F12 veya Cmd+Option+I)</li>
+<li>sekmeye git <strong>Ağ Ağı Ağı</strong> (Network)</li>
+<li>Time2Crack'de bir test şifresi girin</li>
+<li>Ağ sorgularını izleyin: Görmeyeceksiniz <strong>İşte o ki bu</strong> HiBP 5char prefix ile talep</li>
+<li>Tam şifre görünmüyor <strong>Never Never Never Never Never Never Never Never Never Never Never</strong> Talepler</li>
+</ol>
+</div>
+<div class="privacy-section">
+<h3>2. Kaynak kodu</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Time2Crack is <strong>%100 açık kaynak</strong> Codeberg</li>
+<li>Kod içerir <strong>sıfır dış bağımlılık</strong> - saf JavaScript</li>
+<li>Younetlenebilirsin <code>app.js</code> Ve bunu doğrulayın:
+            <ul style="margin-top: 0.5em;">
+<li>Şifreler her zaman yereldir</li>
+<li>Sadece HiBP 5-char prefix gönderilir</li>
+<li>Çerez veya kişisel analizleri izleme</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. çevrimdışı modda test</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Time2Crack kullanabilirsiniz <strong>Tamamen çevrimdışı</strong></li>
+<li>dosyaları indirin ve açık <code>index.html</code> Yerel Yerel Yerel Yerel Yerel</li>
+<li>Tüm hesaplamalar bağlantı olmadan çalışır (örneğin HIBP doğrulama hariç)</li>
+</ul>
+</div>
+</section>
+ =====
+FOOTER
+===== 
+<section style="margin-top: 3em; padding-top: 2em; border-top: 1px solid #eee;">
+<p style="color: #999; font-size: 0.9em;">
+<strong>Sorular?</strong> See See See See See <a href="faq.html">SSS SSS</a> veya <a href="sources.html">Akademik kaynaklar</a> Time2Crack metodolojisi hakkında daha fazla ayrıntı için.
+      </p>
+</section>

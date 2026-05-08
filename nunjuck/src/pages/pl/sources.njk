@@ -1,0 +1,301 @@
+---
+lang: pl
+permalink: "/pl/sources.html"
+layout: base.njk
+currentPage: sources
+pageSlug: sources.html
+mainClass: sources-page
+pageTitle: "Źródła naukowe — Time2Crack"
+pageDescription: "Zobacz źródła naukowe i benchmarki, które potwierdzają Time2Crack, od kryptografii po estymację siły haseł."
+---
+
+<div class="sources-container">
+<h2 style="margin-bottom: 1rem;">Źródła naukowe</h2>
+<p style="color: #666; margin-bottom: 2rem;">
+        Time2Crack opiera się na badaniach naukowych w kryptografii, bezpieczeństwa komputera i oszacowanie siły hasłem.
+Ta strona zawiera listę źródeł naukowych, które potwierdzają nasze algorytmy, metody oceny i kalibracje.
+      </p>
+ Spis treści 
+<div class="sources-toc">
+<h3>Szybka nawigacja</h3>
+<ul>
+<li><a href="#section-password-strength">Szacowanie siły hasła</a></li>
+<li><a href="#section-evaluation-metrics">Metody oceny</a></li>
+<li><a href="#section-attack-models">Modele ataku</a></li>
+<li><a href="#section-markov-pcfg">Markov i PCFG</a></li>
+<li><a href="#section-calibration">Kalibracja i zbiór danych</a></li>
+<li><a href="#section-hash-rates">Prędkość kątowa</a></li>
+</ul>
+</div>
+ Sekcja 1: Szacunkowa moc hasła 
+<div class="section-sources" id="section-password-strength">
+<h2>Szacowanie siły hasła</h2>
+<div class="reference">
+<span class="reference-authors">Wheeler D.L.</span> (2016).
+          <span class="reference-title">zxcvbn: Szacunkowa moc hasła w budżecie.</span>
+          W <span class="reference-source">Działalność 25. Sympozjum Bezpieczeństwa USENIX</span> (s. 157- 173).
+Stowarzyszenie USENIX.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/conference/usenixsecurity16/sec16_paper_wheeler.pdf" target="_blank">https: / / www.usenix.org / system / files / conference / usenixsecurity16 / sec16 paper wheel.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Metodologia zakładania realistycznego oszacowania siły hasła.
+Wheeler (2016 r.) stwierdza, że liczniki oparte na entropii (NIST, OWASP) znacznie przewyższają poziom bezpieczeństwa.
+Time2Crack postępuje zgodnie z tym podejściem: oszacować koszt najbardziej znanego ataku, a nie teoretycznej entropii.
+        </div>
+<div class="reference">
+<span class="reference-authors">Pasquini, D., Continuously, A., Durmuth, M., &amp; Buscher, M.</span> (2021).
+          <span class="reference-title">Redukcja Bias w Modeling Real- World Hasło Siła dla modeli opartych na drzewach.</span>
+          W <span class="reference-source">Działalność 30. sympozjum bezpieczeństwa USENIX</span> (s. 3007- 3024).
+Stowarzyszenie USENIX.
+          <span class="reference-url"><a href="https://arxiv.org/pdf/2105.14170.pdf" target="_blank">https: / / arxiv.org / pdf / 2105.14170.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Krytyczna analiza uprzedzeń w modelach siły hasła.
+Time2Crack używa rockyou2021 (32.6M ważonych haseł)
+aby zminimalizować tę stronniczość.
+        </div>
+</div>
+ Sekcja 2: Ocena metryczna 
+<div class="section-sources" id="section-evaluation-metrics">
+<h2>Metody oceny</h2>
+<div class="reference">
+<span class="reference-authors">Wang, D., &amp; Ding, S.</span> (2023).
+          <span class="reference-title">Brak jednej srebrnej kuli: pomiar dokładności mierników siły haseł.</span>
+          W <span class="reference-source">Działalność 32. sympozjum bezpieczeństwa USENIX</span> (s. 2575- 2592).
+Stowarzyszenie USENIX.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/sec23fall-prepub-291_wang-ding.pdf" target="_blank">https: / / www.usenix.org / system / files / sec23fall- prepub- 291 wang- ding.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Główne badanie porównawcze (USENIX 2023) obejmujące 12 liczników mocy hasła z 14 rzeczywistych zbiorów danych.
+Określa, że:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li><strong>Stosowana korelacja Spearman</strong> jest standardową miarą do oceny dokładności</li>
+<li>Cel naukowy: <strong>↔ &gt; 0,85</strong> dla dobrej kalibracji</li>
+<li>Nie istnieje licznik bez kompromisu (zxcvbn: ∞ = 0,76, Hive Systems: В = 0,68)</li>
+</ul>
+          Time2Crack ma na celu ∞ &gt; 0,80 ogółem.
+        </div>
+<div class="reference">
+<span class="reference-authors">Golla, M., &amp; Dürmuth, M.</span> (2018).
+          <span class="reference-title">On the Accuracy of Hasło Siła Metrów.</span>
+          W <span class="reference-source">Działalność 25. Konferencji ACM na temat bezpieczeństwa informatycznego i komunikacyjnego</span> (s. 1567- 1580).
+ACM.
+          <span class="reference-url"><a href="https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf" target="_blank">https: / / maximiliangolla.com / files / 2018 / papers / ccsf285-finalv3.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Systematyczne ramy oceny dla liczników mocy hasła (2018).
+Zalecam: korelacja Spearman + Kullback- Rozbieżność Leibler dla ataków offline.
+Time2Crack zawiera te dwa mierniki.
+        </div>
+<div class="reference">
+<span class="reference-authors">Castelluccia, C., Durmuth, M., &amp; Perito, D.</span> (2017).
+          <span class="reference-title">Adaptive Password- Siła Metrów z modeli Markov.</span>
+          W <span class="reference-source">Działalność sympozjum NDSS</span>.
+Społeczeństwo internetowe.
+          <span class="reference-url"><a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/06_3.pdf" target="_blank">https: / / www.ndss- symposium.org / wp- content / uploads / 2017 / 09 / 06 3.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Wprowadza metrykę <strong>α- Guesswork (Gα)</strong> :
+odsetek haseł pękniętych próbami G.
+Ocena praktycznego bezpieczeństwa modelu.
+        </div>
+</div>
+ Sekcja 3: Modele ataku 
+<div class="section-sources" id="section-attack-models">
+<h2>Modele ataku</h2>
+<div class="reference">
+<span class="reference-authors">Ma, J., Yang, W., Luo, M., &amp; Li, N.</span> (2014).
+          <span class="reference-title">A Study of Probabilistic Password Models.</span>
+          W <span class="reference-source">Działalność 35. Sympozjum IEEE na temat bezpieczeństwa i prywatności</span> (s. 689- 704).
+IEEE.
+          <span class="reference-url"><a href="https://www.ieee-security.org/TC/SP2014/papers/A%20Study%20of%20Probabilistic%20Password%20Models.pdf" target="_blank">https: / / www.ieee- security.org / TC / SP2014 / papers / A% 20Study% 20of% 20Probabilistic% 20Password% 20Models.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Porównanie modeli probabilistycznych (Markov, PCFG, neuron).
+Ustalenia, że ataki przez kombinację słów są niedoceniane przez naiwne formuły
+(mnożenie wierszy = hipoteza fałszywej niezależności).
+Time2Crack koryguje to kalibracją empiryczną.
+        </div>
+<div class="reference">
+<span class="reference-authors">Dürmuth, M., Brostoff, S., &amp; Oprea, A.</span> (2015).
+          <span class="reference-title">Sukces aplikacji internetowych pomimo trudności zasad tworzenia haseł.</span>
+          W <span class="reference-source">Działalność 22. Sympozjum NDSS</span>.
+Społeczeństwo internetowe.
+          <span class="reference-url"><a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2015_09-4_durhmuth_paper.pdf" target="_blank">https: / / www.ndss- symposium.org / wp- content / uploads / 2017 / 09 / ndss2015 09- 4 durhmuth paper.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Ur, B., Alfayez, P. G., Bhamasami, S. M., &amp;... Cranor, L. F.</span> (2015).
+          <span class="reference-title">Projektowanie i ocena licznika haseł Data- Driven.</span>
+          W <span class="reference-source">Działalność Konferencji ACM SIGCHI na temat czynników ludzkich w systemach obliczeniowych</span> (s. 3775- 3786).
+ACM.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-ur.pdf" target="_blank">https: / / www.usenix.org / system / files / conference / usenixsecurity15 / sec15- paper- ur.pdf</a></span>
+</div>
+</div>
+ Sekcja 4: Markov i PCFG 
+<div class="section-sources" id="section-markov-pcfg">
+<h2>Modele Markov i PCFG</h2>
+<div class="reference">
+<span class="reference-authors">Weir, M., Aggarwal, S., Collins, M., &amp; Stern, H.</span> (2009).
+          <span class="reference-title">Testing Metrics for Password Creation Policies by attaking large sets of Revealed Passwords.</span>
+          W <span class="reference-source">Działalność 17. Konferencji ACM na temat bezpieczeństwa informatycznego i komunikacyjnego</span> (s. 162- 175).
+ACM.
+          <span class="reference-url"><a href="https://www.researchgate.net/publication/221614956" target="_blank">https: / / www.research chgate.net / publication / 221614956</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Metodologia zakładania PCFG (Probabilistic Context- Free Grammar).
+Ustanowiono:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li>Podział struktury (L = litera, D = cyfra, S = symbol)</li>
+<li>Próg Szkielet 20- 50 do uchwycenia rzeczywistych struktur</li>
+<li>Walidacja rzeczywistych zbiorów danych (LinkedIn, Yahoo, RockYou)</li>
+</ul>
+          Time2Crack używa SKELETON THRESHOLD = 100 (zmiana do zmniejszenia do 30- 50).
+        </div>
+<div class="reference">
+<span class="reference-authors">Dürmuth, M., Freeman, D., &amp; Yazan, B.</span> (2014).
+          <span class="reference-title">Password Guessing z sieci neuronowych.</span>
+          W <span class="reference-source">Działalność 25. Sympozjum Bezpieczeństwa USENIX</span>.
+Stowarzyszenie USENIX.
+          <span class="reference-url"><a href="https://courses.csail.mit.edu/6.857/2017/project/13.pdf" target="_blank">https: / / courses.csail.mit.edu / 6.857 / 2017 / project / 13.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Houshmand, S., &amp; Aggarwal, S.</span> (2015).
+          <span class="reference-title">Następny Generał PCFG Hasło Cracking.</span>
+          W <span class="reference-source">Transakcje IEEE na ekspertyzy i bezpieczeństwo informacji</span>, 10 ust. 8, 1776- 91.
+IEEE.
+          <span class="reference-url"><a href="https://ieeexplore.ieee.org/document/7098389" target="_blank">https: / / ieeexplore.ieee.org / document / 7098389</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Ekspansja PCFG-Gen z poprawą wydajności i dokładności.
+Ważne podejście PCFG na miliony haseł.
+        </div>
+<div class="reference">
+<span class="reference-authors">Narayanan, A., &amp; Shmatikov, V.</span> (2005).
+          <span class="reference-title">Szybki Dictionary Atakuje hasła używając time- Space Tradeoff.</span>
+          W <span class="reference-source">Działalność dwunastej konferencji ACM na temat bezpieczeństwa informatycznego i komunikacyjnego</span> (s. 364- 372).
+ACM.
+          <span class="reference-url"><a href="https://www.usenix.org/legacy/event/sec05/tech/full_papers/narayanan/narayanan.pdf" target="_blank">https: / / www.usenix.org / legacy / event / sec05 / tech / full papers / narayanan / narayanan.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Fundamenty ataków słowników i tabel rowków.
+Ustawia, że słownik + mutacje obejmuje ~ 95% haseł w praktyce.
+        </div>
+</div>
+ Sekcja 5: Kalibracja i zestawy danych 
+<div class="section-sources" id="section-calibration">
+<h2>Kalibracja i zbiór danych</h2>
+<div class="reference">
+<span class="reference-authors">Zhang, Y., Monrose, F., &amp; Reiter, M. K.</span> (2010).
+          <span class="reference-title">The Security of Modern Password Expiration: An Algorithmic Framework and Empirical Study.</span>
+          W <span class="reference-source">Działalność 17. Konferencji ACM na temat bezpieczeństwa informatycznego i komunikacyjnego</span> (s. 176- 186).
+ACM.
+          <span class="reference-url"><a href="https://users.cs.jmu.edu/reiter/papers/10ccs.pdf" target="_blank">https: / / users.cs.jmu.edu / reiter / papers / 10ccs.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Krajowy Instytut Norm i Technologii (NIST)</span> (2024).
+          <span class="reference-title">SP 800- 132: Based Password- Key Derivation Function (PBKDF2).</span>
+          Departament Handlu Stanów Zjednoczonych
+          <span class="reference-url"><a href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf" target="_blank">https: / / nvlpubs.nist.gov / nistpubs / Legacy / SP / nistsspecilation800- 132.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Krajowy Instytut Norm i Technologii (NIST)</span> (2024).
+          <span class="reference-title">SP 800- 63-3: Wytyczne dotyczące tożsamości cyfrowej - Uwierzytelnianie i zarządzanie cyklem życia.</span>
+          Departament Handlu Stanów Zjednoczonych
+          <span class="reference-url"><a href="https://pages.nist.gov/800-63-3/sp800-63b.html" target="_blank">https: / / pages.nist.gov / 800- 63-3 / sp800- 63b.html</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Zalecenia NIST do wyboru haseł i algorytmów.
+Ustanowiono:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li>bcrypt, scrypt, PBKDF2, Argon2 jako dopuszczalne algorytmy</li>
+<li>MD5, SHA-1 niesolone są niedopuszczalne (tabele tęczowe)</li>
+<li>słowniki 100k + zalecane słowa do ataków</li>
+</ul>
+</div>
+<div class="reference">
+<span class="reference-authors">Systemy Hive</span> (2025).
+          <span class="reference-title">Hive Systems Hasło Tabela 2025.</span>
+<span class="reference-url"><a href="https://www.hivesystems.io/password-table" target="_blank">https: / / www.hivesystems.io / password- table</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Wskaźnik odniesienia dla przemysłu przy 12 × RTX 4090 GPU.
+Time2Crack wykorzystuje ten profil jako podstawowy "doświadczony napastnik" (12 GPU klaster).
+        </div>
+<div class="reference">
+<span class="reference-authors">Sfengers, panie</span> (2011).
+          <span class="reference-title">Pęknięcie hasłem oparte na GPU-</span> (Teza Mistrza)
+Radboud University Nijmegen.
+          <span class="reference-url"><a href="https://www.ru.nl/" target="_blank">https: / / www.ru.nl /</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Badanie szybkości GPU dla hash cracking. Ustawia wartości odniesienia
+dla MD5, SHA-1, NTLM, krypt z nowoczesnym GPU.
+        </div>
+</div>
+ Sekcja 6: Stawki haszowe 
+<div class="section-sources" id="section-hash-rates">
+<h2>Prędkość i wartości odniesienia dla hash</h2>
+<div class="reference">
+<span class="reference-authors">Projekt Hashcat</span> (2025).
+          <span class="reference-title">Hashcat - Advanced Hassword Recovery (Official Benchmarks v6.2.6).</span>
+<span class="reference-url"><a href="https://hashcat.net/hashcat/" target="_blank">https: / / hashcat.net / hashcat /</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Oficjalne wskaźniki Hashcat na RTX 4090 dla wszystkich algorytmów hash.
+Time2Crack wykorzystuje te numery jako pojedyncze prędkości GPU i mnoży je przez 12 dla doświadczonego profilu.
+        </div>
+<div class="reference">
+<span class="reference-authors">Gösney J.</span> (2016).
+          <span class="reference-title">8x Nvidia GTX 1080 Hashcat Benchmarks.</span>
+          GitHub Gist.
+          <span class="reference-url"><a href="https://gist.github.com/epixoip/" target="_blank">https: / / gist.github.com / epixoip /</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Pierwszy system przekraczający 330 GH / s NTLM (8 GPU klaster).
+Zatwierdzone przez przemysł jako odniesienie wieloGPU.
+        </div>
+<div class="reference">
+<span class="reference-authors">Amazon Web Services</span> (2024).
+          <span class="reference-title">Amazon EC2 P4d Proceedings - GPU Computing.</span>
+<span class="reference-url"><a href="https://aws.amazon.com/ec2/instance-types/p4/" target="_blank">https: / / aws.amazon.com / ec2 / e Instance-types / p4 /</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Dostępna komercyjna infrastruktura GPU (100- 1000 klastrów GPU).
+Time2Crack wykorzystuje do profesjonalnego profilowania (~ 100 GPU).
+        </div>
+</div>
+ Dodatkowe odniesienia 
+<div class="section-sources">
+<h2>Dodatkowe odniesienia</h2>
+<div class="reference">
+<span class="reference-authors">Oechsle, D., Bauer, L., Grupe, J., &amp;... Durmuth, M.</span> (2021).
+          <span class="reference-title">W kierunku rygorystycznej analizy statystycznej Empirical Hasło Dataset.</span>
+<span class="reference-source">preprint arXiv</span> arXiv: 2105.14170.
+          <span class="reference-url"><a href="https://arxiv.org/abs/2105.14170" target="_blank">https: / / arxiv.org / abs / 2105.14170</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Klebanov, S., &amp; Malone, D.</span> (2012).
+          <span class="reference-title">Badanie dystrybucji haseł.</span>
+          W <span class="reference-source">Proceedings of the 21st International World Wide Web Conference</span> (s. 569- 578).
+ACM.
+          <span class="reference-url"><a href="https://www.maths.tcd.ie/~dwmalone/p/www2012.pdf" target="_blank">https: / / www.maths.tcd.ie / ~ dwmalone / p / www.europa.eu.int 2012.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Castelluccia, C., Durmuth, M., &amp; Perito, D.</span> (2015).
+          <span class="reference-title">Password Guessing poprzez Modeling Języka Neuralnego.</span>
+          W <span class="reference-source">Transakcje IEEE na ekspertyzy i bezpieczeństwo informacji</span>, 10 ust. 6, 1285- 1296.
+IEEE.
+          <span class="reference-url"><a href="https://link.springer.com/chapter/10.1007/978-3-030-30619-9_7" target="_blank">https: / / link.springer.com / chapter / 10.1007 / 978-3-030-30619-9 7</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Asgharpour, F., Bardas, A. G., &amp; Liu, D.</span> (2017).
+          <span class="reference-title">Porównywanie i łączenie metod analizy uczuć.</span>
+          W <span class="reference-source">Działalność COLING</span> (s. 1637- 1648).
+ACL.
+        </div>
+</div>
+<div class="back-to-top">
+<p><strong>Aktualizacja:</strong> 17 kwietnia 2026</p>
+<p><a href="index.html">← Powrót do narzędzia</a></p>
+</div>
+</div>

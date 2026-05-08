@@ -1,0 +1,246 @@
+---
+lang: pl
+permalink: "/pl/about.html"
+layout: base.njk
+currentPage: about
+pageSlug: about.html
+mainClass: about-page
+pageTitle: "O nas — Time2Crack — Naukowy estymator czasu złamania hasła"
+pageDescription: "Odkryj Time2Crack: najdokładniejsze narzędzie do obliczania czasu złamania. Metodologia naukowa, zweryfikowane źródła akademickie, bezpieczna analiza lokalna."
+---
+{%- set t = i18n.pl -%}
+{%- set pageTitle = t.pages.about.title -%}
+{%- set pageDescription = t.pages.about.description -%}
+</header>
+ Sekcja Bohaterów 
+<section class="about-hero">
+<h1>O Time2Crack</h1>
+<p class="about-hero__subtitle">Najdokładniejszy i najbardziej przejrzysty estymator czasu pęknięcia</p>
+</section>
+ Sekcja Misji 
+<section class="about-section">
+<h2>Nasza misja</h2>
+<p>
+        Time2Crack istnieje, aby odpowiedzieć na proste, ale kluczowe pytanie: <strong>Jak długo zajmie złamanie mojego hasła?</strong>
+</p>
+<p>
+        Istniejące narzędzia (zxcvbn, Hive Systems) dostarczają ogólnych szacunków. <strong>dokładność naukowa</strong> : model 7 najbardziej realistycznych ataków, z mierzonymi przepływami GPU, skalibrowane na rzeczywistych danych wycieku (rockyou, HIBP).
+      </p>
+<p>
+        Nasza ambicja: <strong>stając się światowym punktem odniesienia</strong> obliczanie czasu cracku dla haseł.
+      </p>
+</section>
+ Sekcja metodologiczna 
+<section class="about-section">
+<h2>Metodyka naukowa</h2>
+<h3>7 realistycznych modeli ataku</h3>
+<p>
+        Time2Crack ocenia swoje hasło przeciwko 7 najbardziej skutecznych ataków udokumentowanych w literaturze akademickiej:
+      </p>
+<ul class="about-list">
+<li><strong>Siła brutto</strong> - Pełna lista (O (charset))</li>
+<li><strong>Słownik</strong> - Słowa wspólne + wycieki HIBP (~ 14 mld)</li>
+<li><strong>Hybryd</strong> - Słownik + zasady mutacji (hashcat)</li>
+<li><strong>Maska</strong> - Wzory przewidywania (np. nazwa + cyfra)</li>
+<li><strong>Markov Przewodniczący</strong> - Model probabilistyczny (n-gramy)</li>
+<li><strong>PCFG</strong> - Gramatyka probabilistyczna (struktury gramatyczne)</li>
+<li><strong>Kombinator</strong> - Konkatenacja słów (passphrases)</li>
+</ul>
+<h3>Skalibrowane przepływy GPU</h3>
+<p>
+        Prędkość pękania opiera się na <strong>Oficjalne poziomy odniesienia dla Hashcat v6.2.6</strong> przy 12 × RTX 4090 (odniesienie branżowe 2025, cytowane przez Hive Systems, Forbes, CNBC):
+      </p>
+<ul class="about-list">
+<li>MD5: 2.027 GH / s</li>
+<li>SHA-1: 610 GH / s</li>
+<li>SHA- 256: 272 GH / s</li>
+<li>NTLM: 3,462 GH / s</li>
+<li>bcrypt (koszt 5): 2.2 MH / s</li>
+<li>Argon2id: 800 H / s</li>
+</ul>
+<h3>Profile atakujące</h3>
+<p>
+        Time2Crack Models 4 Poziomy zagrożenia:
+      </p>
+<table class="about-table">
+<thead>
+<tr>
+<th>Profil</th>
+<th>GPU</th>
+<th>Mnożenie</th>
+<th>Przykład</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Amatorskie</strong></td>
+<td>1 GPU</td>
+<td>1 ×</td>
+<td>Hobbysta z osobistym GPU</td>
+</tr>
+<tr>
+<td><strong>Standardowy</strong></td>
+<td>12 GPU</td>
+<td>12 ×</td>
+<td>Dedykowany napastnik (branża odniesienia)</td>
+</tr>
+<tr>
+<td><strong>Pro</strong></td>
+<td>- 100 GPU</td>
+<td>100 ×</td>
+<td>Klaster chmur komercyjnych</td>
+</tr>
+<tr>
+<td><strong>Państwo</strong></td>
+<td>- 10 000 GPU</td>
+<td>10 000 ×</td>
+<td>Infrastruktura rządowa</td>
+</tr>
+</tbody>
+</table>
+</section>
+ Sekcja dokładności i walidacji 
+<section class="about-section">
+<h2>Walidacja i dokładność</h2>
+<p>
+        Time2Crack jest zatwierdzany w oparciu o trzy niezależne kryteria akademickie:
+      </p>
+<ul class="about-list">
+<li><strong>Wheeler 2016</strong> (zxcvbn) - r2 = 0,921 (bardzo silna korelacja)</li>
+<li><strong>Realistyczne hasła</strong> (Spearman, dane rzeczywiste)</li>
+<li><strong>Rockyou corpus</strong> - Kalibracja 40 milionów prawdziwych haseł</li>
+</ul>
+<p>
+        Wszystkie wzory ataku są <strong>w odniesieniu do ich źródeł akademickich</strong> : Bonneau 2012, Weir 2009, Wheeler 2016, Hashcat official references.
+      </p>
+</section>
+ Sekcja Prywatności 
+<section class="about-section">
+<h2>Bezwzględna poufność</h2>
+<p>
+<strong>Hasło nigdy nie jest przekazywane.</strong> Wszystkie analizy są wykonywane lokalnie, w przeglądarce.
+      </p>
+<p>
+        Do wykrywania uszkodzonych haseł (HIBP), Time2Crack wykorzystuje <strong>k- anonimowość</strong> Tylko pierwsze 5 znaków SHA-1 są wysyłane do serwera HiBP, nigdy pełne hasło.
+      </p>
+<p>
+        Skonsultuj się z naszym <a href="privacy.html">Strona prywatności</a> szczegóły techniczne.
+      </p>
+</section>
+ Sekcja wielojęzyczna 
+<section class="about-section">
+<h2>Wielojęzyczne medium</h2>
+<p>
+        Time2Crack obsługuje 9 języków z prawdziwymi słownikami językowymi:
+      </p>
+<ul class="about-list">
+<li>Angielski</li>
+<li>Angielski</li>
+<li>Hiszpański</li>
+<li>Portugalski</li>
+<li>Niemiecki</li>
+<li></li>
+<li>Włoski</li>
+<li>Polski</li>
+<li>Niderlandy</li>
+</ul>
+<p>
+        Każdy język ma własny korpus 50k- 200k filtrowanych słów, stąd znaczenie wyboru odpowiedniego języka do dokładnej analizy.
+      </p>
+</section>
+ Sekcja porównawcza 
+<section class="about-section">
+<h2>Jak Time2Crack różnicuje</h2>
+<table class="about-comparison-table">
+<thead>
+<tr>
+<th>Kryteria</th>
+<th>Time2Crack</th>
+<th>zxcvbn</th>
+<th>Systemy Hive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ataki modelowane</td>
+<td><strong>7</strong> (Brutal, Dict, Hybrid, Mask, Markov, PCFG, Combinator)</td>
+<td>3 (Brutal, Dict, Spatial)</td>
+<td>5 (Brutal, Dict, Hybrid, Mask, Rainbow)</td>
+</tr>
+<tr>
+<td>Kalibracja GPU</td>
+<td><strong>Kot urzędowy</strong> (2026)</td>
+<td>Szacunki ogólne</td>
+<td>12 × RTX 4090 (ale statyczny)</td>
+</tr>
+<tr>
+<td>Atakowanie profili</td>
+<td><strong>4 poziomy</strong> (Amator → Stan)</td>
+<td>Nie dotyczy</td>
+<td>Nie można skonfigurować</td>
+</tr>
+<tr>
+<td>Analiza lokalna</td>
+<td><strong>100%</strong></td>
+<td>Tak</td>
+<td>Nie (tabele statyczne)</td>
+</tr>
+<tr>
+<td>Źródło akademickie</td>
+<td><strong>Udokumentowane</strong> (CLAUDE.md)</td>
+<td>Implicit</td>
+<td>Nieopublikowane</td>
+</tr>
+<tr>
+<td>Wielojęzyczny</td>
+<td><strong>9 języków</strong></td>
+<td>PL</td>
+<td>PL</td>
+</tr>
+</tbody>
+</table>
+</section>
+ Sekcja Źródła 
+<section class="about-section">
+<h2>Źródło akademickie</h2>
+<p>
+        Time2Crack opiera się na recenzowanych źródłach akademickich. <a href="sources.html">strona źródłowa</a>.
+      </p>
+<ul class="about-list">
+<li><strong>Bonneau (2012 r.)</strong> - The Science of Guessing (USENIX Security)</li>
+<li><strong>Weir et al. (2009)</strong> - Testing Metrics for Hasło Creation (ASIACCS)</li>
+<li><strong>Wheeler (2016 r.)</strong> - zxcvbn: Niskie oszacowanie siły hasła budżetowego (USENIX Security)</li>
+<li><strong>Hashcat (2026)</strong> - Oficjalne wskaźniki GPU</li>
+<li><strong>NIST SP 800- 63B</strong> - Wytyczne dotyczące tożsamości cyfrowej</li>
+</ul>
+</section>
+ Sekcja planu działania 
+<section class="about-section">
+<h2>Plan działania i przejrzystość</h2>
+<p>
+        Time2Crack jest projektem <strong>przejrzyste i zmieniające się</strong>. Dokumentujemy każdą zmianę w naszym <a href="https://codeberg.org/baudouin/crack-date">Repozytorium GitHub</a>.
+      </p>
+<p>
+        Następna planowana poprawa:
+      </p>
+<ul class="about-list">
+<li>Zaawansowane wykrywanie passphraz (bez separatorów)</li>
+<li>Integracja modeli uczenia się maszynowego (zgadywanie neuronowe)</li>
+<li>Wsparcie offline (tryb PWA)</li>
+<li>Publiczny API integracji osób trzecich</li>
+<li>Kontrola bezpieczeństwa stron trzecich</li>
+</ul>
+</section>
+ Sekcja kontaktowa 
+<section class="about-section about-contact">
+<h2>Kontakty i zwroty</h2>
+<p>
+        Jakieś pytania, sugestie, błędy do zgłoszenia?
+      </p>
+<ul class="about-list">
+<li>E-mail: <a href="mailto:bvh@etik.com">bvh @ etik.com</a></li>
+<li>Kwestie GitHub: <a href="https://codeberg.org/baudouin/crack-date/issues">codeberg.org / baudouin / crack- date / issues</a></li>
+<li>Dyskusje: <a href="https://codeberg.org/baudouin/crack-date/discussions">codeberg.org / baudouin / crack- date / dyskusje</a></li>
+</ul>
+</section>
+<footer id="site-footer"></footer><script>

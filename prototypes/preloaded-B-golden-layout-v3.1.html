@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype B v3.1 - Golden Precision</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.proto-label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #1d4ed8;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+body { padding-top: 30px; }
+
+.phi-shell {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 940px) {
+  .phi-shell { grid-template-columns: 61.8fr 38.2fr; }
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+.panel h2 {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 15px;
+  border-bottom: 1px solid var(--border);
+}
+.panel-body { padding: 12px; }
+
+.hero-time {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 12px;
+}
+.hero-time .title {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.hero-time .value {
+  margin-top: 4px;
+  font-size: clamp(1.45rem, 4.3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.hero-time .note {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.algo-grid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.algo-item {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 8px;
+}
+.algo-name {
+  display: block;
+  font-size: 12px;
+  color: var(--text-lighter);
+}
+.algo-time {
+  margin-top: 3px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.matrix details {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.matrix summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 12px;
+  font-weight: 600;
+}
+.matrix-scroll {
+  overflow-x: auto;
+  padding: 0 10px 10px;
+}
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+  font-size: 12px;
+}
+.matrix-table th,
+.matrix-table td {
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  padding: 8px;
+  vertical-align: top;
+}
+.matrix-table th {
+  color: var(--text-lighter);
+  font-weight: 700;
+}
+
+.attack-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.attack-chip {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 10px;
+  min-height: 44px;
+  font-size: 12px;
+}
+.attack-chip[aria-selected="true"] {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.focus-card,
+.method-card {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 10px;
+}
+.focus-card h3 { margin: 0; font-size: 14px; }
+.focus-card p { margin: 8px 0 0; font-size: 13px; color: var(--text-muted); }
+.method-card ul { margin: 8px 0 0 16px; padding: 0; display: grid; gap: 5px; }
+.method-card li { font-size: 13px; }
+.source-list { margin-top: 8px; display: grid; gap: 4px; }
+.source-list a { font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="proto-label">Prototype B v3.1 · Golden layout + precision de calcul restauree</div>
+
+<header class="site-header">
+  <div class="header-left">
+    <a href="#" class="logo-link" aria-label="Time2Crack">
+      <span class="logo-text"><span class="logo-time">Time</span><span class="logo-2">2</span><span class="logo-crack">Crack</span></span>
+    </a>
+  </div>
+</header>
+
+<main id="main-content" role="main">
+  <section class="input-section">
+    <p class="subtitle">Version 3.1: structure lisible conservee, avec une estimation calculee par attaque et algorithme (plus fidele au moteur).</p>
+
+    <div class="password-wrapper-row">
+      <div class="password-wrapper">
+        <input type="password" id="password-input" autocomplete="off" spellcheck="false" placeholder="Testez votre mot de passe" />
+      </div>
+      <button type="button" id="reset-btn" class="reset-btn-inline" aria-label="Reset">Reset</button>
+    </div>
+
+    <div class="phi-shell">
+      <article class="panel">
+        <h2>Temps de craquage</h2>
+        <div class="panel-body">
+          <div class="hero-time">
+            <div class="title">Resultat principal (attaquant experimente, 12 GPU)</div>
+            <div class="value" id="hero-time">Entrez un mot de passe</div>
+            <p class="note" id="hero-note">Le delai affiche l'attaque la plus probable et la plus rapide.</p>
+          </div>
+
+          <div class="algo-grid" aria-label="Temps dominant par algorithme">
+            <div class="algo-item"><span class="algo-name">MD5</span><div class="algo-time" id="t-md5">--</div></div>
+            <div class="algo-item"><span class="algo-name">SHA-1</span><div class="algo-time" id="t-sha1">--</div></div>
+            <div class="algo-item"><span class="algo-name">SHA-256</span><div class="algo-time" id="t-sha256">--</div></div>
+            <div class="algo-item"><span class="algo-name">NTLM</span><div class="algo-time" id="t-ntlm">--</div></div>
+            <div class="algo-item"><span class="algo-name">bcrypt</span><div class="algo-time" id="t-bcrypt">--</div></div>
+            <div class="algo-item"><span class="algo-name">Argon2id</span><div class="algo-time" id="t-argon2">--</div></div>
+          </div>
+
+          <div class="matrix">
+            <details>
+              <summary>Voir le detail attaque x algorithme</summary>
+              <div class="matrix-scroll">
+                <table class="matrix-table">
+                  <thead>
+                    <tr>
+                      <th>Attaque</th>
+                      <th>MD5</th>
+                      <th>SHA-1</th>
+                      <th>SHA-256</th>
+                      <th>NTLM</th>
+                      <th>bcrypt</th>
+                      <th>Argon2id</th>
+                    </tr>
+                  </thead>
+                  <tbody id="matrix-body"></tbody>
+                </table>
+              </div>
+            </details>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <h2>Descriptions des attaques + Methodologie et sources</h2>
+        <div class="panel-body">
+          <div class="attack-chips" role="tablist" aria-label="Types d'attaque">
+            <button class="attack-chip" role="tab" aria-selected="true" data-key="dict">Dictionnaire</button>
+            <button class="attack-chip" role="tab" aria-selected="false" data-key="hybrid">Hybride</button>
+            <button class="attack-chip" role="tab" aria-selected="false" data-key="mask">Mask</button>
+            <button class="attack-chip" role="tab" aria-selected="false" data-key="markov">Markov</button>
+            <button class="attack-chip" role="tab" aria-selected="false" data-key="pcfg">PCFG</button>
+            <button class="attack-chip" role="tab" aria-selected="false" data-key="brute">Brute force</button>
+          </div>
+
+          <div class="focus-card" role="tabpanel">
+            <h3 id="attack-title">Dictionnaire</h3>
+            <p id="attack-text">Teste de larges listes de mots de passe connus et fuités. Tres efficace pour les mots courants.</p>
+            <p><a id="attack-source-link" href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Source principale</a></p>
+          </div>
+
+          <div class="method-card">
+            <strong>Methode (resume)</strong>
+            <ul>
+              <li>Analyse locale du mot de passe: longueur, jeu de caracteres, motifs predictibles.</li>
+              <li>Simulation de 10 attaques, avec priorisation des approches probabilistes.</li>
+              <li>Conversion attempts -> temps selon vitesses de hash documentees.</li>
+            </ul>
+            <div class="source-list">
+              <a href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler" target="_blank" rel="noopener">USENIX - zxcvbn (Wheeler)</a>
+              <a href="https://www.hivesystems.com/blog/are-your-passwords-in-the-green" target="_blank" rel="noopener">Hive Systems 2025</a>
+              <a href="https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd" target="_blank" rel="noopener">Hashcat RTX 4090 Benchmarks</a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script src="preloaded-B-golden-layout-v3.1.js"></script>
+</body>
+</html>

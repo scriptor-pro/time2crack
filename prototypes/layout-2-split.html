@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout 2 : Split View — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800,900|jetbrains-mono:400,500,600&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-left: #fafafa;
+      --bg-right: #ffffff;
+      --text: #171717;
+      --text-muted: #737373;
+      --text-light: #a3a3a3;
+      --accent: #2563eb;
+      --border: #e5e5e5;
+      --danger: #dc2626;
+      --warning: #ea580c;
+      --success: #16a34a;
+      --surface: #f5f5f5;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-right);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Main split layout */
+    .split-container {
+      display: grid;
+      grid-template-columns: 40% 60%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Left panel - sticky input */
+    .left-panel {
+      background: var(--bg-left);
+      border-right: 1px solid var(--border);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .left-header {
+      padding: 48px 48px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .left-body {
+      flex: 1;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .input-group {
+      margin-bottom: 48px;
+    }
+
+    .input-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .password-input {
+      width: 100%;
+      font-size: 28px;
+      font-weight: 500;
+      padding: 20px 0;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.3s ease;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    .password-input:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .password-input::placeholder {
+      color: var(--text-light);
+      font-weight: 400;
+    }
+
+    /* Strength indicator */
+    .strength-wrapper {
+      margin-top: 32px;
+    }
+
+    .strength-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .strength-bar-track {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .strength-bar-fill {
+      height: 100%;
+      width: 45%;
+      background: var(--warning);
+      transition: all 0.4s ease;
+      border-radius: 3px;
+    }
+
+    .strength-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      font-weight: 500;
+    }
+
+    /* Quick stats left panel */
+    .quick-stats {
+      margin-top: 48px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .quick-stats-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .left-footer {
+      padding: 32px 48px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    /* Right panel - scrollable results */
+    .right-panel {
+      background: var(--bg-right);
+      overflow-y: auto;
+      padding: 48px 56px 80px;
+    }
+
+    .result-section {
+      margin-bottom: 80px;
+    }
+
+    .section-header {
+      margin-bottom: 32px;
+    }
+
+    .section-number {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    /* Hero result */
+    .hero-time {
+      font-size: clamp(64px, 8vw, 96px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--danger);
+      margin-bottom: 24px;
+    }
+
+    .hero-time.safe {
+      color: var(--success);
+    }
+
+    .hero-description {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 560px;
+      margin-bottom: 32px;
+    }
+
+    .hero-meta {
+      font-size: 14px;
+      color: var(--text-light);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Alert box */
+    .alert-box {
+      background: #fef2f2;
+      border-left: 4px solid var(--danger);
+      padding: 28px 32px;
+      border-radius: 8px;
+      margin-bottom: 48px;
+    }
+
+    .alert-box.success {
+      background: #f0fdf4;
+      border-left-color: var(--success);
+    }
+
+    .alert-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .alert-text {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .alert-text strong {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .alert-box.success .alert-text strong {
+      color: var(--success);
+    }
+
+    /* Data grid */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .data-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .data-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .data-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Attack times table */
+    .attack-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 48px;
+    }
+
+    .attack-table thead {
+      border-bottom: 2px solid var(--border);
+    }
+
+    .attack-table th {
+      text-align: left;
+      padding: 16px 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .attack-table td {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+    }
+
+    .attack-table tbody tr:hover {
+      background: var(--surface);
+    }
+
+    .attack-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .attack-algo {
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+
+    .attack-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .time-critical {
+      color: var(--danger);
+    }
+
+    .time-warning {
+      color: var(--warning);
+    }
+
+    .time-safe {
+      color: var(--success);
+    }
+
+    /* Vulnerability badges */
+    .vuln-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+
+    .vuln-badge {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 24px;
+      border: 1.5px solid;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vuln-badge.critical {
+      color: var(--danger);
+      border-color: var(--danger);
+      background: #fef2f2;
+    }
+
+    .vuln-badge.warning {
+      color: var(--warning);
+      border-color: var(--warning);
+      background: #fff7ed;
+    }
+
+    .vuln-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .split-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .left-panel {
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .left-body {
+        padding: 32px;
+      }
+
+      .right-panel {
+        padding: 32px;
+      }
+
+      .data-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .left-header,
+      .left-body,
+      .left-footer {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+
+      .right-panel {
+        padding: 24px;
+      }
+
+      .password-input {
+        font-size: 20px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .hero-time {
+        font-size: clamp(48px, 12vw, 72px);
+      }
+
+      .attack-table {
+        font-size: 13px;
+      }
+
+      .attack-table th,
+      .attack-table td {
+        padding: 12px;
+      }
+    }
+
+    /* Smooth scroll */
+    .right-panel {
+      scroll-behavior: smooth;
+    }
+
+    /* Custom scrollbar */
+    .right-panel::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .right-panel::-webkit-scrollbar-track {
+      background: var(--bg-right);
+    }
+
+    .right-panel::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .right-panel::-webkit-scrollbar-thumb:hover {
+      background: var(--text-light);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-section {
+      animation: fadeIn 0.6s ease backwards;
+    }
+
+    .result-section:nth-child(1) { animation-delay: 0.1s; }
+    .result-section:nth-child(2) { animation-delay: 0.2s; }
+    .result-section:nth-child(3) { animation-delay: 0.3s; }
+    .result-section:nth-child(4) { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+  <div class="split-container">
+    <!-- Left Panel - Sticky -->
+    <aside class="left-panel">
+      <div class="left-header">
+        <h1 class="logo">Time2Crack</h1>
+        <p class="subtitle">Évaluez la résistance de votre mot de passe face aux attaques modernes</p>
+      </div>
+
+      <div class="left-body">
+        <div class="input-group">
+          <label class="input-label">Mot de passe à analyser</label>
+          <input 
+            type="password" 
+            class="password-input" 
+            placeholder="•••••••••••"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="strength-wrapper">
+          <div class="strength-label">Force du mot de passe</div>
+          <div class="strength-bar-track">
+            <div class="strength-bar-fill"></div>
+          </div>
+          <div class="strength-text">Faible — Vulnérable aux attaques</div>
+        </div>
+
+        <div class="quick-stats">
+          <div class="quick-stats-title">Analyse rapide</div>
+          <div class="stat-row">
+            <span class="stat-label">Longueur</span>
+            <span class="stat-value">12 caractères</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Entropie</span>
+            <span class="stat-value">52 bits</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Jeux de caractères</span>
+            <span class="stat-value">4</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Combinaisons</span>
+            <span class="stat-value">2.5×10¹²</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-footer">
+        Calcul 100% local. Aucune donnée transmise.<br>
+        Vérification HIBP via k-anonymité.
+      </div>
+    </aside>
+
+    <!-- Right Panel - Scrollable -->
+    <main class="right-panel">
+      <!-- Section 1: Main result -->
+      <section class="result-section">
+        <div class="section-header">
+          <div class="section-number">01 / Résultat principal</div>
+          <h2 class="section-title">Temps de craquage minimal</h2>
+        </div>
+
+        <div class="hero-time">2 secondes</div>
+        <p class="hero-description">
+          Votre mot de passe peut être cracké en <strong>2 secondes</strong> avec une attaque par dictionnaire 
+          utilisant l'algorithme MD5. Ce temps est considéré comme critique et nécessite un changement immédiat.
+        </p>
+        <div class="hero-meta">
+          Méthode : Dictionary attack • Algorithme : MD5 • Hardware : 12× RTX 4090
+        </div>
+      </section>
+
+      <!-- Section 2: HIBP Alert -->
+      <section class="result-section">
+        <div class="section-header">
+          <div class="section-number">02 / Vérification des fuites</div>
+          <h2 class="section-title">Bases de données compromises</h2>
+        </div>
+
+        <div class="alert-box">
+          <div class="alert-title">⚠️ Mot de passe compromis</div>
+          <p class="alert-text">
+            Ce mot de passe apparaît <strong>127,453 fois</strong> dans les bases de données de mots de passe 
+            compromis recensés par Have I Been Pwned. Il ne doit jamais être utilisé.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 3: Vulnerabilities -->
+      <section class="result-section">
+        <div class="section-header">
+          <div class="section-number">03 / Vulnérabilités détectées</div>
+          <h2 class="section-title">Points faibles identifiés</h2>
+        </div>
+
+        <div class="vuln-list">
+          <div class="vuln-badge critical">
+            <span class="vuln-dot"></span>
+            Mot du dictionnaire
+          </div>
+          <div class="vuln-badge critical">
+            <span class="vuln-dot"></span>
+            Présent dans HIBP
+          </div>
+          <div class="vuln-badge warning">
+            <span class="vuln-dot"></span>
+            Motif commun détecté
+          </div>
+          <div class="vuln-badge warning">
+            <span class="vuln-dot"></span>
+            Structure prévisible
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Technical details -->
+      <section class="result-section">
+        <div class="section-header">
+          <div class="section-number">04 / Détails techniques</div>
+          <h2 class="section-title">Analyse approfondie</h2>
+        </div>
+
+        <div class="data-grid">
+          <div class="data-card">
+            <div class="data-value">12</div>
+            <div class="data-label">Caractères</div>
+          </div>
+          <div class="data-card">
+            <div class="data-value">52</div>
+            <div class="data-label">Bits d'entropie</div>
+          </div>
+          <div class="data-card">
+            <div class="data-value">62</div>
+            <div class="data-label">Taille du charset</div>
+          </div>
+          <div class="data-card">
+            <div class="data-value">2.5e12</div>
+            <div class="data-label">Combinaisons</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Attack matrix -->
+      <section class="result-section">
+        <div class="section-header">
+          <div class="section-number">05 / Matrice d'attaques</div>
+          <h2 class="section-title">Temps par type d'attaque</h2>
+        </div>
+
+        <table class="attack-table">
+          <thead>
+            <tr>
+              <th>Type d'attaque</th>
+              <th>Algorithme</th>
+              <th style="text-align: right;">Temps estimé</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="attack-name">Brute force</td>
+              <td class="attack-algo">MD5</td>
+              <td class="attack-time time-critical">3 minutes</td>
+            </tr>
+            <tr>
+              <td class="attack-name">Dictionnaire</td>
+              <td class="attack-algo">MD5</td>
+              <td class="attack-time time-critical">2 secondes</td>
+            </tr>
+            <tr>
+              <td class="attack-name">Hybride</td>
+              <td class="attack-algo">MD5</td>
+              <td class="attack-time time-critical">12 secondes</td>
+            </tr>
+            <tr>
+              <td class="attack-name">Masque</td>
+              <td class="attack-algo">SHA-256</td>
+              <td class="attack-time time-critical">4 minutes</td>
+            </tr>
+            <tr>
+              <td class="attack-name">Rainbow table</td>
+              <td class="attack-algo">MD5</td>
+              <td class="attack-time time-critical">Instantané</td>
+            </tr>
+            <tr>
+              <td class="attack-name">Credential stuffing</td>
+              <td class="attack-algo">Tous</td>
+              <td class="attack-time time-critical">Instantané</td>
+            </tr>
+            <tr>
+              <td class="attack-name">Brute force</td>
+              <td class="attack-algo">bcrypt</td>
+              <td class="attack-time time-warning">15 ans</td>
+            </tr>
+            <tr>
+              <td class="attack-name">Brute force</td>
+              <td class="attack-algo">Argon2id</td>
+              <td class="attack-time time-safe">230 ans</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Section 6: Recommendations -->
+      <section class="result-section">
+        <div class="section-header">
+          <div class="section-number">06 / Recommandations</div>
+          <h2 class="section-title">Comment améliorer</h2>
+        </div>
+
+        <div class="alert-box success">
+          <div class="alert-title">✓ Bonnes pratiques</div>
+          <p class="alert-text">
+            <strong>1.</strong> Utilisez un gestionnaire de mots de passe pour générer des mots de passe uniques<br>
+            <strong>2.</strong> Minimum 16 caractères avec majuscules, minuscules, chiffres et symboles<br>
+            <strong>3.</strong> Évitez les mots du dictionnaire et les motifs prévisibles<br>
+            <strong>4.</strong> Activez l'authentification à deux facteurs (2FA) partout où c'est possible<br>
+            <strong>5.</strong> Changez immédiatement tout mot de passe compromis
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Simulation d'interaction
+    const input = document.querySelector('.password-input');
+    const strengthFill = document.querySelector('.strength-bar-fill');
+    const strengthText = document.querySelector('.strength-text');
+
+    input.addEventListener('input', (e) => {
+      const length = e.target.value.length;
+      const percentage = Math.min((length / 16) * 100, 100);
+      strengthFill.style.width = percentage + '%';
+
+      if (percentage < 30) {
+        strengthFill.style.background = '#dc2626';
+        strengthText.textContent = 'Très faible — Extrêmement vulnérable';
+      } else if (percentage < 50) {
+        strengthFill.style.background = '#ea580c';
+        strengthText.textContent = 'Faible — Vulnérable aux attaques';
+      } else if (percentage < 75) {
+        strengthFill.style.background = '#d97706';
+        strengthText.textContent = 'Moyen — Protection limitée';
+      } else {
+        strengthFill.style.background = '#16a34a';
+        strengthText.textContent = 'Fort — Bonne protection';
+      }
+    });
+  </script>
+</body>
+</html>

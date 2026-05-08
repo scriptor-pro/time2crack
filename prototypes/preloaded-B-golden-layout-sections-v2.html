@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype B v3 - Golden Sections avec calcul precis</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.proto-label { position: fixed; top: 0; left: 0; right: 0; background: #1d4ed8; color: #fff; text-align: center; font-size: 12px; font-weight: 700; padding: 6px; letter-spacing: 0.08em; text-transform: uppercase; z-index: 1000; }
+body { padding-top: 30px; }
+
+.phi-shell { margin-top: 12px; display: grid; gap: 10px; grid-template-columns: 1fr; }
+@media (min-width: 920px) { .phi-shell { grid-template-columns: 61.8fr 38.2fr; } }
+
+.panel { border: 1px solid var(--border); border-radius: 12px; background: var(--surface-alt); overflow: hidden; }
+.panel h2 { margin: 0; padding: 12px 14px; font-size: 15px; border-bottom: 1px solid var(--border); }
+.panel-body { padding: 12px; }
+
+.crack-primary { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 12px; }
+.crack-primary .value { font-size: clamp(1.45rem, 4vw, 2.2rem); font-weight: 700; }
+.crack-primary .detail { margin-top: 6px; color: var(--text-muted); font-size: 13px; }
+
+.algo-grid { margin-top: 10px; display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+.algo-item { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 8px; }
+.algo-item strong { display: block; font-size: 12px; }
+.algo-item span { color: var(--text-muted); font-size: 12px; }
+
+.attack-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.attack-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 999px; padding: 8px 10px; font-size: 12px; min-height: 44px; }
+.attack-btn[aria-selected="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.attack-focus { margin-top: 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 10px; }
+.attack-focus h3 { margin: 0; font-size: 14px; }
+.attack-focus p { margin: 8px 0 0; font-size: 13px; color: var(--text-muted); }
+
+.method-card { margin-top: 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 10px; font-size: 13px; }
+.method-card ul { margin: 8px 0 0 16px; padding: 0; display: grid; gap: 6px; }
+.method-card a { font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="proto-label">Prototype B v3 · 61.8 / 38.2 · precision restauree sur les temps</div>
+
+<header class="site-header">
+  <div class="header-left">
+    <a href="#" class="logo-link" aria-label="Time2Crack">
+      <span class="logo-text"><span class="logo-time">Time</span><span class="logo-2">2</span><span class="logo-crack">Crack</span></span>
+    </a>
+  </div>
+</header>
+
+<main id="main-content" role="main">
+  <section class="input-section">
+    <p class="subtitle">Prototype axe lisibilite + simplicite: meme structure 61.8/38.2, mais avec calcul de temps plus fidele (attaques + algorithmes).</p>
+
+    <div class="password-wrapper-row">
+      <div class="password-wrapper">
+        <input type="password" id="password-input" autocomplete="off" spellcheck="false" placeholder="Testez votre mot de passe" />
+      </div>
+      <button type="button" id="reset-btn" class="reset-btn-inline" aria-label="Reset">Reset</button>
+    </div>
+
+    <div class="phi-shell">
+      <article class="panel">
+        <h2>Temps de craquage</h2>
+        <div class="panel-body">
+          <div class="crack-primary">
+            <div class="value" id="phi-main-time">Entrez un mot de passe</div>
+            <p class="detail" id="phi-main-detail">Vue principale pour l'attaquant experimente (12 GPU).</p>
+          </div>
+          <div class="algo-grid" aria-label="Temps par algorithme">
+            <div class="algo-item"><strong>MD5</strong><span id="t-md5">--</span></div>
+            <div class="algo-item"><strong>SHA-1</strong><span id="t-sha1">--</span></div>
+            <div class="algo-item"><strong>SHA-256</strong><span id="t-sha256">--</span></div>
+            <div class="algo-item"><strong>NTLM</strong><span id="t-ntlm">--</span></div>
+            <div class="algo-item"><strong>bcrypt</strong><span id="t-bcrypt">--</span></div>
+            <div class="algo-item"><strong>Argon2id</strong><span id="t-argon2">--</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <h2>Attaques + Methodologie et sources</h2>
+        <div class="panel-body">
+          <div class="attack-strip" role="tablist" aria-label="Type d'attaque">
+            <button class="attack-btn" role="tab" aria-selected="true" data-key="dict">Dictionnaire</button>
+            <button class="attack-btn" role="tab" aria-selected="false" data-key="hybrid">Hybride</button>
+            <button class="attack-btn" role="tab" aria-selected="false" data-key="mask">Mask</button>
+            <button class="attack-btn" role="tab" aria-selected="false" data-key="pcfg">PCFG</button>
+            <button class="attack-btn" role="tab" aria-selected="false" data-key="brute">Brute force</button>
+          </div>
+
+          <div class="attack-focus" id="attack-focus" role="tabpanel">
+            <h3 id="attack-title">Dictionnaire</h3>
+            <p id="attack-text">Teste des listes massives de mots de passe connus. Tres efficace contre des mots courants et leurs variantes.</p>
+            <p id="attack-source"><a id="attack-source-link" href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Source principale: Have I Been Pwned</a></p>
+          </div>
+
+          <div class="method-card">
+            <strong>Methode de calcul (resume court)</strong>
+            <ul>
+              <li>Analyse du mot de passe (longueur, charset, motifs predictibles).</li>
+              <li>Simulation des attaques les plus probables avant brute force total.</li>
+              <li>Conversion en temps selon vitesses de hash connues.</li>
+            </ul>
+            <p style="margin-top:8px;"><a href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler" target="_blank" rel="noopener">USENIX (modeles probabilistes)</a> · <a href="https://www.hivesystems.com/blog/are-your-passwords-in-the-green" target="_blank" rel="noopener">Hive Systems 2025</a></p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script>
+const input = document.getElementById('password-input');
+const resetBtn = document.getElementById('reset-btn');
+
+const ALGOS = [
+  { key: 'md5', label: 'MD5', rate: 168.9e9 * 12, salted: false },
+  { key: 'sha1', label: 'SHA-1', rate: 50.86e9 * 12, salted: false },
+  { key: 'sha256', label: 'SHA-256', rate: 22.68e9 * 12, salted: false },
+  { key: 'ntlm', label: 'NTLM', rate: 288.5e9 * 12, salted: false },
+  { key: 'bcrypt', label: 'bcrypt', rate: 184000 * 12, salted: true },
+  { key: 'argon2', label: 'Argon2id', rate: 800, salted: true },
+];
+
+const attackData = {
+  dict: { t: 'Dictionnaire', d: 'Teste des listes massives de mots de passe connus. Tres efficace contre des mots courants et leurs variantes.', s: 'https://haveibeenpwned.com/' },
+  hybrid: { t: 'Hybride', d: 'Ajoute des regles de mutation (majuscule, chiffres, symbole) a des mots connus.', s: 'https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd' },
+  mask: { t: 'Mask', d: 'Cible des structures previsibles comme Mot+Annee ou Majuscule+digits.', s: 'https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' },
+  pcfg: { t: 'PCFG', d: 'Priorise les grammaires de mots de passe les plus frequentes avant le brute force.', s: 'https://arxiv.org/abs/2010.12269' },
+  brute: { t: 'Brute force', d: 'Explore l\'espace complet. Devient vite impraticable quand la longueur augmente.', s: 'https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' }
+};
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return 'pratiquement impossible';
+  if (seconds < 1) return '< 1 s';
+  if (seconds < 60) return `${Math.round(seconds)} s`;
+  if (seconds < 3600) return `${Math.round(seconds / 60)} min`;
+  if (seconds < 86400) return `${Math.round(seconds / 3600)} h`;
+  if (seconds < 31557600) return `${Math.round(seconds / 86400)} j`;
+  if (seconds < 3155760000) return `${(seconds / 31557600).toFixed(1)} ans`;
+  return `${seconds.toExponential(2)} s`;
+}
+
+function analyzePassword(pw) {
+  const lower = /[a-z]/.test(pw);
+  const upper = /[A-Z]/.test(pw);
+  const digit = /\d/.test(pw);
+  const symbol = /[^a-zA-Z0-9]/.test(pw);
+  const charset = (lower ? 26 : 0) + (upper ? 26 : 0) + (digit ? 10 : 0) + (symbol ? 33 : 0);
+  const len = pw.length;
+  const common = /^(password|123456|qwerty|azerty|admin|letmein|welcome|iloveyou)$/i.test(pw);
+  const dictLike = /[a-z]{4,}/i.test(pw);
+  const structure = /^[A-Z]?[a-z]+\d{1,4}[!@#$%^&*]?$/.test(pw);
+  const seq = /(0123|1234|2345|abcd|bcde|qwer|asdf|zxcv)/i.test(pw);
+  const repeat = /(.)\1{2,}/.test(pw);
+  const date = /(?:19|20)\d{2}|\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}/.test(pw);
+  const passphrase = /[a-z]{4,}.+[a-z]{4,}/i.test(pw) || /[a-z]{8,}/i.test(pw);
+  const combos = len ? Math.pow(Math.max(charset, 2), len) : 0;
+  return { len, charset, common, dictLike, structure, seq, repeat, date, passphrase, combos };
+}
+
+function attackAttempts(info, algo) {
+  const dictBase = 14e9;
+  return [
+    { name: 'Brute force', attempts: info.combos },
+    { name: 'Dictionnaire', attempts: info.common ? 500 : dictBase },
+    { name: 'Hybride', attempts: info.dictLike ? dictBase * 1000 : Number.POSITIVE_INFINITY },
+    { name: 'Mask', attempts: info.structure || info.date ? 1e8 : Number.POSITIVE_INFINITY },
+    { name: 'Markov', attempts: info.seq || info.repeat || info.structure ? 2e8 : info.combos * 0.01 },
+    { name: 'PCFG', attempts: info.structure ? 1e10 : info.combos * 0.05 },
+    { name: 'Combinator', attempts: info.passphrase ? 5e10 : Number.POSITIVE_INFINITY },
+    { name: 'Credential stuffing', attempts: info.common ? 100 : Number.POSITIVE_INFINITY },
+    { name: 'Password spraying', attempts: info.common ? 1000 : Number.POSITIVE_INFINITY },
+    { name: 'Rainbow table', attempts: !algo.salted && info.common ? 1 : Number.POSITIVE_INFINITY },
+  ];
+}
+
+function bestTimeForAlgo(info, algo) {
+  const attacks = attackAttempts(info, algo);
+  let best = { seconds: Number.POSITIVE_INFINITY, attack: 'Aucune' };
+  for (const atk of attacks) {
+    const sec = atk.attempts / algo.rate;
+    if (sec < best.seconds) best = { seconds: sec, attack: atk.name };
+  }
+  return best;
+}
+
+function computeModel(pw) {
+  const info = analyzePassword(pw);
+  const byAlgo = ALGOS.map((algo) => ({ algo, ...bestTimeForAlgo(info, algo) }));
+  const fastest = byAlgo.reduce((min, current) => (current.seconds < min.seconds ? current : min), byAlgo[0]);
+  return { byAlgo, fastest };
+}
+
+function fillAlgo(id, text) {
+  document.getElementById(id).textContent = text;
+}
+
+resetBtn.addEventListener('click', () => {
+  input.value = '';
+  input.dispatchEvent(new Event('input'));
+  input.focus();
+});
+
+document.querySelectorAll('.attack-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.attack-btn').forEach((b) => b.setAttribute('aria-selected', 'false'));
+    btn.setAttribute('aria-selected', 'true');
+    const k = btn.dataset.key;
+    document.getElementById('attack-title').textContent = attackData[k].t;
+    document.getElementById('attack-text').textContent = attackData[k].d;
+    const sourceLink = document.getElementById('attack-source-link');
+    sourceLink.href = attackData[k].s;
+    sourceLink.textContent = 'Source principale';
+  });
+});
+
+input.addEventListener('input', () => {
+  const pw = input.value && input.value.length ? input.value : 'DemoPassphrase2026!';
+  const main = document.getElementById('phi-main-time');
+  const detail = document.getElementById('phi-main-detail');
+
+  const model = computeModel(pw);
+  main.textContent = formatTime(model.fastest.seconds);
+  detail.textContent = `Dominant: ${model.fastest.attack} sur ${model.fastest.algo.label}.`;
+
+  const map = {
+    md5: 't-md5',
+    sha1: 't-sha1',
+    sha256: 't-sha256',
+    ntlm: 't-ntlm',
+    bcrypt: 't-bcrypt',
+    argon2: 't-argon2',
+  };
+
+  model.byAlgo.forEach((item) => {
+    fillAlgo(map[item.algo.key], `${formatTime(item.seconds)} (${item.attack})`);
+  });
+});
+
+input.dispatchEvent(new Event('input'));
+</script>
+</body>
+</html>

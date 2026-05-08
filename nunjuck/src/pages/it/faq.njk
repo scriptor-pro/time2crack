@@ -1,0 +1,180 @@
+---
+lang: it
+permalink: "/it/faq.html"
+layout: base.njk
+currentPage: faq
+pageSlug: faq.html
+mainClass: faq-page
+pageTitle: "FAQ — Time2Crack"
+pageDescription: "Risposte alle domande frequenti su Time2Crack, il suo funzionamento locale, la metodologia scientifica e i risultati."
+---
+
+<h2>Domande frequenti</h2>
+<p><small><a href="how-time2crack-works.html">Comprendere il funzionamento tecnico →</a></small></p>
+<dl class="faq-list">
+<dt>Come misurare la resistenza della mia password?</dt>
+<dd>
+<p>
+<strong>Time2Crack è un estimatore di resistenza password gratuito</strong> che misura la robustezza della password contro gli attacchi reali del computer.
+        </p>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Processo di valutazione a tre fasi</h3>
+<ol style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>Inserisci la password</strong> nel campo degli strumenti Time2Crack.
+            <em style="color: #999;">(La tua password rimane interamente sul tuo computer - nessuna trasmissione)</em>
+</li>
+<li>
+<strong>Fare clic su "Analisi"</strong> per attivare l'analisi della resistenza.
+Lo strumento prova la password contro 7 tipi di attacchi di computer realistici: attacco di forza cruda, dizionario, ibrido, maschera, probabilità Markov, PCFG grammaticale e combinatore di parola.
+          </li>
+<li>
+<strong>Leggi i risultati</strong> : Lo strumento visualizza il tempo stimato per rompere la password con ciascuno dei 6 algoritmi hash (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id).
+          </li>
+</ol>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Risultati interpretativi</h3>
+<p>
+          Time2Crack mostra due misure principali:
+        </p>
+<ul style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>"Crack Time"</strong> : Quanto tempo ci vorrebbe un aggressore medio (12 GPU moderna) per rompere la password.
+            <ul style="margin-top: 0.5em; font-size: 0.95em;">
+<li> <strong>Ottimo</strong> &gt; 100 anni</li>
+<li> <strong>Molto bene.</strong> 1 anno – 100 anni</li>
+<li> <strong>Accettabile</strong> : 1 giorno – 1 anno</li>
+<li> <strong>Basso</strong> &lt; 1 giorno</li>
+<li> <strong>Ultra-basso</strong> &lt; 1</li>
+</ul>
+</li>
+<li>
+<strong>"Fast Attack"</strong> : Che tipo di attacco romperà prima la password.
+Ad esempio, una semplice password del dizionario sarà decisa da una <strong>dizionario attacco</strong>, mentre una passphrase (4+ parole) sarà decifrata da <strong>Attacco combinato</strong>.
+          </li>
+</ul>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Perché questa misura è scientifica</h3>
+<p>
+          Time2Crack non misura<strong>entropia teorica</strong> (approccio tradizionale NIST), che sovrastima le password ignorando i modelli umani.
+Invece, considera il <strong>costo di attacco pratico</strong> in base a:
+        </p>
+<ul style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li><strong>Ricerca accademica</strong> (Wheeler 2016, Wang &amp; Ding 2023, Weir 2009) convalida 7 attacchi reali</li>
+<li><strong>Dati empirici rockyou2021</strong> (32.6M password reali) per calibrare modelli probabilistici</li>
+<li><strong>benchmark GPU ufficiali</strong> (Hashcat v6.2.6, Hive Systems 2025) per velocità di cracking</li>
+</ul>
+<p style="margin-top: 1em;">
+          Ciò significa che <strong>Time2Crack stima più accuratamente la sicurezza reale</strong> una barra di forza visiva tradizionale.
+        </p>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Passi per migliorare il tuo punteggio</h3>
+<p>
+          Se la password è bassa, migliorala come segue:
+        </p>
+<ol style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>Aumentare la lunghezza</strong> : Aumento da 8 a 12+ caratteri.
+Ogni carattere aggiuntivo moltiplica la difficoltà di ~70 (numero medio di caratteri).
+          </li>
+<li>
+<strong>Utilizzare una passphrase</strong> (consigliato): 4-5 parole casuali separate da tratti o spazi.
+Esempio: <code style="background: #f5f5f5; padding: 2px 4px; border-radius: 3px;">correct-horse-battery-staple</code>
+            Questo è più sicuro e memorizzabile di una parola complessa.
+          </li>
+<li>
+<strong>Evitare modelli umani</strong> : Non combinare "nome + anno" (ex: Jean1985).
+Time2Crack rileva questi modelli e li rompe in pochi secondi tramite attacco PCFG.
+          </li>
+<li>
+<strong>Utilizzare un password manager</strong> : Lascia che un manager generi una stringa casuale di carattere 16-32.
+Time2Crack lo stima a &gt; 10.000 anni, garantendo la massima sicurezza.
+          </li>
+</ol>
+<p style="margin-top: 1em; padding-top: 1em; border-top: 1px solid #eee; font-size: 0.95em; color: #666;">
+<strong>Consigli chiave</strong> : Non cercare una barra di forza visiva perfetta. <strong>tempo di crepa &gt; 100 anni</strong> per una password critica (email, banca).
+Un passphrase a 4 parole riesce facilmente, mentre una parola a 12 caratteri può fallire a seconda della composizione.
+        </p>
+</dd>
+<dt>Cos'è Time2Crack?</dt>
+<dd>Time2Crack è una calcolatrice di tempo di cracking password. Si stima quanto tempo ci vorrebbe un aggressore per indovinare la tua password utilizzando 7 diversi attacchi (forza di gravità, dizionario, ibrido, maschera, Markov, PCFG, combinatore). <strong>sul tuo computer</strong> — la password non lascia mai il dispositivo.</dd>
+<dt>I miei dati sono al sicuro?</dt>
+<dd>
+<p>
+          Time2Crack funziona. <strong>100% locale</strong> Non viene inviata alcuna password ai nostri server. Facciamo solo un controllo facoltativo: controlla tramite Have I Been Pwned (HIBP) se la tua password è conosciuta in vecchie perdite. <strong>k-anonimato</strong> (inviamo solo i primi 5 caratteri dell'hash SHA-1, mai la password completa).
+        </p>
+<h4 style="font-size: 0.95em; margin: 0.8em 0 0.3em 0; font-weight: 600;">Esempio concreto: come funziona l'anonimato</h4>
+<p style="font-size: 0.9em; color: #666; margin: 0.5em 0;">
+          Per la password <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">password</code> :
+        </p>
+<ul style="font-size: 0.9em; color: #555; margin: 0.5em 0 1em 2em; list-style: disc;">
+<li>Hash SHA-1 completo (locale, mai trasmesso): <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code></li>
+<li>Prefisso inviato a HIBP: <code style="background: #e8f5e9; padding: 0.2em 0.4em; border-radius: 2px; color: #2e7d32;">5BAA6</code> (solo 5 caratteri)</li>
+<li>Suffisso conservato localmente (mai trasmesso): <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code></li>
+<li>HIBP restituisce tutti i hash a partire da <code>5BAA6</code> (~500-1000 risultati anonimi)</li>
+<li>Time2Crack confronta localmente il suffisso con le risposte, solo sul computer</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin: 0.5em 0;">
+          Risultati: <strong>La password completa non lascia mai il tuo dispositivo</strong>anche durante la verifica HIBP.
+        </p>
+</dd>
+<dt>Perché le stime del tempo variano secondo l'algoritmo di hash?</dt>
+<dd>MD5 e SHA-1 sono veloci da rompere (~2 miliardi di tentativi/secondo), mentre bcrypt e Argon2id sono volontariamente lenti (~2 milioni e ~800 tentativi/secondo). Time2Crack mostra il tempo per ogni algoritmo, in modo da capire l'importanza di utilizzare <strong>b.</strong> o <strong>Argon2id</strong> per password critiche.</dd>
+<dt>Cos'è "forza cruda", "Dizionario", ecc.?</dt>
+<dd>Questi sono i 7 tipi di attacchi reali che i pirati usano:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>Forza lorda</strong> : testare ogni possibile combinazione (slow per lunghe password)</li>
+<li><strong>Dizionario</strong> : testare parole comuni e perdite note (velocità per parole semplici)</li>
+<li><strong>ibrido</strong> : dizionario + mutazioni minori (ex: password → p@ssw0rd)</li>
+<li><strong>Maschera</strong> Obiettivo delle strutture prevedibili (ad esempio Nome + Anno)</li>
+<li><strong>Markov</strong> : analizzare le probabilità di sequenze (ex: "qu" corrente in francese)</li>
+<li><strong>PCF</strong> : Strutture grammaticali (ad esempio Majuscule+minuscules+figures)</li>
+<li><strong>Combinatore</strong> : concate parole (es: "corsa-corsa-staple")</li>
+</ul>
+</dd>
+<dt>Cos'è "Favorevole" contro "Standard"?</dt>
+<dd><strong>Standard</strong> : ritiene ottimista che l'aggressore utilizzi l'attacco più noto. <strong>Favorevole</strong> : suppone che l'attaccante test solo il dizionario e le mutazioni semplici (lo scenario più favorevole per la tua password). In pratica, queste due stime sono spesso simili, come i migliori attaccanti provano tutti i metodi in parallelo.</dd>
+<dt>La mia password è contrassegnata "Ultra-weak".</dt>
+<dd>Una password ultra-bassa (cracked in meno di un secondo) significa che è incluso nelle liste di password più comuni. <strong>Cambialo subito.</strong> Invece, usare:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li>Uno <strong>Passphrase</strong> (4+ parole casuali separate da spazi, ad esempio "corsa-corsa-corsa-staple")</li>
+<li>Uno <strong>password generata casualmente</strong> (almeno 12 caratteri misti)</li>
+<li>Uno <strong>password manager</strong> (Bitwarden, 1Password, KeePass, ecc.)</li>
+</ul>
+</dd>
+<dt>Come creare una password sicura?</dt>
+<dd>I tre approcci:
+        <ol style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>Passphrase</strong> (consigliato): 4-5 parole casuali comuni (ad esempio "sun-table-computer-flower"). Facile da memorizzare, molto sicuro (~10.000+ anni se numeri aggiunti).</li>
+<li><strong>Random</strong> : 16+ caratteri (majuscules, minuscole figure, simboli). Cracking richiede 10.000+ anni.</li>
+<li><strong>Passphrase + mutazione</strong> "Sun2024!" (passphrase + anno + simbolo). Combina sicurezza e memoria.</li>
+</ol>
+</dd>
+<dt>Perché una breve password con simboli non basta?</dt>
+<dd>Esempio: "P@ssw0rd!" (10 caratteri) può essere incrinato in pochi giorni con bcrypt. Anche con simboli, una parola breve rimane vulnerabile perché segue una <strong>schema prevedibile</strong> L'attacco PCFG prova esattamente questo modello. Un passphrase a 4 parole è più sicuro di una parola breve "complesso".</dd>
+<dt>E se usassi un gestore di password?</dt>
+<dd>Ottima scelta! I gestori (Bitwarden, 1Password, KeePass) generano password casuali di 16-32 caratteri, che non è necessario memorizzare. <strong>10.000+ anni</strong> per una parola generata casualmente. <strong>passphrase solido per sbloccare il manager</strong>.</dd>
+<dt>Le mie stime possono essere errate?</dt>
+<dd>Time2Crack utilizza i migliori dati pubblici disponibili (rockyou2021, NIST, ricerca accademica) per calibrare le sue stime. <strong>L'errore tipico è ±1 ordine di grandezza</strong> (cioè 10× più veloce/più basso della realtà). <strong>attacco con 12× RTX 4090</strong> — un vero attaccante può essere 100× più lento o 10.000× più veloce a seconda delle sue risorse. <strong>Argon2id</strong> sono più affidabili (più bassi, meno variazioni).</dd>
+<dt>Perché Time2Crack mostra 7 diversi attacchi?</dt>
+<dd>Perché? <strong>ogni password è vulnerabile a un diverso attacco</strong>. "password" cade in 1 tentativo (dizionario). "P@ssw0rd!" cade in ~10.000 tentativi (hybrid + PCFG). "a1b2c3d4e5f6g7h8" cade solo in forza raw (~10^30 tentativi). <strong>il miglior attacco per la tua password</strong> e visualizza il tempo per ogni algoritmo hash.</dd>
+<dt>La pagina Metodo spiega come funziona?</dt>
+<dd>Sì! <strong>Metodo</strong> (accessibile tramite menu) dettagli:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li>Come ogni attacco funziona (con esempi)</li>
+<li>Fonti di dati utilizzate (rockyou, NIST, Hive Systems)</li>
+<li>Limitazioni e ipotesi</li>
+<li>Ricerca accademica che convalida le nostre stime</li>
+</ul>
+</dd>
+<dt>Posso usare Time2Crack offline?</dt>
+<dd>Si! Time2Crack funziona completamente offline una volta caricato. I dati del dizionario e modelli ML (Markov, PCFG) vengono scaricati una volta all'avvio. È quindi possibile chiudere Internet — Time2Crack continua a funzionare normalmente.</dd>
+<dt>Quanto tempo può essere decisa una password "buona"?</dt>
+<dd>Con una stima conservatrice:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>8 caratteri casuali</strong> : ~8 ore (MD5) / ~3 anni (bcrypt)</li>
+<li><strong>12 caratteri casuali</strong> : ~2.000 anni (MD5) / ~1 milioni di anni (bcrypt)</li>
+<li><strong>16 caratteri casuali</strong> : ~2 milioni di anni (bcrypt)</li>
+<li><strong>Passphrase 4 parole + simbolo</strong> : ~ 10.000+ anni (bcrypt)</li>
+</ul>
+        Uso <strong>b.</strong> o <strong>Argon2id</strong> per tutte le password critiche.
+      </dd>
+<dt>Time2Crack è open source?</dt>
+<dd>Il codice sorgente è disponibile su Codeberg. Time2Crack ha <strong>Dipendenza zero</strong> — è JavaScript puro, nessun bundlers o sudorazione. È possibile controllare il codice da soli per confermare che nessuna password viene trasmessa.</dd>
+</dl>

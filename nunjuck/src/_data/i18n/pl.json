@@ -1,0 +1,106 @@
+{
+  "lang": "pl",
+  "dir": "ltr",
+  "nav": {
+    "ariaLabel": "Nawigacja główna",
+    "langSelectLabel": "Wybierz język",
+    "openMenuLabel": "Otwórz menu",
+    "closeMenuLabel": "Zamknij menu",
+    "testPassword": "Testuj hasło",
+    "generatePassword": "Generuj hasło",
+    "faq": "FAQ",
+    "about": "O nas",
+    "science": "Nauka",
+    "security": "Bezpieczeństwo",
+    "howItWorks": "Jak to działa",
+    "attackMethods": "Metody ataku",
+    "bruteForce": "Brute Force",
+    "dictionary": "Dictionary",
+    "hybrid": "Hybrid",
+    "mask": "Mask",
+    "markov": "Markov",
+    "pcfg": "PCFG",
+    "combinator": "Combinator",
+    "sources": "Źródła",
+    "hibp": "HIBP",
+    "privacy": "Prywatność",
+    "secondaryNavLabel": "Nawigacja dodatkowa",
+    "drawerVersion": "v2.2.1 • Lokalny estymator czasu złamania 🔐"
+  },
+  "privacyNotice": {
+    "ariaLabel": "Uwaga o prywatności",
+    "icon": "🔒",
+    "strong": "Wszystko pozostaje w przeglądarce.",
+    "text": "Żadne hasło nie jest transmitowane. Obliczenie jest całkowicie lokalne. Jedyne zewnętrzne żądanie to anonimowa kontrola wycieku (pierwsze 5 znaków skrótu SHA-1, nigdy hasło)."
+  },
+  "footer": {
+    "tagline": "Obliczenia lokalne · sprawdzenie HIBP · Open source",
+    "linkedinLabel": "Śledź nas na LinkedIn",
+    "blueskyLabel": "Śledź nas na Bluesky",
+    "mastodonLabel": "Śledź nas na Mastodonie"
+  },
+  "pages": {
+    "index": {
+      "title": "Testuj siłę swojego hasła — Time2Crack",
+      "description": "Analizuj rzeczywistą siłę hasła za pomocą 7 modeli ataku i 6 algorytmów haszowania. Obliczenie w 100% lokalne, brak transmisji hasła."
+    },
+    "about": {
+      "title": "O nas — Time2Crack — Naukowy estymator czasu złamania hasła",
+      "description": "Odkryj Time2Crack: najdokładniejsze narzędzie do obliczania czasu złamania. Metodologia naukowa, zweryfikowane źródła akademickie, bezpieczna analiza lokalna."
+    },
+    "privacy": {
+      "title": "Prywatność i bezpieczeństwo — Time2Crack",
+      "description": "Dowiedz się, jak Time2Crack przetwarza dane: lokalne obliczenia w przeglądarce, bez wysyłania hasła i z minimalnymi sprawdzeniami."
+    },
+    "sources": {
+      "title": "Źródła naukowe — Time2Crack",
+      "description": "Zobacz źródła naukowe i benchmarki, które potwierdzają Time2Crack, od kryptografii po estymację siły haseł."
+    },
+    "hibp": {
+      "title": "Weryfikacja HIBP — Time2Crack",
+      "description": "Sprawdź, czy hasło pojawia się w wycieku danych dzięki HIBP, za pomocą anonimowego, prywatnego zapytania."
+    },
+    "faq": {
+      "title": "FAQ — Time2Crack",
+      "description": "Odpowiedzi na najczęstsze pytania o Time2Crack, jego lokalne działanie, metodologię naukową i wyniki obliczeń."
+    },
+    "generator": {
+      "title": "Bezpieczny generator haseł — Time2Crack",
+      "description": "Generuj silne hasła z Time2Crack. Wybieraj zestawy znaków, unikaj niejednoznaczności i twórz sekrety dopasowane do potrzeb."
+    },
+    "how-time2crack-works": {
+      "title": "Jak Time2Crack oblicza czas — Time2Crack",
+      "description": "Zrozum, jak Time2Crack szacuje czas łamania dzięki modelom ataku, skalibrowanym prędkościom GPU i lokalnemu silnikowi."
+    },
+    "methodes": {
+      "bruteforce": {
+        "title": "Bruteforce — Metody ataku — Time2Crack",
+        "description": "Testuj systematycznie wszystkie możliwe kombinacje. To najbardziej wyczerpujący atak i dobry punkt odniesienia."
+      },
+      "dictionary": {
+        "title": "Słownik — Metody ataku — Time2Crack",
+        "description": "Sprawdzaj hasła z wybranych list słów i ich popularne warianty. Szybkie, gdy sekret opiera się na znanych słowach."
+      },
+      "hybrid": {
+        "title": "Hybrydowy — Metody ataku — Time2Crack",
+        "description": "Łącz słownik, maski lub reguły, aby rozszerzyć kandydatów. Skuteczne wobec przewidywalnych modyfikacji."
+      },
+      "mask": {
+        "title": "Maska — Metody ataku — Time2Crack",
+        "description": "Szukaj tylko wzorców pasujących do znanej maski, takich jak litery, cyfry i symbole w stałych pozycjach."
+      },
+      "markov": {
+        "title": "Markov — Metody ataku — Time2Crack",
+        "description": "Generuj kandydatów na podstawie prawdopodobieństw przejść wyuczonych z prawdziwych haseł. Dobry kompromis."
+      },
+      "pcfg": {
+        "title": "PCFG — Metody ataku — Time2Crack",
+        "description": "Buduj kandydatów z probabilistycznych wzorców gramatycznych wyuczonych ze struktury haseł."
+      },
+      "combinator": {
+        "title": "Kombinator — Metody ataku — Time2Crack",
+        "description": "Łącz dwie listy słów, aby stworzyć większy zbiór kandydatów. Przydatne, gdy hasło składa się z kilku słów."
+      }
+    }
+  }
+}

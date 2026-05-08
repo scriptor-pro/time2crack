@@ -1,0 +1,134 @@
+---
+lang: tr
+permalink: "/tr/generator.html"
+layout: base.njk
+currentPage: generator
+pageSlug: generator.html
+mainClass: generator-page
+pageTitle: "Güvenli şifre oluşturucu — Time2Crack"
+pageDescription: "Time2Crack ile güçlü şifreler oluşturun. Karakter kümeleri seçin, belirsizlikleri azaltın ve kullanımınıza uygun sırlar üretin."
+---
+
+<div class="generator-container">
+<h2>Secured Password Jeneratör</h2>
+<p><small><a href="index.html">Şifrenizin gücünü test edin →</a> • • <a href="how-time2crack-works.html">Modeli anlamak →</a></small></p>
+ RAPID BENEFITS 
+<div class="presets">
+<button aria-label="Low: 8 karakter, küçük ve sayılar" class="preset-btn" data-preset="weak" title="Minimum 8 karakter, daha düşük vaka + basamak">Low Low Low Low</button>
+<button aria-label="Ortalama: 16 karakter, tüm türleri" class="preset-btn" data-preset="medium" title="16 karakter, üstcase + daha düşük">Ortalama Ortalama Ortalama</button>
+<button aria-label="Güçlü: 20 karakter, tüm türleri" class="preset-btn" data-preset="strong" title="20 karakter, üstcase + altcase + rakamlar + semboller">Güçlü Güçlü Güçlü Güçlü Güçlü</button>
+<button aria-label="Paranoia: 32 karakter, belirsiz karakterler olmadan" class="preset-btn" data-preset="paranoia" title="32 karakter, belirsiz karakterler olmadan (l, I, O, 0)">- Paranoia</button>
+</div>
+ MAIN CONTROLS 
+<div class="generator-controls">
+<div class="control-group">
+<label for="length">
+            Uzunluk: <span id="length-display">16</span> karakterler karakterler
+            <span class="entropy-badge" id="entropy-badge">105 bit</span>
+</label>
+<input aria-label="Şifre uzunluğu" id="length" max="128" min="8" type="range" value="16">
+<small>Maksimum: 128 karakter (maximum teorik güvenlik)</small>
+</div>
+<fieldset class="control-group">
+<legend>Listelenecek karakterler:</legend>
+<div class="charset-grid">
+<label class="charset-option">
+<input aria-label="Majuscules" checked="" id="include-uppercase" type="checkbox">
+<span class="charset-label">Majuscules</span>
+<span class="charset-range">(A-Z)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Minuscules" checked="" id="include-lowercase" type="checkbox">
+<span class="charset-label">Minuscules</span>
+<span class="charset-range">(a-z)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Şekiller Şekiller" checked="" id="include-numbers" type="checkbox">
+<span class="charset-label">Şekiller Şekiller</span>
+<span class="charset-range">(0-9)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Semboller" checked="" id="include-symbols" type="checkbox">
+<span class="charset-label">Semboller</span>
+<span class="charset-range">(!</span>
+</label>
+</div>
+</fieldset>
+<fieldset class="control-group">
+<legend>Gelişmiş Seçenekler:</legend>
+<label>
+<input aria-label="Öğün" checked="" id="exclude-ambiguous" type="checkbox">
+            Büyük karakterlerden kaçının (l, I, O, 0)
+          </label>
+<small>Elli kopya</small>
+</fieldset>
+</div>
+ FORCE INDICAT 
+<div class="strength-meter">
+<div class="strength-bar">
+<div class="strength-fill" id="strength-fill"></div>
+</div>
+<div class="strength-text">
+<span id="strength-label">Medium Medium Medium Medium</span>
+<span id="entropy-text">105 bit</span>
+</div>
+</div>
+ BUILDINGS 
+<div class="generator-buttons">
+<button class="btn btn-primary" id="generate-btn">Genrate</button>
+<button class="btn btn-secondary" disabled="" id="copy-btn">Kopya kopya</button>
+</div>
+ RESULT 
+<div class="generator-output">
+<input aria-label="Şifre üretti" class="password-output" id="generated-password" placeholder="Oluşturulan şifre burada görünecek" readonly="" type="text">
+</div>
+<div class="feedback" id="generator-feedback" style="display: none;"></div>
+ LOCING RESULTS 
+<div class="cracking-results" id="cracking-results" style="display: none;">
+<h3>Saldırılara Direniş</h3>
+<p class="cracking-subtitle">Bu şifreyi kırma zamanı (SHA-256, GPU deneyimli)</p>
+ BRUTE TIME FORMED FORCE 
+<div class="brute-force-display">
+<div class="brute-time-label">Gross Time Force:</div>
+<div class="brute-time-formatted" id="brute-time-formatted">– –</div>
+<div class="brute-time-breakdown" id="brute-time-breakdown"></div>
+</div>
+<div class="attacks-grid" id="attacks-grid">
+<div class="attack-card">
+<div class="attack-name">Gross Force</div>
+<div class="attack-time" id="attack-brute">– –</div>
+<div class="attack-rank" id="rank-brute">– –</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Sözlük</div>
+<div class="attack-time" id="attack-dict">– –</div>
+<div class="attack-rank" id="rank-dict">– –</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Hybrid Hybrid Hybrid Hybrid</div>
+<div class="attack-time" id="attack-hybrid">– –</div>
+<div class="attack-rank" id="rank-hybrid">– –</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Maske Maske</div>
+<div class="attack-time" id="attack-mask">– –</div>
+<div class="attack-rank" id="rank-mask">– –</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Markov</div>
+<div class="attack-time" id="attack-markov">– –</div>
+<div class="attack-rank" id="rank-markov">– –</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">PCFGGG</div>
+<div class="attack-time" id="attack-pcfg">– –</div>
+<div class="attack-rank" id="rank-pcfg">– –</div>
+</div>
+</div>
+<div class="best-attack">
+<span class="label">Daha iyi saldırı:</span>
+<span class="value" id="best-attack-name">– –</span>
+<span class="time" id="best-attack-time">– –</span>
+</div>
+</div>
+</div>

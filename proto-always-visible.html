@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.bunny.net; font-src 'self' https://fonts.bunny.net; img-src 'self' data: https://time2crack.eu; connect-src 'self' https://api.pwnedpasswords.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Time2Crack - Prototype Interface Toujours Visible</title>
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+    <link rel="icon" type="image/svg+xml" href="time2crack.svg" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* PROTOTYPE: Force all sections to be visible always */
+      .results.is-empty,
+      .results {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      
+      /* Show attacker frame by default */
+      #attacker-frame {
+        display: block !important;
+      }
+      
+      /* Show live details by default */
+      #live-details-visible {
+        display: grid !important;
+      }
+      
+      /* Show character analysis wrapper */
+      #character-analysis-live-wrapper {
+        display: block !important;
+      }
+      
+      /* Placeholder styling for empty state */
+      .placeholder-mode .attacker-panel .big-duration,
+      .placeholder-mode .attacker-panel .big-date,
+      .placeholder-mode .qp-badge,
+      .placeholder-mode .detail-value {
+        opacity: 0.4;
+        font-style: italic;
+        color: var(--text-muted) !important;
+      }
+      
+      /* Prototype banner */
+      .prototype-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.75rem 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <header role="banner">
+      <div class="logo">
+         <picture>
+           <source srcset="time2crack.avif" type="image/avif">
+           <source srcset="time2crack.webp" type="image/webp">
+           <img src="time2crack.svg" alt="Time2Crack" class="logo-image">
+         </picture>
+       </div>
+    </header>
+
+    <main id="main-content" role="main">
+      <div class="prototype-banner">
+        🧪 PROTOTYPE: Toutes les sections sont visibles dès le chargement (avant saisie)
+      </div>
+
+      <section class="input-section">
+        <p class="subtitle">Et si un pirate s'en prenait à votre mot de passe? Tapez-le pour voir combien de temps il résisterait. Tout est calculé sur votre appareil&nbsp;— rien ne quitte votre navigateur.</p>
+        <label for="password-input">Entrez un mot de passe à tester</label>
+        <div class="password-wrapper-row">
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="password-input"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="password-hint"
+              placeholder="Entrez un mot de passe à tester"
+            />
+            <span class="char-preview" id="char-preview" aria-hidden="true"></span>
+            <button
+              type="button"
+              id="toggle-visibility"
+              aria-label="Afficher le mot de passe"
+            >
+              <svg
+                class="lucide lucide-eye"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span class="sr-only">Afficher</span>
+            </button>
+          </div>
+          <button
+            type="button"
+            id="reset-btn"
+            class="reset-btn-inline"
+            aria-label="Recommencer"
+          >
+            <svg
+              class="lucide lucide-rotate-ccw"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="1 4 1 10 7 10" />
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="controls-row">
+          <span class="hint" id="password-hint">
+            <span id="hint-text"></span>
+          </span>
+        </div>
+
+        <!-- Password Strength Indicator -->
+        <div
+          class="strength-bar-wrapper"
+          role="progressbar"
+          aria-valuenow="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Password strength"
+          style="display: flex;"
+        >
+          <div class="bar-label">
+            <span class="strength-icon" id="strength-icon" aria-hidden="true">—</span>
+            <span id="strength-label">En attente</span>
+            <span id="strength-bits" class="strength-bits">—</span>
+          </div>
+          <div class="strength-bar-segments">
+            <div class="segment segment-critical" data-level="0"></div>
+            <div class="segment segment-danger" data-level="1"></div>
+            <div class="segment segment-warning" data-level="2"></div>
+            <div class="segment segment-success" data-level="3"></div>
+            <div class="segment segment-excellent" data-level="4"></div>
+            <div class="segment segment-exceptional" data-level="5"></div>
+          </div>
+        </div>
+
+        <div
+          class="results visible placeholder-mode"
+          id="results"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <div class="attacker-frame" id="attacker-frame">
+            <!-- Onglets -->
+            <div class="attacker-tabs" role="tablist" aria-label="Attacker profile">
+              <div class="attacker-tab-wrapper is-active">
+                <button
+                  class="attacker-tab is-active"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="panel-experienced"
+                  id="tab-experienced"
+                  data-profile="experienced"
+                >
+                  <span>Expérimenté</span>
+                </button>
+                <div class="attacker-tab-description">12× RTX 4090 GPUs</div>
+              </div>
+              <div class="attacker-tab-wrapper">
+                <button
+                  class="attacker-tab"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="panel-professional"
+                  id="tab-professional"
+                  data-profile="professional"
+                >
+                  <span>Professionnel</span>
+                </button>
+                <div class="attacker-tab-description">~100 GPUs</div>
+              </div>
+            </div>
+
+            <!-- Panneau Expérimenté -->
+            <div class="attacker-panel is-active" id="panel-experienced" role="tabpanel" aria-labelledby="tab-experienced">
+              <div class="label" id="result-label-fast">—</div>
+              <div class="big-duration" id="crack-duration-fast">—</div>
+              <div class="big-date" id="crack-date-fast">—</div>
+              <p class="result-sentence" id="result-sentence-fast"></p>
+            </div>
+
+            <!-- Panneau Professionnel -->
+            <div class="attacker-panel" id="panel-professional" role="tabpanel" aria-labelledby="tab-professional" hidden>
+              <div class="label" id="result-label-pro">—</div>
+              <div class="big-duration big-duration--professional" id="crack-duration-pro">—</div>
+              <div class="big-date" id="crack-date-pro">—</div>
+              <p class="result-sentence" id="result-sentence-pro"></p>
+            </div>
+
+            <!-- Quality + Pattern + HIBP Status Bar -->
+            <div class="quality-pattern-bar" id="quality-pattern-bar">
+              <div class="qp-badge-wrapper">
+                <span class="qp-label"><span aria-hidden="true">⭐</span> Quality</span>
+                <span class="qp-badge" id="quality-badge">—</span>
+              </div>
+              <div class="qp-badge-wrapper">
+                <span class="qp-label"><span aria-hidden="true">📊</span> Pattern</span>
+                <span class="qp-badge" id="pattern-badge">—</span>
+              </div>
+              <div class="qp-badge-wrapper">
+                <span class="qp-label"><span aria-hidden="true">🔒</span> Leaked</span>
+                <span class="qp-badge" id="hibp-status-badge">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="details-summary">
+            <div id="vuln-tags" class="vuln-tags" aria-live="polite"></div>
+
+            <!-- Character-by-character heatmap (always visible) -->
+            <div
+              class="character-analysis-live-wrapper"
+              id="character-analysis-live-wrapper"
+            >
+              <div class="character-analysis-live" id="character-analysis-live">
+                <span style="opacity: 0.3; font-style: italic;">En attente de saisie...</span>
+              </div>
+              <div class="character-legend">
+                <span class="legend-item">
+                  <span class="char-badge char-strong">✔</span>
+                  <span class="legend-label">Imprévisible</span>
+                </span>
+                <span class="legend-item">
+                  <span class="char-badge char-medium">◐</span>
+                  <span class="legend-label">Modéré</span>
+                </span>
+                <span class="legend-item">
+                  <span class="char-badge char-weak">✘</span>
+                  <span class="legend-label">Prévisible</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Live analysis details (always visible) -->
+            <div
+              class="details-grid live-details-visible"
+              id="live-details-visible"
+              role="list"
+              aria-label="Live analysis"
+            >
+              <div class="detail-item" role="listitem">
+                <div class="detail-value" id="detail-length-live">—</div>
+                <div class="detail-label">Caractères</div>
+              </div>
+              <div class="detail-item" role="listitem">
+                <div class="detail-value" id="detail-charset-live">—</div>
+                <div class="detail-label">Taille du jeu</div>
+              </div>
+              <div class="detail-item" role="listitem">
+                <div class="detail-value" id="detail-entropy-live">—</div>
+                <div class="detail-label">Bits d'entropie</div>
+              </div>
+              <div class="detail-item" role="listitem">
+                <div class="detail-value" id="detail-combos-live">—</div>
+                <div class="detail-label">Combinaisons</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer role="contentinfo">
+      <p>
+        Aucun mot de passe n'est stocké. Seule requête réseau : les 5 premiers caractères du hash SHA-1 vers l'API
+        <a
+          href="https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange"
+          target="_blank"
+          rel="noopener"
+          >Have I Been Pwned</a
+        > (k-anonymity).
+      </p>
+    </footer>
+
+    <script>
+      // Simplified version - everything always visible
+      (function() {
+        const input = document.getElementById('password-input');
+        const toggleBtn = document.getElementById('toggle-visibility');
+        const resetBtn = document.getElementById('reset-btn');
+        const resultsDiv = document.getElementById('results');
+        const strengthLabel = document.getElementById('strength-label');
+        const strengthIcon = document.getElementById('strength-icon');
+        const strengthBits = document.getElementById('strength-bits');
+        
+        // Toggle password visibility
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', () => {
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            toggleBtn.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+          });
+        }
+        
+        // Reset button
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            input.value = '';
+            input.type = 'password';
+            resetToPlaceholder();
+          });
+        }
+        
+        // Input handler
+        if (input) {
+          input.addEventListener('input', () => {
+            const pw = input.value;
+            if (!pw) {
+              resetToPlaceholder();
+            } else {
+              updateWithData(pw);
+            }
+          });
+        }
+        
+        function resetToPlaceholder() {
+          resultsDiv.classList.add('placeholder-mode');
+          
+          // Reset strength
+          if (strengthIcon) strengthIcon.textContent = '—';
+          if (strengthLabel) strengthLabel.textContent = 'En attente';
+          if (strengthBits) strengthBits.textContent = '—';
+          
+          // Reset crack times
+          document.getElementById('result-label-fast').textContent = '—';
+          document.getElementById('crack-duration-fast').textContent = '—';
+          document.getElementById('crack-date-fast').textContent = '—';
+          document.getElementById('result-sentence-fast').textContent = '';
+          
+          document.getElementById('result-label-pro').textContent = '—';
+          document.getElementById('crack-duration-pro').textContent = '—';
+          document.getElementById('crack-date-pro').textContent = '—';
+          document.getElementById('result-sentence-pro').textContent = '';
+          
+          // Reset badges
+          document.getElementById('quality-badge').textContent = '—';
+          document.getElementById('pattern-badge').textContent = '—';
+          document.getElementById('hibp-status-badge').textContent = '—';
+          
+          // Reset live details
+          document.getElementById('detail-length-live').textContent = '—';
+          document.getElementById('detail-charset-live').textContent = '—';
+          document.getElementById('detail-entropy-live').textContent = '—';
+          document.getElementById('detail-combos-live').textContent = '—';
+          
+          // Reset character analysis
+          const charAnalysis = document.getElementById('character-analysis-live');
+          if (charAnalysis) {
+            charAnalysis.innerHTML = '<span style="opacity: 0.3; font-style: italic;">En attente de saisie...</span>';
+          }
+          
+          // Clear vuln tags
+          document.getElementById('vuln-tags').innerHTML = '';
+        }
+        
+        function updateWithData(pw) {
+          resultsDiv.classList.remove('placeholder-mode');
+          
+          const len = pw.length;
+          
+          // Simple strength calculation
+          let score = 0;
+          if (len >= 8) score += 20;
+          if (len >= 12) score += 20;
+          if (len >= 16) score += 20;
+          if (/[a-z]/.test(pw)) score += 10;
+          if (/[A-Z]/.test(pw)) score += 10;
+          if (/[0-9]/.test(pw)) score += 10;
+          if (/[^a-zA-Z0-9]/.test(pw)) score += 10;
+          
+          const scoreText = score < 30 ? 'Très faible' : score < 50 ? 'Faible' : score < 70 ? 'Moyen' : score < 85 ? 'Bon' : 'Excellent';
+          const scoreIcon = score < 30 ? '❌' : score < 50 ? '🔶' : score < 70 ? '🟡' : score < 85 ? '✅' : '⭐';
+          
+          if (strengthIcon) strengthIcon.textContent = scoreIcon;
+          if (strengthLabel) strengthLabel.textContent = scoreText;
+          if (strengthBits) strengthBits.textContent = `(~${Math.round(len * 6)} bits)`;
+          
+          // Simple crack time estimation
+          const timeText = len < 8 ? '< 1 seconde' : len < 12 ? '5 minutes' : len < 16 ? '3 heures' : len < 20 ? '2 ans' : '1 million d\'années';
+          const dateText = len < 8 ? 'Maintenant' : len < 12 ? 'Dans 5 minutes' : len < 16 ? 'Aujourd\'hui' : len < 20 ? 'En 2028' : 'Au-delà de toute date';
+          
+          document.getElementById('result-label-fast').textContent = '🔨 Force brute — MD5';
+          document.getElementById('crack-duration-fast').textContent = timeText;
+          document.getElementById('crack-date-fast').textContent = dateText;
+          document.getElementById('result-sentence-fast').textContent = `Via Force brute — MD5.`;
+          
+          // Professional is ~8× faster
+          const timeTextPro = len < 8 ? '< 1 seconde' : len < 12 ? '< 1 minute' : len < 16 ? '30 minutes' : len < 20 ? '3 mois' : '125000 années';
+          document.getElementById('result-label-pro').textContent = '🔨 Force brute — MD5';
+          document.getElementById('crack-duration-pro').textContent = timeTextPro;
+          document.getElementById('crack-date-pro').textContent = dateText;
+          document.getElementById('result-sentence-pro').textContent = `Via Force brute — MD5.`;
+          
+          // Update badges
+          document.getElementById('quality-badge').textContent = scoreText;
+          document.getElementById('pattern-badge').textContent = len < 8 ? 'Trop court' : 'Robuste';
+          document.getElementById('hibp-status-badge').textContent = '✓ Non divulgué';
+          
+          // Update live details
+          document.getElementById('detail-length-live').textContent = len;
+          document.getElementById('detail-charset-live').textContent = 94;
+          document.getElementById('detail-entropy-live').textContent = Math.round(len * 6.5);
+          document.getElementById('detail-combos-live').textContent = `2^${Math.round(len * 6.5)}`;
+          
+          // Character analysis (simple visualization)
+          const charAnalysis = document.getElementById('character-analysis-live');
+          if (charAnalysis) {
+            const chars = pw.split('').map((c, i) => {
+              const strength = /[a-z]/.test(c) ? 'weak' : /[A-Z]/.test(c) ? 'medium' : 'strong';
+              const emoji = strength === 'weak' ? '✘' : strength === 'medium' ? '◐' : '✔';
+              return `<div class="char-badge char-${strength}" title="Position ${i+1}">${emoji}</div>`;
+            }).join('');
+            charAnalysis.innerHTML = chars;
+          }
+          
+          // Vuln tags
+          const vulnTags = document.getElementById('vuln-tags');
+          const tags = [];
+          if (len < 8) tags.push('<span class="vuln-tag critical">⚠ Trop court (< 8)</span>');
+          if (/\d/.test(pw)) tags.push('<span class="vuln-tag ok">✓ Contient des chiffres</span>');
+          if (/[A-Z]/.test(pw)) tags.push('<span class="vuln-tag ok">✓ Contient des majuscules</span>');
+          if (len >= 12) tags.push('<span class="vuln-tag ok">✓ Bonne longueur</span>');
+          vulnTags.innerHTML = tags.join('');
+        }
+        
+        // Initialize with placeholder state
+        resetToPlaceholder();
+      })();
+    </script>
+  </body>
+</html>

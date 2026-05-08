@@ -1,0 +1,20 @@
+---
+layout: base.njk
+---
+{% set t = i18n[lang] %}
+<div id="method-lang-selector" class="method-lang-selector">
+  <button id="method-lang-toggle" class="lang-toggle" type="button" aria-label="{{ t.nav.langSelectLabel }}" aria-expanded="false" aria-controls="method-lang-menu">
+    {% include "icons/globe.njk" %}
+    <span class="lang-toggle__label">{{ site.langNames[lang] }}</span>
+    <span class="dropdown-arrow">▼</span>
+  </button>
+  <menu id="method-lang-menu" class="lang-menu" hidden role="menu">
+    {% for l in site.langs %}
+    <button type="button" class="lang-menu__item{% if l == lang %} lang-menu__item--active{% endif %}" onclick="window.location='/{{ l }}/methode/{{ methodSlug }}.html'" role="menuitem">{{ site.langNames[l] }}</button>
+    {% endfor %}
+  </menu>
+</div>
+{{ content | safe }}
+{% block scripts %}
+<script src="/includes.js" defer></script>
+{% endblock %}

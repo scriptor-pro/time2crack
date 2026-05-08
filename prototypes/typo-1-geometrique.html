@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prototype 1 — Géométrique (Syne + Plus Jakarta Sans)</title>
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=syne:400,600,700,800|plus-jakarta-sans:400,500,600,700|ibm-plex-mono:400,600&display=swap"/>
+<style>
+:root {
+  --bg: #0D1116;
+  --surface: #0D1116;
+  --surface-alt: #161B23;
+  --surface-elev: #1C232D;
+  --border: #2E3642;
+  --border-strong: #3A4452;
+  --text: #e8e6e3;
+  --text-muted: #b0aeb5;
+  --text-lighter: #c2bfbc;
+  --critical: #EB4949;
+  --warning: #d97706;
+  --success: #16A34A;
+  --excellent: #10b981;
+  --exceptional: #0891B2;
+  --accent: #ff6600;
+  --confidence: #4A90D9;
+  --radius: 12px;
+  --radius-sm: 8px;
+
+  /* SPÉCIFIQUE CE PROTOTYPE */
+  --font-display: "Syne", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: radial-gradient(1200px 450px at 50% -120px, #1A2332 0%, transparent 65%), var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === BADGE PROTOTYPE === */
+.proto-badge {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 999;
+  letter-spacing: 0.05em;
+}
+
+/* === HEADER === */
+header {
+  width: 100%;
+  max-width: 680px;
+  padding: 1.2rem 1.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text);
+}
+.logo-text span { color: var(--accent); }
+
+/* === MAIN === */
+main {
+  width: 100%;
+  max-width: 680px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* === ÉTIQUETTE SECTION === */
+.section-label {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+/* === INPUT === */
+.input-card {
+  background: linear-gradient(180deg, #181a20 0%, #15171d 100%);
+  border: 1.5px solid var(--confidence);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.925rem;
+  color: var(--text-lighter);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #14161b;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.input-wrapper input {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  background: transparent;
+  border: none;
+  color: var(--confidence);
+  padding: 0.85rem 1rem;
+  outline: none;
+  letter-spacing: 0.06em;
+}
+
+.input-wrapper input::placeholder { color: var(--border-strong); }
+
+.input-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0 0.875rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  min-height: 52px;
+  border-left: 1px solid var(--border);
+  transition: color 0.15s;
+}
+.input-btn:hover { color: var(--text); }
+
+/* === STRENGTH BAR === */
+.strength-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.strength-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.strength-score { color: var(--excellent); }
+.strength-bits {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.bar-segments {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  height: 8px;
+  gap: 3px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.seg { background: var(--surface-elev); border-radius: 999px; }
+.seg.on { background: var(--excellent); }
+.seg.on.s1 { background: var(--critical); }
+.seg.on.s2 { background: #e65100; }
+.seg.on.s3 { background: var(--warning); }
+.seg.on.s4 { background: var(--success); }
+.seg.on.s5 { background: var(--excellent); }
+.seg.on.s6 { background: var(--exceptional); }
+
+/* === RESULT CARD === */
+.result-card {
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.result-label {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+
+/* CLEF DU PROTOTYPE : Syne Bold pour le big number */
+.big-duration {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 8vw, 3.8rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--excellent);
+  line-height: 1.05;
+}
+
+.big-date {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.result-sentence {
+  font-size: 0.875rem;
+  color: var(--text-lighter);
+  line-height: 1.6;
+  margin-top: 0.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+.result-sentence strong { color: var(--text); }
+
+/* === TABS ATTAQUANT === */
+.tabs-row {
+  display: flex;
+  gap: 0;
+  background: var(--surface-elev);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* === BADGES QUALITÉ === */
+.badges-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.badge-card {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.badge-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+.badge-sub {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.badge-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--excellent);
+  color: #fff;
+  white-space: nowrap;
+}
+.badge-pill.warn { background: var(--warning); color: #000; }
+.badge-pill.safe { background: var(--success); }
+
+/* === CT LIST === */
+.ct-section {
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ct-title {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.ct-row {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ct-row.fastest {
+  border-color: var(--accent);
+  background: rgba(255,102,0,0.06);
+}
+.ct-name {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.ct-time {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.ct-time.fast { color: var(--accent); }
+
+/* === FOOTER === */
+footer {
+  width: 100%;
+  max-width: 680px;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  text-align: center;
+}
+
+/* === ANNOTATION TYPOGRAPHIQUE === */
+.typo-note {
+  background: rgba(255,102,0,0.08);
+  border: 1px solid rgba(255,102,0,0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-lighter);
+  line-height: 1.6;
+}
+.typo-note strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="proto-badge">PROTO 1 · GÉOMÉTRIQUE</div>
+
+<header>
+  <div class="logo-text">Time<span>2</span>Crack</div>
+</header>
+
+<main>
+
+  <!-- Note typographique -->
+  <div class="typo-note">
+    <strong>Display :</strong> Syne 800 — géométrique, précis, institutionnel<br>
+    <strong>Body :</strong> Plus Jakarta Sans — moderne, propre, sans froideur<br>
+    <strong>Mono :</strong> IBM Plex Mono (conservé)
+  </div>
+
+  <!-- Input -->
+  <div class="input-card">
+    <p class="subtitle">Et si un hacker s'attaquait à votre mot de passe ? Tapez-le pour voir combien de temps il tiendrait.</p>
+    <div class="input-wrapper">
+      <input type="password" value="CorrectHorse99!" placeholder="Votre mot de passe…"/>
+      <button class="input-btn">Afficher</button>
+    </div>
+  </div>
+
+  <!-- Strength bar -->
+  <div class="strength-wrap">
+    <div class="strength-meta">
+      <span>✅✅</span>
+      <span class="strength-score">Excellent</span>
+      <span class="strength-bits">(82 bits)</span>
+    </div>
+    <div class="bar-segments">
+      <div class="seg on s1"></div>
+      <div class="seg on s2"></div>
+      <div class="seg on s3"></div>
+      <div class="seg on s4"></div>
+      <div class="seg on s5"></div>
+      <div class="seg on s6"></div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-row">
+    <button class="tab-btn active">Expérimenté · 12 GPU</button>
+    <button class="tab-btn">Professionnel · ~100 GPU</button>
+  </div>
+
+  <!-- Result -->
+  <div class="result-card">
+    <div class="result-label">Dictionnaire — SHA-256</div>
+    <div class="big-duration">42 millions d'années</div>
+    <div class="big-date">Soit jusqu'en l'an 42 001 026</div>
+    <div class="result-sentence">
+      Attaque la plus rapide via <strong>Dictionnaire</strong> sur SHA-256.<br>
+      Confiance élevée — passphrase détectée.
+    </div>
+  </div>
+
+  <!-- Badges qualité -->
+  <div class="badges-row">
+    <div class="badge-card">
+      <div>
+        <div class="badge-label">🎲 Entropie</div>
+        <div class="badge-sub">Longueur · Variété · Imprévisibilité</div>
+      </div>
+      <div class="badge-pill">Excellent</div>
+    </div>
+    <div class="badge-card">
+      <div>
+        <div class="badge-label">📊 Structure</div>
+        <div class="badge-sub">Arrangement reconnaissable ?</div>
+      </div>
+      <div class="badge-pill warn">Modérée</div>
+    </div>
+    <div class="badge-card">
+      <div>
+        <div class="badge-label">🔒 Fuites</div>
+        <div class="badge-sub">Have I Been Pwned</div>
+      </div>
+      <div class="badge-pill safe">Sûr</div>
+    </div>
+    <div class="badge-card">
+      <div>
+        <div class="badge-label">💀 RockYou</div>
+        <div class="badge-sub">14M mots de passe</div>
+      </div>
+      <div class="badge-pill safe">Absent</div>
+    </div>
+  </div>
+
+  <!-- Attack list -->
+  <div class="ct-section">
+    <div class="ct-title">⚡ Attaque par attaque · SHA-256</div>
+    <div class="ct-row fastest">
+      <span class="ct-name">Dictionnaire</span>
+      <span class="ct-time fast">42M années</span>
+    </div>
+    <div class="ct-row">
+      <span class="ct-name">Combinator</span>
+      <span class="ct-time">890M années</span>
+    </div>
+    <div class="ct-row">
+      <span class="ct-name">Hybride</span>
+      <span class="ct-time">2,1G années</span>
+    </div>
+    <div class="ct-row">
+      <span class="ct-name">Brute Force</span>
+      <span class="ct-time">∞ (infini)</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>Aucun mot de passe n'est stocké. Calcul local uniquement.</footer>
+</body>
+</html>

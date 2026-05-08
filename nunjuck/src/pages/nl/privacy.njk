@@ -1,0 +1,259 @@
+---
+lang: nl
+permalink: "/nl/privacy.html"
+layout: base.njk
+currentPage: privacy
+pageSlug: privacy.html
+mainClass: privacy-page
+pageTitle: "Privacy en beveiliging — Time2Crack"
+pageDescription: "Ontdek hoe Time2Crack met je gegevens omgaat: lokale berekening in de browser, geen wachtwoordverzending en minimale lekcontroles."
+---
+
+<h1>Privacy &amp; beveiliging</h1>
+<p style="font-size: 1.05em; color: #666; margin-bottom: 2em;">
+      Begrijp precies wat Time2Crack doet en niet doet met uw wachtwoord
+    </p>
+ ============================================================
+WAT DOET TIME2CRACK
+============================================================ 
+<section>
+<h2>Wat Time2Crack doet</h2>
+<div class="privacy-section">
+<h3>1. Lokale scan in uw browser</h3>
+<ul class="does-list">
+<li><strong>Ontvang uw wachtwoord</strong> Alleen als je het in het veld typt.</li>
+<li><strong>Berekenen in lokaal</strong> alle aanval gelederen (raw kracht, woordenboek, Markov, enz.)</li>
+<li><strong>Resultaten tonen</strong> direct op uw scherm</li>
+<li><strong>Wachtwoord vergeten</strong> zodra u vertrekt of van pagina verandert</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin-top: 1em;">
+          Uw browser stuurt het wachtwoord nergens naartoe.Het blijft alleen in het lokale RAM-geheugen tijdens de scan.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>2. Facultatief HIPB-verificatie (Have I Been Pwned)</h3>
+<p>
+          Als u de "Check for Known Leaks" optie controleert, kan Time2Crack controleren of uw wachtwoord in de historische lekken verschijnt. <strong>k-anonimiteit</strong> om uw privacy te beschermen.
+        </p>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Hoe k-anonimiteit werkt</h4>
+<div class="flow-diagram">
+<div class="flow-step">
+<div class="flow-number">1</div>
+<div class="flow-content">
+<p><strong>Berekening van hash SHA-1</strong> (op uw computer)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack berekent de volledige SHA-1 hash van uw wachtwoord, maar <strong>Laat hem nooit alleen.</strong>.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">2</div>
+<div class="flow-content">
+<p><strong>Extractie van het voorvoegsel</strong> (5 eerste tekens)</p>
+<p style="color: #666; margin-top: 0.3em;">Alleen de eerste 5 tekens van de hash worden naar HIPP gestuurd. Het is onvoldoende om uw wachtwoord te identificeren.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">3</div>
+<div class="flow-content">
+<p><strong>Anoniem verzoek aan HIPP</strong></p>
+<p style="color: #666; margin-top: 0.3em;">HiBP geeft alle wachtwoorden terug die beginnen met dit voorvoegsel (ongeveer 500-1000 anonieme resultaten).</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">4</div>
+<div class="flow-content">
+<p><strong>Lokale vergelijking</strong> (op uw computer)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack vergelijkt de resterende 35 tekens van de hash lokaal. Alleen uw computer weet of het een match is.</p>
+</div>
+</div>
+</div>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Concrete voorbeeld: wachtwoord wachtwoord</h4>
+<div class="example-box">
+<div class="example-title">Stap voor stap</div>
+<div class="hash-row">
+<span class="hash-label">Wachtwoord:</span>
+<span class="hash-value"><code>password</code></span>
+</div>
+<div class="hash-row">
+<span class="hash-label">Complete Hash SHA-1:</span>
+<span class="hash-value">
+<code>5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+</span>
+</div>
+<div style="margin: 1em 0; padding: 1em; background: #f0f0f0; border-radius: 4px; border-left: 4px solid #2196F3;">
+<p style="margin-top: 0; color: #666; font-size: 0.9em;"><strong>SPLIT</strong></p>
+<div class="hash-row" style="margin-top: 0.8em;">
+<span class="hash-label"><span class="hash-sent">Verzonden aan HIPB</span> :</span>
+<span class="hash-value">
+<code class="hash-sent">5BAA6</code>
+<span style="color: #666; font-size: 0.85em;"> (5 tekens = ~2.000 mogelijke hashs)</span>
+</span>
+</div>
+<div class="hash-row">
+<span class="hash-label"><span class="hash-local">Lokaal bewaard</span> :</span>
+<span class="hash-value">
+<code class="hash-local">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+<span style="color: #666; font-size: 0.85em;"> (35 tekens, nooit verzonden)</span>
+</span>
+</div>
+</div>
+<div style="margin-top: 1em; padding: 1em; background: #e8f5e9; border-radius: 4px; border-left: 4px solid #388e3c;">
+<p style="margin: 0; color: #1b5e20; font-weight: 500;">
+               <code>5BAA6</code> (~500-1000 resultaten).
+              <br>Time2Crack vergelijkt lokaal en bepaalt of het een match is. <strong>Uw volledige wachtwoord verlaat nooit uw apparaat.</strong>
+</p>
+</div>
+</div>
+<p style="font-size: 0.9em; color: #666; margin-top: 1.5em;">
+<strong>Waarom 5 karakters genoeg zijn voor k-anonimiteit:</strong>
+          Met 5 hexadecimale tekens, zijn er 16^5 = 1.048.576 mogelijke combinaties. HIPP geeft ongeveer 500-1000 resultaten voor elk voorvoegsel, het creëren van een kritische massa waar uw wachtwoord wordt geanonimiseerd onder honderden anderen.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>3. Opslag van gegevens</h3>
+<ul class="does-list">
+<li><strong>Gebruik de localStorage van uw browser</strong> alleen voor gebruikersinstellingen (taal, voorkeuren)</li>
+<li><strong>Geen wachtwoordreservekopie</strong> of cracktijd resultaten</li>
+<li><strong>Automatisch wissen</strong> geheugenwachtwoord na analyse</li>
+</ul>
+</div>
+</section>
+ ============================================================
+WAT Time2CRACK NIET DOEN
+============================================================ 
+<section>
+<h2>Wat Time2Crack NIET doet</h2>
+<div class="privacy-section">
+<h3>1. Wachtwoordoverdracht</h3>
+<ul class="does-list doesnt-list">
+<li>Niet verzenden <span class="highlight-red">Nooit</span> uw wachtwoord voor onze servers of derden</li>
+<li>Niet verzenden <span class="highlight-red">Nooit</span> uw wachtwoord voor HIPP of andere diensten</li>
+<li>Niet verzenden <span class="highlight-red">Nooit</span> de complete hash SHA-1 (slechts 5 tekens)</li>
+<li>Opname <span class="highlight-red">Nooit</span> wachtwoorden getest</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>2. Gebruik van gegevens</h3>
+<ul class="does-list doesnt-list">
+<li>Bewaar <span class="highlight-red">geen spoor</span> van uw activiteit of wachtwoorden getest</li>
+<li>Aanmaken <span class="highlight-red">geen gebruikersprofiel</span> gerelateerd aan uw persoonsgegevens</li>
+<li>Niet delen <span class="highlight-red">geen informatie</span> met derden (adverteerders, partners, enz.)</li>
+<li>Niet verkopen <span class="highlight-red">Nooit</span> uw gegevens</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. De opslag blijft bestaan</h3>
+<ul class="does-list doesnt-list">
+<li>Begin <span class="highlight-red">geen database</span> gebruikerswachtwoorden</li>
+<li>Opslaan <span class="highlight-red">geen geschiedenis</span> berekeningen of resultaten</li>
+<li>Vereist niet <span class="highlight-red">geen gebruikersaccount</span> of registratie</li>
+</ul>
+</div>
+<div class="warning-box">
+<div class="warning-title">Belangrijk</div>
+<p style="margin: 0.5em 0 0;">
+          Zelfs als Time2Crack nooit je wachtwoord verzendt, <strong>test hier niet je echte wachtwoord als iemand anders naar je scherm kijkt</strong>. Gebruik een testwachtwoord of raadpleeg deze tool privé.
+        </p>
+</div>
+</section>
+ ============================================================
+VERGELIJKENDE TABEL
+============================================================ 
+<section>
+<h2>Samenvatting: feit vs. niet voltooid</h2>
+<table class="comparison-table">
+<thead>
+<tr>
+<th>Actie</th>
+<th class="does-column">Time2Crack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bereken cracktijden</strong></td>
+<td class="does-column">Ja (lokaal)</td>
+</tr>
+<tr>
+<td><strong>Volledig wachtwoord versturen</strong></td>
+<td class="doesnt-column">Nee</td>
+</tr>
+<tr>
+<td><strong>Stuur de complete SHA-1 hash</strong></td>
+<td class="doesnt-column">Nee</td>
+</tr>
+<tr>
+<td><strong>Stuur de eerste 5 tekens van de hash (k-anonimiteit)</strong></td>
+<td class="does-column">Ja (indien HIPP-controle ingeschakeld)</td>
+</tr>
+<tr>
+<td><strong>Wachtwoorden opslaan</strong></td>
+<td class="doesnt-column">Nee</td>
+</tr>
+<tr>
+<td><strong>Een gebruikersaccount aanmaken</strong></td>
+<td class="doesnt-column">Nee</td>
+</tr>
+<tr>
+<td><strong>Gegevens delen met derden</strong></td>
+<td class="doesnt-column">Nee</td>
+</tr>
+<tr>
+<td><strong>Trackingcookies gebruiken</strong></td>
+<td class="doesnt-column">Nee</td>
+</tr>
+<tr>
+<td><strong>Ads tonen</strong></td>
+<td class="doesnt-column">Nee</td>
+</tr>
+<tr>
+<td><strong>Uitvoeren van uitbestede klantencode</strong></td>
+<td class="doesnt-column">Nee (nul afhankelijkheden)</td>
+</tr>
+</tbody>
+</table>
+</section>
+ ============================================================
+CONTROLE
+============================================================ 
+<section>
+<h2>Hoe te controleren Even</h2>
+<div class="privacy-section">
+<h3>1. Browser Ontwikkeling Hulpmiddelen</h3>
+<ol style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Open de <strong>Ontwikkelingsinstrumenten</strong> (F12 of Cmd+Option+I)</li>
+<li>Ga naar het tabblad <strong>Netwerk</strong> (Netwerk)</li>
+<li>Voer een testwachtwoord in Time2Crack in</li>
+<li>Netwerkvragen bekijken: u zult het niet zien <strong>dat</strong> HiBP verzoek met 5-char prefix</li>
+<li>Het volledige wachtwoord verschijnt niet <strong>Nooit</strong> in verzoeken</li>
+</ol>
+</div>
+<div class="privacy-section">
+<h3>2. Zie broncode</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Time2Crack is <strong>100% open source</strong> betreffende codeberg</li>
+<li>De code bevat <strong>nul externe afhankelijkheden</strong> Het is pure JavaScript</li>
+<li>U kunt inspecteren <code>app.js</code> en verifiëren dat:
+            <ul style="margin-top: 0.5em;">
+<li>Wachtwoorden zijn altijd lokaal</li>
+<li>Alleen het HiBP 5-char prefix wordt verzonden</li>
+<li>Geen tracking cookie of persoonlijke analyse</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Test in offline modus</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>U kunt Time2Crack gebruiken <strong>volledig offline</strong></li>
+<li>Bestanden downloaden en openen <code>index.html</code> Lokale</li>
+<li>Alle berekeningen werken zonder verbinding (behalve optionele HIPB verificatie)</li>
+</ul>
+</div>
+</section>
+ ============================================================
+FOOTER
+============================================================ 
+<section style="margin-top: 3em; padding-top: 2em; border-top: 1px solid #eee;">
+<p style="color: #999; font-size: 0.9em;">
+<strong>Vragen?</strong> Zie <a href="faq.html">Veelgestelde vragen</a> of <a href="sources.html">academische bronnen</a> Voor meer informatie over Time2Crack methodologie.
+      </p>
+</section>

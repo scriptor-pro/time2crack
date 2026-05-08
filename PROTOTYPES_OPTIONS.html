@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time2Crack — Prototypes des Options de Design</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: #f5f5f5;
+      color: #0f172a;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 18px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .option-container {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    .option-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+
+    .option-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .prototype-demo {
+      margin: 32px 0;
+      padding: 24px;
+      background: #f8fafc;
+      border-radius: 8px;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .demo-password {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 14px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .pros {
+      background: #dcfce7;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 3px solid #059669;
+    }
+
+    .pros strong {
+      color: #065f46;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .pros li {
+      margin-left: 16px;
+      color: #047857;
+    }
+
+    .cons {
+      background: #fecaca;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 3px solid #dc2626;
+    }
+
+    .cons strong {
+      color: #7f1d1d;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .cons li {
+      margin-left: 16px;
+      color: #991b1b;
+    }
+
+    /* OPTION 1: BIG NUMBER */
+    .option1-demo {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      border-radius: 12px;
+      padding: 40px 32px;
+      text-align: center;
+      border-left: 6px solid #dc2626;
+    }
+
+    .option1-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #991b1b;
+      margin-bottom: 12px;
+    }
+
+    .option1-time {
+      font-size: 3.5rem;
+      font-weight: 700;
+      font-family: "IBM Plex Mono", monospace;
+      color: #7f1d1d;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .option1-name {
+      font-size: 13px;
+      color: #b91c1c;
+      opacity: 0.85;
+    }
+
+    /* OPTION 2: GLASSMORPHISM */
+    .option2-demo {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(37, 99, 235, 0.1);
+    }
+
+    .option2-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #2563eb;
+      margin-bottom: 16px;
+    }
+
+    .option2-time {
+      font-size: 2.8rem;
+      font-weight: 800;
+      font-family: "Oxanium", system-ui;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .option2-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* OPTION 3: DUAL DISPLAY */
+    .option3-demo {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffe4cc 100%);
+      border-left: 6px solid #ea580c;
+      border-radius: 12px;
+      padding: 32px;
+    }
+
+    .option3-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #92400e;
+      margin: 0 0 20px;
+      text-align: left;
+    }
+
+    .option3-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .option3-metric {
+      text-align: center;
+    }
+
+    .option3-metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #92400e;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .option3-metric-value {
+      font-size: 18px;
+      font-weight: 700;
+      font-family: "IBM Plex Mono", monospace;
+      color: #7c2d12;
+      line-height: 1.2;
+    }
+
+    .option3-recommendation {
+      font-size: 13px;
+      color: #7c2d12;
+      font-style: italic;
+      opacity: 0.8;
+      text-align: center;
+    }
+
+    /* OPTION 4: GAUGE/METER */
+    .option4-demo {
+      background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .option4-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #2563eb;
+      margin-bottom: 20px;
+    }
+
+    .gauge-bar {
+      width: 100%;
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .gauge-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ef4444 0%, #f97316 50%, #eab308 100%);
+      border-radius: 6px;
+      width: 3%;
+      animation: fillGauge 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+    }
+
+    @keyframes fillGauge {
+      from { width: 0%; }
+      to { width: 3%; }
+    }
+
+    .gauge-text {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 16px;
+      font-size: 16px;
+    }
+
+    .gauge-percentage {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .gauge-status {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .gauge-time {
+      font-size: 14px;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    .gauge-time strong {
+      font-family: "IBM Plex Mono", monospace;
+      color: #1f2937;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .option1-time {
+        font-size: 2.5rem;
+      }
+
+      .option2-time {
+        font-size: 2rem;
+      }
+
+      .option3-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comparison-table {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      overflow-x: auto;
+      margin-bottom: 48px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f1f5f9;
+      padding: 12px;
+      text-align: left;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    .score-high {
+      color: #059669;
+      font-weight: 600;
+    }
+
+    .score-medium {
+      color: #d97706;
+      font-weight: 600;
+    }
+
+    .score-low {
+      color: #dc2626;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎨 Time2Crack — Prototypes des Options</h1>
+      <p class="subtitle">Voir à quoi ressemblerait chaque design en action</p>
+    </header>
+
+    <div class="options-grid">
+      <!-- OPTION 1 -->
+      <div class="option-container">
+        <div class="option-title">Option 1: BIG NUMBER</div>
+        <div class="option-subtitle">Taille énorme, couleur chaude, impact maximal</div>
+
+        <div class="demo-password">Mot de passe: <code>Password2024!</code></div>
+
+        <div class="prototype-demo">
+          <div style="width: 100%;">
+            <div class="option1-demo">
+              <p class="option1-label">⚡ Attaque la plus rapide</p>
+              <p class="option1-time">&lt; 1 ms</p>
+              <p class="option1-name">Force brute • MD5 unsalted</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <strong>✅ Avantages</strong>
+            <ul>
+              <li>Impact immédiat</li>
+              <li>Lisible de loin</li>
+              <li>Sévérité réelle</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <strong>❌ Inconvénients</strong>
+            <ul>
+              <li>Trop agressif</li>
+              <li>Requiert 4 couleurs</li>
+              <li>Moins corporate</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPTION 2 -->
+      <div class="option-container">
+        <div class="option-title">Option 2: GLASSMORPHISM</div>
+        <div class="option-subtitle">Moderne, fluide, premium</div>
+
+        <div class="demo-password">Mot de passe: <code>MyP@ssw0rd!</code></div>
+
+        <div class="prototype-demo">
+          <div style="width: 100%;">
+            <div class="option2-demo">
+              <p class="option2-label">⚡ Attaque la plus rapide</p>
+              <p class="option2-time">2 minutes</p>
+              <p class="option2-name">Dictionnaire</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <strong>✅ Avantages</strong>
+            <ul>
+              <li>Moderne & trendy</li>
+              <li>Subtil & visible</li>
+              <li>Bon contraste</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <strong>❌ Inconvénients</strong>
+            <ul>
+              <li>"Trop design"</li>
+              <li>Nécessite backdrop-filter</li>
+              <li>Moins d'urgence</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPTION 3 -->
+      <div class="option-container">
+        <div class="option-title">Option 3: DUAL DISPLAY</div>
+        <div class="option-subtitle">Clarté + hiérarchie visuelle</div>
+
+        <div class="demo-password">Mot de passe: <code>MyP@ssw0rd123</code></div>
+
+        <div class="prototype-demo">
+          <div style="width: 100%;">
+            <div class="option3-demo">
+              <p class="option3-label">⚡ Verdict de sécurité</p>
+              <div class="option3-grid">
+                <div class="option3-metric">
+                  <div class="option3-metric-label">Verdict</div>
+                  <div class="option3-metric-value">🟡 FAIBLE</div>
+                </div>
+                <div class="option3-metric">
+                  <div class="option3-metric-label">Temps</div>
+                  <div class="option3-metric-value">2 jours</div>
+                </div>
+                <div class="option3-metric">
+                  <div class="option3-metric-label">Attaque</div>
+                  <div class="option3-metric-value">Mask</div>
+                </div>
+              </div>
+              <p class="option3-recommendation">Ajoutez 4 caractères aléatoires pour augmenter la sécurité</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <strong>✅ Avantages</strong>
+            <ul>
+              <li>Information claire</li>
+              <li>Actionnable</li>
+              <li>Verdict sémantique</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <strong>❌ Inconvénients</strong>
+            <ul>
+              <li>Plus de texte</li>
+              <li>Logique JS compliquée</li>
+              <li>Moins "visual"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPTION 4 -->
+      <div class="option-container">
+        <div class="option-title">Option 4: GAUGE/METER</div>
+        <div class="option-subtitle">Visualisation interactive, engagement</div>
+
+        <div class="demo-password">Mot de passe: <code>qwerty123</code></div>
+
+        <div class="prototype-demo">
+          <div style="width: 100%;">
+            <div class="option4-demo">
+              <p class="option4-label">Sécurité estimée</p>
+              <div class="gauge-bar">
+                <div class="gauge-fill"></div>
+              </div>
+              <div class="gauge-text">
+                <span class="gauge-percentage">3%</span>
+                <span class="gauge-status">CRITIQUE</span>
+              </div>
+              <p class="gauge-time">
+                Crackable en <strong>&lt; 1 ms</strong><br>
+                avec <strong>Force brute (MD5)</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <strong>✅ Avantages</strong>
+            <ul>
+              <li>Extrêmement visual</li>
+              <li>Très engageant</li>
+              <li>Intuitif</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <strong>❌ Inconvénients</strong>
+            <ul>
+              <li>Requiert animation JS</li>
+              <li>Plus complexe</li>
+              <li>Peut être "gimmicky"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau de comparaison -->
+    <div class="comparison-table">
+      <h2 style="margin-bottom: 20px;">📊 Comparaison des Options</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Critère</th>
+            <th>Option 1<br>Big Number</th>
+            <th>Option 2<br>Glassmorphism</th>
+            <th>Option 3<br>Dual Display</th>
+            <th>Option 4<br>Gauge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Impact visuel</strong></td>
+            <td><span class="score-high">10/10</span></td>
+            <td><span class="score-high">8/10</span></td>
+            <td><span class="score-medium">7/10</span></td>
+            <td><span class="score-high">9/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Clarté</strong></td>
+            <td><span class="score-high">8/10</span></td>
+            <td><span class="score-medium">7/10</span></td>
+            <td><span class="score-high">10/10</span></td>
+            <td><span class="score-medium">6/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Modernité</strong></td>
+            <td><span class="score-medium">7/10</span></td>
+            <td><span class="score-high">10/10</span></td>
+            <td><span class="score-medium">7/10</span></td>
+            <td><span class="score-high">9/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Complexité CSS</strong></td>
+            <td><span class="score-high">3/10</span></td>
+            <td><span class="score-medium">6/10</span></td>
+            <td><span class="score-medium">4/10</span></td>
+            <td><span class="score-medium">7/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Complexité JS</strong></td>
+            <td><span class="score-high">1/10</span></td>
+            <td><span class="score-high">2/10</span></td>
+            <td><span class="score-medium">4/10</span></td>
+            <td><span class="score-medium">6/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Accessibilité</strong></td>
+            <td><span class="score-high">9/10</span></td>
+            <td><span class="score-high">8/10</span></td>
+            <td><span class="score-high">10/10</span></td>
+            <td><span class="score-medium">7/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Mobile-friendly</strong></td>
+            <td><span class="score-high">9/10</span></td>
+            <td><span class="score-high">9/10</span></td>
+            <td><span class="score-high">10/10</span></td>
+            <td><span class="score-high">8/10</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Recommandation finale -->
+    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 6px solid #059669; border-radius: 12px; padding: 32px; margin-bottom: 48px;">
+      <h2 style="color: #065f46; margin-bottom: 16px;">👉 Recommandation Finale</h2>
+      <p style="color: #047857; margin-bottom: 12px;">
+        <strong>Hybride: Option 1 (Big Number) + Option 3 (Verdict)</strong>
+      </p>
+      <p style="color: #047857; line-height: 1.6;">
+        Combinant la taille énorme + couleur chaude de l'Option 1 avec la structure claire et le verdict actionnable de l'Option 3. C'est l'équilibre parfait entre <strong>impact visuel</strong> et <strong>clarté fonctionnelle</strong>.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

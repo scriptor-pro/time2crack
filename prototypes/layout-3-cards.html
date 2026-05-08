@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout 3 : Card Focus — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,900&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --accent: #0ea5e9;
+      --border: #e2e8f0;
+      --danger: #f43f5e;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 24px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.05), 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      padding: 60px 24px 100px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header-card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 32px;
+      margin-bottom: 60px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Card générique */
+    .card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 40px 32px;
+      margin-bottom: 60px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    /* Input card */
+    .input-card .password-input {
+      width: 100%;
+      font-size: 24px;
+      font-weight: 500;
+      padding: 20px 0;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      text-align: center;
+      letter-spacing: 0.1em;
+      transition: border-color 0.3s ease;
+      outline: none;
+      font-family: 'SF Mono', 'Monaco', monospace;
+    }
+
+    .input-card .password-input:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .input-card .password-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.3;
+    }
+
+    /* Result card - Hero */
+    .result-card {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border-color: #fecaca;
+    }
+
+    .result-card.safe {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-color: #bbf7d0;
+    }
+
+    .result-value {
+      font-size: clamp(56px, 10vw, 72px);
+      font-weight: 900;
+      line-height: 1;
+      text-align: center;
+      letter-spacing: -0.04em;
+      color: var(--danger);
+      margin-bottom: 16px;
+    }
+
+    .result-card.safe .result-value {
+      color: var(--success);
+    }
+
+    .result-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-align: center;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    /* Stats card */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* HIBP card */
+    .hibp-card {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border-color: #fde68a;
+    }
+
+    .hibp-card.safe {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-color: #bfdbfe;
+    }
+
+    .hibp-icon {
+      text-align: center;
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .hibp-message {
+      font-size: 15px;
+      color: var(--text);
+      text-align: center;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    /* Attack methods card */
+    .attack-list {
+      list-style: none;
+      margin-top: 24px;
+    }
+
+    .attack-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .attack-item:last-child {
+      border-bottom: none;
+    }
+
+    .attack-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .attack-time {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'SF Mono', monospace;
+    }
+
+    /* Footer */
+    .footer-card {
+      background: transparent;
+      box-shadow: none;
+      border: none;
+      padding: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      .container {
+        padding: 40px 20px 80px;
+      }
+
+      .card {
+        padding: 32px 24px;
+        margin-bottom: 48px;
+        border-radius: 20px;
+      }
+
+      .result-value {
+        font-size: clamp(48px, 12vw, 64px);
+      }
+    }
+
+    /* Staggered animation */
+    .card:nth-child(1) { animation: fadeInUp 0.6s 0.1s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+    .card:nth-child(2) { animation: fadeInUp 0.6s 0.2s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+    .card:nth-child(3) { animation: fadeInUp 0.6s 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+    .card:nth-child(4) { animation: fadeInUp 0.6s 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+    .card:nth-child(5) { animation: fadeInUp 0.6s 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+    .card:nth-child(6) { animation: fadeInUp 0.6s 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header-card card visible">
+      <div class="brand">Time2Crack</div>
+      <p class="subtitle">Analysez la sécurité de votre mot de passe</p>
+    </div>
+
+    <!-- Input -->
+    <div class="input-card card">
+      <div class="card-title">Votre mot de passe</div>
+      <input 
+        type="password" 
+        class="password-input" 
+        placeholder="•••••••"
+        autocomplete="off"
+      />
+    </div>
+
+    <!-- Main result -->
+    <div class="result-card card">
+      <div class="card-title">Temps de craquage minimal</div>
+      <div class="result-value">2 sec</div>
+      <p class="result-subtitle">
+        Vulnérable aux attaques par dictionnaire
+      </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-title">Analyse technique</div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">12</div>
+          <div class="stat-label">Caractères</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">52 bits</div>
+          <div class="stat-label">Entropie</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">4</div>
+          <div class="stat-label">Jeux de caractères</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">2.5×10¹²</div>
+          <div class="stat-label">Combinaisons</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HIBP -->
+    <div class="hibp-card card">
+      <div class="hibp-icon">⚠️</div>
+      <p class="hibp-message">
+        <strong>Ce mot de passe a été compromis</strong><br>
+        Trouvé 127,453 fois dans des fuites de données
+      </p>
+    </div>
+
+    <!-- Attack methods -->
+    <div class="card">
+      <div class="card-title">Méthodes d'attaque (MD5)</div>
+      <ul class="attack-list">
+        <li class="attack-item">
+          <span class="attack-name">Dictionnaire</span>
+          <span class="attack-time">2 sec</span>
+        </li>
+        <li class="attack-item">
+          <span class="attack-name">Brute force</span>
+          <span class="attack-time">3 min</span>
+        </li>
+        <li class="attack-item">
+          <span class="attack-name">Hybride</span>
+          <span class="attack-time">12 sec</span>
+        </li>
+        <li class="attack-item">
+          <span class="attack-name">Masque</span>
+          <span class="attack-time">45 sec</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-card">
+      Calcul 100% local • Aucune donnée transmise<br>
+      Vérification HIBP via k-anonymité
+    </div>
+  </div>
+
+  <script>
+    // Animate cards on load
+    setTimeout(() => {
+      document.querySelectorAll('.card').forEach(card => {
+        card.classList.add('visible');
+      });
+    }, 100);
+
+    // Input interaction
+    const input = document.querySelector('.password-input');
+    input.addEventListener('input', () => {
+      // Simule l'analyse en temps réel
+      console.log('Analyzing password...');
+    });
+  </script>
+</body>
+</html>

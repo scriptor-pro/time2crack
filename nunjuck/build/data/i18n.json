@@ -1,0 +1,227 @@
+{
+  "fr": {
+    "nav": {
+      "testPassword": "Tester un mot de passe",
+      "generator": "Générer un mot de passe",
+      "faq": "FAQ",
+      "about": "À propos",
+      "science": "Science",
+      "security": "Sécurité",
+      "howItWorks": "Comment ça marche?",
+      "attackMethods": "Méthodes d'attaque",
+      "bruteForce": "Brute Force",
+      "dictionary": "Dictionary",
+      "hybrid": "Hybrid",
+      "mask": "Mask",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Combinator"
+    },
+    "page": {
+      "title": "Testez la force de votre mot de passe",
+      "hint": "Analyse locale, sécurisée, gratuite • Aucun mot de passe n'est transmis",
+      "howItWorks": "Comment ça marche? →",
+      "subtitle": "Estimateur de temps de crack multinlingue avec 7 attaques"
+    }
+  },
+  "en": {
+    "nav": {
+      "testPassword": "Test a password",
+      "generator": "Generate a password",
+      "faq": "FAQ",
+      "about": "About",
+      "science": "Science",
+      "security": "Security",
+      "howItWorks": "How it works?",
+      "attackMethods": "Attack methods",
+      "bruteForce": "Brute Force",
+      "dictionary": "Dictionary",
+      "hybrid": "Hybrid",
+      "mask": "Mask",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Combinator"
+    },
+    "page": {
+      "title": "Test your password strength",
+      "hint": "Local analysis, secure, free • No passwords transmitted",
+      "howItWorks": "How it works? →",
+      "subtitle": "Multilingual crack-time estimator with 7 attacks"
+    }
+  },
+  "nl": {
+    "nav": {
+      "testPassword": "Wachtwoord testen",
+      "generator": "Wachtwoord genereren",
+      "faq": "FAQ",
+      "about": "Over ons",
+      "science": "Wetenschap",
+      "security": "Beveiliging",
+      "howItWorks": "Hoe werkt het?",
+      "attackMethods": "Aanvalsmethoden",
+      "bruteForce": "Brute Force",
+      "dictionary": "Woordenboek",
+      "hybrid": "Hybride",
+      "mask": "Masker",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Combinator"
+    },
+    "page": {
+      "title": "Test je wachtwoordsterkte",
+      "hint": "Lokale analyse, veilig, gratis • Geen wachtwoorden verzonden",
+      "howItWorks": "Hoe werkt het? →",
+      "subtitle": "Meertalige crack-time estimator met 7 aanvallen"
+    }
+  },
+  "es": {
+    "nav": {
+      "testPassword": "Prueba una contraseña",
+      "generator": "Generar una contraseña",
+      "faq": "FAQ",
+      "about": "Acerca de",
+      "science": "Ciencia",
+      "security": "Seguridad",
+      "howItWorks": "¿Cómo funciona?",
+      "attackMethods": "Métodos de ataque",
+      "bruteForce": "Brute Force",
+      "dictionary": "Diccionario",
+      "hybrid": "Híbrido",
+      "mask": "Máscara",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Combinador"
+    },
+    "page": {
+      "title": "Prueba la fortaleza de tu contraseña",
+      "hint": "Análisis local, seguro, gratuito • Sin contraseñas transmitidas",
+      "howItWorks": "¿Cómo funciona? →",
+      "subtitle": "Estimador de tiempo de descifrado multilingüe con 7 ataques"
+    }
+  },
+  "pt": {
+    "nav": {
+      "testPassword": "Teste uma senha",
+      "generator": "Gerar uma senha",
+      "faq": "FAQ",
+      "about": "Sobre",
+      "science": "Ciência",
+      "security": "Segurança",
+      "howItWorks": "Como funciona?",
+      "attackMethods": "Métodos de ataque",
+      "bruteForce": "Brute Force",
+      "dictionary": "Dicionário",
+      "hybrid": "Híbrido",
+      "mask": "Máscara",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Combinador"
+    },
+    "page": {
+      "title": "Teste a força de sua senha",
+      "hint": "Análise local, segura, gratuita • Nenhuma senha transmitida",
+      "howItWorks": "Como funciona? →",
+      "subtitle": "Estimador de tempo de crack multilíngue com 7 ataques"
+    }
+  },
+  "de": {
+    "nav": {
+      "testPassword": "Passwort testen",
+      "generator": "Passwort generieren",
+      "faq": "FAQ",
+      "about": "Über uns",
+      "science": "Wissenschaft",
+      "security": "Sicherheit",
+      "howItWorks": "Wie funktioniert es?",
+      "attackMethods": "Angriffsmethoden",
+      "bruteForce": "Brute Force",
+      "dictionary": "Wörterbuch",
+      "hybrid": "Hybrid",
+      "mask": "Maske",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Kombinator"
+    },
+    "page": {
+      "title": "Testen Sie Ihre Passwort-Stärke",
+      "hint": "Lokale Analyse, sicher, kostenlos • Keine Passwörter übertragen",
+      "howItWorks": "Wie funktioniert es? →",
+      "subtitle": "Mehrsprachiger Crack-Time-Schätzer mit 7 Angriffen"
+    }
+  },
+  "tr": {
+    "nav": {
+      "testPassword": "Şifre test et",
+      "generator": "Şifre oluştur",
+      "faq": "SSS",
+      "about": "Hakkında",
+      "science": "Bilim",
+      "security": "Güvenlik",
+      "howItWorks": "Nasıl çalışır?",
+      "attackMethods": "Saldırı yöntemleri",
+      "bruteForce": "Brute Force",
+      "dictionary": "Sözlük",
+      "hybrid": "Hibrit",
+      "mask": "Maske",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Kombinatör"
+    },
+    "page": {
+      "title": "Şifrenizin gücünü test edin",
+      "hint": "Yerel analiz, güvenli, ücretsiz • Hiçbir şifre iletilmez",
+      "howItWorks": "Nasıl çalışır? →",
+      "subtitle": "7 saldırı ile çok dilli crack-time tahmin edicisi"
+    }
+  },
+  "it": {
+    "nav": {
+      "testPassword": "Testa una password",
+      "generator": "Genera una password",
+      "faq": "FAQ",
+      "about": "Chi siamo",
+      "science": "Scienza",
+      "security": "Sicurezza",
+      "howItWorks": "Come funziona?",
+      "attackMethods": "Metodi di attacco",
+      "bruteForce": "Brute Force",
+      "dictionary": "Dizionario",
+      "hybrid": "Ibrido",
+      "mask": "Maschera",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Combinatore"
+    },
+    "page": {
+      "title": "Testa la forza della tua password",
+      "hint": "Analisi locale, sicura, gratuita • Nessuna password trasmessa",
+      "howItWorks": "Come funziona? →",
+      "subtitle": "Stimatore di tempo di crack multilingue con 7 attacchi"
+    }
+  },
+  "pl": {
+    "nav": {
+      "testPassword": "Testuj hasło",
+      "generator": "Generuj hasło",
+      "faq": "FAQ",
+      "about": "O nas",
+      "science": "Nauka",
+      "security": "Bezpieczeństwo",
+      "howItWorks": "Jak to działa?",
+      "attackMethods": "Metody ataku",
+      "bruteForce": "Brute Force",
+      "dictionary": "Słownik",
+      "hybrid": "Hybrydowy",
+      "mask": "Maska",
+      "markov": "Markov",
+      "pcfg": "PCFG",
+      "combinator": "Kombinator"
+    },
+    "page": {
+      "title": "Testuj siłę hasła",
+      "hint": "Analiza lokalna, bezpieczna, bezpłatna • Żadne hasła nie są przesyłane",
+      "howItWorks": "Jak to działa? →",
+      "subtitle": "Wielojęzyczny estymator czasu złamania z 7 atakami"
+    }
+  }
+}

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenario A: Horizontal Tableau + Descriptions (Desktop-first)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #0f1117;
+            color: #c9d1d9;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #f0f6fc;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: #8b949e;
+            margin-bottom: 2rem;
+        }
+
+        /* ============================================================
+           SCENARIO A: HORIZONTAL LAYOUT (Desktop-first)
+           ============================================================ */
+
+        .attack-analysis-wrapper {
+            border: 1.5px solid #30363d;
+            border-radius: 8px;
+            background: #161b22;
+            overflow: hidden;
+        }
+
+        .analysis-header {
+            padding: 1.2rem 1.5rem;
+            background: #0d1117;
+            border-bottom: 1.5px solid #30363d;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .analysis-header svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Attack Tabs */
+        .attack-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1.5px solid #30363d;
+            overflow-x: auto;
+            background: #0d1117;
+        }
+
+        .attack-tab {
+            background: none;
+            border: none;
+            color: #8b949e;
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .attack-tab:hover {
+            color: #58a6ff;
+            border-bottom-color: #58a6ff;
+        }
+
+        .attack-tab.active {
+            color: #58a6ff;
+            border-bottom-color: #58a6ff;
+        }
+
+        /* Main content area: Grid layout for desktop, stack for mobile */
+        .analysis-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            min-height: 400px;
+        }
+
+        .analysis-left {
+            /* Table area */
+        }
+
+        .analysis-right {
+            /* Description area */
+            border-left: 1px solid #30363d;
+            padding-left: 1.5rem;
+        }
+
+        /* Table Styling */
+        .attack-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .attack-table th {
+            text-align: left;
+            padding: 0.75rem 0.5rem;
+            background: #0d1117;
+            color: #8b949e;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .attack-table td {
+            padding: 0.7rem 0.5rem;
+            border-bottom: 1px solid #21262d;
+            vertical-align: middle;
+        }
+
+        .attack-table tr:hover td {
+            background: rgba(88, 166, 255, 0.05);
+        }
+
+        .attack-table tr.fastest td {
+            background: rgba(3, 102, 214, 0.08);
+            border-left: 3px solid #0390d9;
+        }
+
+        .time-cell {
+            font-family: "Courier New", monospace;
+            font-weight: 600;
+            color: #79c0ff;
+        }
+
+        .attack-note {
+            display: block;
+            font-size: 0.75rem;
+            color: #8b949e;
+            margin-top: 0.25rem;
+            font-weight: 400;
+        }
+
+        /* Description Area */
+        .description-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #f0f6fc;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .description-content h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #f0f6fc;
+        }
+
+        .description-content p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #c9d1d9;
+            margin-bottom: 1rem;
+        }
+
+        .complexity-badge {
+            display: inline-block;
+            background: rgba(88, 166, 255, 0.1);
+            color: #79c0ff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: "Courier New", monospace;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive: Stack on tablet/mobile */
+        @media (max-width: 1200px) {
+            .analysis-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                min-height: auto;
+            }
+
+            .analysis-right {
+                border-left: none;
+                border-top: 1px solid #30363d;
+                padding-left: 0;
+                padding-top: 1.5rem;
+            }
+
+            .attack-table {
+                font-size: 0.8rem;
+            }
+
+            .attack-table th,
+            .attack-table td {
+                padding: 0.6rem 0.4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .analysis-header {
+                padding: 0.9rem 1rem;
+                font-size: 1rem;
+            }
+
+            .attack-tabs {
+                padding: 0.6rem 1rem;
+            }
+
+            .attack-tab {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.8rem;
+            }
+
+            .analysis-content {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .analysis-right {
+                padding-top: 1rem;
+            }
+
+            .attack-table {
+                font-size: 0.75rem;
+            }
+
+            .attack-table th,
+            .attack-table td {
+                padding: 0.5rem 0.3rem;
+            }
+
+            .description-header {
+                font-size: 0.95rem;
+            }
+
+            .description-content h4 {
+                font-size: 0.9rem;
+            }
+
+            .description-content p {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Note */
+        .scenario-note {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(88, 166, 255, 0.05);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        .scenario-note strong {
+            color: #79c0ff;
+        }
+
+        /* Fade animation for content switch */
+        @keyframes fadeIn {
+            from {
+                opacity: 0.7;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .analysis-content {
+            animation: fadeIn 0.15s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔷 Scenario A: Horizontal Layout</h1>
+        <p class="subtitle">
+            Tableau à gauche (3 colonnes) + Description à droite (2 colonnes, desktop-only)
+        </p>
+
+        <div class="attack-analysis-wrapper">
+            <div class="analysis-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Attack Types Analysis
+            </div>
+
+            <!-- Attack Tabs -->
+            <div class="attack-tabs">
+                <button class="attack-tab active">Brute Force</button>
+                <button class="attack-tab">Dictionary</button>
+                <button class="attack-tab">Hybrid</button>
+                <button class="attack-tab">Mask</button>
+                <button class="attack-tab">Rainbow</button>
+                <button class="attack-tab">Credential Stuffing</button>
+                <button class="attack-tab">Password Spraying</button>
+                <button class="attack-tab">Markov</button>
+                <button class="attack-tab">PCFG</button>
+                <button class="attack-tab">Combinator</button>
+            </div>
+
+            <!-- Content: Grid (Table + Description) -->
+            <div class="analysis-content">
+                <!-- LEFT: Table -->
+                <div class="analysis-left">
+                    <table class="attack-table">
+                        <thead>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Speed</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fastest">
+                                <td>MD5</td>
+                                <td>2,027 GH/s</td>
+                                <td class="time-cell">
+                                    &lt; 1 second
+                                    <small class="attack-note">Unsalted</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SHA-1</td>
+                                <td>610 GH/s</td>
+                                <td class="time-cell">
+                                    1.2 seconds
+                                    <small class="attack-note">Unsalted</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SHA-256</td>
+                                <td>272 GH/s</td>
+                                <td class="time-cell">
+                                    2.8 seconds
+                                    <small class="attack-note">Unsalted</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NTLM</td>
+                                <td>3,462 GH/s</td>
+                                <td class="time-cell">
+                                    &lt; 1 second
+                                    <small class="attack-note">Unsalted</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>bcrypt (cost 5)</td>
+                                <td>2.2 MH/s</td>
+                                <td class="time-cell">
+                                    1.8 million years
+                                    <small class="attack-note">Salted + slow</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Argon2id</td>
+                                <td>800 H/s</td>
+                                <td class="time-cell">
+                                    Beyond universe
+                                    <small class="attack-note">Memory-hard</small>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- RIGHT: Description -->
+                <div class="analysis-right">
+                    <div class="description-header">How it works</div>
+                    <div class="description-content">
+                        <h4>Brute Force Attack</h4>
+                        <p>
+                            Tests every possible combination of characters sequentially
+                            (aaa, aab, aac...). Extremely slow for long passwords but
+                            doesn't depend on any prior knowledge.
+                        </p>
+                        <div class="complexity-badge">O(charset^length)</div>
+
+                        <p style="margin-top: 1.5rem;">
+                            <strong>Why it's slow:</strong> The number of combinations grows
+                            exponentially with password length. A 10-character password with
+                            94 possible characters = 94^10 combinations (~600 trillion).
+                        </p>
+
+                        <p>
+                            <strong>Example:</strong> For "Password123!" (12 chars),
+                            brute force would test: Aaaaaaaaaa, Aaaaaaaaab, ..., Password123!
+                        </p>
+
+                        <p>
+                            <strong>When it's effective:</strong> Short passwords (&lt; 8 chars)
+                            or simple character sets (lowercase + digits).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-note">
+            <strong>⚠️ Scenario A Issues:</strong>
+            <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                <li>✅ Compact on desktop (side-by-side)</li>
+                <li>✅ Single section = one entry point</li>
+                <li>❌ Mobile: Stacks to 1200+ pixels (very long)</li>
+                <li>❌ Table becomes 300px wide on tablet (unreadable)</li>
+                <li>❌ Description text becomes tiny on mobile</li>
+                <li>❌ Grid layout requires complex media queries</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Simple tab switching demo
+        document.querySelectorAll('.attack-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.attack-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // In real app: would reload table + description for selected attack
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype A v3 - Sections lisibles et temps precis</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.proto-label { position: fixed; top: 0; left: 0; right: 0; background: #0f766e; color: #fff; text-align: center; font-size: 12px; font-weight: 700; padding: 6px; letter-spacing: 0.08em; text-transform: uppercase; z-index: 1000; }
+body { padding-top: 30px; }
+
+.section-card { border: 1px solid var(--border); border-radius: 12px; background: var(--surface-alt); margin-top: 12px; overflow: hidden; }
+.section-head { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.section-head h2 { margin: 0; font-size: 15px; }
+.section-body { padding: 12px; }
+
+.time-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.time-main { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 12px; }
+.time-main .big { font-size: clamp(1.4rem, 5vw, 2.1rem); font-weight: 700; line-height: 1.2; }
+.time-main .sub { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
+.mini-matrix { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.mini-cell { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 10px; }
+.mini-cell strong { display: block; font-size: 13px; }
+.mini-cell span { color: var(--text-muted); font-size: 12px; }
+
+.playbook-summary { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 10px; font-size: 13px; }
+.attack-grid { margin-top: 10px; display: grid; gap: 8px; }
+.attack-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); padding: 10px; }
+.attack-card h3 { margin: 0; font-size: 14px; }
+.attack-card p { margin: 6px 0 0; color: var(--text-muted); font-size: 13px; }
+.source-line { margin-top: 6px; font-size: 12px; }
+
+.method-list { margin-top: 10px; display: grid; gap: 8px; }
+.method-step { border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); padding: 8px 10px; font-size: 13px; }
+
+@media (min-width: 700px) {
+  .mini-matrix { grid-template-columns: repeat(3, 1fr); }
+  .attack-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="proto-label">Prototype A v3 · parcours vertical lisible + calcul de temps plus precis</div>
+
+<header class="site-header">
+  <div class="header-left">
+    <a href="#" class="logo-link" aria-label="Time2Crack">
+      <span class="logo-text"><span class="logo-time">Time</span><span class="logo-2">2</span><span class="logo-crack">Crack</span></span>
+    </a>
+  </div>
+</header>
+
+<main id="main-content" role="main">
+  <section class="input-section">
+    <p class="subtitle">Objectif: garder la lecture simple tout en restaurant un calcul de temps plus precis (attaques + algorithmes + profils).</p>
+
+    <div class="password-wrapper-row">
+      <div class="password-wrapper">
+        <input type="password" id="password-input" autocomplete="off" spellcheck="false" placeholder="Testez votre mot de passe" />
+      </div>
+      <button type="button" id="reset-btn" class="reset-btn-inline" aria-label="Reset">Reset</button>
+    </div>
+
+    <div class="section-card" id="section-time">
+      <div class="section-head"><h2>1) Temps de craquage</h2></div>
+      <div class="section-body time-grid">
+        <article class="time-main">
+          <div class="big" id="main-time">Entrez un mot de passe</div>
+          <p class="sub" id="main-time-note">Le message principal est unique: delai + type d'attaque dominant.</p>
+        </article>
+        <div class="mini-matrix" aria-label="Comparaison profils attaquants">
+          <article class="mini-cell"><strong>Amateur</strong><span id="time-a">--</span></article>
+          <article class="mini-cell"><strong>Experimente (12 GPU)</strong><span id="time-e">--</span></article>
+          <article class="mini-cell"><strong>Professionnel (100 GPU)</strong><span id="time-p">--</span></article>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card" id="section-attack-method">
+      <div class="section-head"><h2>2) Attaques + Methodologie + Sources (fusion)</h2></div>
+      <div class="section-body">
+        <div class="playbook-summary">
+          <strong>Pourquoi fusionner ?</strong> L'utilisateur veut d'abord comprendre "ce qui casse" (attaque), puis "pourquoi on l'affirme" (methode + source). Les deux sont donc dans le meme flux.
+        </div>
+
+        <div class="method-list">
+          <div class="method-step"><strong>Etape 1:</strong> Extraction des patterns (longueur, structure, repetition, dictionnaire).</div>
+          <div class="method-step"><strong>Etape 2:</strong> Simulation multi-attaques (brute force, hybride, Markov, PCFG, etc.).</div>
+          <div class="method-step"><strong>Etape 3:</strong> Projection des temps selon materiel attaquant et algo de hash.</div>
+        </div>
+
+        <div class="attack-grid">
+          <article class="attack-card">
+            <h3>Brute force</h3>
+            <p>Teste tout. Plus la longueur monte, plus le temps explose.</p>
+            <div class="source-line"><a href="https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler" target="_blank" rel="noopener">Source USENIX</a></div>
+          </article>
+          <article class="attack-card">
+            <h3>Dictionnaire / Hybride</h3>
+            <p>Le plus rentable contre des mots humains + variantes.</p>
+            <div class="source-line"><a href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Source HIBP</a></div>
+          </article>
+          <article class="attack-card">
+            <h3>Mask / PCFG</h3>
+            <p>Exploite des structures habituelles: Mot+Annee, Maj+min+digits.</p>
+            <div class="source-line"><a href="https://arxiv.org/abs/2010.12269" target="_blank" rel="noopener">Source modelisation</a></div>
+          </article>
+          <article class="attack-card">
+            <h3>Rainbow / Credential stuffing</h3>
+            <p>Tres rapide dans des cas precis: hash non sale ou reuse de credentials.</p>
+            <div class="source-line"><a href="https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd" target="_blank" rel="noopener">Source benchmarks</a></div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const input = document.getElementById('password-input');
+const resetBtn = document.getElementById('reset-btn');
+
+const ALGOS = [
+  { key: 'md5', label: 'MD5', rate: 168.9e9 * 12, salted: false },
+  { key: 'sha1', label: 'SHA-1', rate: 50.86e9 * 12, salted: false },
+  { key: 'sha256', label: 'SHA-256', rate: 22.68e9 * 12, salted: false },
+  { key: 'ntlm', label: 'NTLM', rate: 288.5e9 * 12, salted: false },
+  { key: 'bcrypt', label: 'bcrypt', rate: 184000 * 12, salted: true },
+  { key: 'argon2', label: 'Argon2id', rate: 800, salted: true },
+];
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return 'pratiquement impossible';
+  if (seconds < 1) return '< 1 s';
+  if (seconds < 60) return `${Math.round(seconds)} s`;
+  if (seconds < 3600) return `${Math.round(seconds / 60)} min`;
+  if (seconds < 86400) return `${Math.round(seconds / 3600)} h`;
+  if (seconds < 31557600) return `${Math.round(seconds / 86400)} j`;
+  if (seconds < 3155760000) return `${(seconds / 31557600).toFixed(1)} ans`;
+  return `${seconds.toExponential(2)} s`;
+}
+
+function analyzePassword(pw) {
+  const lower = /[a-z]/.test(pw);
+  const upper = /[A-Z]/.test(pw);
+  const digit = /\d/.test(pw);
+  const symbol = /[^a-zA-Z0-9]/.test(pw);
+  const charset = (lower ? 26 : 0) + (upper ? 26 : 0) + (digit ? 10 : 0) + (symbol ? 33 : 0);
+  const len = pw.length;
+  const common = /^(password|123456|qwerty|azerty|admin|letmein|welcome|iloveyou)$/i.test(pw);
+  const dictLike = /[a-z]{4,}/i.test(pw);
+  const structure = /^[A-Z]?[a-z]+\d{1,4}[!@#$%^&*]?$/.test(pw);
+  const seq = /(0123|1234|2345|abcd|bcde|qwer|asdf|zxcv)/i.test(pw);
+  const repeat = /(.)\1{2,}/.test(pw);
+  const date = /(?:19|20)\d{2}|\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}/.test(pw);
+  const passphrase = /[a-z]{4,}.+[a-z]{4,}/i.test(pw) || /[a-z]{8,}/i.test(pw);
+  const combos = len ? Math.pow(Math.max(charset, 2), len) : 0;
+  return { len, charset, common, dictLike, structure, seq, repeat, date, passphrase, combos };
+}
+
+function attackAttempts(info, algo) {
+  const dictBase = 14e9;
+  const attacks = [
+    { name: 'Brute force', attempts: info.combos },
+    { name: 'Dictionnaire', attempts: info.common ? 500 : dictBase },
+    { name: 'Hybride', attempts: info.dictLike ? dictBase * 1000 : Number.POSITIVE_INFINITY },
+    { name: 'Mask', attempts: info.structure || info.date ? 1e8 : Number.POSITIVE_INFINITY },
+    { name: 'Markov', attempts: info.seq || info.repeat || info.structure ? 2e8 : info.combos * 0.01 },
+    { name: 'PCFG', attempts: info.structure ? 1e10 : info.combos * 0.05 },
+    { name: 'Combinator', attempts: info.passphrase ? 5e10 : Number.POSITIVE_INFINITY },
+    { name: 'Credential stuffing', attempts: info.common ? 100 : Number.POSITIVE_INFINITY },
+    { name: 'Password spraying', attempts: info.common ? 1000 : Number.POSITIVE_INFINITY },
+    {
+      name: 'Rainbow table',
+      attempts: !algo.salted && info.common ? 1 : Number.POSITIVE_INFINITY,
+    },
+  ];
+  return attacks;
+}
+
+function bestTimeForAlgo(info, algo) {
+  const attacks = attackAttempts(info, algo);
+  let best = { seconds: Number.POSITIVE_INFINITY, attack: 'Aucune' };
+  for (const atk of attacks) {
+    const sec = atk.attempts / algo.rate;
+    if (sec < best.seconds) best = { seconds: sec, attack: atk.name };
+  }
+  return best;
+}
+
+function computeModel(pw) {
+  const info = analyzePassword(pw);
+  const byAlgo = ALGOS.map((algo) => ({ algo, ...bestTimeForAlgo(info, algo) }));
+  const fastest = byAlgo.reduce((min, current) => (current.seconds < min.seconds ? current : min), byAlgo[0]);
+  return { info, byAlgo, fastest };
+}
+
+resetBtn.addEventListener('click', () => {
+  input.value = '';
+  input.dispatchEvent(new Event('input'));
+  input.focus();
+});
+
+input.addEventListener('input', () => {
+  const pw = input.value && input.value.length ? input.value : 'DemoPassphrase2026!';
+  const mainTime = document.getElementById('main-time');
+  const mainNote = document.getElementById('main-time-note');
+  const a = document.getElementById('time-a');
+  const e = document.getElementById('time-e');
+  const p = document.getElementById('time-p');
+
+  const model = computeModel(pw);
+  const base = model.fastest.seconds;
+  const amateur = base * 12;
+  const pro = base / (100 / 12);
+
+  mainTime.textContent = formatTime(base);
+  mainNote.textContent = `Attaque dominante: ${model.fastest.attack} sur ${model.fastest.algo.label}.`;
+  a.textContent = formatTime(amateur);
+  e.textContent = formatTime(base);
+  p.textContent = formatTime(pro);
+});
+
+input.dispatchEvent(new Event('input'));
+</script>
+</body>
+</html>

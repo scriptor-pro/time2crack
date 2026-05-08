@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype Contraste 8:1 — Time2Crack</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: #f8fafc;
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #0f172a;
+    }
+
+    .intro {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border-left: 4px solid #2563eb;
+    }
+
+    .intro p {
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .option-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .option-header {
+      padding: 1.5rem;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .option-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .option-subtitle {
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+
+    .color-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .color-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .color-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+    }
+
+    .color-hex {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.875rem;
+      color: #0f172a;
+      font-weight: 500;
+    }
+
+    .color-swatch {
+      width: 100%;
+      height: 40px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .ratio-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    .ratio-badge.current {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .ratio-badge.target {
+      background: #dcfce7;
+      color: #065f46;
+    }
+
+    .demo-section {
+      padding: 1.5rem;
+    }
+
+    .demo-section h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #2563eb;
+      margin-bottom: 1rem;
+    }
+
+    /* Navigation Demo */
+    .nav-demo {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .nav-link {
+      padding: 0.5rem 0.75rem;
+      text-decoration: none;
+      font-size: 0.875rem;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #f1f5f9;
+      text-decoration: underline;
+    }
+
+    /* Option 0: Current */
+    .option-0 .nav-link {
+      color: #64748b;
+    }
+
+    .option-0 .nav-link:hover {
+      color: #0f172a;
+    }
+
+    /* Option 1 */
+    .option-1 .nav-link {
+      color: #4a5568;
+    }
+
+    .option-1 .nav-link:hover {
+      color: #0f172a;
+    }
+
+    /* Option 2 (Recommended) */
+    .option-2 .nav-link {
+      color: #384860;
+    }
+
+    .option-2 .nav-link:hover {
+      color: #0f172a;
+    }
+
+    .option-2 .option-header {
+      background: #e0f2fe;
+      border-bottom-color: #bae6fd;
+    }
+
+    .option-2 .option-title {
+      color: #0369a1;
+    }
+
+    .option-2 .option-title::after {
+      content: " ⭐ RECOMMANDÉE";
+      font-size: 0.75rem;
+      color: #0369a1;
+      font-weight: 400;
+    }
+
+    /* Option 3 */
+    .option-3 .nav-link {
+      color: #2d3748;
+    }
+
+    .option-3 .nav-link:hover {
+      color: #0f172a;
+    }
+
+    /* Blue Links */
+    .blue-demo {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .option-0 .blue-link { color: #2563eb; }
+    .option-1 .blue-link { color: #1c4ba8; }
+    .option-2 .blue-link { color: #1a3f96; }
+    .option-3 .blue-link { color: #163c7d; }
+
+    .blue-link {
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: opacity 0.15s;
+    }
+
+    .blue-link:hover {
+      opacity: 0.8;
+    }
+
+    /* Comparison Table */
+    .comparison {
+      margin-top: 3rem;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .comparison-table th {
+      background: #0f172a;
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .comparison-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .comparison-table tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .comparison-table tbody tr:hover {
+      background: #f1f5f9;
+    }
+
+    .hex-cell {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.875rem;
+    }
+
+    .ratio-cell {
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 500;
+    }
+
+    .status {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .status.fail {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status.close {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status.pass {
+      background: #dcfce7;
+      color: #065f46;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .recommendation-box {
+      background: #dcfce7;
+      border: 2px solid #86efac;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .recommendation-box strong {
+      color: #065f46;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      .color-info {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Prototype Contraste 8:1 — Time2Crack</h1>
+
+  <div class="intro">
+    <p><strong>Objectif:</strong> Atteindre 8:1 de contraste minimum (supérieur à WCAG AAA).</p>
+    <p><strong>Situation actuelle:</strong> text-muted = 4.76:1 (insuffisant)</p>
+    <p><strong>Impact:</strong> Navigation, hints, labels, tables (12+ emplacements)</p>
+  </div>
+
+  <div class="container">
+    <!-- OPTION 0: Current -->
+    <div class="option-card option-0">
+      <div class="option-header">
+        <div class="option-title">Courant</div>
+        <div class="option-subtitle">État actuel (WCAG AAA ✅, mais sous 8:1)</div>
+      </div>
+
+      <div class="color-info">
+        <div class="color-item">
+          <div class="color-label">Text Muted</div>
+          <div class="color-hex">#64748B</div>
+          <div class="color-swatch" style="background: #64748B;"></div>
+          <div class="ratio-badge current">4.76:1</div>
+        </div>
+
+        <div class="color-item">
+          <div class="color-label">Primary Blue</div>
+          <div class="color-hex">#2563EB</div>
+          <div class="color-swatch" style="background: #2563EB;"></div>
+          <div class="ratio-badge current">5.17:1</div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Navigation</h3>
+        <div class="nav-demo">
+          <a href="#" class="nav-link">Test Password</a>
+          <a href="#" class="nav-link">Generate</a>
+          <a href="#" class="nav-link">FAQ</a>
+          <a href="#" class="nav-link">About</a>
+        </div>
+
+        <h3>Links</h3>
+        <div class="blue-demo">
+          <a href="#" class="blue-link">Primary link color</a>
+          <a href="#" class="blue-link">Another link</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION 1: Conservative -->
+    <div class="option-card option-1">
+      <div class="option-header">
+        <div class="option-title">Option 1</div>
+        <div class="option-subtitle">Conservative (+58% gain)</div>
+      </div>
+
+      <div class="color-info">
+        <div class="color-item">
+          <div class="color-label">Text Muted</div>
+          <div class="color-hex">#4A5568</div>
+          <div class="color-swatch" style="background: #4A5568;"></div>
+          <div class="ratio-badge close">7.53:1</div>
+        </div>
+
+        <div class="color-item">
+          <div class="color-label">Primary Blue</div>
+          <div class="color-hex">#1C4BA8</div>
+          <div class="color-swatch" style="background: #1C4BA8;"></div>
+          <div class="ratio-badge target">8.01:1</div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Navigation</h3>
+        <div class="nav-demo">
+          <a href="#" class="nav-link">Test Password</a>
+          <a href="#" class="nav-link">Generate</a>
+          <a href="#" class="nav-link">FAQ</a>
+          <a href="#" class="nav-link">About</a>
+        </div>
+
+        <h3>Links</h3>
+        <div class="blue-demo">
+          <a href="#" class="blue-link">Primary link color</a>
+          <a href="#" class="blue-link">Another link</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION 2: Balanced (RECOMMENDED) -->
+    <div class="option-card option-2">
+      <div class="option-header">
+        <div class="option-title">Option 2</div>
+        <div class="option-subtitle">Balanced (+95% gain)</div>
+      </div>
+
+      <div class="color-info">
+        <div class="color-item">
+          <div class="color-label">Text Muted</div>
+          <div class="color-hex">#384860</div>
+          <div class="color-swatch" style="background: #384860;"></div>
+          <div class="ratio-badge target">9.28:1</div>
+        </div>
+
+        <div class="color-item">
+          <div class="color-label">Primary Blue</div>
+          <div class="color-hex">#1A3F96</div>
+          <div class="color-swatch" style="background: #1A3F96;"></div>
+          <div class="ratio-badge target">9.57:1</div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Navigation</h3>
+        <div class="nav-demo">
+          <a href="#" class="nav-link">Test Password</a>
+          <a href="#" class="nav-link">Generate</a>
+          <a href="#" class="nav-link">FAQ</a>
+          <a href="#" class="nav-link">About</a>
+        </div>
+
+        <h3>Links</h3>
+        <div class="blue-demo">
+          <a href="#" class="blue-link">Primary link color</a>
+          <a href="#" class="blue-link">Another link</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION 3: Maximum -->
+    <div class="option-card option-3">
+      <div class="option-header">
+        <div class="option-title">Option 3</div>
+        <div class="option-subtitle">Maximum (+140% gain)</div>
+      </div>
+
+      <div class="color-info">
+        <div class="color-item">
+          <div class="color-label">Text Muted</div>
+          <div class="color-hex">#2D3748</div>
+          <div class="color-swatch" style="background: #2D3748;"></div>
+          <div class="ratio-badge target">11.42:1</div>
+        </div>
+
+        <div class="color-item">
+          <div class="color-label">Primary Blue</div>
+          <div class="color-hex">#163C7D</div>
+          <div class="color-swatch" style="background: #163C7D;"></div>
+          <div class="ratio-badge target">10.62:1</div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3>Navigation</h3>
+        <div class="nav-demo">
+          <a href="#" class="nav-link">Test Password</a>
+          <a href="#" class="nav-link">Generate</a>
+          <a href="#" class="nav-link">FAQ</a>
+          <a href="#" class="nav-link">About</a>
+        </div>
+
+        <h3>Links</h3>
+        <div class="blue-demo">
+          <a href="#" class="blue-link">Primary link color</a>
+          <a href="#" class="blue-link">Another link</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="recommendation-box">
+    <h2>✅ Recommandation: <strong>Option 2 (Balanced)</strong></h2>
+    <p>Atteint 8:1+ partout tout en maintenant l'intégrité du design.</p>
+  </div>
+
+  <div class="comparison">
+    <h2 style="margin-bottom: 1rem; color: #0f172a;">📊 Tableau Comparatif</h2>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Élément</th>
+          <th>Actuel</th>
+          <th>Option 1</th>
+          <th>Option 2 ⭐</th>
+          <th>Option 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Text Muted Hex</strong></td>
+          <td class="hex-cell">#64748B</td>
+          <td class="hex-cell">#4A5568</td>
+          <td class="hex-cell">#384860</td>
+          <td class="hex-cell">#2D3748</td>
+        </tr>
+        <tr>
+          <td><strong>Text Muted Ratio</strong></td>
+          <td class="ratio-cell">4.76:1 <span class="status fail">❌</span></td>
+          <td class="ratio-cell">7.53:1 <span class="status close">⚠️</span></td>
+          <td class="ratio-cell">9.28:1 <span class="status pass">✅</span></td>
+          <td class="ratio-cell">11.42:1 <span class="status pass">✅</span></td>
+        </tr>
+        <tr>
+          <td><strong>Primary Blue Hex</strong></td>
+          <td class="hex-cell">#2563EB</td>
+          <td class="hex-cell">#1C4BA8</td>
+          <td class="hex-cell">#1A3F96</td>
+          <td class="hex-cell">#163C7D</td>
+        </tr>
+        <tr>
+          <td><strong>Primary Blue Ratio</strong></td>
+          <td class="ratio-cell">5.17:1 <span class="status fail">❌</span></td>
+          <td class="ratio-cell">8.01:1 <span class="status pass">✅</span></td>
+          <td class="ratio-cell">9.57:1 <span class="status pass">✅</span></td>
+          <td class="ratio-cell">10.62:1 <span class="status pass">✅</span></td>
+        </tr>
+        <tr>
+          <td><strong>Dark Blue Hex</strong></td>
+          <td class="hex-cell">#1D4ED8</td>
+          <td class="hex-cell">#1140A0</td>
+          <td class="hex-cell">#0D2E6B</td>
+          <td class="hex-cell">#051D47</td>
+        </tr>
+        <tr>
+          <td><strong>Dark Blue Ratio</strong></td>
+          <td class="ratio-cell">6.70:1 <span class="status close">⚠️</span></td>
+          <td class="ratio-cell">9.82:1 <span class="status pass">✅</span></td>
+          <td class="ratio-cell">12.96:1 <span class="status pass">✅</span></td>
+          <td class="ratio-cell">15.87:1 <span class="status pass">✅</span></td>
+        </tr>
+        <tr>
+          <td><strong>Impact Visuel</strong></td>
+          <td>—</td>
+          <td>Minimal</td>
+          <td>Modéré</td>
+          <td>Majeur</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p><strong>Prototype créé:</strong> 2026-05-07</p>
+    <p><strong>Objectif atteint:</strong> 8:1 contraste minimum (WCAG AAA++)</p>
+    <p>Ouvre ce fichier dans un navigateur pour comparer les options côte-à-côte.</p>
+  </div>
+</body>
+</html>

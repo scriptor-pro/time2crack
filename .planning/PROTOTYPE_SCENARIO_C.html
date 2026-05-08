@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenario C: Attack Library Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #0f1117;
+            color: #c9d1d9;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #f0f6fc;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: #8b949e;
+            margin-bottom: 2rem;
+        }
+
+        /* ============================================================
+           SCENARIO C: ATTACK LIBRARY - CARDS PER ATTACK
+           ============================================================ */
+
+        .attack-library-wrapper {
+            border: 1.5px solid #30363d;
+            border-radius: 8px;
+            background: #161b22;
+            overflow: hidden;
+        }
+
+        .library-header {
+            padding: 1.5rem;
+            background: #0d1117;
+            border-bottom: 1.5px solid #30363d;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .library-header svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Cards Grid */
+        .attack-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .attack-card {
+            border: 1.5px solid #30363d;
+            border-radius: 8px;
+            background: #0d1117;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .attack-card:hover {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f0f6fc;
+            flex: 1;
+        }
+
+        .card-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            background: rgba(88, 166, 255, 0.1);
+            color: #79c0ff;
+        }
+
+        /* Difficulty levels */
+        .difficulty-easy {
+            background: rgba(26, 188, 156, 0.15);
+            color: #1abc9c;
+        }
+
+        .difficulty-medium {
+            background: rgba(241, 196, 15, 0.15);
+            color: #f1c40f;
+        }
+
+        .difficulty-hard {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        /* Time estimate */
+        .card-time {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-time-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #79c0ff;
+            font-family: "Courier New", monospace;
+        }
+
+        .card-time-label {
+            font-size: 0.85rem;
+            color: #8b949e;
+        }
+
+        /* Description */
+        .card-description {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #c9d1d9;
+            margin-bottom: 1rem;
+        }
+
+        /* Complexity */
+        .complexity-section {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(88, 166, 255, 0.05);
+            border-left: 2px solid #58a6ff;
+            border-radius: 4px;
+        }
+
+        .complexity-label {
+            font-size: 0.8rem;
+            color: #8b949e;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .complexity-badge {
+            font-family: "Courier New", monospace;
+            font-size: 0.9rem;
+            color: #79c0ff;
+            font-weight: 600;
+        }
+
+        /* Algorithms table in card */
+        .card-algorithms {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #30363d;
+        }
+
+        .algo-label {
+            font-size: 0.8rem;
+            color: #8b949e;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .algo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .algo-item {
+            font-size: 0.85rem;
+            background: rgba(30, 30, 30, 0.5);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            border: 1px solid #30363d;
+        }
+
+        .algo-name {
+            color: #c9d1d9;
+            font-weight: 500;
+        }
+
+        .algo-time {
+            color: #79c0ff;
+            font-weight: 600;
+            font-family: "Courier New", monospace;
+            display: block;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        /* Icon */
+        .card-icon {
+            font-size: 2rem;
+            opacity: 0.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .attack-cards-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+
+            .attack-card {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            .library-header {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .attack-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-time-value {
+                font-size: 1.2rem;
+            }
+
+            .card-description {
+                font-size: 0.9rem;
+            }
+
+            .algo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Note */
+        .scenario-note {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(88, 166, 255, 0.05);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        .scenario-note strong {
+            color: #79c0ff;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .attack-card {
+            animation: slideUp 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🟩 Scenario C: Attack Library Cards</h1>
+        <p class="subtitle">
+            Cartes individuelles par attaque (temps estimé + description + algorithmes)
+        </p>
+
+        <div class="attack-library-wrapper">
+            <div class="library-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                Attack Types Library
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="attack-cards-grid">
+                <!-- Card 1: Brute Force -->
+                <div class="attack-card">
+                    <div class="card-header">
+                        <div class="card-title">🔐 Brute Force</div>
+                        <div class="card-badge difficulty-medium">Medium</div>
+                    </div>
+
+                    <div class="card-time">
+                        <div class="card-time-value">&lt; 1s</div>
+                        <div class="card-time-label">(MD5, fastest)</div>
+                    </div>
+
+                    <p class="card-description">
+                        Tests every possible combination of characters sequentially. Extremely slow for
+                        long passwords but independent of prior knowledge.
+                    </p>
+
+                    <div class="complexity-section">
+                        <div class="complexity-label">Complexity</div>
+                        <div class="complexity-badge">O(charset^length)</div>
+                    </div>
+
+                    <div class="card-algorithms">
+                        <div class="algo-label">Times by algorithm (min → max)</div>
+                        <div class="algo-grid">
+                            <div class="algo-item">
+                                <span class="algo-name">MD5</span>
+                                <span class="algo-time">&lt; 1 sec</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-1</span>
+                                <span class="algo-time">1.2 sec</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">NTLM</span>
+                                <span class="algo-time">&lt; 1 sec</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">bcrypt</span>
+                                <span class="algo-time">1.8M yrs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Dictionary -->
+                <div class="attack-card">
+                    <div class="card-header">
+                        <div class="card-title">📖 Dictionary</div>
+                        <div class="card-badge difficulty-easy">Easy</div>
+                    </div>
+
+                    <div class="card-time">
+                        <div class="card-time-value">12.5h</div>
+                        <div class="card-time-label">(SHA-1, fastest)</div>
+                    </div>
+
+                    <p class="card-description">
+                        Tests common words and variants against ~14 billion leaked passwords (HIBP).
+                        Very effective if password contains dictionary words.
+                    </p>
+
+                    <div class="complexity-section">
+                        <div class="complexity-label">Complexity</div>
+                        <div class="complexity-badge">O(wordlist_size)</div>
+                    </div>
+
+                    <div class="card-algorithms">
+                        <div class="algo-label">Times by algorithm</div>
+                        <div class="algo-grid">
+                            <div class="algo-item">
+                                <span class="algo-name">MD5</span>
+                                <span class="algo-time">8 hours</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-1</span>
+                                <span class="algo-time">12.5h</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-256</span>
+                                <span class="algo-time">28 hours</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">bcrypt</span>
+                                <span class="algo-time">N/A*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Hybrid -->
+                <div class="attack-card">
+                    <div class="card-header">
+                        <div class="card-title">⚡ Hybrid</div>
+                        <div class="card-badge difficulty-easy">Easy</div>
+                    </div>
+
+                    <div class="card-time">
+                        <div class="card-time-value">48h</div>
+                        <div class="card-time-label">(SHA-256)</div>
+                    </div>
+
+                    <p class="card-description">
+                        Combines dictionary + mutation rules (capitalization, substitution, special chars).
+                        Effective for words with predictable modifications.
+                    </p>
+
+                    <div class="complexity-section">
+                        <div class="complexity-label">Mutations per word</div>
+                        <div class="complexity-badge">~1,000 variants</div>
+                    </div>
+
+                    <div class="card-algorithms">
+                        <div class="algo-label">Times by algorithm</div>
+                        <div class="algo-grid">
+                            <div class="algo-item">
+                                <span class="algo-name">MD5</span>
+                                <span class="algo-time">40 hours</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-1</span>
+                                <span class="algo-time">121h</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-256</span>
+                                <span class="algo-time">270h</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">bcrypt</span>
+                                <span class="algo-time">N/A*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Mask (abbreviated for space) -->
+                <div class="attack-card">
+                    <div class="card-header">
+                        <div class="card-title">🎭 Mask</div>
+                        <div class="card-badge difficulty-medium">Medium</div>
+                    </div>
+
+                    <div class="card-time">
+                        <div class="card-time-value">2.1h</div>
+                        <div class="card-time-label">(MD5)</div>
+                    </div>
+
+                    <p class="card-description">
+                        Targets predictable structures (Uppercase + lowercase + digits + symbols
+                        in known positions). Exploits common human patterns.
+                    </p>
+
+                    <div class="complexity-section">
+                        <div class="complexity-label">Pattern focus</div>
+                        <div class="complexity-badge">User + digits + symbols</div>
+                    </div>
+
+                    <div class="card-algorithms">
+                        <div class="algo-label">Times by algorithm</div>
+                        <div class="algo-grid">
+                            <div class="algo-item">
+                                <span class="algo-name">MD5</span>
+                                <span class="algo-time">2.1 hours</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-256</span>
+                                <span class="algo-time">4.7 hours</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">NTLM</span>
+                                <span class="algo-time">1.9h</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">bcrypt</span>
+                                <span class="algo-time">N/A*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5: PCFG (sample) -->
+                <div class="attack-card">
+                    <div class="card-header">
+                        <div class="card-title">🧠 PCFG</div>
+                        <div class="card-badge difficulty-hard">Hard</div>
+                    </div>
+
+                    <div class="card-time">
+                        <div class="card-time-value">1.2s</div>
+                        <div class="card-time-label">(MD5, "excellent")</div>
+                    </div>
+
+                    <p class="card-description">
+                        Exploits grammatical structures (Word+digits+symbol). Tests most probable
+                        structures first. Can crack "excellent" (72 bits) in ~1 sec vs 2^72 years brute force.
+                    </p>
+
+                    <div class="complexity-section">
+                        <div class="complexity-label">Keyspace reduction</div>
+                        <div class="complexity-badge">5-10% of brute force</div>
+                    </div>
+
+                    <div class="card-algorithms">
+                        <div class="algo-label">Times by algorithm</div>
+                        <div class="algo-grid">
+                            <div class="algo-item">
+                                <span class="algo-name">MD5</span>
+                                <span class="algo-time">1.2s</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-1</span>
+                                <span class="algo-time">3.7s</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-256</span>
+                                <span class="algo-time">8.1s</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">bcrypt</span>
+                                <span class="algo-time">Safe</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6: Combinator (sample) -->
+                <div class="attack-card">
+                    <div class="card-header">
+                        <div class="card-title">🔗 Combinator</div>
+                        <div class="card-badge difficulty-easy">Easy</div>
+                    </div>
+
+                    <div class="card-time">
+                        <div class="card-time-value">3.2h</div>
+                        <div class="card-time-label">(SHA-256)</div>
+                    </div>
+
+                    <p class="card-description">
+                        Concatenates 2 dictionary words (passphrases). Example: "correct" + "horse" +
+                        "battery" + "staple". Effective against multi-word phrases.
+                    </p>
+
+                    <div class="complexity-section">
+                        <div class="complexity-label">Keyspace</div>
+                        <div class="complexity-badge">~200k × 10k = 2-3e9</div>
+                    </div>
+
+                    <div class="card-algorithms">
+                        <div class="algo-label">Times by algorithm</div>
+                        <div class="algo-grid">
+                            <div class="algo-item">
+                                <span class="algo-name">MD5</span>
+                                <span class="algo-time">1.4h</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-1</span>
+                                <span class="algo-time">4.2h</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">SHA-256</span>
+                                <span class="algo-time">9.4h</span>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-name">bcrypt</span>
+                                <span class="algo-time">N/A*</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-note">
+            <strong>⚠️ Scenario C Issues:</strong>
+            <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                <li>✅ Complete context for each attack (times + description + algos)</li>
+                <li>✅ Mobile-friendly (cards stack vertically)</li>
+                <li>✅ Progressive discovery (user scrolls through attacks)</li>
+                <li>✅ No tabs needed (all attacks visible)</li>
+                <li>❌ Massive HTML refactoring (destroy attack-tabs + attack-table)</li>
+                <li>❌ Loses familiar "tabs" pattern</li>
+                <li>❌ Cards can become very tall (especially on mobile)</li>
+                <li>❌ Requires new JS rendering logic (grid of cards vs. table)</li>
+                <li>❌ ~1500-1800px total height for all 10 cards</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

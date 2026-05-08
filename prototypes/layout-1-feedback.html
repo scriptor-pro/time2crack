@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout 1 : Feedback Immédiat — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --accent: #2563eb;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --success: #16a34a;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Header minimal */
+    .header {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Main area - split 60/40 */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Input zone - 60% */
+    .input-zone {
+      flex: 0.6;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+    }
+
+    .password-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .password-input {
+      width: 100%;
+      font-family: 'SF Mono', 'Monaco', 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 400;
+      padding: 20px 24px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s ease;
+      letter-spacing: 0.05em;
+    }
+
+    .password-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    .password-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    /* Strength bar - directly under input */
+    .strength-container {
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    .strength-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .strength-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .strength-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--border);
+      transition: width 0.3s ease;
+    }
+
+    /* Results zone - 40% */
+    .results-zone {
+      flex: 0.4;
+      padding: 20px;
+      overflow-y: auto;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .result-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .result-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .result-value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .result-value.danger {
+      color: var(--danger);
+    }
+
+    .result-value.warning {
+      color: var(--warning);
+    }
+
+    .result-value.success {
+      color: var(--success);
+    }
+
+    .result-description {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .result-method {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      font-family: 'SF Mono', monospace;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 15px;
+      padding: 40px 20px;
+    }
+
+    /* Footer with Liberapay */
+    .footer {
+      padding: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer p {
+      margin-bottom: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .password-input {
+        font-size: 24px;
+        padding: 16px 20px;
+      }
+
+      .result-value {
+        font-size: 24px;
+      }
+
+      .input-zone {
+        padding: 16px;
+      }
+
+      .results-zone {
+        padding: 16px;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container > * {
+      animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    .container > *:nth-child(1) { animation-delay: 0.1s; }
+    .container > *:nth-child(2) { animation-delay: 0.2s; }
+    .container > *:nth-child(3) { animation-delay: 0.3s; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">Time2Crack</div>
+      <p class="tagline">Testez la sécurité de votre mot de passe</p>
+    </div>
+
+    <div class="main">
+      <div class="input-zone">
+        <label class="password-label">Mot de passe à analyser</label>
+        <input 
+          type="password" 
+          class="password-input" 
+          placeholder="Entrez votre mot de passe"
+          autocomplete="off"
+        />
+        <div class="strength-container">
+          <div class="strength-label">
+            <span>Force du mot de passe</span>
+            <span class="strength-value">—</span>
+          </div>
+          <div class="strength-track">
+            <div class="strength-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-zone">
+        <div class="result-card">
+          <div class="result-label">Temps de craquage le plus rapide</div>
+          <div class="result-value" id="fastest-time">—</div>
+          <div class="result-description" id="fastest-description">
+            Commencez à taper pour voir l'analyse
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-label">Niveau de sécurité</div>
+          <div class="result-value" id="security-level">—</div>
+          <div class="result-description" id="security-description">
+            —
+          </div>
+        </div>
+
+        <div class="empty-state" id="empty-state">
+          Commencez à taper votre mot de passe pour voir l'analyse en temps réel
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Calcul 100% local • Aucune donnée transmise</p>
+      <div>
+        <script src="https://liberapay.com/BaudouinVH/widgets/button.js"></script>
+        <noscript><a href="https://liberapay.com/BaudouinVH/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const passwordInput = document.querySelector('.password-input');
+    const strengthFill = document.querySelector('.strength-fill');
+    const strengthValue = document.querySelector('.strength-value');
+    const fastestTime = document.querySelector('#fastest-time');
+    const fastestDescription = document.querySelector('#fastest-description');
+    const securityLevel = document.querySelector('#security-level');
+    const securityDescription = document.querySelector('#security-description');
+    const emptyState = document.querySelector('#empty-state');
+
+    // Simple entropy calculation for demonstration
+    function calculateEntropy(password) {
+      if (!password.length) return 0;
+      
+      let charsetSize = 0;
+      const hasLower = /[a-z]/.test(password);
+      const hasUpper = /[A-Z]/.test(password);
+      const hasDigit = /[0-9]/.test(password);
+      const hasSpecial = /[^A-Za-z0-9]/.test(password);
+      
+      if (hasLower) charsetSize += 26;
+      if (hasUpper) charsetSize += 26;
+      if (hasDigit) charsetSize += 10;
+      if (hasSpecial) charsetSize += 32; // common special chars
+      
+      if (charsetSize === 0) return 0;
+      return password.length * Math.log2(charsetSize);
+    }
+
+    // Estimate crack time based on entropy (simplified)
+    function estimateCrackTime(entropyBits) {
+      // Assuming 1e9 guesses/second for online attack (conservative)
+      const guessesPerSecond = 1e9;
+      const seconds = Math.pow(2, entropyBits) / guessesPerSecond;
+      
+      if (seconds < 1) return `${Math.round(seconds * 1000)} ms`;
+      if (seconds < 60) return `${Math.round(seconds)} s`;
+      if (seconds < 3600) return `${Math.round(seconds / 60)} min`;
+      if (seconds < 86400) return `${Math.round(seconds / 3600)} h`;
+      if (seconds < 31536000) return `${Math.round(seconds / 86400)} j`;
+      return `${Math.round(seconds / 31536000)} ans`;
+    }
+
+    // Update UI based on password
+    function updateAnalysis() {
+      const password = passwordInput.value;
+      const entropy = calculateEntropy(password);
+      
+      // Update strength bar
+      const maxEntropyForVisual = 64; // Cap for visualization
+      const strengthPercent = Math.min((entropy / maxEntropyForVisual) * 100, 100);
+      strengthFill.style.width = strengthPercent + '%';
+      
+      // Color based on strength
+      if (entropy < 28) {
+        strengthFill.style.background = var(--danger);
+        strengthValue.textContent = 'Très faible';
+        strengthValue.style.color = var(--danger);
+      } else if (entropy < 36) {
+        strengthFill.style.background = var(--warning);
+        strengthValue.textContent = 'Faible';
+        strengthValue.style.color = var(--warning);
+      } else if (entropy < 50) {
+        strengthFill.style.background = '#f59e0b'; // amber
+        strengthValue.textContent = 'Moyenne';
+        strengthValue.style.color = '#f59e0b';
+      } else {
+        strengthFill.style.background = var(--success);
+        strengthValue.textContent = 'Forte';
+        strengthValue.style.color = var(--success);
+      }
+      
+      // Update results if we have enough entropy to show something meaningful
+      if (password.length >= 3) {
+        emptyState.style.display = 'none';
+        
+        const crackTime = estimateCrackTime(entropy);
+        fastestTime.textContent = crackTime;
+        
+        // Determine description based on time
+        if (crackTime.includes('ms') || crackTime.includes('s')) {
+          fastestDescription.textContent = 'Vulnérable aux attaques en ligne';
+          fastestTime.style.color = var(--danger);
+        } else if (crackTime.includes('min')) {
+          fastestDescription.textContent = 'Vulnérable aux attaques ciblées';
+          fastestTime.style.color = var(--warning);
+        } else {
+          fastestDescription.textContent = 'Résistant aux attaques courantes';
+          fastestTime.style.color = var(--success);
+        }
+        
+        // Security level
+        if (entropy < 28) {
+          securityLevel.textContent = 'Très faible';
+          securityLevel.style.color = var(--danger);
+          securityDescription.textContent = 'Changez immédiatement ce mot de passe';
+        } else if (entropy < 36) {
+          securityLevel.textContent = 'Faible';
+          securityLevel.style.color = var(--warning);
+          securityDescription.textContent = 'Utilisez un mot de passe plus long ou plus complexe';
+        } else if (entropy < 50) {
+          securityLevel.textContent = 'Moyenne';
+          securityLevel.style.color = '#f59e0b';
+          securityDescription.textContent = 'Acceptable pour des comptes peu sensibles';
+        } else {
+          securityLevel.textContent = 'Forte';
+          securityLevel.style.color = var(--success);
+          securityDescription.textContent = 'Bon niveau de sécurité pour la plupart des usages';
+        }
+      } else {
+        emptyState.style.display = 'block';
+        fastestTime.textContent = '—';
+        fastestDescription.textContent = 'Commencez à taper pour voir l'analyse';
+        fastestTime.style.color = var(--text-muted);
+        securityLevel.textContent = '—';
+        securityLevel.style.color = var(--text-muted);
+        securityDescription.textContent = '—';
+      }
+    }
+
+    // Event listener for real-time feedback
+    passwordInput.addEventListener('input', updateAnalysis);
+    
+    // Initialize
+    updateAnalysis();
+  </script>
+</body>
+</html>

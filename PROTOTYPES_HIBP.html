@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototypes HIBP - "Ce mot de passe a déjà fuité"</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #222;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .prototypes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .prototype {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #333;
+        }
+
+        .prototype h2 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .prototype .description {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .prototype-content {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* ============================================================
+           OPTION 1: Alert Strip (Minimaliste)
+           ============================================================ */
+
+        .hibp-alert-strip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #fee;
+            border-left: 4px solid #d32f2f;
+            border-radius: 4px;
+        }
+
+        .hibp-alert-strip .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .hibp-alert-strip .text {
+            flex: 1;
+        }
+
+        .hibp-alert-strip .label {
+            display: block;
+            font-weight: 600;
+            color: #d32f2f;
+            font-size: 0.95rem;
+        }
+
+        .hibp-alert-strip .detail {
+            display: block;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        /* ============================================================
+           OPTION 2: Card avec gradient (Premium)
+           ============================================================ */
+
+        .hibp-card {
+            background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+            border: 1px solid #fbb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 0;
+        }
+
+        .hibp-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .hibp-card .icon {
+            font-size: 1.8rem;
+        }
+
+        .hibp-card .title {
+            font-weight: 700;
+            color: #d32f2f;
+            font-size: 1rem;
+        }
+
+        .hibp-card .body {
+            color: #555;
+            font-size: 0.9rem;
+            margin-left: 28px;
+            line-height: 1.4;
+        }
+
+        .hibp-card .detail-list {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .hibp-card .detail-item {
+            margin: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .hibp-card .detail-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #d32f2f;
+        }
+
+        /* ============================================================
+           OPTION 3: Badge + Message (Compact)
+           ============================================================ */
+
+        .hibp-badge-message {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .hibp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #d32f2f;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .hibp-badge .icon {
+            font-size: 1.1rem;
+        }
+
+        .hibp-message {
+            flex: 1;
+        }
+
+        .hibp-message .title {
+            font-weight: 600;
+            color: #d32f2f;
+            margin-bottom: 4px;
+        }
+
+        .hibp-message .subtitle {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* ============================================================
+           OPTION 4: Animated Banner (Attention-grabbing)
+           ============================================================ */
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hibp-banner {
+            animation: slide-in 0.5s ease-out;
+            background: linear-gradient(90deg, #d32f2f 0%, #c62828 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 0;
+        }
+
+        .hibp-banner-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .hibp-banner .icon {
+            font-size: 1.8rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .hibp-banner .title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .hibp-banner .body {
+            font-size: 0.95rem;
+            margin-left: 30px;
+            line-height: 1.5;
+        }
+
+        .hibp-banner .cta {
+            margin-top: 12px;
+            margin-left: 30px;
+        }
+
+        .hibp-banner .link {
+            display: inline-block;
+            color: white;
+            text-decoration: underline;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ============================================================
+           OPTION 5: Icon Badge (Très compact)
+           ============================================================ */
+
+        .hibp-icon-badge {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: #d32f2f;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .hibp-icon-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .hibp-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #222;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            margin-bottom: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .hibp-icon-badge:hover .hibp-tooltip {
+            opacity: 1;
+        }
+
+        /* ============================================================
+           OPTION 6: Inline Warning (Contexte du mot de passe)
+           ============================================================ */
+
+        .hibp-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: #fef5f5;
+            border-left: 3px solid #d32f2f;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .hibp-inline .icon {
+            font-size: 1.4rem;
+            color: #d32f2f;
+            flex-shrink: 0;
+        }
+
+        .hibp-inline .content {
+            flex: 1;
+        }
+
+        .hibp-inline .warning-text {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .hibp-inline .sub-text {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        /* ============================================================
+           Comparison Table
+           ============================================================ */
+
+        .comparison {
+            margin-top: 60px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #222;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .score {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .score-good {
+            color: #2e7d32;
+        }
+
+        .score-ok {
+            color: #f57c00;
+        }
+
+        .score-bad {
+            color: #d32f2f;
+        }
+
+        /* ============================================================
+           Responsive
+           ============================================================ */
+
+        @media (max-width: 768px) {
+            .prototypes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hibp-badge-message {
+                flex-direction: column;
+            }
+
+            .hibp-alert-strip {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        .recommendation {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 2px solid #5e35b1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .recommendation h3 {
+            color: #5e35b1;
+            margin-bottom: 10px;
+        }
+
+        .recommendation p {
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔴 Prototypes HIBP</h1>
+        <p class="subtitle">6 approches pour afficher "Ce mot de passe a déjà fuité"</p>
+
+        <div class="prototypes-grid">
+            <!-- OPTION 1: Alert Strip -->
+            <div class="prototype">
+                <h2>Option 1: Alert Strip</h2>
+                <p class="description">Minimaliste, compact, intégrable partout</p>
+                <div class="prototype-content">
+                    <div class="hibp-alert-strip">
+                        <div class="icon">⚠️</div>
+                        <div class="text">
+                            <span class="label">Ce mot de passe a déjà fuité</span>
+                            <span class="detail">Trouvé dans la base HIBP (Have I Been Pwned)</span>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>Avantages:</strong> Très compact, lisible, intégrable en haut du formulaire<br>
+                    <strong>Inconvénients:</strong> Peu d'impact visuel, peut passer inaperçu
+                </p>
+            </div>
+
+            <!-- OPTION 2: Card avec gradient -->
+            <div class="prototype">
+                <h2>Option 2: Card Premium</h2>
+                <p class="description">Gradient rouge, texte détaillé, professionnalisant</p>
+                <div class="prototype-content">
+                    <div class="hibp-card">
+                        <div class="hibp-card-header">
+                            <div class="icon">🚨</div>
+                            <div class="title">Ce mot de passe a déjà fuité</div>
+                        </div>
+                        <div class="body">
+                            Ce mot de passe a été découvert dans une fuite de données connue. Il ne faut absolument pas l'utiliser.
+                            <div class="detail-list">
+                                <div class="detail-item">Changez ce mot de passe immédiatement</div>
+                                <div class="detail-item">Vérifiez si vos comptes sont compromis</div>
+                                <div class="detail-item"><a href="#" style="color: #d32f2f;">Voir dans Have I Been Pwned</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>Avantages:</strong> Impact visuel fort, informatif, actionnable<br>
+                    <strong>Inconvénients:</strong> Plus d'espace, peut surcharger petit écran
+                </p>
+            </div>
+
+            <!-- OPTION 3: Badge + Message -->
+            <div class="prototype">
+                <h2>Option 3: Badge + Message</h2>
+                <p class="description">Équilibre entre compacité et clarté</p>
+                <div class="prototype-content">
+                    <div class="hibp-badge-message">
+                        <div class="hibp-badge">
+                            <span class="icon">⚠️</span>
+                            <span>FUITÉ</span>
+                        </div>
+                        <div class="hibp-message">
+                            <div class="title">Ce mot de passe a déjà fuité</div>
+                            <div class="subtitle">Trouvé dans une base HIBP connue • À changer immédiatement</div>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>Avantages:</strong> Bon équilibre, badge attire l'attention, message clair<br>
+                    <strong>Inconvénients:</strong> Peut pas bien se ranger sur très petit écran
+                </p>
+            </div>
+
+            <!-- OPTION 4: Animated Banner -->
+            <div class="prototype">
+                <h2>Option 4: Animated Banner</h2>
+                <p class="description">Très attention-grabbing, moderne, dramatique</p>
+                <div class="prototype-content">
+                    <div class="hibp-banner">
+                        <div class="hibp-banner-header">
+                            <div class="icon">🔴</div>
+                            <div class="title">ALERTE SÉCURITÉ</div>
+                        </div>
+                        <div class="body">
+                            Ce mot de passe a déjà fuité et se trouve dans la base Have I Been Pwned.
+                            <strong>Ne l'utilisez pas.</strong>
+                        </div>
+                        <div class="cta">
+                            <span class="link">→ Voir le rapport HIBP</span>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>Avantages:</strong> Impact maximum, animation attire l'oeil, dramatic<br>
+                    <strong>Inconvénients:</strong> Peut paraître agressif, pas idéal pour tous les contextes
+                </p>
+            </div>
+
+            <!-- OPTION 5: Icon Badge -->
+            <div class="prototype">
+                <h2>Option 5: Icon Badge</h2>
+                <p class="description">Minimaliste, discret, tooltip au survol</p>
+                <div class="prototype-content">
+                    <div style="text-align: center; padding: 40px 20px; background: white;">
+                        <div class="hibp-icon-badge">
+                            🔴
+                            <div class="hibp-tooltip">Ce mot de passe a déjà fuité</div>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>Avantages:</strong> Très compact, peut se placer à côté du champ password<br>
+                    <strong>Inconvénients:</strong> Tooltip pas visible sur mobile tactile, facile à rater
+                </p>
+            </div>
+
+            <!-- OPTION 6: Inline Warning -->
+            <div class="prototype">
+                <h2>Option 6: Inline Warning</h2>
+                <p class="description">Intégré au contexte du champ, style Bootstrap</p>
+                <div class="prototype-content">
+                    <div class="hibp-inline">
+                        <div class="icon">⚠️</div>
+                        <div class="content">
+                            <div class="warning-text">Ce mot de passe a déjà fuité</div>
+                            <div class="sub-text">Classé parmi les mots de passe compromis (HIBP)</div>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>Avantages:</strong> Discret mais présent, bon pour validation form<br>
+                    <strong>Inconvénients:</strong> Peut se perdre parmi d'autres validations
+                </p>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="comparison">
+            <h2>📊 Matrice de Comparaison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Compacité</th>
+                        <th>Impact Visuel</th>
+                        <th>Mobile-Friendly</th>
+                        <th>Informatif</th>
+                        <th>Accessibilité</th>
+                        <th>Contexte</th>
+                        <th>Score Global</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Alert Strip</strong></td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Card Premium</strong></td>
+                        <td class="score score-bad">⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Badge + Message</strong></td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Animated Banner</strong></td>
+                        <td class="score score-bad">⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-bad">⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-bad">⭐</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Icon Badge</strong></td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-bad">⭐</td>
+                        <td class="score score-bad">⭐</td>
+                        <td class="score score-bad">⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-bad">⭐</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inline Warning</strong></td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-good">⭐⭐⭐</td>
+                        <td class="score score-ok">⭐⭐</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="recommendation">
+            <h3>🎯 Recommandation</h3>
+            <p>
+                <strong>Approche recommandée: Combo "Alert Strip" (position haute) + "Badge + Message" (position inline)</strong>
+            </p>
+            <p style="margin-top: 10px;">
+                • <strong>Alert Strip en haut du formulaire</strong> — Avertit immédiatement l'utilisateur avant qu'il ne perde du temps<br>
+                • <strong>Badge + Message après analyse</strong> — Réaffirme le message de manière compacte une fois les résultats affichés<br>
+                • <strong>Raison:</strong> Maximum d'impact avec minimum d'espace sur mobile, utilisateurs ne peuvent pas ignorer le danger
+            </p>
+            <p style="margin-top: 10px;">
+                <strong>Alternative:</strong> Si vous voulez une seule affichage, privilégier <strong>"Card Premium"</strong> pour l'informatif et le professionnel.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

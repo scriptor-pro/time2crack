@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pl" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jak Time2Crack oblicza czas — Time2Crack</title>
+  <link rel="preload" href="/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.min.css"></noscript>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=oxanium:600&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap"></noscript>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+<meta name="description" content="Zrozum, jak Time2Crack szacuje czas łamania dzięki modelom ataku, skalibrowanym prędkościom GPU i lokalnemu silnikowi.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#2563EB">
+
+<meta property="og:title" content="Jak Time2Crack oblicza czas — Time2Crack">
+<meta property="og:description" content="Zrozum, jak Time2Crack szacuje czas łamania dzięki modelom ataku, skalibrowanym prędkościom GPU i lokalnemu silnikowi.">
+<meta property="og:image" content="https://time2crack.eu/logo.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://time2crack.eu/pl/how-time2crack-works.html">
+<meta property="og:site_name" content="Time2Crack">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="pt_PT">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:locale:alternate" content="nl_NL">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jak Time2Crack oblicza czas — Time2Crack">
+<meta name="twitter:description" content="Zrozum, jak Time2Crack szacuje czas łamania dzięki modelom ataku, skalibrowanym prędkościom GPU i lokalnemu silnikowi.">
+<meta name="twitter:image" content="https://time2crack.eu/logo.png">
+
+<link rel="canonical" href="https://time2crack.eu/pl/how-time2crack-works.html">
+<link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/how-time2crack-works.html">
+<link rel="alternate" hreflang="en" href="https://time2crack.eu/en/how-time2crack-works.html">
+<link rel="alternate" hreflang="es" href="https://time2crack.eu/es/how-time2crack-works.html">
+<link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/how-time2crack-works.html">
+<link rel="alternate" hreflang="de" href="https://time2crack.eu/de/how-time2crack-works.html">
+<link rel="alternate" hreflang="it" href="https://time2crack.eu/it/how-time2crack-works.html">
+<link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/how-time2crack-works.html">
+<link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/how-time2crack-works.html">
+<link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/how-time2crack-works.html">
+<link rel="alternate" hreflang="x-default" href="https://time2crack.eu/en/how-time2crack-works.html">
+  <script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header__top">
+    <h1><a href="/pl/index.html" class="site-logo"><img src="/logo.png" alt="" class="site-logo__icon" aria-hidden="true">Time2Crack</a></h1>
+    <div class="lang-selector">
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Wybierz język" aria-expanded="false" aria-controls="lang-menu">
+<svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M2.00312 12.1255C2.07025 17.59 6.52083 22.0001 12.0014 22.0001C17.5238 22.0001 22.0005 17.5224 22.0005 12.0002C22.0005 6.49245 17.5473 2.02384 12.0449 2.00038C12.0304 2.00013 12.0158 2 12.0012 2C11.9866 2 11.972 2.00013 11.9574 2.00038C6.49755 2.02389 2.07089 6.42415 2.00314 11.8733C2.00106 11.9151 2 11.9572 2 11.9996C2 12.0418 2.00105 12.0838 2.00312 12.1255ZM8.97906 8.97712C8.83291 9.91428 8.75196 10.9319 8.75196 11.9996C8.75196 13.0674 8.83291 14.0849 8.97906 15.0221C9.91569 15.168 10.9326 15.2489 11.9996 15.2489C13.0679 15.2489 14.086 15.1678 15.0235 15.0216C15.1696 14.0845 15.2505 13.0671 15.2505 11.9996C15.2505 10.932 15.1696 9.91466 15.0235 8.97764C14.086 8.83136 13.0679 8.75032 11.9996 8.75032C10.9326 8.75032 9.91568 8.83117 8.97906 8.97712ZM7.419 9.29819C7.30981 10.1594 7.25196 11.0661 7.25196 11.9996C7.25196 12.9331 7.30981 13.8398 7.419 14.701C6.8082 14.5418 6.25021 14.3524 5.75696 14.1391C4.976 13.8015 4.39155 13.4187 4.01306 13.0318C3.66763 12.6787 3.52335 12.3559 3.50265 12.072C3.50245 12.0481 3.50235 12.0242 3.50235 12.0002C3.50235 11.9758 3.50245 11.9514 3.50266 11.927C3.5234 11.6432 3.66769 11.3204 4.01306 10.9674C4.39155 10.5805 4.976 10.1978 5.75696 9.86009C6.25021 9.64683 6.8082 9.45746 7.419 9.29819ZM9.30032 7.4171C10.1609 7.30808 11.0669 7.25032 11.9996 7.25032C12.9336 7.25032 13.8407 7.30824 14.7023 7.41753C14.5431 6.8073 14.3538 6.24981 14.1407 5.75696C13.8031 4.976 13.4203 4.39155 13.0335 4.01306C12.6606 3.64825 12.3214 3.5078 12.0263 3.50032L12.0014 3.50028L11.9761 3.50032C11.6811 3.50781 11.3419 3.64827 10.969 4.01306C10.5821 4.39155 10.1994 4.976 9.86173 5.75696C9.64869 6.24969 9.45948 6.80704 9.30032 7.4171ZM16.5836 9.29907C16.6927 10.16 16.7505 11.0664 16.7505 11.9996C16.7505 12.9328 16.6927 13.8392 16.5836 14.7001C17.1931 14.5411 17.7499 14.352 18.2422 14.1391C19.0232 13.8015 19.6077 13.4187 19.9862 13.0318C20.3613 12.6483 20.4992 12.3005 20.4992 11.9996C20.4992 11.6987 20.3613 11.3509 19.9862 10.9674C19.6077 10.5805 19.0232 10.1978 18.2422 9.86009C17.7499 9.64723 17.1931 9.45816 16.5836 9.29907ZM14.7023 16.5817C13.8407 16.691 12.9336 16.7489 11.9996 16.7489C11.0669 16.7489 10.1609 16.6911 9.30032 16.5821C9.45948 17.1922 9.64869 17.7495 9.86173 18.2422C10.1994 19.0232 10.5821 19.6077 10.969 19.9862C11.3525 20.3613 11.7003 20.4992 12.0012 20.4992C12.3021 20.4992 12.65 20.3613 13.0335 19.9861C13.4203 19.6077 13.8031 19.0232 14.1407 18.2422C14.3538 17.7494 14.5431 17.1919 14.7023 16.5817ZM7.69311 16.3082C6.76016 16.1055 5.90633 15.8379 5.16168 15.5159C4.75227 15.3389 4.36866 15.1424 4.01951 14.9265C4.87777 17.2671 6.73603 19.1253 9.07661 19.9833C8.85983 19.6332 8.66253 19.2484 8.48491 18.8375C8.16319 18.0934 7.89575 17.2403 7.69311 16.3082ZM16.3095 16.3074C17.2411 16.1048 18.0938 15.8375 18.8375 15.5159C19.2488 15.3381 19.634 15.1406 19.9844 14.9236C19.1265 17.2657 17.2675 19.1252 14.9258 19.9835C15.1426 19.6333 15.3399 19.2484 15.5176 18.8375C15.8394 18.0932 16.1069 17.2399 16.3095 16.3074ZM19.9838 9.07529C19.6336 8.85838 19.2485 8.66098 18.8375 8.48327C18.0938 8.16171 17.2411 7.89437 16.3095 7.69177C16.1069 6.75934 15.8394 5.90596 15.5176 5.16168C15.3402 4.75137 15.1431 4.36698 14.9267 4.01722C17.2675 4.87548 19.1258 6.7342 19.9838 9.07529ZM7.69311 7.69102C6.76016 7.89372 5.90632 8.16132 5.16168 8.48327C4.75248 8.66019 4.36906 8.85663 4.02005 9.0724C4.87844 6.73282 6.73604 4.87536 9.0757 4.01737C8.85927 4.3671 8.66228 4.75144 8.48491 5.16168C8.16319 5.90577 7.89575 6.75888 7.69311 7.69102Z" fill="currentColor"/>
+</svg>
+        <span class="lang-toggle__label" id="lang-label">Polski</span>
+        <span class="dropdown-arrow">▼</span>
+      </button>
+      <menu id="lang-menu" class="lang-menu" hidden role="menu" aria-label="Wybierz język">
+        <button type="button" data-lang="fr" class="lang-menu__item" role="menuitem">Français</button>
+        <button type="button" data-lang="en" class="lang-menu__item" role="menuitem">English</button>
+        <button type="button" data-lang="es" class="lang-menu__item" role="menuitem">Español</button>
+        <button type="button" data-lang="pt" class="lang-menu__item" role="menuitem">Português</button>
+        <button type="button" data-lang="de" class="lang-menu__item" role="menuitem">Deutsch</button>
+        <button type="button" data-lang="it" class="lang-menu__item" role="menuitem">Italiano</button>
+        <button type="button" data-lang="tr" class="lang-menu__item" role="menuitem">Türkçe</button>
+        <button type="button" data-lang="pl" class="lang-menu__item lang-menu__item--active" role="menuitem">Polski</button>
+        <button type="button" data-lang="nl" class="lang-menu__item" role="menuitem">Nederlands</button>
+      </menu>
+    </div>
+  </div>
+  <nav class="site-nav" aria-label="Nawigacja główna">
+    <div class="site-nav__primary">
+      <a href="/pl/index.html" class="site-nav__link nav-home">Testuj hasło</a>
+      <a href="/pl/generator.html" class="site-nav__link nav-generator">Generuj hasło</a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Otwórz menu" aria-expanded="false" aria-controls="drawer"><span class="hamburger__icon"></span></button>
+    <div class="site-nav__secondary">
+      <a href="/pl/faq.html" class="site-nav__link">FAQ</a>
+      <a href="/pl/about.html" class="site-nav__link nav-about">O nas</a>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Nauka">Nauka <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Nauka submenu">
+          <li role="none"><a href="/pl/how-time2crack-works.html" role="menuitem" class="site-nav__dropdown-item" aria-current="page">Jak to działa</a></li>
+          <li role="none" class="site-nav__dropdown-item--group">
+            <span class="site-nav__dropdown-group-title">Metody ataku</span>
+            <ul class="site-nav__dropdown-submenu" role="menu">
+              <li role="none"><a href="/pl/methode/bruteforce.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pl/methode/dictionary.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pl/methode/hybrid.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pl/methode/mask.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pl/methode/markov.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pl/methode/pcfg.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+              <li role="none"><a href="/pl/methode/combinator.html" role="menuitem" class="site-nav__dropdown-item"></a></li>
+            </ul>
+          </li>
+          <li role="none"><a href="/pl/sources.html" role="menuitem" class="site-nav__dropdown-item">Źródła</a></li>
+        </ul>
+      </div>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="Bezpieczeństwo">Bezpieczeństwo <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="Bezpieczeństwo submenu">
+          <li role="none"><a href="/pl/hibp.html" role="menuitem" class="site-nav__dropdown-item">HIBP</a></li>
+          <li role="none"><a href="/pl/privacy.html" role="menuitem" class="site-nav__dropdown-item">Prywatność</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <aside id="drawer" class="drawer" role="complementary" aria-hidden="true" aria-label="Nawigacja dodatkowa">
+    <div class="drawer__header">
+      <button class="drawer__close" id="drawer-close-btn" aria-label="Zamknij menu">✕</button>
+    </div>
+    <nav class="drawer__nav" aria-label="Nawigacja dodatkowa">
+      <a href="/pl/faq.html" class="drawer__link">FAQ</a>
+      <a href="/pl/about.html" class="drawer__link">O nas</a>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Nauka</summary>
+        <a href="/pl/how-time2crack-works.html" class="drawer__link">Jak to działa</a>
+        <details class="drawer__details drawer__details--nested">
+          <summary class="drawer__summary drawer__summary--nested">Metody ataku</summary>
+          <a href="/pl/methode/bruteforce.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pl/methode/dictionary.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pl/methode/hybrid.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pl/methode/mask.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pl/methode/markov.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pl/methode/pcfg.html" class="drawer__link drawer__link--nested"></a>
+          <a href="/pl/methode/combinator.html" class="drawer__link drawer__link--nested"></a>
+        </details>
+        <a href="/pl/sources.html" class="drawer__link">Źródła</a>
+      </details>
+      <details class="drawer__details">
+        <summary class="drawer__summary">Bezpieczeństwo</summary>
+        <a href="/pl/hibp.html" class="drawer__link">HIBP</a>
+        <a href="/pl/privacy.html" class="drawer__link">Prywatność</a>
+      </details>
+    </nav>
+    <footer class="drawer__footer">
+      <p>v2.2.1 • Lokalny estymator czasu złamania 🔐</p>
+    </footer>
+  </aside>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
+  <div class="privacy-notice" role="note" aria-label="Uwaga o prywatności">
+    <span class="privacy-notice__icon" aria-hidden="true">🔒</span>
+    <div class="privacy-notice__text">
+      <strong>Wszystko pozostaje w przeglądarce.</strong>
+      Żadne hasło nie jest transmitowane. Obliczenie jest całkowicie lokalne. Jedyne zewnętrzne żądanie to anonimowa kontrola wycieku (pierwsze 5 znaków skrótu SHA-1, nigdy hasło).
+    </div>
+  </div>
+</header>
+<main class="how-time2crack-works-page">
+  
+<div class="doc-header">
+<h1>Jak Time2Crack oblicza czas pękania</h1>
+<p class="subtitle">Kompletny przewodnik po operacjach naukowych i technicznych</p>
+</div>
+<nav aria-label="Spis treści" class="toc">
+<h2>Spis treści</h2>
+<ol>
+<li><a href="#overview">Przegląd</a></li>
+<li><a href="#flux">Główny przepływ obliczeniowy</a></li>
+<li><a href="#step1">Krok 1: Analiza hasła</a></li>
+<li><a href="#step2">Etap 2: oszacowanie rankingu</a></li>
+<li><a href="#step3">Krok 3: Konwersja na czas</a></li>
+<li><a href="#attacks">Zastosowano 7 ataków</a></li>
+<li><a href="#algorithms">6 algorytmów haszowych</a></li>
+<li><a href="#profiles">Profile atakujące</a></li>
+<li><a href="#example">Przykład betonu</a></li>
+<li><a href="#faq">Często zadawane pytania</a></li>
+</ol>
+</nav>
+ Przegląd 
+<section class="doc-section" id="overview">
+<h2>Przegląd</h2>
+<p>Time2Crack odpowiada na proste pytanie: <strong>"Jak długo zajmie złamanie tego hasła?"</strong></p>
+<p>Odpowiedź obejmuje trzy etapy:</p>
+<div class="diagram">
+PASS MOT (np. "P @ ssw0rd!")
+▼
+KROK 1: Analiza (wykrywanie wzorców, entropia)
+▼
+KROK 2: Szacowana liczba prób (zakres)
+▼
+KROK 3: Przelicznik czasu (w oparciu o prędkość GPU)
+▼
+WYNIK (np. "2 dni na GPU NTLM")
+      </div>
+<p><strong>Punkt krytyczny</strong> : Time2Crack testes <strong>Nie bardzo.</strong> Hasło. <strong>matematycznie</strong> jak wiele prób byłoby potrzebnych przy różnych atakach.</p>
+<div class="insight-box">
+        Kluczową innowacją jest ścisłe oddzielenie <strong>Wskaźnik</strong> (liczba prób) oraz <strong>Czas</strong> (Konwersja oparta na GPU.Pozwala to na samodzielną modyfikację algorytmów ataku lub prędkości GPU.
+      </div>
+</section>
+ Przepływ obliczeniowy 
+<section class="doc-section" id="flux">
+<h2>Główny przepływ obliczeniowy</h2>
+<div class="diagram">
+calcCrackTime (hasło, opcje) [core / calc.js]
+Promocyjne
+- analizatory (hasło)
+--------------------------------------------------
+Promocyjne
+Ü--estimateRank (hasło, kontekst)
+Egzamin - rankBrute () → Tanklength
+-------------------------------------------------- - rankDictionary () → słownik + HIBP
+▼ ç - rankHybrid () → słownik + mutacje
+XXX- rankMask () → przewidywalne struktury
+RRRR - RankMarkov () → model probabilistyczny
+▼ ç - rankPCFG () → gramatyka
+Promocyjne
+--------------------------------------------------
+Promocyjne
+- RankToAllSeconds (rank)
+- Konwertuje próby → sekund (GPU prędkości)
+- Return: {md5, sha1, sha256, ntlm, bript, argon2}
+      </div>
+<h3>Architektura dwuwarstwowa</h3>
+<p>Kluczową innowacją Time2Crack jest <strong>ścisłe oddzielenie</strong> między:</p>
+<div class="feature-list">
+<div class="feature-item">
+<strong><span class="emoji-marker">1</span>Warstwa 1 (ranking)</strong>
+<p>"Ile prób?" - Nie mają pojęcia o GPU czasu lub prędkości. Moduły: <code>core/rank/*.js</code></p>
+</div>
+<div class="feature-item">
+<strong><span class="emoji-marker">2</span>Warstwa 2 (czas)</strong>
+<p>"Jak długo?" - Przelicz próby na sekundy. Moduł: <code>core/time.js</code></p>
+</div>
+</div>
+<p><strong>Korzyść</strong> : Zmiana algorytmu ataku nigdy nie wpływa na logikę czasu. Zmiana prędkości GPU nigdy nie wpływa na ataki.</p>
+</section>
+ Etap 1 
+<section class="doc-section" id="step1">
+<h2>Krok 1: Analiza hasła</h2>
+<h3>Co analizujemy?</h3>
+<p>Przed obliczeniem czasu pęknięcia Time2Crack rozpatruje hasło do wykrywania:</p>
+<div class="code-block">
+<pre>analyzePatterns(password) retourne {
+  // CHARSET &amp; ENTROPIE
+  charset: { hasLower, hasUpper, hasDigit, hasSymbol },
+  entropy: 52.3,  // bits
+
+  // DÉTECTIONS
+  patterns: {
+    dictionaryWord: true,      // mot dans dictionnaire
+    commonPassword: false,     // dans HIBP
+    keyboardPattern: false,    // qwerty, asdfgh
+    sequencePattern: false,    // abc, 123
+    datePattern: false,        // 2024, 12/25
+    repeatingPattern: false,   // aaaa, 1111
+    maskLike: true,            // structure prévisible
+    looksPassphrase: true,     // plusieurs mots
+  }
+}</pre>
+</div>
+<h3>8 typów wykrywania</h3>
+<h4><span class="emoji-marker">1</span> Słownik Słowo</h4>
+<p>Przetestuj hasło na 50k- 200k pospolite słowa i ich warianty (proste mutacje).</p>
+<h4><span class="emoji-marker">2</span> Wspólne hasło (HIBP)</h4>
+<p>Test na 1000 najbardziej zbiegłych haseł za pomocą <strong>k- anonimowość</strong> (tylko 5 pierwszych znaków SHA-1 wysłanych).</p>
+<p><small><a href="hibp.html">Sprawdź, czy hasło zostało zhakowane →</a></small></p>
+<h4><span class="emoji-marker">3</span> Wzór klawiatury</h4>
+<p>Wykryj: <code>qwerty</code>, <code>asdfgh</code>, <code>qazwsx</code>itd.</p>
+<h4><span class="emoji-marker">4</span> Sekwencja</h4>
+<p>Wykryj: <code>abc</code>, <code>123</code>, <code>xyz</code>itd.</p>
+<h4><span class="emoji-marker">5</span> Data</h4>
+<p>Wykryj: <code>2024</code>, <code>12/25</code>, <code>25-12-2024</code>itd.</p>
+<h4><span class="emoji-marker">6</span> Powtórz</h4>
+<p>Wykryj: <code>aaaa</code>, <code>1111</code>, <code>!!!</code>itd.</p>
+<h4><span class="emoji-marker">7</span> Strukturyzowane</h4>
+<p>Wykrywa przewidywalne struktury: <code>Name2024!</code>, <code>Passw0rd!</code></p>
+<h4><span class="emoji-marker">8</span> Frazę</h4>
+<p>Wykrywa kilka zwięzłych słów: <code>correcthorsebatterystaple</code> → <code>[correct] + [horse] + [battery] + [staple]</code></p>
+</section>
+ Etap 2 
+<section class="doc-section" id="step2">
+<h2>Etap 2: Ocena rankingu (liczba prób)</h2>
+<h3>Koncepcja podstawowa</h3>
+<p>W <strong>wiersz</strong> jest: <strong>"Ile haseł musi sprawdzić atak, zanim go znajdziesz?"</strong></p>
+<div class="example-box">
+<h4>Przykład</h4>
+<ul>
+<li><strong>Moc brutto</strong> zamiast <code>abc</code> : 263 = 17,576 prób</li>
+<li><strong>Słownik</strong> zamiast <code>password</code> : ~ 1 próba</li>
+<li><strong>PCFG</strong> zamiast <code>Password123</code> : ~ 1011 prób</li>
+</ul>
+</div>
+<h3>Jak wybrać zwycięski atak?</h3>
+<p>Time2Crack uruchamia <strong>7 ataków równoległych</strong> i przyjmuje najlepszy wynik:</p>
+<div class="code-block">
+<pre>const results = {
+  brute:      { rank: 1e30 },
+  dictionary: { rank: 1e6 },      // GAGNANT
+  hybrid:     { rank: 1e7 },
+  mask:       { rank: 1e8 },
+  markov:     { rank: 1e9 },
+  pcfg:       { rank: 1e11 },
+  combinator: { rank: 1e12 },
+};
+
+const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
+// → 1e6 (Dictionary attack est la plus rapide)
+      </pre>
+</div>
+</section>
+ Etap 3 
+<section class="doc-section" id="step3">
+<h2>Krok 3: Konwersja na czas</h2>
+<h3>Koncepcja</h3>
+<p>Teraz, kiedy wiemy, że musimy <code>rang</code> próby, nawracamy do <strong>sekundy</strong> :</p>
+<div class="code-block">
+<pre>Formule : temps (secondes) = log₁₀(rang) / log₁₀(taux_hachage)</pre>
+</div>
+<h3>Prędkość toczenia (GPU)</h3>
+<p>Zastosowania Time2Crack <strong>prawdziwe prędkości Hashcat</strong> dla 12 × RTX 4090:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Algorytm</th>
+<th>Prędkość</th>
+<th>Salification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MD5</strong></td>
+<td>2.03 TH / s</td>
+<td>Nie.</td>
+</tr>
+<tr>
+<td><strong>SHA-1</strong></td>
+<td>610 GH / s</td>
+<td>Nie.</td>
+</tr>
+<tr>
+<td><strong>SHA- 256</strong></td>
+<td>272 GH / s</td>
+<td>Nie.</td>
+</tr>
+<tr>
+<td><strong>NTLM</strong></td>
+<td>3, 46 TH / s</td>
+<td>Nie.</td>
+</tr>
+<tr>
+<td><strong>bcrypt</strong></td>
+<td>2.2 MH / s</td>
+<td>Tak.</td>
+</tr>
+<tr>
+<td><strong>Argon2id</strong></td>
+<td>800 H / s</td>
+<td>Tak.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Przykład konwersji</h3>
+<div class="example-box">
+<h4>Hasło: "hasło" (Rang: 1 milion = 106)</h4>
+<h4>Dla MD5 (2 biliony / s):</h4>
+<p><code>Temps = 10⁶ / (2×10¹²) = 0.5 microsecondes</code></p>
+<h4>Dla SHA- 256 (272 GH / s):</h4>
+<p><code>Temps = 10⁶ / (2.72×10¹¹) = 3.7 microsecondes</code></p>
+<h4>Dla bkryptu (2.2 MH / s):</h4>
+<p><code>Temps = 10⁶ / (2.2×10⁶) = 0.45 secondes</code></p>
+<h4>Dla Argon2id (800 H / s):</h4>
+<p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
+</div>
+</section>
+ 7 ataków 
+<section class="doc-section" id="attacks">
+<h2>Zastosowano 7 ataków</h2>
+<h3><span class="emoji-marker">1</span> Siła brutto</h3>
+<p><strong>Koncepcja</strong> : Badanie wszystkich możliwych kombinacji</p>
+<div class="code-block"><pre>Formule : rang = charset_size ^ length</pre></div>
+<p><strong>Przykład</strong> : <code>abc</code> → 263 = 17,576 prób</p>
+<p><strong>Bardzo skuteczne dla</strong> : krótkie i losowe hasła</p>
+<p><small><a href="methode/bruteforce.html">Dowiedz się więcej o Brute Force →</a></small></p>
+<h3><span class="emoji-marker">2</span> Atak słownika</h3>
+<p><strong>Koncepcja</strong> : Sprawdź każde słowo w słowniku</p>
+<div class="code-block"><pre>Formule : rang = taille_dictionnaire</pre></div>
+<p><strong>Bardzo skuteczne dla</strong> Ludzkie słowa</p>
+<p><small><a href="methode/dictionary.html">Dowiedz się więcej o ataku słownika →</a></small></p>
+<h3><span class="emoji-marker">3</span> Atak hybrydowy</h3>
+<p><strong>Koncepcja</strong> : Słownik Word + proste mutacje</p>
+<div class="code-block"><pre>Formule : rang = taille_dictionnaire × nombre_mutations (~1000)</pre></div>
+<p><strong>Bardzo skuteczne dla</strong> : słowniki słów + małe modyfikacje</p>
+<p><small><a href="methode/hybrid.html">Dowiedz się więcej o Hybrid Attack →</a></small></p>
+<h3><span class="emoji-marker">4</span> Atak maski</h3>
+<p><strong>Koncepcja</strong> : Przewidywalne konstrukcje testowe</p>
+<p><strong>Bardzo skuteczne dla</strong> : struktury ludzkie (<code>Name2024</code>, <code>Password!</code>)</p>
+<p><small><a href="methode/mask.html">Dowiedz się więcej o Mask Attack →</a></small></p>
+<h3><span class="emoji-marker">5</span> Markov Model</h3>
+<p><strong>Koncepcja</strong> : Podejście statystyczne oparte na częstotliwości n-gram</p>
+<p><strong>Bardzo skuteczne dla</strong> Słowa ludzkie - zmniejszona przestrzeń o ~ 99%</p>
+<p><small><a href="methode/markov.html">Dowiedz się więcej o Markov Model →</a></small></p>
+<h3><span class="emoji-marker">6</span> PCFG</h3>
+<p><strong>Koncepcja</strong> : Model gramatyczny, który uczy się struktur</p>
+<div class="example-box">
+<h4>Prawdziwy przykład</h4>
+<p><code>Password123</code> :</p>
+<ul>
+<li>Wytrzymałość brutto: 9411 = 475 bilionów prób</li>
+<li>PCFG: ~ 100 bilionów prób (4,700 × szybciej!)</li>
+</ul>
+</div>
+<p><small><a href="methode/pcfg.html">Dowiedz się więcej o PCFG →</a></small></p>
+<h3><span class="emoji-marker">7</span> Atak bojowy</h3>
+<p><strong>Koncepcja</strong> : Concatenation of 2 + słowniki</p>
+<p><strong>Bardzo skuteczne dla</strong> : passphrases (4 + słowa)</p>
+<p><small><a href="methode/combinator.html">Dowiedz się więcej o Combiner Attack →</a></small></p>
+</section>
+ Algorytmy 
+<section class="doc-section" id="algorithms">
+<h2>6 algorytmów haszowych</h2>
+<h3>Dlaczego sześć?</h3>
+<p>Różne algorytmy oferują różne poziomy bezpieczeństwa. Time2Crack pokazuje czasy crack dla 6 pokazać wpływ wyboru algorytmu.</p>
+<h4><span class="emoji-marker"></span> MD5 (DEPRECTED)</h4>
+<ul>
+<li><strong>Prędkość</strong> : 2 TH / s (bardzo szybko)</li>
+<li><strong>Salification</strong> Nie.</li>
+<li><strong>Stan</strong> - Nie stosować</li>
+</ul>
+<h4><span class="emoji-marker"></span> SHA-1 (DEPRECTED)</h4>
+<ul>
+<li><strong>Prędkość</strong> : 610 GH / s</li>
+<li><strong>Salification</strong> Nie.</li>
+<li><strong>Stan</strong> - wykryte zderzenia (2017 r.)</li>
+</ul>
+<h4><span class="emoji-marker"></span> SHA- 256 (PRZYJĘCIE)</h4>
+<ul>
+<li><strong>Prędkość</strong> : 272 GH / s</li>
+<li><strong>Salification</strong> : Ogólnie tak</li>
+<li><strong>Stan</strong> - Akceptowalne, jeśli z SALT + iteracji</li>
+</ul>
+<h4><span class="emoji-marker"></span> NTLM (LEGACJA)</h4>
+<ul>
+<li><strong>Prędkość</strong> : 3.46 TH / s</li>
+<li><strong>Stan</strong> - Używany w spuściźnie Windows</li>
+</ul>
+<h4><span class="emoji-marker"></span> krypt (ZALECONY)</h4>
+<ul>
+<li><strong>Prędkość</strong> 2.2 MH / s (celowo wolne)</li>
+<li><strong>Salification</strong> : TAK</li>
+<li><strong>Stan</strong> * Doskonały do produkcji</li>
+</ul>
+<h4><span class="emoji-marker"></span> Argon2id (lepiej)</h4>
+<ul>
+<li><strong>Prędkość</strong> 800 H / s (bardzo wolno = bardzo bezpiecznie)</li>
+<li><strong>Typ</strong> : Hybryda (czas + pamięć)</li>
+<li><strong>Stan</strong> Najlepszy nowoczesny wybór (NIST 2021)</li>
+</ul>
+<div class="insight-box">
+        Nowoczesne algorytmy są <strong>Celowo powoli</strong>To funkcja, nie błąd! MD5 jest szybki (zły), bcrypt jest powolny (doskonały), Argon2id jest jeszcze wolniejszy (najlepszy).
+      </div>
+</section>
+ Profile 
+<section class="doc-section" id="profiles">
+<h2>Profile atakujące</h2>
+<h3>Koncepcja</h3>
+<p>Różne atakujący mają różne zasoby. Time2Crack modele 4 profile:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Profil</th>
+<th>GPU</th>
+<th>NTLM</th>
+<th>Przypadki użycia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Amatorskie</strong></td>
+<td>1</td>
+<td>288 GH / s</td>
+<td>Hobbyści Hakerzy</td>
+</tr>
+<tr>
+<td><strong>Doświadczony</strong></td>
+<td>12</td>
+<td>3, 46 TH / s</td>
+<td>Poważne krakersy</td>
+</tr>
+<tr>
+<td><strong>Profesjonalne</strong></td>
+<td>100</td>
+<td>28, 8 TH / s</td>
+<td>Firmy, klastry AWS</td>
+</tr>
+<tr>
+<td><strong>Państwo</strong></td>
+<td>- 10k</td>
+<td>2,88 PH / s</td>
+<td>Rządy</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Konkretny wpływ</h3>
+<div class="example-box">
+<h4>Hasło: "P @ ssw0rd" (10 czołgów, rząd: 1 bilion)</h4>
+<ul>
+<li><strong>Amatorskie</strong> 44 sekundy</li>
+<li><strong>Doświadczony</strong> 3.7 sekundy</li>
+<li><strong>Profesjonalne</strong> : 0.43 sekund</li>
+<li><strong>Państwo</strong> 4.4 milisekundy</li>
+</ul>
+</div>
+<p><strong>Edukacja</strong> : Nawet "silne" hasło może być złamane w milisekundach przez państwo narodowe!</p>
+</section>
+ Przykład 
+<section class="doc-section" id="example">
+<h2>Przykład betonu: Trub4dor &amp; 3</h2>
+<p>To hasło do filmu. <strong>"Prawidłowy konik Battery Staple"</strong> Zobaczmy, co robi Time2Crack:</p>
+<h3>Etap 1: Analiza</h3>
+<div class="code-block">
+<pre>• length : 11 caractères
+• charset : 94 caractères
+• entropy : ~64 bits
+• dictionaryWord : FALSE
+• commonPassword : FALSE
+• maskLike : TRUE
+• looksPassphrase : FALSE</pre>
+</div>
+<h3>Etap 2: oszacowanie rankingu</h3>
+<div class="code-block">
+<pre>Brute Force  : 94^11 ≈ 475 trillion
+Dictionary   : ∞ (pas dans dictionnaire)
+Mask         : ≈ 1.4 trillion
+Markov       : ≈ 10 trillion
+PCFG         : ≈ 50 billion (GAGNANT)
+Combinator   : ∞</pre>
+</div>
+<h3>Krok 3: Konwersja na czas</h3>
+<div class="example-box">
+<h4>Wyniki dla 50 miliardów prób</h4>
+<ul>
+<li><strong>MD5</strong> : 0.025 sekund</li>
+<li><strong>SHA- 256</strong> 0,18 sekundy</li>
+<li><strong>bcrypt</strong> 6, 3 godziny</li>
+<li><strong>Argon2id</strong> 2 lata</li>
+</ul>
+</div>
+<h3>Wniosek</h3>
+<ul>
+<li>• Bezpieczny przed bcrypt / Argon2id (godziny → lat)</li>
+<li></li>
+<li></li>
+</ul>
+</section>
+ FAQ 
+<section class="doc-section" id="faq">
+<h2>Często zadawane pytania</h2>
+<h3>P: Czy Time2Crack rzeczywiście testuje hasło?</h3>
+<p><strong>Nie.</strong>. Time2Crack nie wysyła <strong>Nigdy</strong> Twoje hasło do serwera.</p>
+<ul>
+<li>Wszystkie obliczenia są wykonane <strong>Lokalne</strong> w przeglądarce</li>
+<li>Wyłącznie połączenie sieciowe: kontrola HIBP przy użyciu k- anonimowości</li>
+<li>Brak pełnej transmisji hasła</li>
+</ul>
+<p><small><a href="privacy.html">Dowiedz się więcej o naszej polityce prywatności →</a></small></p>
+<h3>P: Skąd pochodzą numery prędkości GPU?</h3>
+<p><strong>Oficjalne poziomy odniesienia dla Hashcat</strong> (v6.2.6) na RTX 4090:</p>
+<ul>
+<li>Pomiary laboratoryjne</li>
+<li>Domena publiczna</li>
+<li>Dostosowanie do systemów Hive 2025</li>
+</ul>
+<h3>P: Dlaczego Argon2id jest tak wolny?</h3>
+<p><strong>To celowe.</strong>. Argon2id jest zaprojektowany, aby być powolny, memory- trudne i trudne do równoległego. Siła ta atakuje używać wielu zasobów.</p>
+<h3>P: Czy możemy poprawić 100% hasło "bezpieczne"?</h3>
+<p><strong>Nie.</strong>Nawet najlepsze hasło można ukraść lub odgadnąć. <strong>Strategia obronna</strong> :</p>
+<ul>
+<li>Dobre hasło (15 + znaki losowe)</li>
+<li>uwierzytelnianie wieloczynnikowe</li>
+<li>Menedżer haseł</li>
+<li>Weryfikacja naruszeń (Czy zostałem wprowadzony)</li>
+</ul>
+<h3>P: Jak poprawić moje hasło?</h3>
+<p><strong>Proste zasady</strong> :</p>
+<ul>
+<li><strong>Długość</strong> : 15 + znaki (większe niż złożoność)</li>
+<li><strong>Przypadek</strong> : Użyj menedżera hasła</li>
+<li><strong>Unikalny</strong> : Różne hasło na stronę</li>
+<li><strong>MFA</strong> : Włącz uwierzytelnianie 2FA, jeśli to możliwe</li>
+</ul>
+</section>
+ Wniosek 
+<section class="doc-section">
+<h2>Wniosek</h2>
+<p><strong>Time2Crack działa w 3 niezmiennych krokach</strong> :</p>
+<div class="code-block">
+<pre>1. ANALYSE       → Détecte patterns (dictionnaire, keyboard, etc.)
+2. RANG          → Estime tentatives nécessaires (7 attaques)
+3. TEMPS         → Convertit tentatives en secondes (GPU speeds)</pre>
+</div>
+<p><strong>Kluczowe innowacje</strong> : Rygorystyczne oddzielenie wiersza (ataku) od czasu (GPU), umożliwiające:</p>
+<ul>
+<li>Łatwa aktualizacja prędkości GPU</li>
+<li>Łatwe dodawanie nowych ataków</li>
+<li>Architektura modułowa i testowa</li>
+</ul>
+<p><strong>Wynik</strong> Oszacowanie <strong>precyzyjny</strong>, <strong>Offline</strong>, <strong>wielojęzyczny</strong> Czas złamać hasło.</p>
+<a class="back-to-top" href="#top">↑ Powrót do góry</a>
+</section>
+
+</main>
+<footer id="site-footer" class="site-footer">
+  <p>Obliczenia lokalne · sprawdzenie HIBP · Open source</p>
+  <div class="footer-social">
+    <a href="https://linkedin.com/company/time2crack" class="footer-social__link" aria-label="Śledź nas na LinkedIn">
+      <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" width="24" height="24">
+        <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+      </svg>
+    </a>
+    <a href="https://bsky.social/profile/time2crack.bsky.social" class="footer-social__link" aria-label="Śledź nas na Bluesky">
+      <img src="/bluesky-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+    <a href="https://fosstodon.org/@time2crack" class="footer-social__link" aria-label="Śledź nas na Mastodonie">
+      <img src="/mastodon-line.svg" alt="" aria-hidden="true" class="footer-social__icon">
+    </a>
+  </div>
+</footer>
+<script src="/includes.js" defer></script>
+</body>
+</html>

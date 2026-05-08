@@ -1,0 +1,180 @@
+---
+lang: nl
+permalink: "/nl/faq.html"
+layout: base.njk
+currentPage: faq
+pageSlug: faq.html
+mainClass: faq-page
+pageTitle: "FAQ — Time2Crack"
+pageDescription: "Antwoorden op veelgestelde vragen over Time2Crack, de lokale werking, de wetenschappelijke methode en de resultaten."
+---
+
+<h2>Veelgestelde vragen</h2>
+<p><small><a href="how-time2crack-works.html">Inzicht in de technische werking →</a></small></p>
+<dl class="faq-list">
+<dt>Hoe meet ik de weerstand van mijn wachtwoord?</dt>
+<dd>
+<p>
+<strong>Time2Crack is een gratis wachtwoord weerstand schatter</strong> die de robuustheid van uw wachtwoord meet tegen echte computeraanvallen. Hier is hoe:
+        </p>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Evaluatie in drie stappen</h3>
+<ol style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>Voer uw wachtwoord in</strong> in het Time2Crack gereedschapsveld.
+            <em style="color: #999;">(Je wachtwoord blijft volledig op je computer staan, geen transmissie)</em>
+</li>
+<li>
+<strong>Klik op "Analyse"</strong> om de resistentieanalyse te activeren.
+De tool test je wachtwoord tegen 7 soorten realistische computeraanvallen: rauwe krachtaanval, woordenboek, hybride, masker, probabilistische Markov, grammaticale PCFG, en woordcombinatie.
+          </li>
+<li>
+<strong>Lees de resultaten</strong> : De tool toont de geschatte tijd om uw wachtwoord te kraken met elk van de 6 hash algoritmen (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id).
+          </li>
+</ol>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Tolkresultaten</h3>
+<p>
+          Time2Crack toont twee belangrijke maatregelen:
+        </p>
+<ul style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>"Crack Time"</strong> : Hoe lang zou een gemiddelde aanvaller (12 moderne GPU) nodig hebben om uw wachtwoord te kraken.
+            <ul style="margin-top: 0.5em; font-size: 0.95em;">
+<li> <strong>Uitstekend.</strong> &gt; 100 jaar</li>
+<li> <strong>Zeer goed</strong> 1 jaar 100 jaar</li>
+<li> <strong>Aanvaardbaar</strong> : 1 dag 1 jaar</li>
+<li> <strong>Laag</strong> &lt; 1 dag</li>
+<li> <strong>Ultra-laag</strong> &lt; 1 seconde</li>
+</ul>
+</li>
+<li>
+<strong>"Fast Attack"</strong> : Wat voor aanval zal eerst je wachtwoord kraken.
+Bijvoorbeeld, een eenvoudig woordenboek wachtwoord zal worden gekraakt door een <strong>woordenboekaanval</strong>, terwijl een wachtwoordzin (4+ woorden) wordt gekraakt door <strong>Combinatoraanval</strong>.
+          </li>
+</ul>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Waarom deze maatregel wetenschappelijk is</h3>
+<p>
+          Time2Crack meet niet<strong>theoretische entropie</strong> (traditionele NIST benadering), die wachtwoorden overschat door menselijke patronen te negeren.
+In plaats daarvan beschouwt hij de <strong>praktische aanvalskosten</strong> gebaseerd op:
+        </p>
+<ul style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li><strong>Academisch onderzoek</strong> (Wheeler 2016, Wang &amp; Ding 2023, Weir 2009) valideren van 7 echte aanvallen</li>
+<li><strong>Empirische data rock you2021</strong> (32,6M echte wachtwoorden) om probabilistische modellen te kalibreren</li>
+<li><strong>Officiële GPU benchmarks</strong> (Hashcat v6.2.6, Hive Systems 2025) voor kraaksnelheden</li>
+</ul>
+<p style="margin-top: 1em;">
+          Dit betekent dat <strong>Time2Crack nauwkeuriger schattingen echte veiligheid</strong> een traditionele visuele krachtbalk.
+        </p>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Stappen om je score te verbeteren</h3>
+<p>
+          Als uw wachtwoord laag is beoordeeld, verbeter het als volgt:
+        </p>
+<ol style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>De lengte verhogen</strong> : Toename van 8 naar 12+ karakters.
+Elk extra karakter vermenigvuldigt de moeilijkheid met ~70 (gemiddeld aantal tekens).
+          </li>
+<li>
+<strong>Een wachtwoordzin gebruiken</strong> (aanbevolen): 4-5 willekeurige woorden gescheiden door streepjes of spaties.
+Voorbeeld: <code style="background: #f5f5f5; padding: 2px 4px; border-radius: 3px;">correct-horse-battery-staple</code>
+            Dit is veiliger EN gedenkwaardiger dan een complex woord.
+          </li>
+<li>
+<strong>Vermijd menselijke patronen</strong> : Niet combineren "Naam + jaar" (ex: Jean1985).
+Time2Crack detecteert deze patronen en breekt ze in seconden via PCFG aanval.
+          </li>
+<li>
+<strong>Wachtwoordbeheer gebruiken</strong> : Laat een manager een willekeurige 16-32 tekenreeks genereren.
+Time2Crack zal het schatten tot &gt; 10.000 jaar, wat maximale veiligheid garandeert.
+          </li>
+</ol>
+<p style="margin-top: 1em; padding-top: 1em; border-top: 1px solid #eee; font-size: 0.95em; color: #666;">
+<strong>Hoofdadvies</strong> : Zoek niet naar een perfecte visuele krachtbalk. <strong>cracktijd &gt; 100 jaar</strong> voor een kritisch wachtwoord (e-mail, bank).
+Een wachtwoordzin van 4 woorden slaagt gemakkelijk, terwijl een woord van 12 tekens kan falen afhankelijk van de samenstelling.
+        </p>
+</dd>
+<dt>Wat is Time2Crack?</dt>
+<dd>Time2Crack is een wachtwoord kraken tijdcalculator. Het schat hoe lang het zou duren voordat een aanvaller om uw wachtwoord te raden met behulp van 7 verschillende aanvallen (brutokracht, woordenboek, hybride, masker, Markov, PCFG, combinator). <strong>op uw computer</strong> Uw wachtwoord verlaat nooit uw apparaat.</dd>
+<dt>Zijn mijn gegevens veilig?</dt>
+<dd>
+<p>
+          Time2Crack werkt. <strong>100% lokaal</strong> in uw browser. Er wordt geen wachtwoord verzonden naar onze servers. We doen slechts één optionele controle: controleer via Have I Been Pwned (HIBP) of uw wachtwoord bekend is in oude lekken. Deze controle maakt gebruik van de <strong>k-anonimiteit</strong> (we sturen alleen de eerste 5 tekens van de SHA-1 hash, nooit het volledige wachtwoord).
+        </p>
+<h4 style="font-size: 0.95em; margin: 0.8em 0 0.3em 0; font-weight: 600;">Concrete voorbeeld: hoe k-anonimiteit werkt</h4>
+<p style="font-size: 0.9em; color: #666; margin: 0.5em 0;">
+          Voor wachtwoord <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">password</code> :
+        </p>
+<ul style="font-size: 0.9em; color: #555; margin: 0.5em 0 1em 2em; list-style: disc;">
+<li>Complete Hash SHA-1 (lokaal, nooit verzonden): <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code></li>
+<li>Prefix verzonden naar HIPP: <code style="background: #e8f5e9; padding: 0.2em 0.4em; border-radius: 2px; color: #2e7d32;">5BAA6</code> (slechts 5 tekens)</li>
+<li>Suffix lokaal bewaard (nooit verzonden): <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code></li>
+<li>HIPP geeft alle hash terug die begint met <code>5BAA6</code> (500-1000 anonieme resultaten)</li>
+<li>Time2Crack vergelijkt lokaal het achtervoegsel met de antwoorden, alleen op uw computer</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin: 0.5em 0;">
+          Resultaat: <strong>Het volledige wachtwoord verlaat nooit uw apparaat</strong>zelfs tijdens de HIPB-keuring.
+        </p>
+</dd>
+<dt>Waarom variëren tijdsramingen volgens het hash-algoritme?</dt>
+<dd>Verschillende hash algoritmes hebben zeer verschillende crack snelheden. MD5 en SHA-1 (ongezouten) zijn snel te kraken (~2 miljard pogingen/seconde), terwijl bcrypt en Argon2id zijn vrijwillig traag (~2 miljoen en ~800 pogingen/seconde). Time2Crack toont tijd voor elk algoritme, zodat je begrijpt het belang van het gebruik van <strong>bcrypt</strong> of <strong>Argon2id</strong> voor kritische wachtwoorden.</dd>
+<dt>Wat is "ruwe kracht," "woordenboek," enz.?</dt>
+<dd>Dit zijn de 7 soorten echte aanvallen die piraten gebruiken:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>Brutokracht</strong> : test elke mogelijke combinatie (langzaam voor lange wachtwoorden)</li>
+<li><strong>Woordenboek</strong> : test gangbare woorden en bekende lekken (snel voor eenvoudige woorden)</li>
+<li><strong>Hybride</strong> : woordenboek + kleine mutaties (ex: wachtwoord → p@ssw0rd)</li>
+<li><strong>Masker</strong> Gerichte voorspelbare structuren (bv. naam + jaar)</li>
+<li><strong>Markov</strong> : analyse van de waarschijnlijkheid van sequenties (ex: "qu" stroom in het Frans)</li>
+<li><strong>PCFG</strong> : Grammatische structuren (bv. Majuscule+minuscules+figuren)</li>
+<li><strong>Combiner</strong> : concate words (ex: "correct-paard-battery-staple")</li>
+</ul>
+</dd>
+<dt>Wat is "gunstig" tegen "standaard"?</dt>
+<dd><strong>Standaard</strong> : gelooft optimistisch dat de aanvaller de bekendste aanval gebruikt. <strong>Gunstig</strong> : Stelt dat de aanvaller alleen het woordenboek en eenvoudige mutaties (het meest gunstige scenario voor uw wachtwoord) test. In de praktijk, deze twee schattingen zijn vaak vergelijkbaar, als de beste aanvallers testen alle methoden parallel.</dd>
+<dt>Mijn wachtwoord is "Ultra-zwak."</dt>
+<dd>Een ultra-laag wachtwoord (gekraakte in minder dan een seconde) betekent dat het is opgenomen in de meest voorkomende wachtwoordlijsten. <strong>Verander het onmiddellijk.</strong> Gebruik in plaats daarvan:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li>Eén <strong>Wachtwoordzin</strong> (4+ willekeurige woorden gescheiden door spaties, bv. "correct-paard-battery-staple")</li>
+<li>Eén <strong>willekeurig gegenereerd wachtwoord</strong> (ten minste 12 gemengde tekens)</li>
+<li>Eén <strong>wachtwoordbeheer</strong> (Bitwarden, 1Password, KeePass, enz.)</li>
+</ul>
+</dd>
+<dt>Hoe maak ik een beveiligd wachtwoord aan?</dt>
+<dd>De drie benaderingen:
+        <ol style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>Wachtwoordzin</strong> (aanbevolen): 4-5 gewone willekeurige woorden (bijv. "sun-table-computer-flower"). Makkelijk te onthouden, zeer veilig (~ 10.000+ jaar als toegevoegd nummers).</li>
+<li><strong>Willekeurig</strong> : 16+ karakters (majuscules, kleine figuren, symbolen). Cracking duurt 10.000+ jaar. Gebruik een manager om het op te slaan.</li>
+<li><strong>Wachtwoordzin + mutatie</strong> "Sun2024!" (wachtwoord + jaar + symbool). Combineert veiligheid en geheugen.</li>
+</ol>
+</dd>
+<dt>Waarom is een kort wachtwoord met symbolen niet genoeg?</dt>
+<dd>Voorbeeld: "P@ssw0rd!" (10 tekens) kan worden gekraakt in een paar dagen met bcrypt. Zelfs met symbolen, een kort woord blijft kwetsbaar omdat het volgt een <strong>voorspelbaar patroon</strong> De PCFG aanval test dit patroon precies. Een 4-woord wachtwoordzin is veiliger dan een kort woord "complex."</dd>
+<dt>Wat als ik een wachtwoordbeheerder gebruik?</dt>
+<dd>Uitstekende keuze! Managers (Bitwarden, 1Wachtwoord, KeePass) genereren willekeurige wachtwoorden van 16-32 tekens, die u niet hoeft te onthouden. Time2Crack zal schatten crack tijd om <strong>10.000+ jaar</strong> voor een willekeurig gegenereerd woord. Je hebt er maar één nodig <strong>vaste wachtwoordzin om manager te ontgrendelen</strong>.</dd>
+<dt>Kunnen mijn schattingen onjuist zijn?</dt>
+<dd>Time2Crack gebruikt de beste beschikbare publieke gegevens (rockyou2021, NIST, academisch onderzoek) om de schattingen te kalibreren. <strong>De typische fout is ±1 orde van grootte</strong> (d.w.z. 10× sneller/lager dan de werkelijkheid). <strong>aanvallen met 12× RTX 4090</strong> Een echte aanvaller kan 100× langzamer of 10.000× sneller zijn, afhankelijk van zijn middelen. <strong>Argon2id</strong> betrouwbaarder zijn (lager, minder variatie).</dd>
+<dt>Waarom Time2Crack 7 verschillende aanvallen laat zien?</dt>
+<dd>Omdat <strong>elk wachtwoord is kwetsbaar voor een andere aanval</strong>. "wachtwoord" valt in 1 poging (woordenboek). "P@ssw0rd!" valt in ~ 10.000 pogingen (hybride + PCFG). "a1b2c3d4e5f6g7h8" valt alleen in ruwe kracht (~10^30 pogingen). Time2Crack identificeert <strong>de beste aanval voor uw wachtwoord</strong> en toont de tijd voor elke hash algoritme.</dd>
+<dt>De pagina Methode legt uit hoe het werkt?</dt>
+<dd>Ja! <strong>Methode</strong> (toegankelijk via menu) details:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li>Hoe elke aanval werkt (met voorbeelden)</li>
+<li>Gebruikte gegevensbronnen (rockyou, NIST, Hive Systems)</li>
+<li>Beperkingen en aannames</li>
+<li>Academisch onderzoek dat onze schattingen valideert</li>
+</ul>
+</dd>
+<dt>Kan ik Time2Crack offline gebruiken?</dt>
+<dd>Ja! Time2Crack werkt volledig offline eenmaal geladen. De woordenboekgegevens en ML-modellen (Markov, PCFG) worden eenmaal gedownload bij het opstarten. U kunt dan het Internet sluiten Time2Crack blijft normaal werken.</dd>
+<dt>Hoe lang kan een "goed" wachtwoord worden gekraakt?</dt>
+<dd>Met een conservatieve schatting:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>8 willekeurige tekens</strong> : ~8 uur (MD5) / ~3 jaar (bcrypt)</li>
+<li><strong>12 willekeurige tekens</strong> : ~2.000 jaar (MD5) / ~1 miljoen jaar (bcrypt)</li>
+<li><strong>16 willekeurige tekens</strong> : ~2 miljoen jaar (bcrypt)</li>
+<li><strong>Wachtwoordzin 4 woorden + symbool</strong> : ~ 10.000+ jaar (bcrypt)</li>
+</ul>
+        Gebruik <strong>bcrypt</strong> of <strong>Argon2id</strong> voor alle kritische wachtwoorden.
+      </dd>
+<dt>Is Time2Crack open source?</dt>
+<dd>Ja! De broncode is beschikbaar op Codeberg. <strong>nulafhankelijkheid</strong> Het is pure JavaScript, geen bundelaars of zweten. U kunt de code zelf controleren om te bevestigen dat er geen wachtwoord wordt verzonden.</dd>
+</dl>

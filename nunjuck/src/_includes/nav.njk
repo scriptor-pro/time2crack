@@ -1,0 +1,87 @@
+{% set t = i18n[lang] %}
+<header class="site-header">
+  <div class="site-header__top">
+    <h1><a href="/{{ lang }}/index.html" class="site-logo"><img src="/logo.png" alt="" class="site-logo__icon" aria-hidden="true">Time2Crack</a></h1>
+    <div class="lang-selector">
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="{{ t.nav.langSelectLabel }}" aria-expanded="false" aria-controls="lang-menu">
+        {% include "icons/globe.njk" %}
+        <span class="lang-toggle__label" id="lang-label">{{ site.langNames[lang] }}</span>
+        <span class="dropdown-arrow">▼</span>
+      </button>
+      <menu id="lang-menu" class="lang-menu" hidden role="menu" aria-label="{{ t.nav.langSelectLabel }}">
+        {% for l in site.langs %}
+        <button type="button" data-lang="{{ l }}" class="lang-menu__item{% if l == lang %} lang-menu__item--active{% endif %}" role="menuitem">{{ site.langNames[l] }}</button>
+        {% endfor %}
+      </menu>
+    </div>
+  </div>
+  <nav class="site-nav" aria-label="{{ t.nav.ariaLabel }}">
+    <div class="site-nav__primary">
+      <a href="/{{ lang }}/index.html" class="site-nav__link nav-home{% if currentPage == 'index' %} site-nav__link--active{% endif %}"{% if currentPage == 'index' %} aria-current="page"{% endif %}>{{ t.nav.testPassword }}</a>
+      <a href="/{{ lang }}/generator.html" class="site-nav__link nav-generator{% if currentPage == 'generator' %} site-nav__link--active{% endif %}"{% if currentPage == 'generator' %} aria-current="page"{% endif %}>{{ t.nav.generatePassword }}</a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="{{ t.nav.openMenuLabel }}" aria-expanded="false" aria-controls="drawer"><span class="hamburger__icon"></span></button>
+    <div class="site-nav__secondary">
+      <a href="/{{ lang }}/faq.html" class="site-nav__link{% if currentPage == 'faq' %} site-nav__link--active{% endif %}"{% if currentPage == 'faq' %} aria-current="page"{% endif %}>{{ t.nav.faq }}</a>
+      <a href="/{{ lang }}/about.html" class="site-nav__link nav-about{% if currentPage == 'about' %} site-nav__link--active{% endif %}"{% if currentPage == 'about' %} aria-current="page"{% endif %}>{{ t.nav.about }}</a>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="{{ t.nav.science }}">{{ t.nav.science }} <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="{{ t.nav.science }} submenu">
+          <li role="none"><a href="/{{ lang }}/how-time2crack-works.html" role="menuitem" class="site-nav__dropdown-item"{% if currentPage == 'how-time2crack-works' %} aria-current="page"{% endif %}>{{ t.nav.howItWorks }}</a></li>
+          <li role="none" class="site-nav__dropdown-item--group">
+            <span class="site-nav__dropdown-group-title">{{ t.nav.attackMethods }}</span>
+            <ul class="site-nav__dropdown-submenu" role="menu">
+              {% for method in site.methods %}
+              <li role="none"><a href="/{{ lang }}/methode/{{ method }}.html" role="menuitem" class="site-nav__dropdown-item">{{ t.nav[method | capitalize] }}</a></li>
+              {% endfor %}
+            </ul>
+          </li>
+          <li role="none"><a href="/{{ lang }}/sources.html" role="menuitem" class="site-nav__dropdown-item"{% if currentPage == 'sources' %} aria-current="page"{% endif %}>{{ t.nav.sources }}</a></li>
+        </ul>
+      </div>
+      <div class="site-nav__dropdown">
+        <button class="site-nav__dropdown-toggle" aria-expanded="false" aria-label="{{ t.nav.security }}">{{ t.nav.security }} <span class="dropdown-arrow">▼</span></button>
+        <ul class="site-nav__dropdown-menu" role="menu" aria-label="{{ t.nav.security }} submenu">
+          <li role="none"><a href="/{{ lang }}/hibp.html" role="menuitem" class="site-nav__dropdown-item"{% if currentPage == 'hibp' %} aria-current="page"{% endif %}>{{ t.nav.hibp }}</a></li>
+          <li role="none"><a href="/{{ lang }}/privacy.html" role="menuitem" class="site-nav__dropdown-item"{% if currentPage == 'privacy' %} aria-current="page"{% endif %}>{{ t.nav.privacy }}</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <aside id="drawer" class="drawer" role="complementary" aria-hidden="true" aria-label="{{ t.nav.secondaryNavLabel }}">
+    <div class="drawer__header">
+      <button class="drawer__close" id="drawer-close-btn" aria-label="{{ t.nav.closeMenuLabel }}">✕</button>
+    </div>
+    <nav class="drawer__nav" aria-label="{{ t.nav.secondaryNavLabel }}">
+      <a href="/{{ lang }}/faq.html" class="drawer__link">{{ t.nav.faq }}</a>
+      <a href="/{{ lang }}/about.html" class="drawer__link">{{ t.nav.about }}</a>
+      <details class="drawer__details">
+        <summary class="drawer__summary">{{ t.nav.science }}</summary>
+        <a href="/{{ lang }}/how-time2crack-works.html" class="drawer__link">{{ t.nav.howItWorks }}</a>
+        <details class="drawer__details drawer__details--nested">
+          <summary class="drawer__summary drawer__summary--nested">{{ t.nav.attackMethods }}</summary>
+          {% for method in site.methods %}
+          <a href="/{{ lang }}/methode/{{ method }}.html" class="drawer__link drawer__link--nested">{{ t.nav[method | capitalize] }}</a>
+          {% endfor %}
+        </details>
+        <a href="/{{ lang }}/sources.html" class="drawer__link">{{ t.nav.sources }}</a>
+      </details>
+      <details class="drawer__details">
+        <summary class="drawer__summary">{{ t.nav.security }}</summary>
+        <a href="/{{ lang }}/hibp.html" class="drawer__link">{{ t.nav.hibp }}</a>
+        <a href="/{{ lang }}/privacy.html" class="drawer__link">{{ t.nav.privacy }}</a>
+      </details>
+    </nav>
+    <footer class="drawer__footer">
+      <p>{{ t.nav.drawerVersion }}</p>
+    </footer>
+  </aside>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
+  <div class="privacy-notice" role="note" aria-label="{{ t.privacyNotice.ariaLabel }}">
+    <span class="privacy-notice__icon" aria-hidden="true">{{ t.privacyNotice.icon }}</span>
+    <div class="privacy-notice__text">
+      <strong>{{ t.privacyNotice.strong }}</strong>
+      {{ t.privacyNotice.text }}
+    </div>
+  </div>
+</header>

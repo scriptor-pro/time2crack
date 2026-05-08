@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype 1: Segmented Control - Functional</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      color: #e0e0e0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #ff6600;
+      margin-bottom: 8px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 30px;
+      font-size: 13px;
+    }
+
+    /* Password Input */
+    .input-section {
+      background: rgba(30, 30, 46, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 102, 0, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .input-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #b0b0c0;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .password-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    #passwordInput {
+      width: 100%;
+      padding: 16px 50px 16px 16px;
+      background: #1a1a2e;
+      border: 2px solid #2a2a3e;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-family: 'Courier New', monospace;
+      transition: all 0.3s;
+    }
+
+    #passwordInput:focus {
+      outline: none;
+      border-color: #ff6600;
+      box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 8px;
+      transition: color 0.2s;
+    }
+
+    .toggle-visibility:hover {
+      color: #ff6600;
+    }
+
+    .password-strength {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .strength-bar {
+      flex: 1;
+      height: 6px;
+      background: #1a1a2e;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: all 0.4s;
+      border-radius: 3px;
+    }
+
+    .strength-label {
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    /* Attacker Selector */
+    .attacker-selector-wrapper {
+      background: rgba(30, 30, 46, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 102, 0, 0.2);
+    }
+
+    .selector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .selector-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #b0b0c0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-button {
+      background: rgba(255, 102, 0, 0.1);
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      color: #ff6600;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .info-button:hover {
+      background: rgba(255, 102, 0, 0.2);
+      transform: scale(1.1);
+    }
+
+    /* Segmented Control */
+    .segmented-control {
+      display: flex;
+      gap: 0;
+      background: #1a1a2e;
+      border-radius: 10px;
+      padding: 4px;
+      position: relative;
+    }
+
+    .segment {
+      flex: 1;
+      text-align: center;
+      padding: 14px 8px;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      user-select: none;
+    }
+
+    .segment:hover:not(.active) {
+      background: rgba(255, 102, 0, 0.05);
+    }
+
+    .segment.active {
+      background: linear-gradient(135deg, #ff6600 0%, #ff8833 100%);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(255, 102, 0, 0.4);
+    }
+
+    .segment-emoji {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .segment-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .segment-info {
+      display: block;
+      font-size: 10px;
+      opacity: 0.7;
+    }
+
+    /* Result Card */
+    .result-card {
+      background: rgba(30, 30, 46, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 28px;
+      border: 2px solid rgba(255, 68, 68, 0.3);
+      transition: all 0.4s ease;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .result-card.updating {
+      opacity: 0.6;
+      transform: scale(0.98);
+    }
+
+    .result-card.empty {
+      opacity: 0.3;
+      border-style: dashed;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      font-size: 32px;
+    }
+
+    .card-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      font-weight: 600;
+    }
+
+    .card-value {
+      font-size: 48px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: #ff4444;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .card-detail {
+      font-size: 14px;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-algorithm {
+      background: rgba(255, 68, 68, 0.1);
+      color: #ff4444;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      background: rgba(30, 30, 46, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255, 102, 0, 0.2);
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 12px;
+      background: rgba(26, 26, 46, 0.5);
+      border-radius: 10px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ff6600;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed;
+      background: #1a1a2e;
+      border: 2px solid #ff6600;
+      border-radius: 12px;
+      padding: 16px;
+      max-width: 300px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+    }
+
+    .tooltip.show {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tooltip-title {
+      color: #ff6600;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .tooltip-item {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .tooltip-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .tooltip-item-header {
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .tooltip-item-detail {
+      font-size: 11px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 640px) {
+      .segment-label {
+        font-size: 11px;
+      }
+      .segment-info {
+        font-size: 9px;
+      }
+      .card-value {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Prototype 1: Segmented Control</h1>
+    <p class="subtitle">Fonctionnel - Entrez un mot de passe pour tester</p>
+
+    <!-- Password Input -->
+    <div class="input-section">
+      <div class="input-label">🔑 Testez votre mot de passe</div>
+      <div class="password-wrapper">
+        <input 
+          type="password" 
+          id="passwordInput" 
+          placeholder="Entrez un mot de passe..."
+          autocomplete="off"
+        >
+        <button class="toggle-visibility" id="toggleBtn">👁️</button>
+      </div>
+      <div class="password-strength">
+        <div class="strength-bar">
+          <div class="strength-fill" id="strengthFill"></div>
+        </div>
+        <div class="strength-label" id="strengthLabel">—</div>
+      </div>
+    </div>
+
+    <!-- Attacker Selector -->
+    <div class="attacker-selector-wrapper">
+      <div class="selector-header">
+        <div class="selector-title">🎯 Niveau d'attaquant</div>
+        <button class="info-button" id="infoBtn">?</button>
+      </div>
+
+      <div class="segmented-control" id="segmentedControl">
+        <div class="segment active" data-profile="experienced">
+          <span class="segment-emoji">💼</span>
+          <span class="segment-label">Expérimenté</span>
+          <span class="segment-info">12 GPUs</span>
+        </div>
+        <div class="segment" data-profile="professional">
+          <span class="segment-emoji">🏢</span>
+          <span class="segment-label">Professionnel</span>
+          <span class="segment-info">~100 GPUs</span>
+        </div>
+        <div class="segment" data-profile="nationstate">
+          <span class="segment-emoji">🏛️</span>
+          <span class="segment-label">État-nation</span>
+          <span class="segment-info">~10k GPUs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Card -->
+    <div class="result-card empty" id="resultCard">
+      <div class="card-header">
+        <span class="card-icon">⚡</span>
+        <span class="card-label">Temps d'attaque le plus rapide</span>
+      </div>
+      <div class="card-value" id="crackTime">—</div>
+      <div class="card-detail">
+        <span id="attackType">Entrez un mot de passe</span>
+        <span class="card-algorithm" id="algorithm" style="display: none;">MD5</span>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-label">Longueur</div>
+        <div class="stat-value" id="statLength">—</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Charset</div>
+        <div class="stat-value" id="statCharset">—</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Entropie</div>
+        <div class="stat-value" id="statEntropy">—</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Combinaisons</div>
+        <div class="stat-value" id="statCombos">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip">
+    <div class="tooltip-title">Capacités d'attaquant</div>
+    
+    <div class="tooltip-item">
+      <div class="tooltip-item-header">💼 Expérimenté (baseline)</div>
+      <div class="tooltip-item-detail">
+        12× RTX 4090 GPUs<br>
+        ~3,462 GH/s NTLM<br>
+        Cybercriminel dédié
+      </div>
+    </div>
+
+    <div class="tooltip-item">
+      <div class="tooltip-item-header">🏢 Professionnel (~8× plus rapide)</div>
+      <div class="tooltip-item-detail">
+        ~100 GPUs via cloud<br>
+        ~28.8 TH/s NTLM<br>
+        Crime organisé, groupes APT
+      </div>
+    </div>
+
+    <div class="tooltip-item">
+      <div class="tooltip-item-header">🏛️ État-nation (~800× plus rapide)</div>
+      <div class="tooltip-item-detail">
+        ~10,000 GPUs estimés<br>
+        ~2.88 PH/s NTLM<br>
+        Agences gouvernementales (NSA, GCHQ)
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Hash rates (12× RTX 4090) - hashes per second
+    const HASH_RATES = {
+      experienced: {
+        md5: 2.027e12,      // 2,027 GH/s
+        sha1: 610.3e9,      // 610 GH/s
+        sha256: 272.2e9,    // 272 GH/s
+        ntlm: 3.462e12,     // 3,462 GH/s
+        bcrypt: 2.2e6,      // 2.2 MH/s
+        argon2: 800         // 800 H/s
+      },
+      professional: {
+        md5: 2.027e12 * 8.33,
+        sha1: 610.3e9 * 8.33,
+        sha256: 272.2e9 * 8.33,
+        ntlm: 3.462e12 * 8.33,
+        bcrypt: 2.2e6 * 8.33,
+        argon2: 800 * 8.33
+      },
+      nationstate: {
+        md5: 2.027e12 * 833,
+        sha1: 610.3e9 * 833,
+        sha256: 272.2e9 * 833,
+        ntlm: 3.462e12 * 833,
+        bcrypt: 2.2e6 * 833,
+        argon2: 800 * 833
+      }
+    };
+
+    let currentProfile = 'experienced';
+    let currentPassword = '';
+
+    // DOM elements
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthLabel = document.getElementById('strengthLabel');
+    const segments = document.querySelectorAll('.segment');
+    const infoBtn = document.getElementById('infoBtn');
+    const tooltip = document.getElementById('tooltip');
+    const resultCard = document.getElementById('resultCard');
+    const crackTime = document.getElementById('crackTime');
+    const attackType = document.getElementById('attackType');
+    const algorithm = document.getElementById('algorithm');
+    const statLength = document.getElementById('statLength');
+    const statCharset = document.getElementById('statCharset');
+    const statEntropy = document.getElementById('statEntropy');
+    const statCombos = document.getElementById('statCombos');
+
+    // Password visibility toggle
+    toggleBtn.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      toggleBtn.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    // Segment click handler
+    segments.forEach(segment => {
+      segment.addEventListener('click', () => {
+        const profile = segment.dataset.profile;
+        if (profile === currentProfile) return;
+
+        segments.forEach(s => s.classList.remove('active'));
+        segment.classList.add('active');
+        currentProfile = profile;
+
+        if (currentPassword) {
+          calculateCrackTime(currentPassword);
+        }
+
+        localStorage.setItem('attackerProfile', profile);
+      });
+    });
+
+    // Info button handler
+    let tooltipVisible = false;
+    infoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      tooltipVisible = !tooltipVisible;
+      
+      if (tooltipVisible) {
+        const rect = infoBtn.getBoundingClientRect();
+        tooltip.style.top = `${rect.bottom + 10}px`;
+        tooltip.style.left = `${Math.max(10, rect.left - 250)}px`;
+        tooltip.classList.add('show');
+      } else {
+        tooltip.classList.remove('show');
+      }
+    });
+
+    document.addEventListener('click', () => {
+      if (tooltipVisible) {
+        tooltip.classList.remove('show');
+        tooltipVisible = false;
+      }
+    });
+
+    tooltip.addEventListener('click', (e) => e.stopPropagation());
+
+    // Password input handler
+    passwordInput.addEventListener('input', (e) => {
+      currentPassword = e.target.value;
+      
+      if (!currentPassword) {
+        resetDisplay();
+        return;
+      }
+
+      calculateCrackTime(currentPassword);
+    });
+
+    function resetDisplay() {
+      resultCard.classList.add('empty');
+      crackTime.textContent = '—';
+      attackType.textContent = 'Entrez un mot de passe';
+      algorithm.style.display = 'none';
+      strengthFill.style.width = '0%';
+      strengthLabel.textContent = '—';
+      statLength.textContent = '—';
+      statCharset.textContent = '—';
+      statEntropy.textContent = '—';
+      statCombos.textContent = '—';
+    }
+
+    function calculateCrackTime(password) {
+      // Character analysis
+      const length = password.length;
+      const hasLower = /[a-z]/.test(password);
+      const hasUpper = /[A-Z]/.test(password);
+      const hasDigit = /[0-9]/.test(password);
+      const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+
+      let charset = 0;
+      if (hasLower) charset += 26;
+      if (hasUpper) charset += 26;
+      if (hasDigit) charset += 10;
+      if (hasSymbol) charset += 32;
+
+      // Entropy calculation
+      const entropy = length * Math.log2(charset || 1);
+      const combinations = Math.pow(charset || 1, length);
+
+      // Find fastest attack
+      const rates = HASH_RATES[currentProfile];
+      let fastestTime = Infinity;
+      let fastestAlgo = 'MD5';
+      let fastestAttack = 'Brute force';
+
+      // Test all algorithms
+      Object.entries(rates).forEach(([algo, rate]) => {
+        const timeSeconds = combinations / rate;
+        if (timeSeconds < fastestTime) {
+          fastestTime = timeSeconds;
+          fastestAlgo = algo.toUpperCase();
+        }
+      });
+
+      // Update display
+      resultCard.classList.remove('empty');
+      resultCard.classList.add('updating');
+
+      setTimeout(() => {
+        crackTime.textContent = formatTime(fastestTime);
+        attackType.textContent = 'Brute force';
+        algorithm.textContent = fastestAlgo;
+        algorithm.style.display = 'inline-block';
+
+        // Update stats
+        statLength.textContent = length;
+        statCharset.textContent = charset;
+        statEntropy.textContent = entropy.toFixed(1) + ' bits';
+        statCombos.textContent = formatNumber(combinations);
+
+        // Update strength bar
+        updateStrengthBar(entropy);
+
+        resultCard.classList.remove('updating');
+      }, 150);
+    }
+
+    function updateStrengthBar(entropy) {
+      let percentage = 0;
+      let label = '';
+      let color = '';
+
+      if (entropy < 28) {
+        percentage = (entropy / 28) * 20;
+        label = 'Très faible';
+        color = '#ff4444';
+      } else if (entropy < 36) {
+        percentage = 20 + ((entropy - 28) / 8) * 20;
+        label = 'Faible';
+        color = '#ff6600';
+      } else if (entropy < 60) {
+        percentage = 40 + ((entropy - 36) / 24) * 30;
+        label = 'Moyen';
+        color = '#ffaa00';
+      } else if (entropy < 128) {
+        percentage = 70 + ((entropy - 60) / 68) * 20;
+        label = 'Fort';
+        color = '#44ff88';
+      } else {
+        percentage = 90 + Math.min(10, (entropy - 128) / 128 * 10);
+        label = 'Très fort';
+        color = '#00ff88';
+      }
+
+      strengthFill.style.width = Math.min(100, percentage) + '%';
+      strengthFill.style.background = color;
+      strengthLabel.textContent = label;
+      strengthLabel.style.color = color;
+    }
+
+    function formatTime(seconds) {
+      if (seconds < 0.001) return 'Instantané';
+      if (seconds < 1) return (seconds * 1000).toFixed(0) + ' ms';
+      if (seconds < 60) return seconds.toFixed(1) + ' sec';
+      if (seconds < 3600) return (seconds / 60).toFixed(1) + ' min';
+      if (seconds < 86400) return (seconds / 3600).toFixed(1) + ' heures';
+      if (seconds < 2592000) return (seconds / 86400).toFixed(1) + ' jours';
+      if (seconds < 31536000) return (seconds / 2592000).toFixed(1) + ' mois';
+      
+      const years = seconds / 31536000;
+      if (years < 100) return years.toFixed(1) + ' ans';
+      if (years < 10000) return (years / 100).toFixed(1) + ' siècles';
+      if (years < 1000000) return (years / 1000).toFixed(1) + ' millénaires';
+      
+      return '> univers';
+    }
+
+    function formatNumber(num) {
+      if (num < 1000) return num.toFixed(0);
+      if (num < 1e6) return (num / 1e3).toFixed(1) + 'K';
+      if (num < 1e9) return (num / 1e6).toFixed(1) + 'M';
+      if (num < 1e12) return (num / 1e9).toFixed(1) + 'B';
+      if (num < 1e15) return (num / 1e12).toFixed(1) + 'T';
+      return (num / 1e15).toFixed(1) + 'P';
+    }
+
+    // Load saved profile
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('attackerProfile');
+      if (saved && HASH_RATES[saved]) {
+        segments.forEach(s => {
+          if (s.dataset.profile === saved) {
+            s.click();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

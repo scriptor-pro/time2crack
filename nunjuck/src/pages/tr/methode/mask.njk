@@ -1,0 +1,223 @@
+---
+lang: tr
+permalink: "/tr/methode/mask.html"
+layout: methode.njk
+currentPage: mask
+pageSlug: methode/mask.html
+mainClass: methode-page
+pageTitle: "Maske — Saldırı yöntemleri — Time2Crack"
+pageDescription: "Yalnızca bilinen bir maskeye uyan desenleri arayın; sabit konumlardaki harfler, rakamlar ve semboller gibi."
+---
+
+<h1 style="display:none">Maske Saldırı - Kapsamlı Operasyon</h1>
+<blockquote>
+Project reference document Time2Crack
+</blockquote>
+<blockquote>Recipients: geliştiricileri, güvenlik araştırmacıları, gelişmiş kullanıcılar</blockquote>
+<hr>
+<h2>İçerikler</h2>
+<li><a href="#1-vue-densemble">Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış</a></li>
+<li><a href="#2-contexte-historique-et-académique">Tarihsel ve akademik arka plan</a></li>
+<li><a href="#3-fondements-conceptuels--pourquoi-les-masques-fonctionnent">Kavramsal Vakıflar: Maskeler Neden Çalışıyor</a></li>
+<li><a href="#4-architecture-dune-attaque-par-masque-moderne">Modern bir maske saldırısının mimarisi</a></li>
+<li><a href="#5-syntaxe-des-masques-hashcatjtr">Maske Syntax (Hashcat/JtR)</a></li>
+<li><a href="#6-réduction-du-keyspace--principe-mathématique">Keyspace azaltma: matematiksel ilke</a></li>
+<li><a href="#7-implémentation-dans-time2crack--addmaskattacks">Time2Crack'de Uygulama: <code>addMaskAttacks()</code></a></li>
+<li><a href="#8-détection-de-date-et-réduction-structurelle">Tarih algılama ve yapısal azalma</a></li>
+<li><a href="#9-calibration-haute-fidélité">Yüksek sadakat kalibrasyonu</a></li>
+<li><a href="#10-benchmarks-et-ordres-de-grandeur">Benchmarks ve büyüklüğün emirleri</a></li>
+<li><a href="#11-exemples-concrets-de-craquage-par-masque">Maske örnekleri</a></li>
+<li><a href="#12-comparaison-avec-brute-force-hybride-et-pcfg">brute kuvveti ile karşılaştırıldığında, hibrit ve PCFG</a></li>
+<li><a href="#13-limites-de-lattaque-par-masque">Maske saldırısının sınırları</a></li>
+<li><a href="#14-défenses-efficaces">Etkili savunmalar</a></li>
+<li><a href="#15-références-bibliographiques">Referanslar Referanslar</a></li>
+<hr>
+<h2>1. Genel bakış</h2>
+<p>Maske saldırısı, takip eden şifrelerden oluşur <strong>Kesin konum şekli</strong> Tüm olası kombinasyonlar yerine.</p>
+<p>Örnek: Tüm alanı test etmek yerine 8 karakter 95 sembolünden test edin (İngilizce).<code>95^8</code>), saldırgan, olası bir neden hedefler:</p>
+<ul>
+<li>1 sermaye,</li>
+</ul>
+<li>5 küçük,</li>
+<li>2 basamak.</li>
+<p>Ya Hashcat maskesi <code>?u?l?l?l?l?l?d?d</code>.</p>
+<p>Merkezi fikir: insan şifreleri rastgele değildir. Sık sık yapılandırılmıştır (<code>Thomas42</code>, <code>Marine2024</code>, <code>Bonjour!1</code>Maske tam olarak bu normalliği kullanır.</p>
+<hr>
+<h2>2. Tarihsel ve akademik arka plan</h2>
+<h3>2.1 Origins</h3>
+<p>Maskelerin mantığı eskidir: ilk çatlak araçlardan operatörler, şifre politikalarının tekrarlanmış formatlar ürettiğini gözlemlediler.</p>
+<p>Industrialization geliyor:</p>
+<li>John the Ripper (incremental modlar ve desenler)</li>
+<li>Hashcat (super-opted GPU maske modları)</li>
+<li>Büyük sızıntılar (RockYou, LinkedIn, Adobe), en sık yapıları tespit etti.</li>
+<h3>2.2 Empirical validation</h3>
+<p>Saldırgan/defensive literatür bir araya gelir: gerçek şifrelerin çok büyük bir kısmı basit kalıpları takip eder (word + basamaklar, başkent ilk + kelime + yıl vs.).</p>
+<p>Wheeler (USENIX 2016), ve olasılıksal çalışmalar (Markov/PCFG/OMEN), yapının brüt uzunluk olarak belirleyici olduğunu gösteriyor.</p>
+<hr>
+<h2>3. Kavramsal Vakıflar: Maskeler Neden Çalışıyor</h2>
+<h3>3.1 İnsanlar yapılar yaratır, şansa göre değil</h3>
+<p>Çoğu kullanıcı hafıza sırları oluşturur:</p>
+<li>Bilinen kelime,</li>
+<li>Ayrılma varyasyonu,</li>
+<li>dijital ek,</li>
+<li>Seçmeli son sembolü.</li>
+<p>Bu strateji maskelerde öngörülebilir ve son derece sıkıştırılabilir.</p>
+<h3>3.2 Karmaşıklık politikaları öngörülebilirliği artırır</h3>
+<p>"1 sermaye, 1 haneli, 1 sembolü" türün bir kuralı rastgele değildir; sık sık istikrarlı desenlere doğru itir:</p>
+<li><code>Mot123!</code></li>
+<li><code>Prénom2024</code></li>
+<li><code>Ville75#</code></li>
+<p>Maske, bu diyagramları çok düşük bir maliyetle taramak için ideal bir araçtır.</p>
+<h3>3.3 Etkili anahtar alanın azaltılması</h3>
+<p>8. uzunlukta bir parola için:</p>
+<li>Toplam kuvvet brüt<code>95^8</code>) <code>6.63e15</code> Adaylar,</li>
+<li>Maske maske <code>?u?l?l?l?l?d?d</code> = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = <code>26 <em> 26.4 </em> 10^2</code> = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = <code>1.19e9</code> Adaylar.</li>
+<p>İndirim birkaç milyon kez, ortak bir insan kalıbını kaplarken.</p>
+<hr>
+<h2>4 Modern Maske Saldırısı Mimarisi</h2>
+<p>Boru tipi:</p>
+<pre><code class="language-text">1) Profilage de la cible / du corpus
+   -&gt; structures fréquentes (L8D2, L6D4, U1L5D2, etc.)
+<p>2) Aday maskelerin nesli
+-&gt; olasılık tarafından sipariş edilen</p>
+<p>3) GPU infaz (Hashcat -a 3)
+-&gt; yüksek hız paralel testleri</p>
+<p>4) Adaptif bir ayarlama
+-&gt; Maskeleri yüksek tutuyoruz, zayıflığı yayıyoruz</p></code></pre>
+<p>Başarı, önceliklerine göre brüt maske miktarına daha az bağlıdır.</p>
+<hr>
+<h2>5. Maske Syntax (Hashcat/JtR)</h2>
+<h3>5.1 Temel sınıflar</h3>
+<li><code>?l</code> Küçük (küçük)<code>a-z</code>)</li>
+<li><code>?u</code> : başkentler (<code>A-Z</code>)</li>
+<li><code>?d</code> : Sayı (<code>0-9</code>)</li>
+<li><code>?s</code> : yazdırılabilir sembolü</li>
+<li><code>?a</code> : standart karışık alfabe (genellikle <code>?l?u?d?s</code>)</li>
+<h3>5.2 Örnekler</h3>
+<li><code>?u?l?l?l?l?d?d</code> -&gt; <code>Thomas42</code></li>
+<li><code>?l?l?l?l?l?l?d?d?d?d</code> -&gt; <code>summer2024</code></li>
+<li><code>?u?l?l?l?l?l?l?s?d</code> -&gt; <code>Marine!7</code></li>
+<h3>5.3. Özel maskeler</h3>
+<p>Hashcat, özel karakter setlerine izin verir (<code>-1</code>, <code>-2</code>, örneğin:</p>
+<li><code>-1 ?l?uéèàç</code> Latince diller için,</li>
+<li><code>-2 0123456789!@#</code> Potansiyel ekler için,</li>
+<li>Sonra bir maske <code>?1?1?1?1?2?2</code>.</li>
+<hr>
+<h2>6. Keyspace azaltımı: matematiksel prensip</h2>
+<p>Ya da uzun bir maske <code>n</code> Pozisyonal kartinalities ile <code>c1, c2, ..., cn</code>.</p>
+<p>Maskeli anahtar alanı:</p>
+<code>K<em>Maske = Π(i)</em></code>
+<p>Zaman (budget modeli):</p>
+<code>T = Kmask / rate</code>
+<p>Bir naifte, çıplak bir model:</p>
+<code>K<em>Full = cs^n</em></code>
+<p>Maske kazancı:</p>
+<code>Gain = Kfull / K_mask</code>
+<p>Daha güçlü pozisyon kısıtlamaları (örneğin, sonunda, kafadaki başkent) daha büyük kazanç.</p>
+<hr>
+<h2>7. Time2Crack'de Uygulama: <code>addMaskAttacks()</code></h2>
+<p>Time2Crack maske mantığı uygular <code>app.js</code> :</p>
+<li>fonksiyon: <code>addMaskAttacks(rows, full, len, cs, kbPat, seq, weak, dt, pw)</code></li>
+<li>Kategori: <code>cat: "mask"</code></li>
+<li>Ekran: <code>aMask</code> / not / <code>nMaskPositional</code>, <code>nKBDetected</code>, <code>nSeqDetected</code>, <code>nDateDetected</code></li>
+<h3>7.1. Maskeli anahtar alanı hesaplayın</h3>
+<p>Kod, şifredeki her karakter türünin gerçek olaylarını sayır:</p>
+<li>sermaye mektupları,</li>
+<li>Küçük, küçük,</li>
+<li>Sayılar, sayılar,</li>
+<li>semboller.</li>
+<p>Sonra inşa edildi:</p>
+<code>maskKS = 26^U <em> 26 </em> 10^D <em> 33.</em></code> (İç sabitler ile ilgili)
+<p>Bu modeller, yapısını yalnızca toplam uzunlukta değil, bir saldırgan tarafından bilmektir.</p>
+<h3>7.2 Özel vakalar</h3>
+<li><code>weak</code> : Tahmin <code>weakGuessTime(a.rate)</code> (minimum akışa bağlı aralığı),</li>
+<li><code>dt</code> (tarihi tespit edildi): azaltılabilirlik <code>detectDateAndReduce()</code>,</li>
+<li>Aksi takdirde: standart konumsal anahtar alanı.</li>
+<p>Zaman sonra tahmin edilir <code>budgetTime(effectiveMaskGuesses, a.rate)</code> ( Maske sıra faktörü ve Unicode / güncel işleme ile).</p>
+<hr>
+<h2>8. Tarih algılama ve yapısal azalma</h2>
+<p>Time2Crack belirli bir tarih işleme içerir (<code>hasDate</code>, <code>detectDateAndReduce</code>)</p>
+<li>Yıl tespiti <code>1600-2099</code>,</li>
+<li>Tarih kalıplarının tespiti (<code>DD/MM/YYYY</code>, separator çeşitleri)</li>
+<li>Büyük bir uzayın değiştirilmesi (<code>10^dateChars</code>Bir plausible set ()<code>~200 années</code> veya <code>~36500 dates</code>).</li>
+<p>Sonuç: Bir tür şifre <code>Mot2024!</code> Bu saldırgan uygulama ile tutarlıdır.</p>
+<hr>
+<h2>9. Yüksek sadakat kalibrasyonu</h2>
+<p>Yüksek sadakat modu aktif olduğunda, maske kategorisi ek bir multiplier alır. <code>applyHighFidelityCalibration()</code> :</p>
+<li>Eğer klavye desen / tarih: ek azaltma faktörü,</li>
+<li>Aksi takdirde: muhafazakar tahmin.</li>
+<p>Intuition: Bu sinyaller test edilen maskeler çizgisinde erken bir sıralama olasılığını artırır.</p>
+<hr>
+<h2>10. Benchmarks ve büyüklüğün emirleri</h2>
+<p>Boyutlu siparişler (12x RTX 4090):</p>
+AlgorithmApprox akışı oranı oranı1. 9 aday için zaman
+------:---:
+MD5~2.03 TH /s~0.0005
+SHA-1~610 GH /s~0.0016
+SHA-256~272 GH /s~0.0037
+NTLM~3.46 TH /s~0.0003
+bcrypt (cost 10)~69 kH /s-4.0 h
+Argon2id~800 H /s~14.5 gün
+<p>Okuma:</p>
+<li>Hızlı, maske ezici,</li>
+<li>Yavaşça hash, sık desenlerde çok tehlikeli kalır, ancak maliyet beton olur.</li>
+<hr>
+<h2>11. Maskenin beton örnekleri</h2>
+<h3>11.1 <code>Thomas42</code></h3>
+<li>İlgili maske: <code>?u?l?l?l?l?l?d?d</code></li>
+<li>Keyspace: <code>26  26^4 <em> 10^2</em></code> ( Boyut siparişi ~1e9)</li>
+<li>NTLM/MD5: neredeyse anında.</li>
+<h3>11.2 <code>summer2024</code></h3>
+<li>İlgili maske: <code>?l?l?l?l?l?l?d?d?d?d</code></li>
+<li>Eğer yıl tespit edilirse, keskin azalma (yıllar plausible &lt;&lt; <code>10^4</code>).</li>
+<h3>11.3 <code>Marine!7</code></h3>
+<li>İlgili maske: <code>?u?l?l?l?l?l?s?d</code></li>
+<li>Kurumsal politikalarda çok yaygın bir model.</li>
+<hr>
+<h2>12. Crude Force, Hybrid ve PCFG ile Karşılaştırma</h2>
+Saldırı Saldırı SaldırıGüçlü noktaLow point
+---------
+Gross powerKapsamlı kapsama alanıÜstel maliyet
+Maske Maskeİnsan yapılarında Mükemmel VerimlilikKötü maske seçimi için hassas
+Hybrid/rulesKelimelerde Çok İyi + mutasyonlarTemel bir kelimeye bağlı olarak
+PCFGGGKüresel gramer yakalayınTren / iş için daha pahalı
+<p>Uygulamada operatörler genellikle maske + kuralları + olasılıksal birleştirir.</p>
+<hr>
+<h2>13. Maske Saldırısı</h2>
+<li><strong>Doğru maskeye bağlı olarak</strong> Kötü bir maske seti hızlıca verim kaybediyor.</li>
+<li><strong>Düşük genelleştirme dış yapısı dışında</strong> : Gerçekten rastgele bir şifre üzerinde, avantaj kaybolur.</li>
+<li><strong>Maskeler çok geniş geniş geniş kapsamlı patlama</strong> : <code>?a</code> Uzun uzunlukta tekrarlanan geri dönüş, brute kuvvetine yakındır.</li>
+<li><strong>Katılımcı dil kapsamı</strong> : Unicode/kritik alfabeler özel oyunlar gerektirir.</li>
+<hr>
+<h2>14. Etkili savunma</h2>
+<h3>14.1 Kullanıcı tarafı</h3>
+<li>Bir şifre yöneticisi kullanın,</li>
+<li>Uzun rastgele şifreler (&gt;= 16),</li>
+<li>Tamamen önlemek desenler <code>Mot+année</code>, <code>Prénom+chiffres</code>, <code>Majuscule+mot+symbole</code>.</li>
+<h3>14.2. Sistem tarafı</h3>
+<li>Argon2id ile depolama (veya yüksek maliyet bcrypt)</li>
+<li>Sistematik MFA,</li>
+<li>Anlaşmaz şifreleri engellemek,</li>
+<li>anomalilerin bağlantı ve tespiti.</li>
+<h3>14.3 Politika</h3>
+<li>öncelik uzunluğu ve uzlaşma kontrolü,</li>
+<li>Tahmin edilebilir kalıpları destekleyen saf kozmetik karmaşıklığı kurallarını azaltır.</li>
+<hr>
+<h2>15. Bibliografik referanslar</h2>
+<h3>Akademik kaynaklar</h3>
+<strong>Wheeler, D.L. (2016).</strong> zxcvbn: Low-Budget Password Strength tahmin.<em> 25. USENIX Güvenlik Sempozyumu.
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong> </em>Probabilistic Context-Free Grammars kullanarak şifre izleme.<em> IEEE Güvenlik ve Gizlilik Sempozyumu.
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., et al. (2015).</strong> </em>OMEN: Daha hızlı bir şifre sipariş edilmiş bir Markov Enumerator kullanarak tahmin edin.<em> ESSoS.
+<strong>Ur, B., Kelley, P. G., Komanduri, S., et al. (2012).</strong> </em>Parolanız Nasıl Ölçür?<em> USENIX Security.
+<h3>Endüstri ve teknik kaynaklar</h3>
+<strong>Hashcat Wiki.</strong> </em>Maske saldırısı (-a 3).<em> https://hashcat.net/wiki/
+<strong>Hashcat (benchmarks).</strong> https://hashcat.net/hashcat/
+<strong>Hive Systems (Password Table).</strong> https://www.hivesystems.io/password-table
+<h3>Web kaynakları Time2Crack uygulamasında atıfta bulundu</h3>
+<strong>USENIX Security 2016 (Wheeler).</strong>
+https://www.usenix.org/conference/usenixsecurity16/teknik-sessions/presentation/wheeler
+<hr>
+</em>Time2Crack Project için üretilen doküman - Version 1.0 - 2026-04-01<em>
+</em>Kaynak kodu: <code>app.js</code> (işlevler) <code>addMaskAttacks</code>, <code>detectDateAndReduce</code>, <code>hasDate</code>, <code>budgetTime</code>, <code>applyHighFidelityCalibration</code>)*
+
+  

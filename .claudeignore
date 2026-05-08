@@ -1,0 +1,52 @@
+# Dependencies and build artifacts
+node_modules/
+dist/
+.next/
+build/
+out/
+
+# Compressed assets (already in repo, redundant for analysis)
+*.gz
+*.br
+*.brotli
+*.map
+
+# Development tools cache
+.aider.*
+.aider/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary and backup files
+*.backup
+*.tmp
+*.temp
+*.log
+*.cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large data artifacts (versions in v2/ are maintained)
+rockyou-*.json
+rockyou-*.txt
+
+# Old versions or prototypes
+prototypes/
+explained/
+layouts/
+old/
+deprecated/
+
+# Test coverage and reports
+coverage/
+.nyc_output/
+
+# Environment and local config
+.env
+.env.local
+*.local.json

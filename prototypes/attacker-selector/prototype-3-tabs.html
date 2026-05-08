@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype 3: Tabs with Preview - Attacker Selector</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+      color: #e0e0e0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #ff6600;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    /* Tabs Selector */
+    .tabs-wrapper {
+      background: #1a1a2e;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 30px;
+      border: 1px solid #2a2a3e;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .tabs-header {
+      display: flex;
+      background: #0f0f1e;
+      border-bottom: 2px solid #2a2a3e;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      position: relative;
+    }
+
+    .tab:hover:not(.active) {
+      background: rgba(255, 102, 0, 0.05);
+    }
+
+    .tab.active {
+      background: #1a1a2e;
+      border-bottom-color: #ff6600;
+    }
+
+    .tab-emoji {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .tab-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+    }
+
+    .tab.active .tab-label {
+      color: #ff6600;
+    }
+
+    /* Tab Content */
+    .tab-content {
+      padding: 28px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .profile-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile-emoji-large {
+      font-size: 48px;
+    }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ff6600;
+      margin-bottom: 4px;
+    }
+
+    .profile-subtitle {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .profile-badge {
+      background: linear-gradient(135deg, #ff6600 0%, #ff8833 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Specs Grid */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .spec-card {
+      background: #0f0f1e;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #2a2a3e;
+    }
+
+    .spec-label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .spec-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ff6600;
+    }
+
+    .spec-detail {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    /* Description */
+    .profile-description {
+      background: rgba(255, 102, 0, 0.05);
+      border-left: 3px solid #ff6600;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #b0b0c0;
+      margin-bottom: 24px;
+    }
+
+    /* Live Preview */
+    .live-preview {
+      background: #0f0f1e;
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #2a2a3e;
+    }
+
+    .preview-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .preview-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .preview-card {
+      background: #1a1a2e;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid #2a2a3e;
+      transition: all 0.3s;
+    }
+
+    .preview-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .preview-value {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .preview-card:first-child .preview-value {
+      color: #ff4444;
+    }
+
+    .preview-card:last-child .preview-value {
+      color: #44ff88;
+    }
+
+    .preview-detail {
+      font-size: 11px;
+      color: #666;
+    }
+
+    /* Sources */
+    .sources {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #2a2a3e;
+    }
+
+    .sources-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    .sources-list {
+      font-size: 11px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    .sources-list li {
+      margin-bottom: 6px;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .sources-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #ff6600;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .preview-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .specs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Prototype 3: Tabs with Preview</h1>
+    <p class="subtitle">Detailed & Educational Design</p>
+
+    <!-- Tabs Selector -->
+    <div class="tabs-wrapper">
+      <div class="tabs-header">
+        <div class="tab active" data-profile="experienced">
+          <span class="tab-emoji">💼</span>
+          <span class="tab-label">Experienced</span>
+        </div>
+        <div class="tab" data-profile="professional">
+          <span class="tab-emoji">🏢</span>
+          <span class="tab-label">Professional</span>
+        </div>
+        <div class="tab" data-profile="nationstate">
+          <span class="tab-emoji">🏛️</span>
+          <span class="tab-label">Nation-state</span>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tabContent">
+        <!-- Content will be dynamically updated -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Attacker profiles data
+    const PROFILES = {
+      experienced: {
+        emoji: '💼',
+        name: 'Experienced Attacker',
+        subtitle: '12× NVIDIA RTX 4090 GPUs',
+        badge: 'Baseline',
+        specs: [
+          { label: 'GPU Count', value: '12', detail: 'RTX 4090' },
+          { label: 'NTLM Speed', value: '3.5 TH/s', detail: '3,462 GH/s' },
+          { label: 'MD5 Speed', value: '2.0 TH/s', detail: '2,027 GH/s' },
+          { label: 'vs Amateur', value: '12×', detail: 'faster' }
+        ],
+        description: 'Represents a dedicated attacker with commercial-grade hardware. Well-documented baseline from Hive Systems 2025 and Hashcat benchmarks. This profile is widely cited by Forbes, CNBC, BBC, and the US Army as a realistic threat model for evaluating password security.',
+        fastest: '2.3 hours',
+        slowest: '47 centuries',
+        sources: [
+          'Hive Systems Password Table 2025',
+          'Hashcat v6.2.6 Official Benchmarks',
+          'Gosney 2016 - Multi-GPU Cluster Research'
+        ]
+      },
+      professional: {
+        emoji: '🏢',
+        name: 'Professional Attacker',
+        subtitle: '~100 GPUs via Cloud Infrastructure',
+        badge: '~8× Faster',
+        specs: [
+          { label: 'GPU Count', value: '~100', detail: 'Cloud rental' },
+          { label: 'NTLM Speed', value: '28.8 TH/s', detail: '28,850 GH/s' },
+          { label: 'MD5 Speed', value: '16.9 TH/s', detail: '16,900 GH/s' },
+          { label: 'vs Experienced', value: '8.33×', detail: 'faster' }
+        ],
+        description: 'Cloud-scale attacker using rental GPU clusters from providers like AWS or Azure. Represents organized crime groups or Advanced Persistent Threat (APT) teams with significant financial resources. This level of capability is commercially available to anyone with sufficient budget.',
+        fastest: '17 minutes',
+        slowest: '5.6 centuries',
+        sources: [
+          'AWS EC2 P4d Instances Documentation',
+          'Cloud GPU Rental Market Analysis',
+          'APT Group Capability Reports (Mandiant, CrowdStrike)'
+        ]
+      },
+      nationstate: {
+        emoji: '🏛️',
+        name: 'Nation-state Attacker',
+        subtitle: '~10,000 GPUs (Conservative Estimate)',
+        badge: '~800× Faster',
+        specs: [
+          { label: 'GPU Count', value: '~10,000', detail: 'Estimated' },
+          { label: 'NTLM Speed', value: '2.88 PH/s', detail: '2,880,000 GH/s' },
+          { label: 'MD5 Speed', value: '1.69 PH/s', detail: '1,690,000 GH/s' },
+          { label: 'vs Experienced', value: '833×', detail: 'faster' }
+        ],
+        description: 'Government-level threat actor with classified capabilities (NSA, GCHQ, Unit 8200). Estimated based on publicly available cloud infrastructure capacity and academic research. Actual capabilities are classified and likely significantly higher. Note: Even at this extreme level, bcrypt and Argon2id remain cryptographically secure.',
+        fastest: '9.9 seconds',
+        slowest: '20 days',
+        sources: [
+          'Wheeler 2016 - USENIX Security Symposium',
+          'Pasquini et al. 2021 - Advanced Attacker Modeling',
+          'Cloud Infrastructure Capacity Analysis (extrapolated)'
+        ]
+      }
+    };
+
+    let currentProfile = 'experienced';
+
+    // DOM elements
+    const tabs = document.querySelectorAll('.tab');
+    const tabContent = document.getElementById('tabContent');
+
+    // Tab click handler
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const profile = tab.dataset.profile;
+        if (profile === currentProfile) return;
+
+        // Update active state
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Update content
+        updateContent(profile);
+      });
+    });
+
+    // Update content function
+    function updateContent(profile) {
+      currentProfile = profile;
+      const data = PROFILES[profile];
+
+      // Build specs HTML
+      const specsHTML = data.specs.map(spec => `
+        <div class="spec-card">
+          <div class="spec-label">${spec.label}</div>
+          <div class="spec-value">${spec.value}</div>
+          <div class="spec-detail">${spec.detail}</div>
+        </div>
+      `).join('');
+
+      // Build sources HTML
+      const sourcesHTML = data.sources.map(source => `<li>${source}</li>`).join('');
+
+      // Update content with fade animation
+      tabContent.style.opacity = '0';
+      
+      setTimeout(() => {
+        tabContent.innerHTML = `
+          <div class="profile-header">
+            <div class="profile-title">
+              <span class="profile-emoji-large">${data.emoji}</span>
+              <div>
+                <div class="profile-name">${data.name}</div>
+                <div class="profile-subtitle">${data.subtitle}</div>
+              </div>
+            </div>
+            <div class="profile-badge">${data.badge}</div>
+          </div>
+
+          <div class="specs-grid">
+            ${specsHTML}
+          </div>
+
+          <div class="profile-description">
+            ${data.description}
+          </div>
+
+          <div class="live-preview">
+            <div class="preview-title">🔮 Live Preview: Crack Time Estimates</div>
+            <div class="preview-cards">
+              <div class="preview-card">
+                <div class="preview-label">⚡ Fastest crack</div>
+                <div class="preview-value">${data.fastest}</div>
+                <div class="preview-detail">NTLM brute force</div>
+              </div>
+              <div class="preview-card">
+                <div class="preview-label">🛡️ Slowest crack</div>
+                <div class="preview-value">${data.slowest}</div>
+                <div class="preview-detail">Argon2id brute force</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sources">
+            <div class="sources-title">📚 Sources & References</div>
+            <ul class="sources-list">
+              ${sourcesHTML}
+            </ul>
+          </div>
+        `;
+        
+        tabContent.style.opacity = '1';
+      }, 200);
+
+      // Save to localStorage
+      localStorage.setItem('attackerProfile', profile);
+    }
+
+    // Initial load
+    updateContent('experienced');
+
+    // Load saved profile on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('attackerProfile');
+      if (saved && PROFILES[saved]) {
+        tabs.forEach(t => {
+          if (t.dataset.profile === saved) {
+            t.click();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

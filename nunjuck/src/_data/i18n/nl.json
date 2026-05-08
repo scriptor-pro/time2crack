@@ -1,0 +1,106 @@
+{
+  "lang": "nl",
+  "dir": "ltr",
+  "nav": {
+    "ariaLabel": "Hoofdnavigatie",
+    "langSelectLabel": "Selecteer taal",
+    "openMenuLabel": "Menu openen",
+    "closeMenuLabel": "Menu sluiten",
+    "testPassword": "Test een wachtwoord",
+    "generatePassword": "Genereer een wachtwoord",
+    "faq": "FAQ",
+    "about": "Over",
+    "science": "Wetenschap",
+    "security": "Beveiliging",
+    "howItWorks": "Hoe het werkt",
+    "attackMethods": "Aanvalsmethoden",
+    "bruteForce": "Brute Force",
+    "dictionary": "Dictionary",
+    "hybrid": "Hybrid",
+    "mask": "Mask",
+    "markov": "Markov",
+    "pcfg": "PCFG",
+    "combinator": "Combinator",
+    "sources": "Bronnen",
+    "hibp": "HIBP",
+    "privacy": "Privacy",
+    "secondaryNavLabel": "Secundaire navigatie",
+    "drawerVersion": "v2.2.1 • Lokale crack estimator 🔐"
+  },
+  "privacyNotice": {
+    "ariaLabel": "Privacyverklaring",
+    "icon": "🔒",
+    "strong": "Alles blijft in uw browser.",
+    "text": "Geen wachtwoord wordt verzonden. De berekening is volledig lokaal. Het enige externe verzoek is een anonieme controle op lekken (eerste 5 tekens van de SHA-1-hash, nooit het wachtwoord)."
+  },
+  "footer": {
+    "tagline": "Lokale berekening · HIBP-controle · Open source",
+    "linkedinLabel": "Volg ons op LinkedIn",
+    "blueskyLabel": "Volg ons op Bluesky",
+    "mastodonLabel": "Volg ons op Mastodon"
+  },
+  "pages": {
+    "index": {
+      "title": "Test de sterkte van uw wachtwoord — Time2Crack",
+      "description": "Analyseer de echte sterkte van uw wachtwoord met 7 aanvalsmodellen en 6 hash-algoritmen. 100% lokale berekening, geen wachtwoord verzonden."
+    },
+    "about": {
+      "title": "Over — Time2Crack — Wetenschappelijke wachtwoord crack time estimator",
+      "description": "Ontdek Time2Crack: het meest nauwkeurige hulpprogramma voor het berekenen van crack-tijd. Wetenschappelijke methodologie, geverifieerde academische bronnen, veilige lokale analyse."
+    },
+    "privacy": {
+      "title": "Privacy en beveiliging — Time2Crack",
+      "description": "Ontdek hoe Time2Crack met je gegevens omgaat: lokale berekening in de browser, geen wachtwoordverzending en minimale lekcontroles."
+    },
+    "sources": {
+      "title": "Wetenschappelijke bronnen — Time2Crack",
+      "description": "Bekijk de wetenschappelijke referenties en benchmarks die Time2Crack valideren, van cryptografie tot wachtwoordsterkte."
+    },
+    "hibp": {
+      "title": "HIBP-verificatie — Time2Crack",
+      "description": "Controleer via HIBP of een wachtwoord voorkomt in een datalek met een anonieme, privacyvriendelijke aanvraag."
+    },
+    "faq": {
+      "title": "FAQ — Time2Crack",
+      "description": "Antwoorden op veelgestelde vragen over Time2Crack, de lokale werking, de wetenschappelijke methode en de resultaten."
+    },
+    "generator": {
+      "title": "Veilige wachtwoordgenerator — Time2Crack",
+      "description": "Genereer sterke wachtwoorden met Time2Crack. Kies tekensets, vermijd dubbelzinnigheden en maak secrets die passen bij jouw gebruik."
+    },
+    "how-time2crack-works": {
+      "title": "Hoe Time2Crack de tijd berekent — Time2Crack",
+      "description": "Begrijp hoe Time2Crack cracktijd schat met aanvalmodellen, gekalibreerde GPU-snelheden en een lokale rekenengine."
+    },
+    "methodes": {
+      "bruteforce": {
+        "title": "Brute force — Aanvalsmethoden — Time2Crack",
+        "description": "Test systematisch alle mogelijke combinaties. De meest exhaustieve aanval en een goed referentiepunt."
+      },
+      "dictionary": {
+        "title": "Woordenboek — Aanvalsmethoden — Time2Crack",
+        "description": "Probeer wachtwoorden uit geselecteerde woordenlijsten en veelvoorkomende varianten. Snel wanneer het geheim op bekende woorden steunt."
+      },
+      "hybrid": {
+        "title": "Hybride — Aanvalsmethoden — Time2Crack",
+        "description": "Combineer woordenboek, maskers of regels om kandidaten uit te breiden. Effectief tegen voorspelbare variaties."
+      },
+      "mask": {
+        "title": "Masker — Aanvalsmethoden — Time2Crack",
+        "description": "Zoek alleen patronen die passen bij een bekend masker, zoals letters, cijfers en symbolen op vaste posities."
+      },
+      "markov": {
+        "title": "Markov — Aanvalsmethoden — Time2Crack",
+        "description": "Genereer kandidaten uit overgangskansen die zijn geleerd van echte wachtwoorden. Goede balans tussen dekking en snelheid."
+      },
+      "pcfg": {
+        "title": "PCFG — Aanvalsmethoden — Time2Crack",
+        "description": "Bouw kandidaten op uit probabilistische grammaticale patronen geleerd uit de wachtwoordstructuur."
+      },
+      "combinator": {
+        "title": "Combinator — Aanvalsmethoden — Time2Crack",
+        "description": "Combineer twee woordenlijsten tot een grotere kandidaatenset. Nuttig wanneer wachtwoorden uit meerdere woorden bestaan."
+      }
+    }
+  }
+}

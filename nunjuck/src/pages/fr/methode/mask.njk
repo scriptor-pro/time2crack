@@ -1,0 +1,223 @@
+---
+lang: fr
+permalink: "/fr/methode/mask.html"
+layout: methode.njk
+currentPage: mask
+pageSlug: methode/mask.html
+mainClass: methode-page
+pageTitle: "Attaque par Masque Expliquée — Craquage Basé sur Motifs — Time2Crack"
+pageDescription: "Cherchez uniquement les modèles qui correspondent à un masque connu: lettres, chiffres et symboles à positions fixes."
+---
+
+<h1 style="display:none">L'attaque par masque — Fonctionnement exhaustif</h1>
+<blockquote>
+Document de référence pour le projet Time2Crack
+</blockquote>
+<blockquote>Destinataires : développeurs, chercheurs en sécurité, utilisateurs avancés</blockquote>
+<hr>
+<h2>Table des matières</h2>
+<li><a href="#1-vue-densemble">Vue d'ensemble</a></li>
+<li><a href="#2-contexte-historique-et-académique">Contexte historique et académique</a></li>
+<li><a href="#3-fondements-conceptuels--pourquoi-les-masques-fonctionnent">Fondements conceptuels : pourquoi les masques fonctionnent</a></li>
+<li><a href="#4-architecture-dune-attaque-par-masque-moderne">Architecture d'une attaque par masque moderne</a></li>
+<li><a href="#5-syntaxe-des-masques-hashcatjtr">Syntaxe des masques (Hashcat/JtR)</a></li>
+<li><a href="#6-réduction-du-keyspace--principe-mathématique">Réduction du keyspace : principe mathématique</a></li>
+<li><a href="#7-implémentation-dans-time2crack--addmaskattacks">Implémentation dans Time2Crack : <code>addMaskAttacks()</code></a></li>
+<li><a href="#8-détection-de-date-et-réduction-structurelle">Détection de date et réduction structurelle</a></li>
+<li><a href="#9-calibration-haute-fidélité">Calibration haute fidélité</a></li>
+<li><a href="#10-benchmarks-et-ordres-de-grandeur">Benchmarks et ordres de grandeur</a></li>
+<li><a href="#11-exemples-concrets-de-craquage-par-masque">Exemples concrets de craquage par masque</a></li>
+<li><a href="#12-comparaison-avec-brute-force-hybride-et-pcfg">Comparaison avec brute force, hybride et PCFG</a></li>
+<li><a href="#13-limites-de-lattaque-par-masque">Limites de l'attaque par masque</a></li>
+<li><a href="#14-défenses-efficaces">Défenses efficaces</a></li>
+<li><a href="#15-références-bibliographiques">Références bibliographiques</a></li>
+<hr>
+<h2>1. Vue d'ensemble</h2>
+<p>L'attaque par masque (mask attack) consiste à tester des mots de passe qui suivent une <strong>forme positionnelle précise</strong> plutôt que toutes les combinaisons possibles.</p>
+<p>Exemple : au lieu de tester tout l'espace 8 caractères sur 95 symboles (<code>95^8</code>), l'attaquant cible un motif probable comme :</p>
+<ul>
+<li>1 majuscule,</li>
+</ul>
+<li>5 minuscules,</li>
+<li>2 chiffres.</li>
+<p>Soit le masque Hashcat <code>?u?l?l?l?l?l?d?d</code>.</p>
+<p>L'idée centrale : les mots de passe humains ne sont pas aléatoires. Ils sont souvent structurés (<code>Thomas42</code>, <code>Marine2024</code>, <code>Bonjour!1</code>). Le masque exploite précisément cette régularité.</p>
+<hr>
+<h2>2. Contexte historique et académique</h2>
+<h3>2.1 Origines</h3>
+<p>La logique des masques est ancienne : dès les premiers outils de cracking, les opérateurs observaient que les politiques de mot de passe produisent des formats répétitifs.</p>
+<p>L'industrialisation vient avec :</p>
+<li>John the Ripper (modes incrémentaux et patterns),</li>
+<li>Hashcat (modes masque GPU ultra-optimisés),</li>
+<li>les fuites massives (RockYou, LinkedIn, Adobe), qui ont permis d'identifier les structures les plus fréquentes.</li>
+<h3>2.2 Validation empirique</h3>
+<p>La littérature offensive/défensive converge : une fraction très importante de mots de passe réels suit des patterns simples (Mot + chiffres, Initiale majuscule + mot + année, etc.).</p>
+<p>Wheeler (USENIX 2016), et les travaux probabilistes (Markov/PCFG/OMEN), montrent que la structure est aussi déterminante que la longueur brute.</p>
+<hr>
+<h2>3. Fondements conceptuels : pourquoi les masques fonctionnent</h2>
+<h3>3.1 Les humains génèrent des structures, pas du hasard</h3>
+<p>La plupart des utilisateurs construisent des secrets mémorisables :</p>
+<li>mot connu,</li>
+<li>variation de casse,</li>
+<li>suffixe numérique,</li>
+<li>symbole final facultatif.</li>
+<p>Cette stratégie est prévisible et hautement compressible en masques.</p>
+<h3>3.2 Les politiques de complexité renforcent la prévisibilité</h3>
+<p>Une règle du type « 1 majuscule, 1 chiffre, 1 symbole » n'impose pas l'aléatoire ; elle pousse souvent vers des patterns stables :</p>
+<li><code>Mot123!</code></li>
+<li><code>Prénom2024</code></li>
+<li><code>Ville75#</code></li>
+<p>Le masque est justement l'outil idéal pour parcourir ces schémas avec un coût très faible.</p>
+<h3>3.3 Réduction du keyspace effectif</h3>
+<p>Pour un mot de passe de longueur 8 :</p>
+<li>brute force complet (<code>95^8</code>) ≈ <code>6.63e15</code> candidats,</li>
+<li>masque <code>?u?l?l?l?l?d?d</code> = <code>26 <em> 26^4 </em> 10^2</code> = <code>1.19e9</code> candidats.</li>
+<p>La réduction est de plusieurs millions de fois, tout en couvrant un pattern humain fréquent.</p>
+<hr>
+<h2>4. Architecture d'une attaque par masque moderne</h2>
+<p>Pipeline type :</p>
+<pre><code class="language-text">1) Profilage de la cible / du corpus
+   -&gt; structures fréquentes (L8D2, L6D4, U1L5D2, etc.)
+<p>2) Génération des masques candidats
+   -&gt; ordonnés par probabilité</p>
+<p>3) Exécution GPU (Hashcat -a 3)
+   -&gt; tests en parallèle à très haut débit</p>
+<p>4) Ajustement adaptatif
+   -&gt; on garde les masques performants, on écarte les faibles</p></code></pre>
+<p>Le succès dépend moins de la quantité brute de masques que de leur priorisation.</p>
+<hr>
+<h2>5. Syntaxe des masques (Hashcat/JtR)</h2>
+<h3>5.1 Classes de base</h3>
+<li><code>?l</code> : minuscule (<code>a-z</code>)</li>
+<li><code>?u</code> : majuscule (<code>A-Z</code>)</li>
+<li><code>?d</code> : chiffre (<code>0-9</code>)</li>
+<li><code>?s</code> : symbole imprimable</li>
+<li><code>?a</code> : alphabet mixte standard (souvent <code>?l?u?d?s</code>)</li>
+<h3>5.2 Exemples</h3>
+<li><code>?u?l?l?l?l?d?d</code> -&gt; <code>Thomas42</code></li>
+<li><code>?l?l?l?l?l?l?d?d?d?d</code> -&gt; <code>summer2024</code></li>
+<li><code>?u?l?l?l?l?l?l?s?d</code> -&gt; <code>Marine!7</code></li>
+<h3>5.3 Masques personnalisés</h3>
+<p>Hashcat permet des jeux de caractères custom (<code>-1</code>, <code>-2</code>, etc.), par exemple :</p>
+<li><code>-1 ?l?uéèàç</code> pour langues latines,</li>
+<li><code>-2 0123456789!@#</code> pour suffixes probables,</li>
+<li>puis masque combiné <code>?1?1?1?1?2?2</code>.</li>
+<hr>
+<h2>6. Réduction du keyspace : principe mathématique</h2>
+<p>Soit un masque de longueur <code>n</code> avec des cardinalités positionnelles <code>c1, c2, ..., cn</code>.</p>
+<p>Le keyspace masqué est :</p>
+<code>K<em>mask = Π(ci)</em></code>
+<p>Le temps attendu (modèle budget) :</p>
+<code>T = Kmask / rate</code>
+<p>Dans un modèle naïf non masqué :</p>
+<code>K<em>full = cs^n</em></code>
+<p>Le gain du masque est :</p>
+<code>Gain = Kfull / K_mask</code>
+<p>Plus les contraintes positionnelles sont fortes (ex. digits en fin, majuscule en tête), plus le gain augmente.</p>
+<hr>
+<h2>7. Implémentation dans Time2Crack : <code>addMaskAttacks()</code></h2>
+<p>Time2Crack implémente la logique masque dans <code>app.js</code> :</p>
+<li>fonction : <code>addMaskAttacks(rows, full, len, cs, kbPat, seq, weak, dt, pw)</code></li>
+<li>catégorie : <code>cat: "mask"</code></li>
+<li>affichage : <code>aMask</code> / note <code>nMaskPositional</code>, <code>nKBDetected</code>, <code>nSeqDetected</code>, <code>nDateDetected</code></li>
+<h3>7.1 Calcul du keyspace masqué</h3>
+<p>Le code compte les occurrences réelles de chaque type de caractère dans le mot de passe :</p>
+<li>majuscules,</li>
+<li>minuscules,</li>
+<li>chiffres,</li>
+<li>symboles.</li>
+<p>Puis construit :</p>
+<code>maskKS = 26^U <em> 26^L </em> 10^D <em> 33^S</em></code> (approximation via constantes internes)
+<p>Cela modélise un attaquant connaissant la structure par type, pas seulement la longueur totale.</p>
+<h3>7.2 Cas particuliers</h3>
+<li><code>weak</code> : estimation via <code>weakGuessTime(a.rate)</code> (rang minimal dépendant du débit),</li>
+<li><code>dt</code> (date détectée) : réduction via <code>detectDateAndReduce()</code>,</li>
+<li>sinon : keyspace positionnel standard.</li>
+<p>Le temps est ensuite estimé par <code>budgetTime(effectiveMaskGuesses, a.rate)</code> (avec facteur de rang de masque et traitement Unicode/date).</p>
+<hr>
+<h2>8. Détection de date et réduction structurelle</h2>
+<p>Time2Crack intègre un traitement spécifique des dates (<code>hasDate</code>, <code>detectDateAndReduce</code>) :</p>
+<li>détection d'années <code>1600-2099</code>,</li>
+<li>détection de patterns date (<code>DD/MM/YYYY</code>, variantes séparateurs),</li>
+<li>remplacement d'un espace énorme (<code>10^dateChars</code>) par un ensemble plausible (<code>~200 années</code> ou <code>~36500 dates</code>).</li>
+<p>Conséquence : un mot de passe de type <code>Mot2024!</code> est fortement réévalué à la baisse, ce qui est cohérent avec la pratique offensive.</p>
+<hr>
+<h2>9. Calibration haute fidélité</h2>
+<p>Quand le mode haute fidélité est actif, la catégorie masque reçoit un multiplicateur supplémentaire dans <code>applyHighFidelityCalibration()</code> :</p>
+<li>si pattern clavier / séquence / date : facteur de réduction additionnel,</li>
+<li>sinon : estimation conservatrice.</li>
+<p>Intuition : ces signaux augmentent la probabilité d'un classement précoce dans la file de masques testés.</p>
+<hr>
+<h2>10. Benchmarks et ordres de grandeur</h2>
+<p>Ordres de grandeur (profil 12x RTX 4090) :</p>
+AlgorithmeDébit approxTemps pour 1e9 candidats
+------:---:
+MD5~2.03 TH/s~0.0005 s
+SHA-1~610 GH/s~0.0016 s
+SHA-256~272 GH/s~0.0037 s
+NTLM~3.46 TH/s~0.0003 s
+bcrypt (cost 10)~69 kH/s~4.0 h
+Argon2id~800 H/s~14.5 jours
+<p>Lecture :</p>
+<li>sur hash rapides, le masque est foudroyant,</li>
+<li>sur hash lents, il reste très dangereux sur patterns fréquents mais le coût devient concret.</li>
+<hr>
+<h2>11. Exemples concrets de craquage par masque</h2>
+<h3>11.1 <code>Thomas42</code></h3>
+<li>masque pertinent : <code>?u?l?l?l?l?l?d?d</code></li>
+<li>keyspace : <code>26  26^4 <em> 10^2</em></code> (ordre de grandeur ~1e9)</li>
+<li>sur NTLM/MD5 : quasi instantané.</li>
+<h3>11.2 <code>summer2024</code></h3>
+<li>masque pertinent : <code>?l?l?l?l?l?l?d?d?d?d</code></li>
+<li>si année détectée, réduction forte (années plausibles &lt;&lt; <code>10^4</code>).</li>
+<h3>11.3 <code>Marine!7</code></h3>
+<li>masque pertinent : <code>?u?l?l?l?l?l?s?d</code></li>
+<li>pattern très fréquent dans les politiques d'entreprise.</li>
+<hr>
+<h2>12. Comparaison avec brute force, hybride et PCFG</h2>
+AttaquePoint fortPoint faible
+---------
+Brute forceCouverture exhaustiveCoût exponentiel
+MaskExcellente efficacité sur structures humainesSensible au mauvais choix de masques
+Hybride/rulesTrès bon sur mots + mutationsDépend d'un mot de base
+PCFGCapture la grammaire globalePlus coûteux à entraîner/opérer
+<p>En pratique, les opérateurs combinent souvent mask + rules + probabiliste.</p>
+<hr>
+<h2>13. Limites de l'attaque par masque</h2>
+<li><strong>Dépendance au bon masque</strong> : un mauvais set de masques perd vite en rendement.</li>
+<li><strong>Faible généralisation hors structure</strong> : sur mot de passe réellement aléatoire, l'avantage disparaît.</li>
+<li><strong>Explosion combinatoire si masques trop larges</strong> : <code>?a</code> répété sur grande longueur revient proche de la brute force.</li>
+<li><strong>Couverture linguistique partielle</strong> : les alphabets Unicode/diacritiques nécessitent des jeux custom.</li>
+<hr>
+<h2>14. Défenses efficaces</h2>
+<h3>14.1 Côté utilisateur</h3>
+<li>utiliser un gestionnaire de mots de passe,</li>
+<li>générer des mots de passe aléatoires longs (&gt;= 16),</li>
+<li>éviter complètement les patterns <code>Mot+année</code>, <code>Prénom+chiffres</code>, <code>Majuscule+mot+symbole</code>.</li>
+<h3>14.2 Côté système</h3>
+<li>stockage avec Argon2id (ou bcrypt cost élevé),</li>
+<li>MFA systématique,</li>
+<li>blocage des mots de passe compromis,</li>
+<li>télémétrie de connexion et détection d'anomalies.</li>
+<h3>14.3 Côté politique</h3>
+<li>privilégier longueur et contrôle de compromission,</li>
+<li>réduire les règles de complexité purement cosmétique qui favorisent les patterns prévisibles.</li>
+<hr>
+<h2>15. Références bibliographiques</h2>
+<h3>Sources académiques</h3>
+<strong>Wheeler, D. L. (2016).</strong> zxcvbn: Low-Budget Password Strength Estimation.<em> 25th USENIX Security Symposium.
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong> </em>Password Cracking Using Probabilistic Context-Free Grammars.<em> IEEE Symposium on Security and Privacy.
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., et al. (2015).</strong> </em>OMEN: Faster Password Guessing Using an Ordered Markov Enumerator.<em> ESSoS.
+<strong>Ur, B., Kelley, P. G., Komanduri, S., et al. (2012).</strong> </em>How Does Your Password Measure Up?<em> USENIX Security.
+<h3>Sources industrielles et techniques</h3>
+<strong>Hashcat Wiki.</strong> </em>Mask attack (-a 3).<em> https://hashcat.net/wiki/
+<strong>Hashcat (benchmarks).</strong> https://hashcat.net/hashcat/
+<strong>Hive Systems (Password Table).</strong> https://www.hivesystems.io/password-table
+<h3>Sources web citées dans l'application Time2Crack</h3>
+<strong>USENIX Security 2016 (Wheeler).</strong>
+https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler
+<hr>
+</em>Document généré pour le projet Time2Crack — Version 1.0 — 2026-04-01<em>
+</em>Sources code : <code>app.js</code> (fonctions <code>addMaskAttacks</code>, <code>detectDateAndReduce</code>, <code>hasDate</code>, <code>budgetTime</code>, <code>applyHighFidelityCalibration</code>)*
+
+  

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototypes — Analyse du Mot de Passe Améliorée</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="preload" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap">
+  </noscript>
+
+  <style>
+    :root {
+      --color-bg: #f8fafc;
+      --color-surface: #ffffff;
+      --color-text: #0f172a;
+      --color-text-muted: #64748b;
+      --color-border: #e2e8f0;
+      --color-blue: #2563eb;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 12px 32px rgba(37, 99, 235, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 32px 24px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--color-text-muted);
+      font-size: 16px;
+    }
+
+    /* ================================ */
+    /* PROTOTYPE SECTION */
+    /* ================================ */
+
+    .prototype-container {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin-bottom: 48px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .prototype-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--color-text);
+    }
+
+    .prototype-subtitle {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin-bottom: 32px;
+      font-style: italic;
+    }
+
+    .password-demo {
+      background: #f1f5f9;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 14px;
+      margin-bottom: 32px;
+      text-align: center;
+      color: var(--color-text-muted);
+    }
+
+    /* ================================ */
+    /* OPTION 1: SCORE + GAUGE */
+    /* ================================ */
+
+    .score-section {
+      margin-bottom: 32px;
+    }
+
+    .score-header {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-muted);
+      margin-bottom: 12px;
+    }
+
+    .score-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .score-main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .score-item {
+      text-align: center;
+    }
+
+    .score-number {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .score-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-muted);
+    }
+
+    .gauge {
+      width: 100%;
+      height: 16px;
+      background: #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb 0%, #0891b2 100%);
+      border-radius: 8px;
+      width: 48%;
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .gauge-text {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    /* ================================ */
+    /* OPTION 2: HIÉRARCHIE + RECOMMANDATIONS */
+    /* ================================ */
+
+    .analysis-section {
+      margin-bottom: 24px;
+    }
+
+    .analysis-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+
+    .issues-critical {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      border-left: 4px solid #dc2626;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .issue-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .issue-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .issue-icon {
+      flex-shrink: 0;
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+    }
+
+    .issue-content {
+      flex: 1;
+    }
+
+    .issue-label {
+      font-weight: 700;
+      color: #7f1d1d;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .issue-description {
+      font-size: 12px;
+      color: #b91c1c;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .issue-solution {
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 6px 8px;
+      border-radius: 4px;
+      color: #7f1d1d;
+      border-left: 2px solid #dc2626;
+      margin-left: 0;
+    }
+
+    .issues-good {
+      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+      border-left: 4px solid #059669;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .good-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .good-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .good-icon {
+      flex-shrink: 0;
+      color: #059669;
+      width: 24px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .good-label {
+      font-size: 13px;
+      color: #065f46;
+      font-weight: 600;
+    }
+
+    .missing-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+
+    .missing-icon {
+      color: #d97706;
+      font-size: 16px;
+    }
+
+    .missing-label {
+      font-size: 12px;
+      color: #78350f;
+    }
+
+    /* ================================ */
+    /* OPTION 3: COMPOSITION */
+    /* ================================ */
+
+    .composition-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .composition-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .composition-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .composition-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .composition-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .status-check {
+      color: #059669;
+      font-weight: 700;
+    }
+
+    .status-missing {
+      color: #dc2626;
+      font-weight: 700;
+    }
+
+    .status-text {
+      color: var(--color-text-muted);
+    }
+
+    /* ================================ */
+    /* OPTION 4: AVEC DETAILS/TOGGLE */
+    /* ================================ */
+
+    details {
+      margin-top: 12px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-blue);
+      padding: 8px;
+      margin: -8px;
+      user-select: none;
+    }
+
+    summary:hover {
+      color: #1d4ed8;
+      background: linear-gradient(135deg, #e0eeff 0%, #d6e3ff 100%);
+      border-radius: 4px;
+    }
+
+    .details-content {
+      margin-top: 12px;
+      padding: 12px;
+      background: linear-gradient(135deg, #e0eeff 0%, #d6e3ff 100%);
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #1e40af;
+    }
+
+    /* ================================ */
+    /* COMPARISON TABLE */
+    /* ================================ */
+
+    .comparison-section {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 2px solid var(--color-border);
+    }
+
+    .comparison-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--color-text);
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .comparison-table th {
+      background: #f1f5f9;
+      padding: 12px;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .comparison-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .comparison-table tbody tr:nth-child(odd) {
+      background: #fafafa;
+    }
+
+    .score-excellent {
+      color: #059669;
+      font-weight: 700;
+    }
+
+    .score-good {
+      color: #0891b2;
+      font-weight: 700;
+    }
+
+    .score-fair {
+      color: #d97706;
+      font-weight: 700;
+    }
+
+    /* ================================ */
+    /* RESPONSIVE */
+    /* ================================ */
+
+    @media (max-width: 768px) {
+      .prototype-container {
+        padding: 24px;
+      }
+
+      .score-main {
+        grid-template-columns: 1fr;
+      }
+
+      .prototype-title {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔍 Analyse du Mot de Passe — Prototypes Améliorés</h1>
+      <p class="subtitle">4 options pour rendre la section plus actionnable et éducative</p>
+    </header>
+
+    <!-- ================================ -->
+    <!-- OPTION 1: SCORE + GAUGE -->
+    <!-- ================================ -->
+    <div class="prototype-container">
+      <div class="prototype-title">Option 1: Score Global + Gauge</div>
+      <div class="prototype-subtitle">Aperçu rapide avec visualisation de l'entropie</div>
+
+      <div class="password-demo">Mot de passe: <code>Password2024!</code></div>
+
+      <div class="score-section">
+        <div class="score-header">📊 Score de Sécurité</div>
+        <div class="score-card">
+          <div class="score-main">
+            <div class="score-item">
+              <div class="score-number">40</div>
+              <div class="score-label">Score Global</div>
+            </div>
+            <div class="score-item">
+              <div class="score-number">48</div>
+              <div class="score-label">Bits d'Entropie</div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-muted); margin-bottom: 8px;">Entropie Actuelle vs Potentielle</div>
+            <div class="gauge">
+              <div class="gauge-fill" style="width: 50%;"></div>
+            </div>
+            <div class="gauge-text">48 / 96 bits (50% d'utilisation)</div>
+          </div>
+
+          <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(15, 23, 42, 0.1);">
+            <div style="font-size: 12px; color: var(--color-text-muted); text-align: center;">
+              Vous n'utilisez que la moitié de la capacité de votre mot de passe
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #059669; border-radius: var(--radius-md); padding: 12px 16px; font-size: 12px; color: #065f46;">
+        <strong>✅ Avantages :</strong> Aperçu instantané, scannable, montre la marge d'amélioration
+      </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- OPTION 2: HIÉRARCHIE + RECOMMANDATIONS -->
+    <!-- ================================ -->
+    <div class="prototype-container">
+      <div class="prototype-title">Option 2: Hiérarchie + Recommandations</div>
+      <div class="prototype-subtitle">Problèmes critiques vs informations supplémentaires</div>
+
+      <div class="password-demo">Mot de passe: <code>Password2024!</code></div>
+
+      <div class="analysis-section">
+        <div class="analysis-title">🔴 Problèmes Critiques</div>
+        <div class="issues-critical">
+          <div class="issue-item">
+            <div class="issue-icon">❌</div>
+            <div class="issue-content">
+              <div class="issue-label">Mot du dictionnaire trouvé</div>
+              <div class="issue-description">Le mot "password" est l'un des 14 milliards de mots connus dans les dictionnaires d'attaque</div>
+              <div class="issue-solution">💡 Solution: Remplacez par un mot aléatoire ou combinez plusieurs mots (passphrase)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analysis-section">
+        <div class="analysis-title">ℹ️ Informations Supplémentaires</div>
+        <div class="issues-good">
+          <div class="good-item">
+            <div class="good-icon">✅</div>
+            <div class="good-label">Longueur adéquate (13 caractères)</div>
+          </div>
+          <div class="good-item">
+            <div class="good-icon">✅</div>
+            <div class="good-label">Mélange de types (majuscules, minuscules, chiffres)</div>
+          </div>
+          <div class="missing-item">
+            <div class="missing-icon">⚠️</div>
+            <div class="missing-label">À ajouter: Symboles spéciaux (!@#$%^&*)</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #059669; border-radius: var(--radius-md); padding: 12px 16px; font-size: 12px; color: #065f46;">
+        <strong>✅ Avantages :</strong> Hiérarchie claire, recommandations actionnables, éducatif
+      </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- OPTION 3: COMPOSITION DES CARACTÈRES -->
+    <!-- ================================ -->
+    <div class="prototype-container">
+      <div class="prototype-title">Option 3: Composition des Caractères</div>
+      <div class="prototype-subtitle">Montre exactement ce qui fait défaut</div>
+
+      <div class="password-demo">Mot de passe: <code>Password2024!</code></div>
+
+      <div style="margin-bottom: 24px;">
+        <div class="score-header">📋 Composition</div>
+        <div class="composition-card">
+          <div class="composition-item">
+            <div class="composition-label">Minuscules (a-z)</div>
+            <div class="composition-status">
+              <span class="status-check">✅</span>
+              <span class="status-text">8 utilisées</span>
+            </div>
+          </div>
+          <div class="composition-item">
+            <div class="composition-label">Majuscules (A-Z)</div>
+            <div class="composition-status">
+              <span class="status-check">✅</span>
+              <span class="status-text">1 utilisée</span>
+            </div>
+          </div>
+          <div class="composition-item">
+            <div class="composition-label">Chiffres (0-9)</div>
+            <div class="composition-status">
+              <span class="status-check">✅</span>
+              <span class="status-text">4 utilisés</span>
+            </div>
+          </div>
+          <div class="composition-item">
+            <div class="composition-label">Symboles (!@#$%)</div>
+            <div class="composition-status">
+              <span class="status-missing">❌</span>
+              <span class="status-text">Aucun</span>
+            </div>
+          </div>
+          <div class="composition-item">
+            <div class="composition-label">Longueur</div>
+            <div class="composition-status">
+              <span class="status-check">✅</span>
+              <span class="status-text">13 / 16 recommandés</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #059669; border-radius: var(--radius-md); padding: 12px 16px; font-size: 12px; color: #065f46;">
+        <strong>✅ Avantages :</strong> Très clair, actionnable, montre ce qui manque exactement
+      </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- OPTION 4: AVEC DETAILS/TOGGLE -->
+    <!-- ================================ -->
+    <div class="prototype-container">
+      <div class="prototype-title">Option 4: Mode Explicatif (Expandable)</div>
+      <div class="prototype-subtitle">Éducatif sans surcharger la page</div>
+
+      <div class="password-demo">Mot de passe: <code>Password2024!</code></div>
+
+      <div class="issues-critical" style="margin-bottom: 20px;">
+        <div class="issue-item">
+          <div class="issue-icon">❌</div>
+          <div class="issue-content">
+            <div class="issue-label">Mot du dictionnaire</div>
+            <div class="issue-description">"password" détecté dans les wordlists</div>
+            <details>
+              <summary>Pourquoi c'est un problème ?</summary>
+              <div class="details-content">
+                Les mots du dictionnaire (14 milliards de mots connus) peuvent être testés en millisecondes par un attaquant. Votre mot de passe serait cracké en &lt; 1ms sur MD5. <strong>Solution:</strong> Utilisez une passphrase (4+ mots aléatoires) ou remplacez par du texte aléatoire.
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="issues-good" style="margin-bottom: 20px;">
+        <div class="good-item">
+          <div class="good-icon">✅</div>
+          <div class="good-label">Longueur adéquate (13 caractères)</div>
+          <details>
+            <summary>En savoir plus</summary>
+            <div class="details-content">
+              La longueur recommandée est 16+ caractères. Vous en avez 13, ce qui est bon mais peut être amélioré. Chaque caractère supplémentaire augmente exponentiellement le temps de crack.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #059669; border-radius: var(--radius-md); padding: 12px 16px; font-size: 12px; color: #065f46;">
+        <strong>✅ Avantages :</strong> Éducatif, non-intrusive, collapsible, apprend l'utilisateur
+      </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- COMPARISON TABLE -->
+    <!-- ================================ -->
+    <div class="prototype-container comparison-section">
+      <div class="comparison-title">📊 Comparaison des Options</div>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Critère</th>
+            <th>Option 1<br>Score + Gauge</th>
+            <th>Option 2<br>Hiérarchie + Reco</th>
+            <th>Option 3<br>Composition</th>
+            <th>Option 4<br>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Scannabilité</strong></td>
+            <td><span class="score-excellent">10/10</span></td>
+            <td><span class="score-excellent">9/10</span></td>
+            <td><span class="score-excellent">9/10</span></td>
+            <td><span class="score-good">7/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Actionabilité</strong></td>
+            <td><span class="score-good">7/10</span></td>
+            <td><span class="score-excellent">10/10</span></td>
+            <td><span class="score-excellent">9/10</span></td>
+            <td><span class="score-excellent">9/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Valeur Éducative</strong></td>
+            <td><span class="score-fair">5/10</span></td>
+            <td><span class="score-good">7/10</span></td>
+            <td><span class="score-good">6/10</span></td>
+            <td><span class="score-excellent">10/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Compacité</strong></td>
+            <td><span class="score-excellent">9/10</span></td>
+            <td><span class="score-good">7/10</span></td>
+            <td><span class="score-excellent">9/10</span></td>
+            <td><span class="score-excellent">10/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Complexité</strong></td>
+            <td><span class="score-good">3/10</span></td>
+            <td><span class="score-good">4/10</span></td>
+            <td><span class="score-excellent">2/10</span></td>
+            <td><span class="score-good">4/10</span></td>
+          </tr>
+          <tr>
+            <td><strong>Pour Débutants</strong></td>
+            <td><span class="score-excellent">9/10</span></td>
+            <td><span class="score-excellent">10/10</span></td>
+            <td><span class="score-excellent">10/10</span></td>
+            <td><span class="score-excellent">10/10</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #059669; border-radius: var(--radius-md); padding: 20px; margin-top: 32px;">
+        <strong style="color: #065f46; display: block; margin-bottom: 12px;">👉 Recommandation Finale</strong>
+        <p style="color: #047857; font-size: 13px; line-height: 1.6;">
+          <strong>Combinez 2 + 3 + 4 :</strong><br>
+          • Hiérarchie + Recommandations (Option 2) en aperçu<br>
+          • Composition (Option 3) en section secondaire<br>
+          • Details/Expandable (Option 4) pour approfondir<br><br>
+          Cela crée une montée progressive : d'abord les problèmes critiques avec solutions, puis composition, puis explications détaillées pour qui veut comprendre.
+        </p>
+      </div>
+    </div>
+
+    <!-- ================================ -->
+    <!-- FINAL MOCKUP -->
+    <!-- ================================ -->
+    <div class="prototype-container" style="margin-top: 48px;">
+      <div class="prototype-title">🎯 Mockup Final Recommandé</div>
+      <div class="prototype-subtitle">La combinaison optimale</div>
+
+      <div class="password-demo">Mot de passe: <code>Password2024!</code></div>
+
+      <div style="border: 2px dashed var(--color-blue); border-radius: var(--radius-md); padding: 24px; background: linear-gradient(135deg, #e0eeff 0%, #f1f5f9 100%);">
+        <div class="analysis-section">
+          <div class="analysis-title">🔴 Problèmes Critiques</div>
+          <div class="issues-critical">
+            <div class="issue-item">
+              <div class="issue-icon">❌</div>
+              <div class="issue-content">
+                <div class="issue-label">Mot du dictionnaire trouvé</div>
+                <div class="issue-description">"password" est l'un des mots les plus communs</div>
+                <div class="issue-solution">💡 Solution: Remplacez par une passphrase (ex: "correct-horse-battery-staple")</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="analysis-section">
+          <div class="analysis-title">📋 Composition</div>
+          <div class="composition-card">
+            <div class="composition-item">
+              <div class="composition-label">Minuscules (a-z)</div>
+              <div class="composition-status">
+                <span class="status-check">✅</span>
+                <span class="status-text">8 utilisées</span>
+              </div>
+            </div>
+            <div class="composition-item">
+              <div class="composition-label">Majuscules (A-Z)</div>
+              <div class="composition-status">
+                <span class="status-check">✅</span>
+                <span class="status-text">1 utilisée</span>
+              </div>
+            </div>
+            <div class="composition-item">
+              <div class="composition-label">Chiffres (0-9)</div>
+              <div class="composition-status">
+                <span class="status-check">✅</span>
+                <span class="status-text">4 utilisés</span>
+              </div>
+            </div>
+            <div class="composition-item">
+              <div class="composition-label">Symboles (!@#$%)</div>
+              <div class="composition-status">
+                <span class="status-missing">❌</span>
+                <span class="status-text">Recommandé</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="analysis-section">
+          <div class="analysis-title">✅ Points Forts</div>
+          <div class="issues-good">
+            <div class="good-item">
+              <div class="good-icon">✅</div>
+              <div class="good-label">Longueur de 13 caractères</div>
+              <details>
+                <summary>En savoir plus</summary>
+                <div class="details-content">
+                  13 caractères est un bon début. La recommandation est 16+. Ajouter 3 caractères supplémentaires multiplierait la sécurité par ~6000x.
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #059669; border-radius: var(--radius-md); padding: 16px; margin-top: 20px; font-size: 12px; color: #065f46;">
+        <strong>✅ Ce mockup combine :</strong> Hiérarchie claire (critiques d'abord) + Composition visuelle + Explications expandables = Maximum de valeur pour l'utilisateur
+      </div>
+    </div>
+  </div>
+</body>
+</html>

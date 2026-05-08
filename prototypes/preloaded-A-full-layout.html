@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype A — Preloaded Full Layout</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+/* === OVERRIDE: tout visible dès le départ === */
+.results.is-empty .attacker-frame,
+.results.is-empty .secondary-panels,
+.results.is-empty .details-summary {
+  display: block !important;
+}
+.attacker-frame { display: block !important; }
+.results { opacity: 1 !important; pointer-events: auto !important; }
+.strength-bar-wrapper .bar-label { display: flex !important; }
+.live-details-visible[hidden] { display: grid !important; }
+.character-analysis-live-wrapper[hidden] { display: block !important; }
+
+/* === ÉTAT VIDE : styles "en attente" === */
+.big-duration.waiting {
+  font-size: clamp(1.6rem, 5vw, 2.2rem) !important;
+  color: var(--border-strong) !important;
+  font-weight: 700;
+}
+.big-date.waiting { color: var(--border-strong) !important; }
+.detail-value.waiting { color: var(--border-strong) !important; }
+.qp-badge.waiting {
+  background: var(--surface-elev) !important;
+  color: var(--text-muted) !important;
+  opacity: 0.6;
+}
+
+/* Heatmap placeholder */
+.heatmap-placeholder {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  min-height: 1.6rem;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+.heatmap-placeholder .dot {
+  width: 26px; height: 26px;
+  border-radius: 4px;
+  background: var(--surface-elev);
+  border: 1px solid var(--border);
+}
+
+/* Bandeau prototype */
+.proto-label {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: var(--accent); color: #fff;
+  text-align: center; font-size: 0.72rem; font-weight: 700;
+  padding: 0.3rem; z-index: 9999;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+body { padding-top: 1.8rem; }
+</style>
+</head>
+<body>
+
+<div class="proto-label">Prototype A — Preloaded Full Layout · Philosophie : tout est visible dès le départ</div>
+
+<header class="site-header">
+  <div class="header-left">
+    <a href="#" class="logo-link" aria-label="Time2Crack">
+      <span class="logo-text"><span class="logo-time">Time</span><span class="logo-2">2</span><span class="logo-crack">Crack</span></span>
+    </a>
+  </div>
+</header>
+
+<main id="main-content" role="main">
+  <section class="input-section">
+    <p class="subtitle">Et si un hacker s'en prenait à votre mot de passe ? Tapez-le pour voir combien de temps il tiendrait. Tout est calculé sur votre appareil — rien ne quitte votre navigateur.</p>
+
+    <div class="password-wrapper-row">
+      <div class="password-wrapper">
+        <input type="password" id="password-input" autocomplete="off" spellcheck="false" placeholder="Testez votre mot de passe" />
+        <button type="button" id="toggle-visibility" aria-label="Afficher">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <button type="button" id="reset-btn" class="reset-btn-inline" aria-label="Reset">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      </button>
+    </div>
+
+    <div class="controls-row">
+      <span class="hint" id="password-hint">
+        <span id="hint-text">🔒 <strong>100 % local</strong> — aucun mot de passe n'est transmis.</span>
+      </span>
+    </div>
+
+    <!-- Strength Bar -->
+    <div class="strength-bar-wrapper">
+      <div class="bar-label" id="bar-label">
+        <span class="strength-icon" id="strength-icon">—</span>
+        <span id="strength-label">En attente</span>
+        <span id="strength-bits" class="strength-bits"></span>
+      </div>
+      <div class="strength-bar-segments">
+        <div class="segment segment-critical" data-level="0"></div>
+        <div class="segment segment-danger" data-level="1"></div>
+        <div class="segment segment-warning" data-level="2"></div>
+        <div class="segment segment-success" data-level="3"></div>
+        <div class="segment segment-excellent" data-level="4"></div>
+        <div class="segment segment-exceptional" data-level="5"></div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results visible" id="results">
+      <div class="attacker-frame" id="attacker-frame">
+        <!-- Onglets -->
+        <div class="attacker-tabs" role="tablist">
+          <div class="attacker-tab-wrapper is-active">
+            <button class="attacker-tab is-active" role="tab" aria-selected="true" id="tab-experienced">Expérimenté</button>
+            <div class="attacker-tab-description">12× RTX 4090 GPUs</div>
+          </div>
+          <div class="attacker-tab-wrapper">
+            <button class="attacker-tab" role="tab" aria-selected="false" id="tab-professional">Professionnel</button>
+            <div class="attacker-tab-description">~100 GPUs</div>
+          </div>
+        </div>
+
+        <!-- Panneau Expérimenté -->
+        <div class="attacker-panel is-active" id="panel-experienced">
+          <div class="label" id="result-label-fast">Attaquant expérimenté · 12× RTX 4090</div>
+          <div class="big-duration waiting" id="crack-duration-fast">Temps de craquage</div>
+          <div class="big-date waiting" id="crack-date-fast"></div>
+          <p class="result-sentence" id="result-sentence-fast" style="color: var(--text-muted); opacity: 0.5;">Entrez un mot de passe pour voir le résultat.</p>
+        </div>
+
+        <!-- Quality + Pattern + HIBP Status Bar -->
+        <div class="quality-pattern-bar" id="quality-pattern-bar">
+          <div class="qp-row">
+            <p class="qp-row-label">Analyse</p>
+            <div class="qp-row-badges">
+              <div class="qp-badge-wrapper">
+                <div>
+                  <span class="qp-label"><span aria-hidden="true">🎲</span> Entropie</span>
+                  <p class="entropy-desc">Longueur + Variété + Imprévisibilité</p>
+                </div>
+                <span class="qp-badge waiting" id="quality-badge">—</span>
+              </div>
+              <div class="qp-badge-wrapper">
+                <div>
+                  <span class="qp-label"><span aria-hidden="true">📊</span> Structure</span>
+                  <p class="entropy-desc">L'arrangement des caractères est-il reconnaissable ?</p>
+                </div>
+                <span class="qp-badge waiting" id="pattern-badge">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="qp-row">
+            <p class="qp-row-label">Votre mot de passe a-t-il déjà été piraté ?</p>
+            <div class="qp-row-badges">
+              <div class="qp-badge-wrapper">
+                <span class="qp-label"><span aria-hidden="true">🔒</span> HIBP</span>
+                <span class="qp-badge waiting" id="hibp-status-badge">En attente</span>
+              </div>
+              <div class="qp-badge-wrapper qp-rockyou-wrapper" id="qp-rockyou-wrapper">
+                <div>
+                  <span class="qp-label"><span aria-hidden="true">💀</span> RockYou</span>
+                  <p class="entropy-desc" id="rockyou-hint">Cliquer pour vérifier · 17 MB à télécharger</p>
+                </div>
+                <span class="qp-badge" id="rockyou-status-badge" style="cursor:pointer; border: 1px dashed var(--text-muted); background: transparent; color: var(--text-muted);">Vérifier RockYou</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-summary">
+        <!-- Heatmap -->
+        <div class="character-analysis-live-wrapper" id="character-analysis-live-wrapper">
+          <div class="character-analysis-live" id="character-analysis-live">
+            <div class="heatmap-placeholder" id="heatmap-placeholder">
+              <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+              <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+              <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+              <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+          </div>
+          <div class="character-legend">
+            <span class="legend-item"><span class="char-badge char-strong">✔</span><span class="legend-label">Imprévisible</span></span>
+            <span class="legend-item"><span class="char-badge char-medium">◐</span><span class="legend-label">Modéré</span></span>
+            <span class="legend-item"><span class="char-badge char-weak">✘</span><span class="legend-label">Prévisible</span></span>
+          </div>
+        </div>
+
+        <!-- Stats grid -->
+        <div class="details-grid live-details-visible" id="live-details-visible" role="list">
+          <div class="detail-item" role="listitem">
+            <div class="detail-value waiting" id="detail-length-live">—</div>
+            <div class="detail-label">Caractères</div>
+          </div>
+          <div class="detail-item" role="listitem">
+            <div class="detail-value waiting" id="detail-charset-live">—</div>
+            <div class="detail-label">Taille du jeu</div>
+          </div>
+          <div class="detail-item" role="listitem">
+            <div class="detail-value waiting" id="detail-entropy-live">—</div>
+            <div class="detail-label">Bits d'entropie</div>
+          </div>
+          <div class="detail-item" role="listitem">
+            <div class="detail-value waiting" id="detail-combos-live">—</div>
+            <div class="detail-label">Combinaisons</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const input = document.getElementById('password-input');
+const toggle = document.getElementById('toggle-visibility');
+const resetBtn = document.getElementById('reset-btn');
+
+toggle.addEventListener('click', () => { input.type = input.type === 'password' ? 'text' : 'password'; });
+resetBtn.addEventListener('click', () => { input.value = ''; input.dispatchEvent(new Event('input')); input.focus(); });
+
+const levels = [
+  { max:20, icon:'💀', text:'Très faible', segs:1, dur:'Instantané', date:'Maintenant', color:'var(--critical)' },
+  { max:40, icon:'⚠️', text:'Faible', segs:2, dur:'2 minutes', date:'Maintenant', color:'var(--danger)' },
+  { max:60, icon:'◐', text:'Moyen', segs:3, dur:'3 jours', date:'Jeudi prochain', color:'var(--warning)' },
+  { max:80, icon:'✓', text:'Bon', segs:4, dur:'218 millions d\'années', date:'Après la mort du soleil', color:'var(--success)' },
+  { max:120, icon:'🔥', text:'Excellent', segs:5, dur:'10¹⁸ années', date:'Jamais', color:'var(--excellent)' },
+  { max:Infinity, icon:'✨', text:'Exceptionnel', segs:6, dur:'10⁴² années', date:'Jamais', color:'var(--exceptional)' },
+];
+const badgeColors = ['var(--critical)','var(--danger)','var(--warning)','var(--success)','var(--excellent)','var(--exceptional)'];
+
+function charClass(c, i, pw) {
+  if (/[!@#$%^&*()\-_+=\[\]{}|\\;:'",.<>?/`~]/.test(c)) return 'char-strong';
+  if (/[A-Z]/.test(c)) return i === 0 ? 'char-weak' : 'char-strong';
+  if (/[0-9]/.test(c)) return (i < 3 || i === pw.length - 1) ? 'char-weak' : 'char-medium';
+  return 'char-medium';
+}
+
+input.addEventListener('input', () => {
+  const rawPw = input.value;
+  const pw = rawPw.length ? rawPw : 'DemoPassphrase2026!';
+  const n = pw.length;
+  let cs = 0;
+  if (/[a-z]/.test(pw)) cs += 26;
+  if (/[A-Z]/.test(pw)) cs += 26;
+  if (/[0-9]/.test(pw)) cs += 10;
+  if (/[^a-zA-Z0-9]/.test(pw)) cs += 33;
+  const ent = n > 0 ? Math.round(n * Math.log2(Math.max(cs, 2))) : 0;
+  const combos = n > 0 ? Math.pow(cs || 2, n) : 0;
+  const lvl = levels.find(l => ent < l.max) || levels[5];
+  const li = levels.indexOf(lvl);
+
+  // Strength bar
+  document.querySelectorAll('.segment').forEach((seg, i) => { seg.classList.toggle('active', i < lvl.segs); });
+
+  // Bar label
+  document.getElementById('strength-icon').textContent = lvl.icon;
+  document.getElementById('strength-label').textContent = lvl.text;
+  document.getElementById('strength-bits').textContent = '(' + ent + ' bits)';
+
+  // Crack time
+  const durEl = document.getElementById('crack-duration-fast');
+  const dateEl = document.getElementById('crack-date-fast');
+  const sentEl = document.getElementById('result-sentence-fast');
+  durEl.textContent = lvl.dur; durEl.className = 'big-duration'; durEl.style.color = lvl.color;
+  dateEl.textContent = lvl.date; dateEl.className = 'big-date';
+  sentEl.textContent = 'Déchiffré instantanément via 🧬 Markov (probabiliste).';
+  sentEl.style.color = ''; sentEl.style.opacity = '';
+
+  // Heatmap
+  const hm = document.getElementById('character-analysis-live');
+  hm.innerHTML = [...pw].map((c, i) => {
+    const cls = charClass(c, i, pw);
+    const sym = cls === 'char-strong' ? '✔' : cls === 'char-medium' ? '◐' : '✘';
+    const display = input.type === 'password' ? sym : c;
+    return '<span class="char-badge ' + cls + '">' + display + '</span>';
+  }).join('');
+
+  // Stats
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    el.textContent = val;
+    el.className = 'detail-value';
+  };
+  setVal('detail-length-live', n);
+  setVal('detail-charset-live', cs || '—');
+  setVal('detail-entropy-live', ent);
+  let cStr = '—';
+  if (combos < 1e6) cStr = Math.round(combos).toLocaleString('fr-FR');
+  else if (combos < 1e9) cStr = (combos / 1e6).toFixed(1) + ' millions';
+  else if (combos < 1e12) cStr = (combos / 1e9).toFixed(1) + ' milliards';
+  else cStr = combos.toExponential(1);
+  setVal('detail-combos-live', cStr);
+
+  // Badges
+  const qb = document.getElementById('quality-badge');
+  const pb = document.getElementById('pattern-badge');
+  const hb = document.getElementById('hibp-status-badge');
+  qb.textContent = lvl.text; qb.className = 'qp-badge'; qb.style.background = badgeColors[li]; qb.style.color = '#fff';
+  pb.textContent = ent < 40 ? 'Analyse : Trop court (< 8)' : ent < 80 ? 'Reconnaissable' : 'Aléatoire';
+  pb.className = 'qp-badge'; pb.style.background = ent < 40 ? 'var(--critical)' : ent < 80 ? 'var(--warning)' : 'var(--success)'; pb.style.color = '#fff';
+  hb.textContent = '⏳ Vérification...'; hb.className = 'qp-badge'; hb.style.background = 'var(--warning)'; hb.style.color = '#fff';
+  setTimeout(() => {
+    if (input.value === rawPw) {
+      const leaked = n < 8;
+      hb.textContent = leaked ? '💀 Trouvé - votre mot de passe est dans la base HIBP' : '✓ Non divulgué';
+      hb.style.background = leaked ? 'var(--critical)' : 'var(--success)';
+    }
+  }, 800);
+});
+
+input.dispatchEvent(new Event('input'));
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "profile": "budget",
+  "model_profiles": {
+    "quality": {
+      "model": "claude-sonnet-4-20250514",
+      "description": "Highest quality results with Sonnet 4"
+    },
+    "balanced": {
+      "model": "claude-sonnet-3-20241022", 
+      "description": "Good quality with Sonnet 3.5"
+    },
+    "budget": {
+      "model": "claude-haiku-3-20241022",
+      "description": "Fast and cost-effective with Haiku 3.5"
+    }
+  }
+}

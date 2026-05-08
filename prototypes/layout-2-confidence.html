@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout 2 : Boucle de Confiance — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-muted: #6b7280;
+      --accent: #3b82f6;
+      --border: #e5e5e5;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --radius: 16px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* Container for the radial design */
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    /* Radial gradient background for depth */
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, rgba(248, 250, 252, 0.8) 0%, rgba(243, 244, 246, 0.9) 100%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Main circular visualization */
+    .confidence-circle {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--surface);
+      border-radius: 50%;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    /* Password display at center */
+    .password-display {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+    }
+
+    .password-value {
+      font-family: 'SF Mono', 'Monaco', 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      min-width: 120px;
+      display: inline-block;
+    }
+
+    .password-placeholder {
+      font-family: 'SF Mono', 'Monaco', 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      min-width: 120px;
+      display: inline-block;
+    }
+
+    /* Strength ring (inner) */
+    .strength-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 70%;
+      height: 70%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: conic-gradient(
+        var(--success) 0%,
+        var(--success) var(--strength-percent, 0%),
+        var(--border) var(--strength-percent, 0%),
+        var(--border) 100%
+      );
+      transition: background 0.3s ease;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Hash algorithm ring (middle) */
+    .hash-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 85%;
+      height: 85%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: var(--surface);
+      z-index: 4;
+    }
+
+    .hash-segments {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      clip: rect(0, 50%, 100%, 0);
+    }
+
+    .hash-segment {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      background: var(--border);
+      transform-origin: 100% 100%;
+      transform: rotate(var(--rotation, 0deg));
+    }
+
+    .hash-segment:nth-child(1) { --rotation: 0deg; }
+    .hash-segment:nth-child(2) { --rotation: 60deg; }
+    .hash-segment:nth-child(3) { --rotation: 120deg; }
+    .hash-segment:nth-child(4) { --rotation: 180deg; }
+    .hash-segment:nth-child(5) { --rotation: 240deg; }
+    .hash-segment:nth-child(6) { --rotation: 300deg; }
+
+    .hash-segment::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--surface);
+      border-radius: 50% 0 0 50%;
+      transform: translateX(-50%);
+    }
+
+    .hash-label {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      background: var(--border);
+      clip: rect(0, 50%, 100%, 0);
+      transform-origin: 100% 100%;
+      transform: rotate(var(--rotation, 0deg));
+    }
+
+    .hash-label span {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%) rotate(calc(-1 * var(--rotation, 0deg)));
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Attack type ring (outer) */
+    .attack-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 95%;
+      height: 95%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: var(--surface);
+      z-index: 3;
+    }
+
+    .attack-icons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    .attack-icon {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      background: var(--border);
+      transform-origin: 100% 100%;
+      transform: rotate(var(--rotation, 0deg));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .attack-icon::before {
+      content: '';
+      position: absolute;
+      width: 70%;
+      height: 70%;
+      background: var(--surface);
+      border-radius: 50%;
+    }
+
+    .attack-icon:nth-child(1) { --rotation: 0deg; }
+    .attack-icon:nth-child(2) { --rotation: 36deg; }
+    .attack-icon:nth-child(3) { --rotation: 72deg; }
+    .attack-icon:nth-child(4) { --rotation: 108deg; }
+    .attack-icon:nth-child(5) { --rotation: 144deg; }
+    .attack-icon:nth-child(6) { --rotation: 180deg; }
+    .attack-icon:nth-child(7) { --rotation: 216deg; }
+    .attack-icon:nth-child(8) { --rotation: 252deg; }
+    .attack-icon:nth-child(9) { --rotation: 288deg; }
+    .attack-icon:nth-child(10) { --rotation: 324deg; }
+
+    .attack-icon:hover {
+      background: var(--accent);
+      cursor: help;
+    }
+
+    .attack-icon:hover::before {
+      background: var(--surface);
+    }
+
+    /* Center info */
+    .center-info {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 15;
+    }
+
+    .center-time {
+      font-family: 'SF Mono', 'Monaco', 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .center-method {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Language selector (top-left) */
+    .language-selector {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 4px;
+      z-index: 20;
+    }
+
+    .language-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .language-btn.active {
+      background: var(--accent);
+      color: var(--surface);
+      border-color: var(--accent);
+    }
+
+    /* Reset button (bottom-right) */
+    .reset-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 20;
+    }
+
+    .reset-btn:hover {
+      background: var(--border);
+    }
+
+    /* Version (bottom-left) */
+    .version {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+      z-index: 20;
+    }
+
+    /* Footer with Liberapay */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      z-index: 30;
+    }
+
+    /* Tooltip for attack icons */
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--surface);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 400px) {
+      .container {
+        max-width: 100%;
+      }
+      
+      .password-value,
+      .password-placeholder {
+        font-size: 20px;
+      }
+      
+      .center-time {
+        font-size: 16px;
+      }
+      
+      .language-selector {
+        top: 12px;
+        left: 12px;
+      }
+      
+      .language-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+      }
+      
+      .reset-btn {
+        bottom: 12px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
+      }
+      
+      .version {
+        bottom: 12px;
+        left: 12px;
+        font-size: 10px;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .confidence-circle,
+    .language-selector,
+    .reset-btn,
+    .version,
+    .footer {
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .confidence-circle { animation-delay: 0.1s; }
+    .language-selector { animation-delay: 0.2s; }
+    .reset-btn { animation-delay: 0.3s; }
+    .version { animation-delay: 0.4s; }
+    .footer { animation-delay: 0.5s; }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  
+  <div class="container">
+    <div class="confidence-circle">
+      <!-- Strength ring (inner) -->
+      <div class="strength-ring" id="strength-ring"></div>
+      
+      <!-- Hash algorithm ring (middle) -->
+      <div class="hash-ring">
+        <div class="hash-segments">
+          <div class="hash-segment"></div>
+          <div class="hash-segment"></div>
+          <div class="hash-segment"></div>
+          <div class="hash-segment"></div>
+          <div class="hash-segment"></div>
+          <div class="hash-segment"></div>
+        </div>
+        <div class="hash-label">
+          <span>MD5</span>
+          <span>SHA-1</span>
+          <span>SHA-256</span>
+          <span>NTLM</span>
+          <span>bcrypt</span>
+          <span>Argon2id</span>
+        </div>
+      </div>
+      
+      <!-- Attack type ring (outer) -->
+      <div class="attack-ring">
+        <div class="attack-icons">
+          <div class="attack-icon" title="Brute Force">🔓</div>
+          <div class="attack-icon" title="Dictionary">📚</div>
+          <div class="attack-icon" title="Hybrid">🔄</div>
+          <div class="attack-icon" title="Mask">🎭</div>
+          <div class="attack-icon" title="Rainbow Table">🌈</div>
+          <div class="attack-icon" title="Credential Stuffing">💥</div>
+          <div class="attack-icon" title="Password Spraying">💧</div>
+          <div class="attack-icon" title="Markov">📊</div>
+          <div class="attack-icon" title="PCFG">🌳</div>
+          <div class="attack-icon" title="Combinator">🔗</div>
+        </div>
+      </div>
+      
+      <!-- Password display -->
+      <div class="password-display">
+        <div class="password-value" id="password-value">••••••</div>
+        <div class="password-placeholder" id="password-placeholder">Mot de passe</div>
+      </div>
+      
+      <!-- Center info -->
+      <div class="center-info">
+        <div class="center-time" id="center-time">—</div>
+        <div class="center-method" id="center-method">—</div>
+      </div>
+    </div>
+    
+    <!-- Language selector -->
+    <div class="language-selector">
+      <button class="language-btn active" data-lang="fr">FR</button>
+      <button class="language-btn" data-lang="en">EN</button>
+      <button class="language-btn" data-lang="es">ES</button>
+      <button class="language-btn" data-lang="de">DE</button>
+    </div>
+    
+    <!-- Reset button -->
+    <button class="reset-btn" id="reset-btn" title="Réinitialiser">⟳</button>
+    
+    <!-- Version -->
+    <div class="version">v1.0</div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      <p>Calcul 100% local • Aucune donnée transmise</p>
+      <div>
+        <script src="https://liberapay.com/BaudouinVH/widgets/button.js"></script>
+        <noscript><a href="https://liberapay.com/BaudouinVH/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+      </div>
+    </div>
+  </div>
+  
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    const passwordValue = document.querySelector('#password-value');
+    const passwordPlaceholder = document.querySelector('#password-placeholder');
+    const strengthRing = document.querySelector('#strength-ring');
+    const centerTime = document.querySelector('#center-time');
+    const centerMethod = document.querySelector('#center-method');
+    const resetBtn = document.querySelector('#reset-btn');
+    const tooltip = document.querySelector('#tooltip');
+    const languageBtns = document.querySelectorAll('.language-btn');
+    
+    // Attack method data (simplified times for demo)
+    const attackData = [
+      { name: 'Brute Force', times: { md5: '3 min', sha1: '8 min', sha256: '18 min', ntlm: '3 min', bcrypt: '15 ans', argon2id: '230 ans' } },
+      { name: 'Dictionary', times: { md5: '2 sec', sha1: '5 sec', sha256: '12 sec', ntlm: '2 sec', bcrypt: '3 ans', argon2id: '45 ans' } },
+      { name: 'Hybrid', times: { md5: '12 sec', sha1: '30 sec', sha256: '1.2 min', ntlm: '10 sec', bcrypt: '8 y', argon2id: '120 y' } },
+      { name: 'Mask', times: { md5: '45 sec', sha1: '2 min', sha256: '4 min', ntlm: '40 sec', bcrypt: '12 y', argon2id: '180 y' } },
+      { name: 'Rainbow Table', times: { md5: 'instant', sha1: 'instant', sha256: 'N/A', ntlm: 'instant', bcrypt: 'N/A', argon2id: 'N/A' } },
+      { name: 'Credential Stuffing', times: { md5: 'instant', sha1: 'instant', sha256: 'instant', ntlm: 'instant', bcrypt: 'instant', argon2id: 'instant' } },
+      { name: 'Password Spraying', times: { md5: 'instant', sha1: 'instant', sha256: 'instant', ntlm: 'instant', bcrypt: 'instant', argon2id: 'instant' } },
+      { name: 'Markov', times: { md5: '8 sec', sha1: '20 sec', sha256: '45 sec', ntlm: '7 sec', bcrypt: '5 y', argon2id: '75 y' } },
+      { name: 'PCFG', times: { md5: '15 sec', sha1: '40 sec', sha256: '1.5 min', ntlm: '12 sec', bcrypt: '10 y', argon2id: '150 y' } },
+      { name: 'Combinator', times: { md5: '20 sec', sha1: '50 sec', sha256: '1.8 min', ntlm: '18 sec', bcrypt: '15 y', argon2id: '200 y' } }
+    ];
+    
+    // Hash algorithm order for coloring
+    const hashAlgorithms = ['md5', 'sha1', 'sha256', 'ntlm', 'bcrypt', 'argon2id'];
+    const hashColors = {
+      md5: '#ef4444',      // danger
+      sha1: '#f59e0b',     // warning
+      sha256: '#f59e0b',   // warning
+      ntlm: '#ef4444',     // danger
+      bcrypt: '#10b981',   // success
+      argon2id: '#10b981'  // success
+    };
+    
+    let currentPassword = '';
+    let isVisible = false;
+    
+    // Initialize
+    updateDisplay('');
+    
+    // Event listeners
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('touchmove', handleMouseMove, { passive: true });
+    resetBtn.addEventListener('click', resetPassword);
+    
+    languageBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        languageBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // In real app, would change language here
+      });
+    });
+    
+    function handleMouseMove(e) {
+      // Show tooltip near cursor
+      tooltip.style.left = (e.pageX + 10) + 'px';
+      tooltip.style.top = (e.pageY + 10) + 'px';
+      tooltip.style.opacity = isVisible ? '1' : '0';
+    }
+    
+    function updateDisplay(password) {
+      currentPassword = password;
+      isVisible = password.length > 0;
+      
+      // Update password display
+      if (password.length > 0) {
+        const masked = '•'.repeat(password.length);
+        passwordValue.textContent = masked;
+        passwordPlaceholder.style.display = 'none';
+      } else {
+        passwordValue.textContent = '••••••';
+        passwordPlaceholder.style.display = 'block';
+      }
+      
+      // Calculate entropy (simplified)
+      const entropy = calculateEntropy(password);
+      const strengthPercent = Math.min((entropy / 64) * 100, 100); // Cap at 64 bits for visualization
+      strengthRing.style.setProperty('--strength-percent', strengthPercent + '%');
+      
+      // Update strength ring color based on entropy
+      let strengthColor = var(--border);
+      if (entropy < 28) strengthColor = var(--danger);
+      else if (entropy < 36) strengthColor = var(--warning);
+      else strengthColor = var(--success);
+      strengthRing.style.background = `conic-gradient(
+        ${strengthColor} 0%,
+        ${strengthColor} ${strengthPercent}%,
+        var(--border) ${strengthPercent}%,
+        var(--border) 100%
+      )`;
+      
+      // Update center info (fastest crack time)
+      const fastest = getFastestCrackTime(password);
+      centerTime.textContent = fastest.time;
+      centerMethod.textContent = fastest.method;
+      
+      // Color center time based on danger level
+      if (fastest.danger) {
+        centerTime.style.color = var(--danger);
+      } else if (fastest.warning) {
+        centerTime.style.color = var(--warning);
+      } else {
+        centerTime.style.color = var(--success);
+      }
+      
+      // Update hash algorithm segment colors based on fastest time for each
+      updateHashSegments(password);
+      
+      // Show/hide tooltip
+      tooltip.style.opacity = isVisible && password.length > 0 ? '0' : '0'; // Will be set on mousemove
+    }
+    
+    function calculateEntropy(password) {
+      if (!password.length) return 0;
+      
+      let charsetSize = 0;
+      const hasLower = /[a-z]/.test(password);
+      const hasUpper = /[A-Z]/.test(password);
+      const hasDigit = /[0-9]/.test(password);
+      const hasSpecial = /[^A-Za-z0-9]/.test(password);
+      
+      if (hasLower) charsetSize += 26;
+      if (hasUpper) charsetSize += 26;
+      if (hasDigit) charsetSize += 10;
+      if (hasSpecial) charsetSize += 32; // common special chars
+      
+      if (charsetSize === 0) return 0;
+      return password.length * Math.log2(charsetSize);
+    }
+    
+    function getFastestCrackTime(password) {
+      // In real app, this would come from the analysis engine
+      // For demo, we'll return a simulated fastest time
+      const entropy = calculateEntropy(password);
+      
+      // Simplified mapping for demo
+      if (entropy < 20) {
+        return { time: '2 sec', method: 'Dictionary • MD5', danger: true, warning: false };
+      } else if (entropy < 35) {
+        return { time: '45 sec', method: 'Hybrid • MD5', danger: true, warning: false };
+      } else if (entropy < 50) {
+        return { time: '2 min', method: 'Mask • SHA-256', danger: false, warning: true };
+      } else {
+        return { time: '15 ans', method: 'Brute force • bcrypt', danger: false, warning: false, success: true };
+      }
+    }
+    
+    function updateHashSegments(password) {
+      // In a real implementation, this would update each segment's color
+      // based on the crack time for that specific algorithm
+      // For demo, we'll just set them all to a neutral color
+      const segments = document.querySelectorAll('.hash-segment');
+      segments.forEach((segment, index) => {
+        // Each segment would have its own color based on algorithm
+        // This is simplified for demo
+      });
+    }
+    
+    function resetPassword() {
+      updateDisplay('');
+      // Also clear any input fields if they existed
+    }
+    
+    // For demo purposes, simulate typing
+    // In real app, this would come from an actual input field
+    /* setTimeout(() => {
+      updateDisplay('password');
+    }, 1000);
+    
+    setTimeout(() => {
+      updateDisplay('Password123');
+    }, 3000);
+    
+    setTimeout(() => {
+      updateDisplay('Tr0ub4dor&3');
+    }, 5000); */
+  </script>
+</body>
+</html>

@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time2Crack Design System — Brainstorming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "IBM Plex Sans", sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #f1f5f9;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            border-left: 4px solid #3b82f6;
+            padding-left: 1.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+        }
+
+        .section p {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .option {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            border-color: #3b82f6;
+            background: #0f172a;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .option h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #60a5fa;
+        }
+
+        .option p {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .option-visual {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .badge-p0 {
+            background: #dc2626;
+            color: #fef2f2;
+        }
+
+        .badge-p1 {
+            background: #f59e0b;
+            color: #fffbeb;
+        }
+
+        .badge-p2 {
+            background: #0ea5e9;
+            color: #f0f9ff;
+        }
+
+        /* Hero Element Styles */
+        .hero-option-1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-option-2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-top: 4px solid #10b981;
+            padding-top: 0.5rem;
+        }
+
+        .hero-option-3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ef4444;
+            border-left: 5px solid #ef4444;
+            padding-left: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-option-4 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #fbbf24 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .hero-option-4::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #fbbf24 0%, #10b981 100%);
+            border-radius: 2px;
+        }
+
+        /* Color Palette Options */
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .color-swatch {
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .palette-warm {
+            background: linear-gradient(135deg, #dc2626 0%, #f97316 50%, #fbbf24 100%);
+        }
+
+        .palette-cool {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #10b981 100%);
+        }
+
+        .palette-trust {
+            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 50%, #06b6d4 100%);
+        }
+
+        .palette-modern {
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 50%, #0ea5e9 100%);
+        }
+
+        /* Table Hierarchy */
+        .table-demo {
+            width: 100%;
+            margin-top: 1rem;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .table-demo td {
+            padding: 0.75rem;
+            border: 1px solid #334155;
+        }
+
+        .table-demo td:first-child {
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        .table-intensity-red {
+            background: rgba(220, 38, 38, 0.3);
+            color: #fca5a5;
+        }
+
+        .table-intensity-orange {
+            background: rgba(249, 115, 22, 0.3);
+            color: #fdba74;
+        }
+
+        .table-intensity-yellow {
+            background: rgba(251, 191, 36, 0.3);
+            color: #fde047;
+        }
+
+        .table-intensity-green {
+            background: rgba(16, 185, 129, 0.3);
+            color: #86efac;
+        }
+
+        .table-best {
+            background: rgba(220, 38, 38, 0.5) !important;
+            font-weight: 600;
+        }
+
+        .table-normal {
+            opacity: 0.6;
+        }
+
+        /* Typography Hierarchy */
+        .typography-demo {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .typography-demo .heading-1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 1rem;
+        }
+
+        .typography-demo .heading-2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+
+        .typography-demo .body-text {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+        }
+
+        .typography-demo .caption-text {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        /* HIBP Strategy */
+        .hibp-demo {
+            margin-top: 1.5rem;
+        }
+
+        .alert-strip {
+            background: #7f1d1d;
+            border-left: 4px solid #dc2626;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            color: #fecaca;
+        }
+
+        .alert-strip strong {
+            color: #fca5a5;
+        }
+
+        .badge-hibp {
+            display: inline-block;
+            background: #dc2626;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Trust Indicators */
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .trust-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .trust-card h4 {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            margin-bottom: 0.25rem;
+        }
+
+        .trust-card p {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-option-1,
+            .hero-option-2,
+            .hero-option-3,
+            .hero-option-4 {
+                font-size: 1.75rem;
+            }
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs button {
+            background: #1e293b;
+            border: 2px solid #334155;
+            color: #cbd5e1;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs button.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .nav-tabs button:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Time2Crack Design System</h1>
+        <p class="subtitle">Vision unifiée : Honnêteté • Sécurité • Clarté — Le temps de crack est la vedette</p>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="active" onclick="showTab('hero')">Élément Vedette</button>
+            <button onclick="showTab('palette')">Palettes Couleur</button>
+            <button onclick="showTab('table')">Hiérarchie Tableau</button>
+            <button onclick="showTab('hibp')">HIBP Strategy</button>
+            <button onclick="showTab('trust')">Indicateurs Confiance</button>
+            <button onclick="showTab('typography')">Typographie</button>
+        </div>
+
+        <!-- TAB 1: Hero Element -->
+        <div id="hero" class="tab-content active">
+            <div class="section">
+                <h2>1️⃣ Élément Vedette : Le Temps de Crack</h2>
+                <p><strong>Insight:</strong> Le temps calculé EST le produit. Il doit être immédiatement lisible, dominant, et mémorable.</p>
+
+                <div class="options-grid">
+                    <!-- Option 1 -->
+                    <div class="option">
+                        <h3>Option 1: Gradient Warm</h3>
+                        <p>Gradient orange → or, grande police, confiance & énergie</p>
+                        <div class="option-visual">
+                            <div class="hero-option-1">47 ans</div>
+                        </div>
+                        <p><strong>Pros:</strong> Chaud, avançant, captivant</p>
+                        <p><strong>Cons:</strong> Peut sembler optimiste (moins "sérieux")</p>
+                        <span class="badge badge-p1">P1</span>
+                    </div>
+
+                    <!-- Option 2 -->
+                    <div class="option">
+                        <h3>Option 2: Gradient Cool + Border</h3>
+                        <p>Gradient bleu → cyan, bordure top colorée selon la sévérité</p>
+                        <div class="option-visual">
+                            <div class="hero-option-2">47 ans</div>
+                        </div>
+                        <p><strong>Pros:</strong> Professional, sécurisé, adaptable (rouge/vert/orange)</p>
+                        <p><strong>Cons:</strong> Moins "chaleureux" émotionnellement</p>
+                        <span class="badge badge-p0">P0 REC.</span>
+                    </div>
+
+                    <!-- Option 3 -->
+                    <div class="option">
+                        <h3>Option 3: Red Bold Left Border</h3>
+                        <p>Très direct, épuré, ressemble à un avertissement</p>
+                        <div class="option-visual">
+                            <div class="hero-option-3">47 ans</div>
+                        </div>
+                        <p><strong>Pros:</strong> Intense, sérieux, immédiat</p>
+                        <p><strong>Cons:</strong> Trop agressif? Pas assez d'énergie positive</p>
+                        <span class="badge badge-p2">P2</span>
+                    </div>
+
+                    <!-- Option 4 -->
+                    <div class="option">
+                        <h3>Option 4: Gradient + Underline</h3>
+                        <p>Warm-to-cool gradient avec underline solidaire</p>
+                        <div class="option-visual">
+                            <div class="hero-option-4">47 ans</div>
+                        </div>
+                        <p><strong>Pros:</strong> Équilibre chaud/froid, fond/premier plan</p>
+                        <p><strong>Cons:</strong> Complexe, peut sembler "too much"</p>
+                        <span class="badge badge-p2">P2</span>
+                    </div>
+                </div>
+
+                <p style="margin-top: 2rem; color: #60a5fa;"><strong>💡 Quelle vision?</strong> Option 2 balance professionnalisme (bleu froid) avec sévérité adaptable (bordure), mais Option 1 apporte plus d'humanité &amp; confiance. Ton choix dépend si tu veux être "scientist" ou "human-centered".</p>
+            </div>
+        </div>
+
+        <!-- TAB 2: Palettes Couleur -->
+        <div id="palette" class="tab-content">
+            <div class="section">
+                <h2>2️⃣ Stratégie Couleur : Trust + Security</h2>
+                <p><strong>Défi:</strong> Communiquer sécurité sans être "scary", protection sans être paternaliste.</p>
+
+                <div class="palette-grid">
+                    <div class="color-swatch palette-warm">
+                        <strong>Warm Trust</strong><br>
+                        Optimisme & Confiance<br>
+                        <small>(Utilisé pour: hero, CTA positifs)</small>
+                    </div>
+                    <div class="color-swatch palette-cool">
+                        <strong>Cool Protection</strong><br>
+                        Sérieux & Sécurité<br>
+                        <small>(Utilisé pour: bordures, accents)</small>
+                    </div>
+                    <div class="color-swatch palette-trust">
+                        <strong>Trust Blue</strong><br>
+                        Tech & Honnêteté<br>
+                        <small>(Utilisé pour: texte principal, UI)</small>
+                    </div>
+                    <div class="color-swatch palette-modern">
+                        <strong>Modern Tech</strong><br>
+                        Innovation & Sérénité<br>
+                        <small>(Utilisé pour: highlights)</small>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; color: #60a5fa;">Hiérarchie Sémantique</h3>
+                <ul style="margin-top: 1rem; color: #cbd5e1; list-style-position: inside;">
+                    <li><span style="color: #10b981;">🟢 Vert</span> = Fort, sûr, pas de problème</li>
+                    <li><span style="color: #fbbf24;">🟡 Or</span> = Modéré, attention requise</li>
+                    <li><span style="color: #f97316;">🟠 Orange</span> = Faible, action recommandée</li>
+                    <li><span style="color: #dc2626;">🔴 Rouge</span> = Critique, danger immédiat (HIBP, etc.)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAB 3: Table Hierarchy -->
+        <div id="table" class="tab-content">
+            <div class="section">
+                <h2>3️⃣ Hiérarchie du Tableau : 60 Lignes → Scannable</h2>
+                <p><strong>Défi:</strong> 10 attacks × 6 algorithms = chaos. Comment faire que c'est lisible sur mobile?</p>
+
+                <h3 style="margin-top: 1.5rem; color: #60a5fa;">Option A: Colorisation par Intensité</h3>
+                <table class="table-demo">
+                    <tr>
+                        <td>Attack</td>
+                        <td>MD5</td>
+                        <td>SHA-1</td>
+                        <td>bcrypt</td>
+                    </tr>
+                    <tr>
+                        <td>Brute Force</td>
+                        <td class="table-intensity-red">Instant</td>
+                        <td class="table-intensity-red">Instant</td>
+                        <td class="table-intensity-green">1000 ans</td>
+                    </tr>
+                    <tr>
+                        <td>Dictionary</td>
+                        <td class="table-intensity-orange">5 min</td>
+                        <td class="table-intensity-yellow">2h</td>
+                        <td class="table-intensity-green">10 ans</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; color: #94a3b8; font-size: 0.9rem;">✅ Pro: À coup d'œil tu vois la sévérité. ✗ Con: Peut être trop d'info visuelle.</p>
+
+                <h3 style="margin-top: 1.5rem; color: #60a5fa;">Option C: Highlight Best Attack + Fade</h3>
+                <table class="table-demo">
+                    <tr>
+                        <td>Attack</td>
+                        <td>MD5</td>
+                        <td>SHA-1</td>
+                        <td>bcrypt</td>
+                    </tr>
+                    <tr class="table-best">
+                        <td>⚡ Brute Force</td>
+                        <td>Instant</td>
+                        <td>Instant</td>
+                        <td>1000 ans</td>
+                    </tr>
+                    <tr class="table-normal">
+                        <td>Dictionary</td>
+                        <td>5 min</td>
+                        <td>2h</td>
+                        <td>10 ans</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; color: #94a3b8; font-size: 0.9rem;">✅ Pro: Focus sur "la vraie menace", moins de bruit. ✗ Con: Peut cacher des infos pertinentes.</p>
+
+                <h3 style="margin-top: 1.5rem; color: #60a5fa;">✅ Recommandation: A + C Combinés</h3>
+                <table class="table-demo">
+                    <tr>
+                        <td>Attack</td>
+                        <td>MD5</td>
+                        <td>SHA-1</td>
+                        <td>bcrypt</td>
+                    </tr>
+                    <tr class="table-best">
+                        <td>⚡ Brute Force</td>
+                        <td class="table-intensity-red">Instant</td>
+                        <td class="table-intensity-red">Instant</td>
+                        <td class="table-intensity-green">1000 ans</td>
+                    </tr>
+                    <tr class="table-normal">
+                        <td>Dictionary</td>
+                        <td class="table-intensity-orange">5 min</td>
+                        <td class="table-intensity-yellow">2h</td>
+                        <td class="table-intensity-green">10 ans</td>
+                    </tr>
+                </table>
+                <p style="margin-top: 1rem; color: #94a3b8; font-size: 0.9rem;"><strong style="color: #60a5fa;">Double signal:</strong> Couleur (intensité) + Highlight (meilleure attaque). Utilisateur comprend instantanément la menace réelle.</p>
+            </div>
+        </div>
+
+        <!-- TAB 4: HIBP Strategy -->
+        <div id="hibp" class="tab-content">
+            <div class="section">
+                <h2>4️⃣ HIBP Display : Avertissement Critique</h2>
+                <p><strong>Message clé:</strong> "Ce mot de passe a fuité" doit être impossible à ignorer, mais pas agressif.</p>
+
+                <h3 style="margin-top: 1.5rem; color: #60a5fa;">Option 1: Alert Strip Seul (minimaliste)</h3>
+                <div class="hibp-demo">
+                    <div class="alert-strip">
+                        ⚠️ <strong>Ce mot de passe a déjà fuité.</strong> Trouvé dans plus de 5 millions de fuites connues. Changez-le immédiatement.
+                    </div>
+                </div>
+                <p style="color: #94a3b8; font-size: 0.9rem;">✅ Compact, direct, mobile-friendly. ✗ Peut être oublié si l'utilisateur scroll.</p>
+
+                <h3 style="margin-top: 1.5rem; color: #60a5fa;">Option 2: Badge + Message (équilibre)</h3>
+                <div class="hibp-demo">
+                    <div class="result-card">
+                        <div style="margin-bottom: 1rem;">
+                            <span class="badge-hibp">🚨 FUITÉ</span>
+                            <span style="color: #fca5a5;">Trouvé dans 5M+ fuites</span>
+                        </div>
+                        <p style="color: #cbd5e1; font-size: 0.9rem;">Ce mot de passe a été compromis et ne doit pas être utilisé. Changez-le partout où vous l'avez utilisé.</p>
+                    </div>
+                </div>
+                <p style="color: #94a3b8; font-size: 0.9rem;">✅ Visible dans résultats, actionnable. ✗ Peut se perdre si beaucoup de contenu.</p>
+
+                <h3 style="margin-top: 1.5rem; color: #60a5fa;">✅ Recommandation: Stratégie 2-Level</h3>
+                <p style="color: #cbd5e1;">1. <strong>Alert Strip en haut du formulaire</strong> (après input) = avertissement immédiat</p>
+                <div class="hibp-demo">
+                    <div class="alert-strip">
+                        ⚠️ <strong>Mot de passe fuité détecté.</strong> Ce mot a déjà été compromis. Utilisez un autre mot de passe.
+                    </div>
+                </div>
+
+                <p style="color: #cbd5e1; margin-top: 1.5rem;">2. <strong>Badge + Message dans les résultats</strong> = réaffirmation</p>
+                <div class="hibp-demo">
+                    <div class="result-card">
+                        <div style="margin-bottom: 1rem;">
+                            <span class="badge-hibp">🚨 COMPROMIS</span>
+                            <span style="color: #fca5a5;">Apparaît dans 5+ millions de fuites</span>
+                        </div>
+                        <p style="color: #cbd5e1; font-size: 0.9rem;"><strong>Action immédiate:</strong> Changez ce mot de passe partout où vous l'avez utilisé. Consultez <a href="#" style="color: #60a5fa;">Have I Been Pwned</a> pour voir où il a fuité.</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: 1.5rem; color: #60a5fa;"><strong>Logique:</strong> Double confirmation. Utilisateur ne peut pas ignorer. Fonctionne sur mobile. Cohérent avec design system.</p>
+            </div>
+        </div>
+
+        <!-- TAB 5: Trust Indicators -->
+        <div id="trust" class="tab-content">
+            <div class="section">
+                <h2>5️⃣ Indicateurs de Confiance : Honnêteté Visible</h2>
+                <p><strong>Défi:</strong> Comment montrer qu'on est honnête, transparent, sécurisé? Les users lambda ne lisent pas le petit texte.</p>
+
+                <div class="trust-grid">
+                    <div class="trust-card">
+                        <div class="trust-icon">🔒</div>
+                        <h4>100% Local</h4>
+                        <p>Aucune donnée ne quitte votre appareil</p>
+                    </div>
+                    <div class="trust-card">
+                        <div class="trust-icon">👁️</div>
+                        <h4>Transparent</h4>
+                        <p>Code source ouvert, aucun piège</p>
+                    </div>
+                    <div class="trust-card">
+                        <div class="trust-icon">🔐</div>
+                        <h4>Privé par Défaut</h4>
+                        <p>HIBP avec k-anonymité seulement</p>
+                    </div>
+                    <div class="trust-card">
+                        <div class="trust-icon">⚡</div>
+                        <h4>Rapide & Efficace</h4>
+                        <p>Fonctionne sans connexion</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; color: #60a5fa;">Placement Stratégique</h3>
+                <ul style="margin-top: 1rem; color: #cbd5e1; list-style-position: inside;">
+                    <li><strong>En haut de la page:</strong> "🔒 Zéro transmission de données. 100% local." — immédiatement rassurant</li>
+                    <li><strong>Sous le champ mot de passe:</strong> "Votre mot ne quitte jamais votre navigateur"</li>
+                    <li><strong>Près du bouton calcul:</strong> "Aucun enregistrement, aucune publicité"</li>
+                    <li><strong>Footer:</strong> Lien vers code source + licence MIT</li>
+                </ul>
+
+                <p style="margin-top: 1.5rem; color: #60a5fa;"><strong>Design Pattern:</strong> Icônes + texte court. Pas de longues explications. L'utilisateur lambda doit comprendre en 3 secondes qu'on est honnête.</p>
+            </div>
+        </div>
+
+        <!-- TAB 6: Typography -->
+        <div id="typography" class="tab-content">
+            <div class="section">
+                <h2>6️⃣ Hiérarchie Typographique : Clarté d'Abord</h2>
+                <p><strong>Principe:</strong> Pas de forme sans fonction. Chaque taille, poids, couleur = signal sémantique.</p>
+
+                <div class="typography-demo">
+                    <div class="heading-1">🎯 Votre mot de passe: Faible</div>
+                    <div class="heading-2">Temps de crack estimé (12× GPU):</div>
+                    <div class="hero-option-1" style="font-size: 1.75rem; margin-bottom: 1rem;">47 ans</div>
+
+                    <div class="heading-2">Problèmes détectés:</div>
+                    <div class="body-text">❌ Pas de symboles spéciaux</div>
+                    <div class="body-text">✅ Mélange de majuscules et minuscules</div>
+                    <div class="caption-text">Dernière mise à jour: il y a 2 secondes</div>
+                </div>
+
+                <h3 style="margin-top: 2rem; color: #60a5fa;">Règles Typographiques</h3>
+                <ul style="margin-top: 1rem; color: #cbd5e1; list-style-position: inside;">
+                    <li><strong>H1 (2rem, bold, blanc):</strong> Verdict principal ("Votre mot de passe: Faible")</li>
+                    <li><strong>H2 (1.25rem, semi-bold, gris):</strong> Sections ("Temps calculé", "Problèmes")</li>
+                    <li><strong>Hero (2.5rem, gradient):</strong> Le NOMBRE (47 ans) — vedette absolue</li>
+                    <li><strong>Body (1rem, gris moyen):</strong> Explications, contexte</li>
+                    <li><strong>Caption (0.85rem, gris clair):</strong> Métadonnées ("Mis à jour", "Source")</li>
+                </ul>
+
+                <p style="margin-top: 1.5rem; color: #60a5fa;"><strong>Logique Mobile-First:</strong> Sur 320px, la taille diminue proportionnellement, mais la hiérarchie reste. H1 = 1.25rem, Hero = 1.75rem, etc.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from buttons
+            const buttons = document.querySelectorAll('.nav-tabs button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab and mark button as active
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

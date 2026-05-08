@@ -1,0 +1,188 @@
+---
+lang: tr
+permalink: "/tr/hibp.html"
+layout: base.njk
+currentPage: hibp
+pageSlug: hibp.html
+mainClass: hibp-page
+pageTitle: "HIBP doğrulaması — Time2Crack"
+pageDescription: "HIBP ile bir şifrenin veri ihlalinde yer alıp almadığını anonim ve gizlilik dostu bir sorguyla kontrol edin."
+---
+
+<h2>HIBP Verification - K-anonymity anlamak</h2>
+<p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6; max-width: 100%;">
+      Time2Crack API kullanır <a class="external-link" href="https://haveibeenpwned.com/" rel="noopener noreferrer" target="_blank">(HIBP)</a>
+      Parolanızın bir veri sızıntısında uzlaşması olup olmadığını kontrol etmek. gizliliğinizi korumak için
+göndermiyoruz <strong>Never Never Never Never Never Never Never Never Never Never Never</strong> Tam şifreniz. Bunun yerine, adı verilen bir teknik kullanırız
+      <strong>k-anonymity</strong> Sadece SHA-1'in ilk 5 karakteri şifre gönderilir.
+    </p>
+ Açıklama :  EXP 
+<div class="hibp-container">
+<div class="hibp-section">
+<h3>Ne görebilirsiniz</h3>
+<p>Parolanız kalır <strong>Her zaman tarayıcınızda</strong>Hiçbir şey sunucuya gönderilir.</p>
+<p>Sadece Sadece Sadece Sadece Sadece Sadece <strong>{1}{1}</strong> Yerel olarak hesaplanır ( JavaScript).</p>
+<p>O zaman sadece <strong>İlk 5 karakter</strong> Bu hash HIBP'ye gönderilir.</p>
+</div>
+<div class="hibp-section">
+<h3>HIBP ne göremiyor</h3>
+<p>HIBP görmüyor <strong>Değil değil</strong> Tam şifreniz.</p>
+<p>HIBP görmüyor <strong>Değil değil</strong> hash SHA-1 tamamlandı.</p>
+<p>HiBP sadece 5 karakter alır ve döndürür <strong>All hashs</strong> Bu eke karşılık (k-anonymity).</p>
+</div>
+</div>
+<div class="info-box">
+<strong>K-anonymity nedir?</strong>
+<p>
+        K-anonymity, k kayıtları arasında kabul edilemez bir kayıt yapan bir gizlilik tekniğidir.
+Bu durumda, bir SHA-1'in 5 karakter gönderdiğinde, HIBP bu 5 karakterle başlayan tüm hashleri geri döndürür.
+(genellikle 400-500 sonuç) Gerçekiniz diğerleri arasında gizlidir. HIBP bile sizinkilerin ne olduğunu bilmiyor.
+      </p>
+</div>
+ DEMONSTRASYON 
+<div class="demo-section">
+<h3>- Etkileşimli gösteri</h3>
+<p style="color: #4b5563; line-height: 1.6;">
+        Aşağıda bir şifre girin ve HiBP'ye gönderilenleri tam olarak görün.
+      </p>
+<div class="input-group">
+<label for="password-input">Şifre (test: password123):</label>
+<input aria-label="Şifre girişi alanı" id="password-input" placeholder="Bir şifre girin..." type="password" value="password123">
+</div>
+<div class="button-group">
+<button class="btn btn-primary" onclick="calculateHash()">Hesaplamaya sahip</button>
+<button class="btn btn-secondary" onclick="clearDemo()">reset</button>
+</div>
+ ADIM 1: PASS MOT 
+<div class="demo-step">
+<div class="demo-step-number">1 1 1</div>
+<div class="demo-step-content">
+<h4>Şifre (In your browser)</h4>
+<p>Parolanız <strong>Her zaman yerel yerel ol</strong>Asla gönderilmedi.</p>
+<div class="hash-display" id="password-display" style="display:none;">
+<div class="hash-label">Şifre:</div>
+<span id="password-value"></span>
+</div>
+</div>
+</div>
+ STEP 2: COMPLETE SHA-1 
+<div class="demo-step">
+<div class="demo-step-number">2 2</div>
+<div class="demo-step-content">
+<h4>Tamam Hash SHA-1 (Yerel olarak hesaplandı)</h4>
+<p>hash SHA-1 hesaplandı <strong>Tarayıcınızda</strong> JavaScript. HIBP asla tam olarak görmüyor.</p>
+<div class="hash-display" id="full-hash-display" style="display:none;">
+<div class="hash-label">Tamam SHA-1 (40 karakter):</div>
+<span id="full-hash-value"></span>
+</div>
+</div>
+</div>
+ AD 3: 5 İLK CHARACTERISTICS 
+<div class="demo-step">
+<div class="demo-step-number">3 3</div>
+<div class="demo-step-content">
+<h4>Prefix SHA-1 (5 ilk karakterler)</h4>
+<p>Sadece Sadece Sadece Sadece Sadece Sadece <strong>Bu 5 karakter</strong> HiBP'ye güvenli HTTPS aracılığıyla gönderilir.</p>
+<div class="hash-display" id="prefix-display" style="display:none;">
+<div class="hash-label">HIBP'ye gönderilen ek (5 karakter)</div>
+<span id="prefix-value" style="color: #059669; font-weight: 600;"></span>
+</div>
+</div>
+</div>
+ ADIM 4: HIBP RESPONSE 
+<div class="demo-step">
+<div class="demo-step-number">4 4 4</div>
+<div class="demo-step-content">
+<h4>HiBP'nin cevabı (tüm hashs)</h4>
+<p>HIBP geri döndü <strong>All hashs</strong> Gerçekiniz onların arasında gizlidir.</p>
+<button class="btn btn-primary" id="hibp-btn" onclick="fetchHIBP()" style="display:none; width: 100%; margin-top: 0.75rem;">
+            HIBP →
+          </button>
+<div class="result-box" id="hibp-result">
+<div class="result-title">Sonuçlar HIBP'den alındı</div>
+<div id="hibp-content"></div>
+</div>
+</div>
+</div>
+<div class="warning-box">
+<strong>Önemli Önemli Önemli Önemli Önemli Önemli</strong>
+<p>
+          Ön ek "55D97" parola123'i karşılaştırsa bile, HIBP bilmiyor <strong>Değil değil</strong>
+          Sadece birinin sizin olduğunu biliyorsun.
+        </p>
+</div>
+</div>
+ DETAILED FLUX 
+<h3 style="margin-top: 3rem;">Time2Crack nasıl kullanır HiBP</h3>
+<div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.5rem;">
+<div class="demo-step">
+<div class="demo-step-number">1 1 1</div>
+<div class="demo-step-content">
+<h4>Bir şifre yazın</h4>
+<p>Parolanız tarayıcınızda kalıyor. Hiçbir şey hiçbir yere göndermiyor.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">2 2</div>
+<div class="demo-step-content">
+<h4>Time2Crack SHA-1</h4>
+<p>JavaScript'te, SHA-1'in şifreyi hesaplıyoruz. Bu yerel hesaplama, iletim değil.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">3 3</div>
+<div class="demo-step-content">
+<h4>HIBP'ye ek gönder</h4>
+<p>Sadece hash'ın ilk 5 karakteri şifreli bir HTTPS isteği ile HIBP'ye gönderilir.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">4 4 4</div>
+<div class="demo-step-content">
+<h4>HIBP tüm sonuçları döndürür</h4>
+<p>HIBP tüm hashs (genellikle 400-500) bu ekle başlayan döndürür.</p>
+</div>
+</div>
+<div class="demo-step">
+<div class="demo-step-number">5 5</div>
+<div class="demo-step-content">
+<h4>Yerel doğrulama</h4>
+<p>Time2Crack, tüm HiBP sonuçlarınıza tam sahip olduğunuzu karşılaştırır <strong>Tarayıcınızda</strong>Eğer bulunursa, şifre uzlaşmalıdır.</p>
+</div>
+</div>
+</div>
+ SSS SSS 
+<h3 style="margin-top: 3rem;">Sık Sorulan Sorular</h3>
+<div id="faq-container"></div>
+ RESOURCES 
+<h3 style="margin-top: 3rem; margin-bottom: 1rem;">Kaynaklar Kaynakları Kaynaklar</h3>
+<div style="background: #f9fafb; border-radius: 8px; padding: 1.5rem; line-height: 1.8;">
+<p>
+<strong>(HIBP):</strong>
+<a class="external-link" href="https://haveibeenpwned.com/" rel="noopener noreferrer" target="_blank">
+          Haveibeenpwned.com
+        </a>
+        — Şifre veritabanı.
+      </p>
+<p>
+<strong>DIBP API Dokümantasyon:</strong>
+<a class="external-link" href="https://haveibeenpwned.com/API/v3" rel="noopener noreferrer" target="_blank">
+          Haveibeenpwned.com/API/v3
+        </a>
+        - K-anonymity API'sinin teknik belgeleri.
+      </p>
+<p>
+<strong>K-anonymity:</strong>
+<a class="external-link" href="https://en.wikipedia.org/wiki/K-anonymity" rel="noopener noreferrer" target="_blank">
+          Wikipedia – k-anonymity
+        </a>
+        - Verilerin gizliliği kavramı.
+      </p>
+<p>
+<strong>Şifre güvenliği:</strong>
+<a class="external-link" href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" rel="noopener noreferrer" target="_blank">
+          OWASP Password Storage Cheat Sheet
+        </a>
+        - İyi depolama uygulamaları.
+      </p>
+</div>

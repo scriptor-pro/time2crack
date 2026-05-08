@@ -1,0 +1,17 @@
+{
+  "name": "Time2Crack",
+  "baseUrl": "https://time2crack.eu",
+  "version": "2.2.1",
+  "umamiId": "9dc12516-0356-4a70-b4e6-1539babbf7f7",
+  "umamiSrc": "https://umami.bvh.fyi/script.js",
+  "langs": ["fr", "en", "es", "pt", "de", "it", "tr", "pl", "nl"],
+  "langLocales": {
+    "fr": "fr_FR", "en": "en_US", "es": "es_ES", "pt": "pt_PT",
+    "de": "de_DE", "it": "it_IT", "tr": "tr_TR", "pl": "pl_PL", "nl": "nl_NL"
+  },
+  "langNames": {
+    "fr": "Français", "en": "English", "es": "Español", "pt": "Português",
+    "de": "Deutsch", "it": "Italiano", "tr": "Türkçe", "pl": "Polski", "nl": "Nederlands"
+  },
+  "methods": ["bruteforce", "dictionary", "hybrid", "mask", "markov", "pcfg", "combinator"]
+}

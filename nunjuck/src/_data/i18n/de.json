@@ -1,0 +1,106 @@
+{
+  "lang": "de",
+  "dir": "ltr",
+  "nav": {
+    "ariaLabel": "Hauptnavigation",
+    "langSelectLabel": "Sprache wählen",
+    "openMenuLabel": "Menü öffnen",
+    "closeMenuLabel": "Menü schließen",
+    "testPassword": "Passwort testen",
+    "generatePassword": "Passwort generieren",
+    "faq": "FAQ",
+    "about": "Über",
+    "science": "Wissenschaft",
+    "security": "Sicherheit",
+    "howItWorks": "Wie es funktioniert",
+    "attackMethods": "Angriffsmethoden",
+    "bruteForce": "Brute Force",
+    "dictionary": "Dictionary",
+    "hybrid": "Hybrid",
+    "mask": "Mask",
+    "markov": "Markov",
+    "pcfg": "PCFG",
+    "combinator": "Combinator",
+    "sources": "Quellen",
+    "hibp": "HIBP",
+    "privacy": "Datenschutz",
+    "secondaryNavLabel": "Sekundäre Navigation",
+    "drawerVersion": "v2.2.1 • Lokaler Crack-Schätzer 🔐"
+  },
+  "privacyNotice": {
+    "ariaLabel": "Datenschutzhinweis",
+    "icon": "🔒",
+    "strong": "Alles bleibt in deinem Browser.",
+    "text": "Kein Passwort wird übertragen. Die Berechnung ist vollständig lokal. Die einzige externe Anfrage ist eine anonyme Leck-Prüfung (erste 5 Zeichen des SHA-1-Hash, niemals das Passwort)."
+  },
+  "footer": {
+    "tagline": "Lokale Berechnung · HIBP-Prüfung · Open Source",
+    "linkedinLabel": "Folgen Sie uns auf LinkedIn",
+    "blueskyLabel": "Folgen Sie uns auf Bluesky",
+    "mastodonLabel": "Folgen Sie uns auf Mastodon"
+  },
+  "pages": {
+    "index": {
+      "title": "Passwort-Sicherheit prüfen — Time2Crack",
+      "description": "Analysieren Sie die echte Stärke Ihres Passworts mit 7 Angriffsmethoden und 6 Hash-Algorithmen. 100% lokale Berechnung, kein Passwort wird übertragen."
+    },
+    "about": {
+      "title": "Über Time2Crack — Wissenschaftlicher Passwort-Crack-Zeit-Schätzer",
+      "description": "Entdecken Sie Time2Crack: das präziseste Crack-Zeit-Berechnungstool. Wissenschaftliche Methodik, überprüfte akademische Quellen, sichere lokale Analyse."
+    },
+    "privacy": {
+      "title": "Datenschutz &amp; Sicherheit — Time2Crack",
+      "description": "Erfahren Sie, wie Time2Crack mit Ihren Daten umgeht: lokale Berechnung im Browser, keine Passwortübertragung und minimale Leak-Prüfungen."
+    },
+    "sources": {
+      "title": "Wissenschaftliche Quellen — Time2Crack",
+      "description": "Sehen Sie sich die wissenschaftlichen Referenzen und Benchmarks an, die Time2Crack validieren, von Kryptografie bis Passwortstärke."
+    },
+    "hibp": {
+      "title": "HIBP-Prüfung — Time2Crack",
+      "description": "Prüfen Sie mit HIBP, ob ein Passwort in einem Datenleck auftaucht, über eine anonyme, datenschonende Anfrage."
+    },
+    "faq": {
+      "title": "FAQ — Time2Crack",
+      "description": "Antworten auf häufige Fragen zu Time2Crack, der lokalen Funktionsweise, der wissenschaftlichen Methodik und den Ergebnissen."
+    },
+    "generator": {
+      "title": "Sicherer Passwort-Generator — Time2Crack",
+      "description": "Erstellen Sie sichere Passwörter mit Time2Crack. Wählen Sie Zeichensätze, vermeiden Sie Mehrdeutigkeiten und erzeugen Sie passende Secrets."
+    },
+    "how-time2crack-works": {
+      "title": "Wie Time2Crack die Zeit berechnet — Time2Crack",
+      "description": "Verstehen Sie, wie Time2Crack die Crack-Zeit mit Angriffsmodellen, kalibrierten GPU-Geschwindigkeiten und lokaler Berechnung schätzt."
+    },
+    "methodes": {
+      "bruteforce": {
+        "title": "Brute Force — Angriffsmethoden — Time2Crack",
+        "description": "Prüfen Sie systematisch alle möglichen Kombinationen. Der erschöpfendste Angriff und eine gute Referenz."
+      },
+      "dictionary": {
+        "title": "Wörterbuch — Angriffsmethoden — Time2Crack",
+        "description": "Probieren Sie Passwörter aus gepflegten Wortlisten und gängigen Varianten. Schnell, wenn das Geheimnis auf bekannten Wörtern beruht."
+      },
+      "hybrid": {
+        "title": "Hybrid — Angriffsmethoden — Time2Crack",
+        "description": "Kombinieren Sie Wörterbuch, Masken oder Regeln, um Kandidaten zu erweitern. Wirksam gegen vorhersehbare Variationen."
+      },
+      "mask": {
+        "title": "Maske — Angriffsmethoden — Time2Crack",
+        "description": "Suchen Sie nur nach Mustern, die einer bekannten Maske entsprechen, etwa Buchstaben, Ziffern und Symbole an festen Positionen."
+      },
+      "markov": {
+        "title": "Markov — Angriffsmethoden — Time2Crack",
+        "description": "Erzeugen Sie Kandidaten aus Übergangswahrscheinlichkeiten, die aus echten Passwörtern gelernt wurden. Guter Kompromiss."
+      },
+      "pcfg": {
+        "title": "PCFG — Angriffsmethoden — Time2Crack",
+        "description": "Bilden Sie Kandidaten aus probabilistischen Grammatikmustern, die aus der Passwortstruktur gelernt wurden."
+      },
+      "combinator": {
+        "title": "Kombinator — Angriffsmethoden — Time2Crack",
+        "description": "Kombinieren Sie zwei Wortlisten zu einem größeren Kandidatenraum. Nützlich bei aus mehreren Wörtern aufgebauten Passwörtern."
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "lang": "it",
+  "dir": "ltr",
+  "nav": {
+    "ariaLabel": "Navigazione principale",
+    "langSelectLabel": "Seleziona lingua",
+    "openMenuLabel": "Apri menu",
+    "closeMenuLabel": "Chiudi menu",
+    "testPassword": "Testa una password",
+    "generatePassword": "Genera una password",
+    "faq": "FAQ",
+    "about": "Chi siamo",
+    "science": "Scienza",
+    "security": "Sicurezza",
+    "howItWorks": "Come funziona",
+    "attackMethods": "Metodi di attacco",
+    "bruteForce": "Brute Force",
+    "dictionary": "Dictionary",
+    "hybrid": "Hybrid",
+    "mask": "Mask",
+    "markov": "Markov",
+    "pcfg": "PCFG",
+    "combinator": "Combinator",
+    "sources": "Fonti",
+    "hibp": "HIBP",
+    "privacy": "Privacy",
+    "secondaryNavLabel": "Navigazione secondaria",
+    "drawerVersion": "v2.2.1 • Stimatore di crack locale 🔐"
+  },
+  "privacyNotice": {
+    "ariaLabel": "Avviso sulla privacy",
+    "icon": "🔒",
+    "strong": "Tutto rimane nel tuo browser.",
+    "text": "Nessuna password viene trasmessa. Il calcolo è completamente locale. L'unica richiesta esterna è un controllo anonimo della perdita (primi 5 caratteri dell'hash SHA-1, mai la password)."
+  },
+  "footer": {
+    "tagline": "Calcolo locale · verifica HIBP · Open source",
+    "linkedinLabel": "Seguici su LinkedIn",
+    "blueskyLabel": "Seguici su Bluesky",
+    "mastodonLabel": "Seguici su Mastodon"
+  },
+  "pages": {
+    "index": {
+      "title": "Testa la forza della tua password — Time2Crack",
+      "description": "Analizza la vera forza della tua password con 7 modelli di attacco e 6 algoritmi hash. Calcolo 100% locale, nessuna password trasmessa."
+    },
+    "about": {
+      "title": "Chi siamo — Time2Crack — Stimatore scientifico del tempo di crack",
+      "description": "Scopri Time2Crack: lo strumento di calcolo del tempo di crack più accurato. Metodologia scientifica, fonti accademiche verificate, analisi locale sicura."
+    },
+    "privacy": {
+      "title": "Privacy e sicurezza — Time2Crack",
+      "description": "Scopri come Time2Crack gestisce i tuoi dati: calcolo locale nel browser, nessuna trasmissione della password e controlli minimi."
+    },
+    "sources": {
+      "title": "Fonti scientifiche — Time2Crack",
+      "description": "Consulta i riferimenti scientifici e i benchmark che validano Time2Crack, dalla crittografia alla stima della forza."
+    },
+    "hibp": {
+      "title": "Verifica HIBP — Time2Crack",
+      "description": "Verifica se una password compare in una violazione dei dati con HIBP tramite una richiesta anonima e rispettosa della privacy."
+    },
+    "faq": {
+      "title": "FAQ — Time2Crack",
+      "description": "Risposte alle domande frequenti su Time2Crack, il suo funzionamento locale, la metodologia scientifica e i risultati."
+    },
+    "generator": {
+      "title": "Generatore sicuro di password — Time2Crack",
+      "description": "Genera password forti con Time2Crack. Scegli i set di caratteri, evita le ambiguità e crea segreti adatti al tuo uso."
+    },
+    "how-time2crack-works": {
+      "title": "Come Time2Crack calcola il tempo — Time2Crack",
+      "description": "Comprendi come Time2Crack stima il tempo di crack con i suoi modelli di attacco, velocità GPU calibrate e motore locale."
+    },
+    "methodes": {
+      "bruteforce": {
+        "title": "Forza bruta — Metodi di attacco — Time2Crack",
+        "description": "Prova sistematicamente tutte le combinazioni possibili. È l’attacco più esaustivo e un buon riferimento."
+      },
+      "dictionary": {
+        "title": "Dizionario — Metodi di attacco — Time2Crack",
+        "description": "Prova password da liste selezionate e varianti comuni. Veloce quando il segreto si basa su parole note."
+      },
+      "hybrid": {
+        "title": "Ibrido — Metodi di attacco — Time2Crack",
+        "description": "Combina dizionario, maschere o regole per ampliare i candidati. Efficace contro variazioni prevedibili."
+      },
+      "mask": {
+        "title": "Maschera — Metodi di attacco — Time2Crack",
+        "description": "Cerca solo i pattern che corrispondono a una maschera nota, come lettere, cifre e simboli in posizioni fisse."
+      },
+      "markov": {
+        "title": "Markov — Metodi di attacco — Time2Crack",
+        "description": "Genera candidati da probabilità di transizione apprese da password reali. Buon equilibrio tra copertura e velocità."
+      },
+      "pcfg": {
+        "title": "PCFG — Metodi di attacco — Time2Crack",
+        "description": "Costruisce candidati da schemi grammaticali probabilistici appresi dalla struttura delle password."
+      },
+      "combinator": {
+        "title": "Combinatore — Metodi di attacco — Time2Crack",
+        "description": "Combina due liste di parole per creare un insieme di candidati più ampio. Utile per segreti composti da più parole."
+      }
+    }
+  }
+}

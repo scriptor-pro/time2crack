@@ -1,0 +1,134 @@
+---
+lang: nl
+permalink: "/nl/generator.html"
+layout: base.njk
+currentPage: generator
+pageSlug: generator.html
+mainClass: generator-page
+pageTitle: "Veilige wachtwoordgenerator — Time2Crack"
+pageDescription: "Genereer sterke wachtwoorden met Time2Crack. Kies tekensets, vermijd dubbelzinnigheden en maak secrets die passen bij jouw gebruik."
+---
+
+<div class="generator-container">
+<h2>Beveiligde wachtwoordgenerator</h2>
+<p><small><a href="index.html">Test de sterkte van uw wachtwoorden →</a> • <a href="how-time2crack-works.html">Inzicht in het model →</a></small></p>
+ RAPID VOORDELEN 
+<div class="presets">
+<button aria-label="Laag: 8 tekens, klein en cijfers" class="preset-btn" data-preset="weak" title="Minimum 8 tekens, kleine letters + cijfers">Laag</button>
+<button aria-label="Gemiddelde: 16 tekens, alle soorten" class="preset-btn" data-preset="medium" title="16 tekens, hoofdletters + kleine letters + cijfers">Gemiddelde</button>
+<button aria-label="Sterk: 20 karakters, alle soorten" class="preset-btn" data-preset="strong" title="20 tekens, hoofdletters + kleine letters + cijfers + symbolen">Sterk</button>
+<button aria-label="Paranoia: 32 tekens, zonder dubbelzinnige tekens" class="preset-btn" data-preset="paranoia" title="32 tekens, zonder dubbelzinnige tekens (l, I, O, 0)">- Paranoia</button>
+</div>
+ BELANGRIJKSTE CONTROLES 
+<div class="generator-controls">
+<div class="control-group">
+<label for="length">
+            Lengte: <span id="length-display">16</span> tekens
+            <span class="entropy-badge" id="entropy-badge">105 bits</span>
+</label>
+<input aria-label="Wachtwoordlengte" id="length" max="128" min="8" type="range" value="16">
+<small>Maximum: 128 tekens (maximale theoretische beveiliging)</small>
+</div>
+<fieldset class="control-group">
+<legend>Te gebruiken tekens:</legend>
+<div class="charset-grid">
+<label class="charset-option">
+<input aria-label="Majuscules" checked="" id="include-uppercase" type="checkbox">
+<span class="charset-label">Majuscules</span>
+<span class="charset-range">(A-Z)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Minuscules" checked="" id="include-lowercase" type="checkbox">
+<span class="charset-label">Minuscules</span>
+<span class="charset-range">a-z)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Figuur" checked="" id="include-numbers" type="checkbox">
+<span class="charset-label">Figuur</span>
+<span class="charset-range">(0-9)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Symbolen" checked="" id="include-symbols" type="checkbox">
+<span class="charset-label">Symbolen</span>
+<span class="charset-range">(!</span>
+</label>
+</div>
+</fieldset>
+<fieldset class="control-group">
+<legend>Geavanceerde opties:</legend>
+<label>
+<input aria-label="Voorkom dubbelzinnigheid" checked="" id="exclude-ambiguous" type="checkbox">
+            Vermijd dubbelzinnige tekens (l, I, O, 0)
+          </label>
+<small>Leesbaarheid verbeteren indien handmatig kopiëren</small>
+</fieldset>
+</div>
+ FORCE-INDICATOR 
+<div class="strength-meter">
+<div class="strength-bar">
+<div class="strength-fill" id="strength-fill"></div>
+</div>
+<div class="strength-text">
+<span id="strength-label">Middel</span>
+<span id="entropy-text">105 bits</span>
+</div>
+</div>
+ GEBOUWEN 
+<div class="generator-buttons">
+<button class="btn btn-primary" id="generate-btn">Genereren</button>
+<button class="btn btn-secondary" disabled="" id="copy-btn">Kopiëren</button>
+</div>
+ RESULTAAT 
+<div class="generator-output">
+<input aria-label="Wachtwoord gegenereerd" class="password-output" id="generated-password" placeholder="Het gegenereerde wachtwoord zal hier verschijnen" readonly="" type="text">
+</div>
+<div class="feedback" id="generator-feedback" style="display: none;"></div>
+ RESULTATEN 
+<div class="cracking-results" id="cracking-results" style="display: none;">
+<h3>Verzet tegen aanvallen</h3>
+<p class="cracking-subtitle">Geschatte tijd om dit wachtwoord te kraken (SHA-256, GPU ervaren)</p>
+ BRUTE TIME FORMED FORCE 
+<div class="brute-force-display">
+<div class="brute-time-label">Brutotijdkracht:</div>
+<div class="brute-time-formatted" id="brute-time-formatted">Wat?</div>
+<div class="brute-time-breakdown" id="brute-time-breakdown"></div>
+</div>
+<div class="attacks-grid" id="attacks-grid">
+<div class="attack-card">
+<div class="attack-name">Brutokracht</div>
+<div class="attack-time" id="attack-brute">Wat?</div>
+<div class="attack-rank" id="rank-brute">Wat?</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Woordenboek</div>
+<div class="attack-time" id="attack-dict">Wat?</div>
+<div class="attack-rank" id="rank-dict">Wat?</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Hybride</div>
+<div class="attack-time" id="attack-hybrid">Wat?</div>
+<div class="attack-rank" id="rank-hybrid">Wat?</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Masker</div>
+<div class="attack-time" id="attack-mask">Wat?</div>
+<div class="attack-rank" id="rank-mask">Wat?</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Markov</div>
+<div class="attack-time" id="attack-markov">Wat?</div>
+<div class="attack-rank" id="rank-markov">Wat?</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">PCFG</div>
+<div class="attack-time" id="attack-pcfg">Wat?</div>
+<div class="attack-rank" id="rank-pcfg">Wat?</div>
+</div>
+</div>
+<div class="best-attack">
+<span class="label">Betere aanval:</span>
+<span class="value" id="best-attack-name">Wat?</span>
+<span class="time" id="best-attack-time">Wat?</span>
+</div>
+</div>
+</div>

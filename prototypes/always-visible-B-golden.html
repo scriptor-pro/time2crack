@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype B — Spirale dorée</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<style>
+:root {
+  --bg: #0D1116;
+  --surface-alt: #161B23;
+  --surface-elev: #1C232D;
+  --border: #2E3642;
+  --border-strong: #3A4452;
+  --text: #e8e6e3;
+  --text-muted: #9a9aa1;
+  --text-lighter: #b0adaa;
+  --critical: #EB4949;
+  --danger: #e65100;
+  --warning: #d97706;
+  --success: #16A34A;
+  --excellent: #10b981;
+  --exceptional: #0891B2;
+  --accent: #ff6600;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-display: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-display);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem clamp(1rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-size: 1.1rem; font-weight: 700; }
+.logo span { color: var(--accent); }
+
+/* ========== GOLDEN RATIO LAYOUT ========== */
+/* Spirale: le bloc principal (input+crack) occupe 61.8% vertical, les détails 38.2% */
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0.75rem clamp(0.75rem, 3vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* === ZONE A : Input + Crack Time (61.8% of attention) === */
+.zone-a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.input-label {
+  font-size: 0.75rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.password-wrapper {
+  display: flex; align-items: center;
+  background: var(--surface-alt); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 0 0.75rem;
+  transition: border-color 0.2s;
+}
+.password-wrapper:focus-within { border-color: var(--accent); }
+.password-wrapper input {
+  flex: 1; background: none; border: none; color: var(--text);
+  font-size: 1.15rem; font-family: var(--font-mono);
+  padding: 0.9rem 0; outline: none;
+}
+.password-wrapper input::placeholder { color: var(--text-muted); opacity: 0.5; }
+.icon-btn {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; padding: 0.4rem; border-radius: 6px;
+}
+
+/* Strength inline */
+.strength-inline {
+  display: flex; align-items: center; gap: 0.5rem;
+  min-height: 1.6rem;
+}
+.strength-bar {
+  display: flex; gap: 3px; height: 5px; flex: 1;
+}
+.strength-bar .seg {
+  flex: 1; border-radius: 3px; background: var(--surface-elev);
+  transition: background 0.3s;
+}
+.seg.a-critical { background: var(--critical); }
+.seg.a-danger { background: var(--danger); }
+.seg.a-warning { background: var(--warning); }
+.seg.a-success { background: var(--success); }
+.seg.a-excellent { background: var(--excellent); }
+.seg.a-exceptional { background: var(--exceptional); }
+.strength-text {
+  font-size: 0.78rem; font-weight: 600; white-space: nowrap;
+  min-width: 5.5rem; text-align: right;
+}
+.strength-bits { font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+/* CRACK TIME — large, centered, golden proportion */
+.crack-block {
+  display: grid;
+  grid-template-columns: 1fr;
+  text-align: center;
+  padding: 1.4rem 1rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  min-height: 7.5rem; /* Golden proportion: stable even empty */
+  justify-content: center;
+  align-content: center;
+  transition: border-color 0.3s;
+}
+.crack-block.active { border-color: var(--border-strong); }
+.crack-meta {
+  font-size: 0.68rem; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.crack-time {
+  font-size: clamp(2rem, 7vw, 3rem);
+  font-weight: 700; line-height: 1.15;
+  transition: color 0.3s;
+}
+.crack-time.empty { color: var(--border-strong); }
+.crack-time.instant { color: var(--critical); }
+.crack-time.short { color: var(--danger); }
+.crack-time.medium { color: var(--warning); }
+.crack-time.long { color: var(--success); }
+.crack-date { font-size: 0.8rem; color: var(--text-muted); }
+
+/* === DIVIDER === */
+.phi-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.8rem 0;
+}
+
+/* === ZONE B : Details (38.2% — compact, secondary) === */
+.zone-b {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Heatmap + Stats side by side (golden split: 61.8% / 38.2%) */
+.details-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+@media (min-width: 480px) {
+  .details-split {
+    grid-template-columns: 61.8% 1fr;
+  }
+}
+
+/* Heatmap */
+.heatmap-panel {
+  padding: 0.6rem 0.7rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  min-height: 3.5rem;
+}
+.heatmap-title {
+  font-size: 0.62rem; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+.heatmap-chars {
+  display: flex; flex-wrap: wrap; gap: 3px; min-height: 1.6rem;
+  align-items: center;
+}
+.heatmap-chars.empty { justify-content: center; }
+.heatmap-chars.empty::after {
+  content: "· · ·";
+  color: var(--border-strong); font-size: 1.2rem; letter-spacing: 0.3em;
+}
+.hm-c {
+  width: 1.5rem; height: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 3px; font-family: var(--font-mono);
+  font-size: 0.72rem; font-weight: 600;
+}
+.hm-c.s { background: #16A34A33; color: #4ade80; }
+.hm-c.m { background: #d9770633; color: #fbbf24; }
+.hm-c.w { background: #EB494933; color: #f87171; }
+.heatmap-legend {
+  display: flex; gap: 0.7rem; margin-top: 0.3rem;
+  font-size: 0.62rem; color: var(--text-muted);
+}
+
+/* Stats compact */
+.stats-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+.s-box {
+  text-align: center;
+  padding: 0.45rem 0.2rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+}
+.s-val {
+  font-family: var(--font-mono);
+  font-size: 1rem; font-weight: 700;
+  transition: color 0.3s;
+}
+.s-val.empty { color: var(--border-strong); }
+.s-lbl {
+  font-size: 0.55rem; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--text-muted);
+}
+
+/* Analysis bar (compact row) */
+.analysis-compact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+.a-card {
+  padding: 0.5rem 0.6rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+}
+.a-label { font-size: 0.72rem; font-weight: 600; }
+.a-sub { font-size: 0.58rem; color: var(--text-muted); }
+.a-badge {
+  font-size: 0.65rem; font-weight: 600;
+  padding: 0.2rem 0.5rem; border-radius: 16px;
+  white-space: nowrap; color: #fff;
+  background: var(--surface-elev);
+}
+.a-badge.empty { color: var(--text-muted); }
+.a-badge.critical { background: var(--critical); }
+.a-badge.warning { background: var(--warning); }
+.a-badge.success { background: var(--success); }
+.a-badge.clickable {
+  cursor: pointer; border: 1px dashed var(--text-muted);
+  background: transparent; color: var(--text-muted);
+  font-size: 0.6rem;
+}
+.a-badge.clickable:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Time<span>2</span>Crack</div>
+  <span style="font-size:0.75rem; color:var(--text-muted)">Prototype B — Spirale dorée</span>
+</header>
+
+<main>
+  <!-- ===== ZONE A : 61.8% d'attention ===== -->
+  <div class="zone-a">
+    <p class="input-label">Testez votre mot de passe</p>
+    <div class="password-wrapper">
+      <input type="password" id="pw" placeholder="Entrez un mot de passe..." autocomplete="off" spellcheck="false">
+      <button class="icon-btn" id="toggle-vis">👁</button>
+    </div>
+
+    <!-- Strength inline -->
+    <div class="strength-inline">
+      <div class="strength-bar">
+        <div class="seg" id="s0"></div><div class="seg" id="s1"></div>
+        <div class="seg" id="s2"></div><div class="seg" id="s3"></div>
+        <div class="seg" id="s4"></div><div class="seg" id="s5"></div>
+      </div>
+      <span class="strength-text" id="str-txt">—</span>
+      <span class="strength-bits" id="str-bits"></span>
+    </div>
+
+    <!-- Crack time — hero -->
+    <div class="crack-block" id="crack-block">
+      <div class="crack-meta">Attaquant expérimenté · 12× RTX 4090</div>
+      <div class="crack-time empty" id="crack-time">—</div>
+      <div class="crack-date" id="crack-date"></div>
+    </div>
+  </div>
+
+  <div class="phi-divider"></div>
+
+  <!-- ===== ZONE B : 38.2% — détails ===== -->
+  <div class="zone-b">
+    <!-- Heatmap + Stats split -->
+    <div class="details-split">
+      <div class="heatmap-panel">
+        <div class="heatmap-title">Analyse caractère par caractère</div>
+        <div class="heatmap-chars empty" id="heatmap"></div>
+        <div class="heatmap-legend">
+          <span>✔ Imprévisible</span>
+          <span>◐ Modéré</span>
+          <span>✘ Prévisible</span>
+        </div>
+      </div>
+      <div class="stats-panel">
+        <div class="s-box"><div class="s-val empty" id="v-len">—</div><div class="s-lbl">Caractères</div></div>
+        <div class="s-box"><div class="s-val empty" id="v-cs">—</div><div class="s-lbl">Jeu de car.</div></div>
+        <div class="s-box"><div class="s-val empty" id="v-ent">—</div><div class="s-lbl">Entropie</div></div>
+        <div class="s-box"><div class="s-val empty" id="v-cmb">—</div><div class="s-lbl">Combinaisons</div></div>
+      </div>
+    </div>
+
+    <!-- Analysis cards 2x2 -->
+    <div class="analysis-compact">
+      <div class="a-card">
+        <div><div class="a-label">🎲 Entropie</div><div class="a-sub">Qualité globale</div></div>
+        <span class="a-badge empty" id="b-ent">—</span>
+      </div>
+      <div class="a-card">
+        <div><div class="a-label">📊 Structure</div><div class="a-sub">Motifs reconnaissables ?</div></div>
+        <span class="a-badge empty" id="b-str">—</span>
+      </div>
+      <div class="a-card">
+        <div><div class="a-label">🔒 HIBP</div><div class="a-sub">~14 Md de mots de passe</div></div>
+        <span class="a-badge empty" id="b-hibp">En attente</span>
+      </div>
+      <div class="a-card">
+        <div><div class="a-label">💀 RockYou</div><div class="a-sub">17 MB à télécharger</div></div>
+        <span class="a-badge clickable" id="b-ry">Vérifier</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const pw = document.getElementById('pw');
+document.getElementById('toggle-vis').addEventListener('click', () => {
+  pw.type = pw.type === 'password' ? 'text' : 'password';
+});
+
+const lvls = [
+  { max:20, txt:'Très faible', segs:1, dur:'Instantané', cls:'instant' },
+  { max:40, txt:'Faible', segs:2, dur:'2 minutes', cls:'short' },
+  { max:60, txt:'Moyen', segs:3, dur:'3 jours', cls:'medium' },
+  { max:80, txt:'Bon', segs:4, dur:'218 M années', cls:'long' },
+  { max:120, txt:'Excellent', segs:5, dur:'10¹⁸ années', cls:'long' },
+  { max:Infinity, txt:'Exceptionnel', segs:6, dur:'10⁴² années', cls:'long' },
+];
+const segCls = ['a-critical','a-danger','a-warning','a-success','a-excellent','a-exceptional'];
+const badgeCls = ['critical','critical','warning','success','success','success'];
+
+function cStr(c, i, p) {
+  if (/[!@#$%^&*()_\-+=]/.test(c)) return 's';
+  if (/[A-Z]/.test(c)) return i === 0 ? 'w' : 's';
+  if (/[0-9]/.test(c)) return i > 2 && i < p.length - 1 ? 'm' : 'w';
+  return 'm';
+}
+
+pw.addEventListener('input', () => {
+  const v = pw.value, n = v.length;
+  let cs = 0;
+  if (/[a-z]/.test(v)) cs += 26;
+  if (/[A-Z]/.test(v)) cs += 26;
+  if (/[0-9]/.test(v)) cs += 10;
+  if (/[^a-zA-Z0-9]/.test(v)) cs += 33;
+  const ent = n > 0 ? Math.round(n * Math.log2(Math.max(cs,2))) : 0;
+  const cmb = n > 0 ? Math.pow(cs||2, n) : 0;
+  const lvl = lvls.find(l => ent < l.max) || lvls[5];
+  const li = lvls.indexOf(lvl);
+
+  // Bar
+  for (let i = 0; i < 6; i++) {
+    const s = document.getElementById('s'+i);
+    s.className = 'seg';
+    if (n > 0 && i < lvl.segs) s.classList.add(segCls[i]);
+  }
+  document.getElementById('str-txt').textContent = n > 0 ? lvl.txt : '—';
+  document.getElementById('str-bits').textContent = n > 0 ? `(${ent} bits)` : '';
+
+  // Crack
+  const ct = document.getElementById('crack-time');
+  const cb = document.getElementById('crack-block');
+  if (n === 0) {
+    ct.textContent = '—'; ct.className = 'crack-time empty';
+    cb.classList.remove('active');
+    document.getElementById('crack-date').textContent = '';
+  } else {
+    ct.textContent = lvl.dur; ct.className = 'crack-time ' + lvl.cls;
+    cb.classList.add('active');
+    document.getElementById('crack-date').textContent = li === 0 ? 'Maintenant' : li < 3 ? 'Force brute · SHA-256' : '';
+  }
+
+  // Heatmap
+  const hm = document.getElementById('heatmap');
+  if (n === 0) { hm.innerHTML = ''; hm.className = 'heatmap-chars empty'; }
+  else {
+    hm.className = 'heatmap-chars';
+    hm.innerHTML = [...v].map((c,i) => {
+      const d = pw.type === 'password' ? '•' : c;
+      return `<span class="hm-c ${cStr(c,i,v)}">${d}</span>`;
+    }).join('');
+  }
+
+  // Stats
+  const sv = (id, val) => {
+    const el = document.getElementById(id);
+    el.textContent = n > 0 ? val : '—';
+    el.className = n > 0 ? 's-val' : 's-val empty';
+  };
+  sv('v-len', n);
+  sv('v-cs', cs || '—');
+  sv('v-ent', ent);
+  let cStr2 = '—';
+  if (n > 0) {
+    if (cmb < 1e6) cStr2 = Math.round(cmb).toLocaleString('fr-FR');
+    else if (cmb < 1e9) cStr2 = (cmb/1e6).toFixed(1)+'M';
+    else cStr2 = cmb.toExponential(1);
+  }
+  sv('v-cmb', cStr2);
+
+  // Badges
+  const setBadge = (id, txt, cls) => {
+    const b = document.getElementById(id);
+    b.textContent = txt; b.className = 'a-badge ' + cls;
+  };
+  if (n === 0) {
+    setBadge('b-ent', '—', 'empty');
+    setBadge('b-str', '—', 'empty');
+    setBadge('b-hibp', 'En attente', 'empty');
+  } else {
+    setBadge('b-ent', lvl.txt, badgeCls[li]);
+    setBadge('b-str', ent < 40 ? 'Prévisible' : ent < 80 ? 'Modéré' : 'Aléatoire',
+      ent < 40 ? 'critical' : ent < 80 ? 'warning' : 'success');
+    setBadge('b-hibp', '⏳ Vérification...', 'warning');
+    setTimeout(() => {
+      if (pw.value === v) {
+        setBadge('b-hibp', n < 8 ? '💀 Trouvé' : '✓ Absent', n < 8 ? 'critical' : 'success');
+      }
+    }, 700);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype C — Minimal above-the-fold</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-mono:400,600|ibm-plex-sans:400,600,700&display=swap&subset=latin" />
+<style>
+:root {
+  --bg: #0D1116;
+  --surface-alt: #161B23;
+  --surface-elev: #1C232D;
+  --border: #2E3642;
+  --border-strong: #3A4452;
+  --text: #e8e6e3;
+  --text-muted: #9a9aa1;
+  --text-lighter: #b0adaa;
+  --critical: #EB4949;
+  --danger: #e65100;
+  --warning: #d97706;
+  --success: #16A34A;
+  --excellent: #10b981;
+  --exceptional: #0891B2;
+  --accent: #ff6600;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-display: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-display);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem clamp(1rem, 4vw, 2rem);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-size: 1.1rem; font-weight: 700; }
+.logo span { color: var(--accent); }
+
+/* ========== LAYOUT: tout above-the-fold ========== */
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0.75rem clamp(0.75rem, 3vw, 1.5rem);
+  /* Objectif: tout visible en ~600px de hauteur */
+}
+
+/* Input + bar inline */
+.top-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+.pw-wrap {
+  display: flex; align-items: center;
+  background: var(--surface-alt); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 0 0.65rem;
+  transition: border-color 0.2s;
+}
+.pw-wrap:focus-within { border-color: var(--accent); }
+.pw-wrap input {
+  flex: 1; background: none; border: none; color: var(--text);
+  font-size: 1.05rem; font-family: var(--font-mono);
+  padding: 0.75rem 0; outline: none;
+}
+.pw-wrap input::placeholder { color: var(--text-muted); opacity: 0.5; }
+.ibtn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.3rem; }
+
+/* Strength bar ultra-compact */
+.bar-row {
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.bar-segs { display: flex; gap: 2px; flex: 1; height: 4px; }
+.bar-segs .sg { flex: 1; border-radius: 2px; background: var(--surface-elev); transition: background 0.25s; }
+.sg.c1 { background: var(--critical); }
+.sg.c2 { background: var(--danger); }
+.sg.c3 { background: var(--warning); }
+.sg.c4 { background: var(--success); }
+.sg.c5 { background: var(--excellent); }
+.sg.c6 { background: var(--exceptional); }
+.bar-text { font-size: 0.72rem; font-weight: 600; white-space: nowrap; min-width: 4.5rem; text-align: right; }
+
+/* ========== CRACK TIME + STATS en 2 colonnes ========== */
+/* Spirale: crack=61.8%, stats=38.2% */
+.hero-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+@media (min-width: 420px) {
+  .hero-row {
+    grid-template-columns: 61.8fr 38.2fr;
+  }
+}
+
+.crack-card {
+  padding: 0.9rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  text-align: center;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  min-height: 5.5rem;
+  transition: border-color 0.3s;
+}
+.crack-card.active { border-color: var(--border-strong); }
+.crack-meta { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.crack-dur {
+  font-size: clamp(1.6rem, 5.5vw, 2.2rem);
+  font-weight: 700; line-height: 1.2;
+  transition: color 0.3s;
+}
+.crack-dur.empty { color: var(--border-strong); }
+.crack-dur.instant { color: var(--critical); }
+.crack-dur.short { color: var(--danger); }
+.crack-dur.medium { color: var(--warning); }
+.crack-dur.long { color: var(--success); }
+.crack-sub { font-size: 0.7rem; color: var(--text-muted); }
+
+/* Stats 2x2 compact */
+.stats-mini {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;
+}
+.sm-box {
+  padding: 0.4rem 0.25rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  text-align: center;
+}
+.sm-v { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; }
+.sm-v.empty { color: var(--border-strong); }
+.sm-l { font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+
+/* ========== HEATMAP compact ========== */
+.hm-strip {
+  padding: 0.45rem 0.6rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  margin-bottom: 0.6rem;
+  min-height: 2.6rem;
+  display: flex; align-items: center;
+  gap: 0.5rem;
+}
+.hm-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; white-space: nowrap; writing-mode: vertical-lr; transform: rotate(180deg); letter-spacing: 0.05em; }
+.hm-chars {
+  display: flex; flex-wrap: wrap; gap: 2px; flex: 1;
+  min-height: 1.4rem; align-items: center;
+}
+.hm-chars.empty::after {
+  content: "· · · · · · · · · ·";
+  color: var(--border-strong); font-size: 0.8rem; letter-spacing: 0.15em;
+}
+.hm-c {
+  width: 1.35rem; height: 1.35rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 3px; font-family: var(--font-mono);
+  font-size: 0.68rem; font-weight: 600;
+}
+.hm-c.s { background: #16A34A33; color: #4ade80; }
+.hm-c.m { background: #d9770633; color: #fbbf24; }
+.hm-c.w { background: #EB494933; color: #f87171; }
+
+/* ========== BADGES: 4 en ligne ========== */
+.badges-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.35rem;
+}
+@media (max-width: 420px) {
+  .badges-row { grid-template-columns: repeat(2, 1fr); }
+}
+.b-card {
+  padding: 0.4rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  text-align: center;
+}
+.b-icon { font-size: 0.9rem; }
+.b-name { font-size: 0.6rem; font-weight: 600; margin-top: 0.1rem; }
+.b-val {
+  font-size: 0.6rem; font-weight: 600;
+  padding: 0.15rem 0.35rem;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 0.2rem;
+  color: #fff;
+  background: var(--surface-elev);
+  transition: background 0.3s;
+}
+.b-val.empty { color: var(--text-muted); background: transparent; }
+.b-val.critical { background: var(--critical); }
+.b-val.warning { background: var(--warning); }
+.b-val.success { background: var(--success); }
+.b-val.clickable {
+  cursor: pointer; border: 1px dashed var(--text-muted);
+  color: var(--text-muted); background: transparent;
+}
+.b-val.clickable:hover { border-color: var(--accent); color: var(--accent); }
+.b-sub { font-size: 0.5rem; color: var(--text-muted); margin-top: 0.1rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Time<span>2</span>Crack</div>
+  <span style="font-size:0.75rem; color:var(--text-muted)">Prototype C — Minimal</span>
+</header>
+
+<main>
+  <!-- Input + bar -->
+  <div class="top-row">
+    <div class="pw-wrap">
+      <input type="password" id="pw" placeholder="Testez votre mot de passe" autocomplete="off" spellcheck="false">
+      <button class="ibtn" id="tv">👁</button>
+    </div>
+    <div class="bar-row">
+      <div class="bar-segs">
+        <div class="sg" id="g0"></div><div class="sg" id="g1"></div>
+        <div class="sg" id="g2"></div><div class="sg" id="g3"></div>
+        <div class="sg" id="g4"></div><div class="sg" id="g5"></div>
+      </div>
+      <span class="bar-text" id="bt">—</span>
+    </div>
+  </div>
+
+  <!-- Crack time + stats -->
+  <div class="hero-row">
+    <div class="crack-card" id="cc">
+      <div class="crack-meta">12× RTX 4090</div>
+      <div class="crack-dur empty" id="cd">—</div>
+      <div class="crack-sub" id="cs2"></div>
+    </div>
+    <div class="stats-mini">
+      <div class="sm-box"><div class="sm-v empty" id="vl">—</div><div class="sm-l">Caractères</div></div>
+      <div class="sm-box"><div class="sm-v empty" id="vc">—</div><div class="sm-l">Jeu</div></div>
+      <div class="sm-box"><div class="sm-v empty" id="ve">—</div><div class="sm-l">Entropie</div></div>
+      <div class="sm-box"><div class="sm-v empty" id="vk">—</div><div class="sm-l">Combinaisons</div></div>
+    </div>
+  </div>
+
+  <!-- Heatmap strip -->
+  <div class="hm-strip">
+    <div class="hm-label">ANALYSE</div>
+    <div class="hm-chars empty" id="hm"></div>
+  </div>
+
+  <!-- 4 badges -->
+  <div class="badges-row">
+    <div class="b-card">
+      <div class="b-icon">🎲</div>
+      <div class="b-name">Entropie</div>
+      <div class="b-val empty" id="be">—</div>
+    </div>
+    <div class="b-card">
+      <div class="b-icon">📊</div>
+      <div class="b-name">Structure</div>
+      <div class="b-val empty" id="bs">—</div>
+    </div>
+    <div class="b-card">
+      <div class="b-icon">🔒</div>
+      <div class="b-name">HIBP</div>
+      <div class="b-val empty" id="bh">En attente</div>
+      <div class="b-sub">~14 Md MDP</div>
+    </div>
+    <div class="b-card">
+      <div class="b-icon">💀</div>
+      <div class="b-name">RockYou</div>
+      <div class="b-val clickable" id="br">Vérifier</div>
+      <div class="b-sub">17 MB</div>
+    </div>
+  </div>
+</main>
+
+<script>
+const pw = document.getElementById('pw');
+document.getElementById('tv').addEventListener('click', () => {
+  pw.type = pw.type === 'password' ? 'text' : 'password';
+});
+
+const L = [
+  { max:20, t:'Très faible', s:1, d:'Instantané', c:'instant' },
+  { max:40, t:'Faible', s:2, d:'2 minutes', c:'short' },
+  { max:60, t:'Moyen', s:3, d:'3 jours', c:'medium' },
+  { max:80, t:'Bon', s:4, d:'218 M années', c:'long' },
+  { max:120, t:'Excellent', s:5, d:'10¹⁸ années', c:'long' },
+  { max:Infinity, t:'Exceptionnel', s:6, d:'10⁴² années', c:'long' },
+];
+const SC = ['c1','c2','c3','c4','c5','c6'];
+const BC = ['critical','critical','warning','success','success','success'];
+
+function cs(c,i,p) {
+  if (/[!@#$%^&*()_\-+=]/.test(c)) return 's';
+  if (/[A-Z]/.test(c)) return i===0?'w':'s';
+  if (/[0-9]/.test(c)) return i>2&&i<p.length-1?'m':'w';
+  return 'm';
+}
+
+pw.addEventListener('input', () => {
+  const v=pw.value, n=v.length;
+  let cset=0;
+  if(/[a-z]/.test(v))cset+=26; if(/[A-Z]/.test(v))cset+=26;
+  if(/[0-9]/.test(v))cset+=10; if(/[^a-zA-Z0-9]/.test(v))cset+=33;
+  const ent=n>0?Math.round(n*Math.log2(Math.max(cset,2))):0;
+  const cmb=n>0?Math.pow(cset||2,n):0;
+  const lv=L.find(l=>ent<l.max)||L[5];
+  const li=L.indexOf(lv);
+
+  // Bar
+  for(let i=0;i<6;i++){const s=document.getElementById('g'+i);s.className='sg';if(n>0&&i<lv.s)s.classList.add(SC[i]);}
+  document.getElementById('bt').textContent=n>0?`${lv.t} (${ent} bits)`:'—';
+
+  // Crack
+  const cd=document.getElementById('cd');
+  if(n===0){cd.textContent='—';cd.className='crack-dur empty';document.getElementById('cs2').textContent='';document.getElementById('cc').classList.remove('active');}
+  else{cd.textContent=lv.d;cd.className='crack-dur '+lv.c;document.getElementById('cs2').textContent='Force brute · SHA-256';document.getElementById('cc').classList.add('active');}
+
+  // Stats
+  const sv=(id,val)=>{const e=document.getElementById(id);e.textContent=n>0?val:'—';e.className=n>0?'sm-v':'sm-v empty';};
+  sv('vl',n);sv('vc',cset||'—');sv('ve',ent);
+  let ks='—';if(n>0){if(cmb<1e6)ks=Math.round(cmb).toLocaleString('fr-FR');else if(cmb<1e9)ks=(cmb/1e6).toFixed(1)+'M';else ks=cmb.toExponential(1);}
+  sv('vk',ks);
+
+  // Heatmap
+  const hm=document.getElementById('hm');
+  if(n===0){hm.innerHTML='';hm.className='hm-chars empty';}
+  else{hm.className='hm-chars';hm.innerHTML=[...v].map((c,i)=>{const d=pw.type==='password'?'•':c;return`<span class="hm-c ${cs(c,i,v)}">${d}</span>`;}).join('');}
+
+  // Badges
+  const sb=(id,t,c)=>{const b=document.getElementById(id);b.textContent=t;b.className='b-val '+c;};
+  if(n===0){sb('be','—','empty');sb('bs','—','empty');sb('bh','En attente','empty');}
+  else{
+    sb('be',lv.t,BC[li]);
+    sb('bs',ent<40?'Prévisible':ent<80?'Modéré':'Aléatoire',ent<40?'critical':ent<80?'warning':'success');
+    sb('bh','⏳...','warning');
+    setTimeout(()=>{if(pw.value===v)sb('bh',n<8?'💀 Trouvé':'✓ OK',n<8?'critical':'success');},600);
+  }
+});
+</script>
+</body>
+</html>

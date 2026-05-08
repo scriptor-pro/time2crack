@@ -1,0 +1,13 @@
+{
+  "name": "time2crack-nunjuck",
+  "version": "1.0.0",
+  "description": "Time2Crack site generator — Eleventy 3.x + Nunjucks",
+  "scripts": {
+    "build": "npx @11ty/eleventy",
+    "watch": "npx @11ty/eleventy --watch"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.5",
+    "puppeteer": "^24.43.0"
+  }
+}

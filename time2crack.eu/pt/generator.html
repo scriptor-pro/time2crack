@@ -1,535 +1,6 @@
-<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Gerador seguro de senhas — Time2Crack</title><link rel="preload" href="../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="../style.min.css" rel="stylesheet"></noscript><meta name="description" content="Gere senhas fortes com o Time2Crack. Escolha conjuntos de caracteres, evite ambiguidades e crie segredos adequados ao seu uso."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Gerador seguro de senhas — Time2Crack"><meta property="og:description" content="Gere senhas fortes com o Time2Crack. Escolha conjuntos de caracteres, evite ambiguidades e crie segredos adequados ao seu uso."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/pt/generator.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="pt_PT"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Gerador seguro de senhas — Time2Crack"><meta name="twitter:description" content="Gere senhas fortes com o Time2Crack. Escolha conjuntos de caracteres, evite ambiguidades e crie segredos adequados ao seu uso."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/pt/generator.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/generator.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/generator.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/generator.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/generator.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/generator.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/generator.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/generator.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/generator.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/generator.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
-</head><body><header class="site-header">
-<div class="site-header__top">
-<h1><a class="site-logo" href="index.html">Time2Crack</a></h1>
-<select aria-label="Língua / Língua" class="lang-select" id="lang-select">
-<option selected="" value="fr">PT</option>
-<option value="en">PT</option>
-</select>
-</div>
-<nav aria-label="Navegação principal" class="site-nav">
-<div class="site-nav__primary">
-<a class="site-nav__link nav-home" href="index.html">Senha de Teste</a>
-<a aria-current="page" class="site-nav__link nav-generator" href="generator.html">Gerar uma senha</a>
-</div>
-<button aria-controls="drawer" aria-expanded="false" aria-label="Abrir o menu" class="hamburger" id="hamburger-btn">
-<span class="hamburger__icon"></span>
-</button>
-<div class="site-nav__secondary">
-<div class="site-nav__dropdown">
-<button aria-expanded="false" aria-label="Ciência" class="site-nav__dropdown-toggle">
-            Ciência <span class="dropdown-arrow">▼</span>
-</button>
-<ul aria-label="Submenu de ciência" class="site-nav__dropdown-menu" role="menu">
-<li role="none"><a class="site-nav__dropdown-item" href="how-time2crack-works.html" role="menuitem">Como funciona?</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="methode/bruteforce.html" role="menuitem">Força bruta</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="methode/dictionary.html" role="menuitem">Dicionário</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="methode/hybrid.html" role="menuitem">Híbrido</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="methode/mask.html" role="menuitem">Máscara</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="methode/markov.html" role="menuitem">Markov</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="methode/pcfg.html" role="menuitem">PCFG</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="methode/combinator.html" role="menuitem">Combinador</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="sources.html" role="menuitem">Fontes</a></li>
-</ul>
-</div>
-<div class="site-nav__dropdown">
-<button aria-expanded="false" aria-label="Segurança" class="site-nav__dropdown-toggle">
-            Segurança <span class="dropdown-arrow">▼</span>
-</button>
-<ul aria-label="Submenu de segurança" class="site-nav__dropdown-menu" role="menu">
-<li role="none"><a class="site-nav__dropdown-item" href="hibp.html" role="menuitem">HIBP</a></li>
-<li role="none"><a class="site-nav__dropdown-item" href="privacy.html" role="menuitem">Confidencialidade</a></li>
-</ul>
-</div>
-</div>
-</nav>
-<aside aria-hidden="true" aria-label="Menu secundário" class="drawer" id="drawer" role="complementary">
-<div class="drawer__header">
-<button aria-label="O Menu Fechar" class="drawer__close" id="drawer-close-btn"></button>
-</div>
-<nav aria-label="Navegação secundária" class="drawer__nav">
-<details class="drawer__details">
-<summary class="drawer__summary">Ciência</summary>
-<a class="drawer__link" href="how-time2crack-works.html">Como funciona?</a>
-<a class="drawer__link" href="methode/bruteforce.html">Força bruta</a>
-<a class="drawer__link" href="methode/dictionary.html">Dicionário</a>
-<a class="drawer__link" href="methode/hybrid.html">Híbrido</a>
-<a class="drawer__link" href="methode/mask.html">Máscara</a>
-<a class="drawer__link" href="methode/markov.html">Markov</a>
-<a class="drawer__link" href="methode/pcfg.html">PCFG</a>
-<a class="drawer__link" href="methode/combinator.html">Combinador</a>
-<a class="drawer__link" href="sources.html">Fontes</a>
-</details>
-<details class="drawer__details">
-<summary class="drawer__summary">Segurança</summary>
-<a class="drawer__link" href="hibp.html">HIBP</a>
-<a class="drawer__link" href="privacy.html">Confidencialidade</a>
-</details>
-</nav>
-<footer class="drawer__footer">
-<p>v2.0.6 • Estimativa local do crack</p>
-</footer>
-</aside>
-<div aria-hidden="true" class="drawer-backdrop" hidden="" id="drawer-backdrop"></div>
-<div aria-label="Nota de privacidade" class="privacy-notice" role="note">
-<span aria-hidden="true" class="privacy-notice__icon"></span>
-<div class="privacy-notice__text">
-<strong>Tudo fica no seu navegador.</strong>
-        Nenhuma senha é transmitida. O cálculo é inteiramente local.
-A única solicitação externa é uma verificação de vazamento anônima
-(5 caracteres SHA-1 do primeiro hash, nunca senha).
-      </div>
-</div>
-</header><main>
-<div class="generator-container">
-<h2>Gerador de senha seguro</h2>
-<p><small><a href="index.html">Teste a força de suas senhas →</a> • <a href="how-time2crack-works.html">Compreender o modelo →</a></small></p>
- PRESTAÇÕES RAPIDAS 
-<div class="presets">
-<button aria-label="Baixo: 8 caracteres, minúsculos e dígitos" class="preset-btn" data-preset="weak" title="Mínimo de 8 caracteres, minúscula + dígitos">Baixo</button>
-<button aria-label="Média: 16 caracteres, todos os tipos" class="preset-btn" data-preset="medium" title="16 caracteres, maiúsculas + minúsculas + dígitos">Média</button>
-<button aria-label="Forte: 20 caracteres, todos os tipos" class="preset-btn" data-preset="strong" title="20 caracteres, maiúsculas + minúsculas + dígitos + símbolos">Forte</button>
-<button aria-label="Paranóia: 32 caracteres, sem caracteres ambíguos" class="preset-btn" data-preset="paranoia" title="32 caracteres, sem caracteres ambíguos (l, I, O, 0)">- Paranóia</button>
-</div>
- PRINCIPAIS CONTROLOS 
-<div class="generator-controls">
-<div class="control-group">
-<label for="length">
-            Comprimento: <span id="length-display">16</span> caracteres
-            <span class="entropy-badge" id="entropy-badge">105 bits</span>
-</label>
-<input aria-label="Comprimento da senha" id="length" max="128" min="8" type="range" value="16">
-<small>Máximo: 128 caracteres (segurança teórica máxima)</small>
-</div>
-<fieldset class="control-group">
-<legend>Caracteres a incluir:</legend>
-<div class="charset-grid">
-<label class="charset-option">
-<input aria-label="Majúsculas" checked="" id="include-uppercase" type="checkbox">
-<span class="charset-label">Majúsculas</span>
-<span class="charset-range">(A-Z)</span>
-</label>
-<label class="charset-option">
-<input aria-label="Minúsculos" checked="" id="include-lowercase" type="checkbox">
-<span class="charset-label">Minúsculos</span>
-<span class="charset-range">(a-z)</span>
-</label>
-<label class="charset-option">
-<input aria-label="Figuras" checked="" id="include-numbers" type="checkbox">
-<span class="charset-label">Figuras</span>
-<span class="charset-range">(0-9)</span>
-</label>
-<label class="charset-option">
-<input aria-label="Símbolos" checked="" id="include-symbols" type="checkbox">
-<span class="charset-label">Símbolos</span>
-<span class="charset-range">(!</span>
-</label>
-</div>
-</fieldset>
-<fieldset class="control-group">
-<legend>Opções avançadas:</legend>
-<label>
-<input aria-label="Evite ambíguo" checked="" id="exclude-ambiguous" type="checkbox">
-            Evite caracteres ambíguos (l, I, O, 0)
-          </label>
-<small>Melhorar a legibilidade se cópia manual</small>
-</fieldset>
-</div>
- INDICADORES DA FORÇA 
-<div class="strength-meter">
-<div class="strength-bar">
-<div class="strength-fill" id="strength-fill"></div>
-</div>
-<div class="strength-text">
-<span id="strength-label">Médio</span>
-<span id="entropy-text">105 bits</span>
-</div>
-</div>
- CONSTRUÇÕES 
-<div class="generator-buttons">
-<button class="btn btn-primary" id="generate-btn">Gerar</button>
-<button class="btn btn-secondary" disabled="" id="copy-btn">Copiar</button>
-</div>
- RESULTADO 
-<div class="generator-output">
-<input aria-label="Senha gerada" class="password-output" id="generated-password" placeholder="A senha gerada aparecerá aqui" readonly="" type="text">
-</div>
-<div class="feedback" id="generator-feedback" style="display: none;"></div>
- RESULTADOS DA RACKING 
-<div class="cracking-results" id="cracking-results" style="display: none;">
-<h3>Resistência aos Ataques</h3>
-<p class="cracking-subtitle">Tempo estimado para decifrar esta senha (SHA-256, GPU experiente)</p>
- FORÇA FERROVIÁRIA 
-<div class="brute-force-display">
-<div class="brute-time-label">Força temporal bruta:</div>
-<div class="brute-time-formatted" id="brute-time-formatted">—</div>
-<div class="brute-time-breakdown" id="brute-time-breakdown"></div>
-</div>
-<div class="attacks-grid" id="attacks-grid">
-<div class="attack-card">
-<div class="attack-name">Força bruta</div>
-<div class="attack-time" id="attack-brute">—</div>
-<div class="attack-rank" id="rank-brute">—</div>
-</div>
-<div class="attack-card">
-<div class="attack-name">Dicionário</div>
-<div class="attack-time" id="attack-dict">—</div>
-<div class="attack-rank" id="rank-dict">—</div>
-</div>
-<div class="attack-card">
-<div class="attack-name">Híbrido</div>
-<div class="attack-time" id="attack-hybrid">—</div>
-<div class="attack-rank" id="rank-hybrid">—</div>
-</div>
-<div class="attack-card">
-<div class="attack-name">Máscara</div>
-<div class="attack-time" id="attack-mask">—</div>
-<div class="attack-rank" id="rank-mask">—</div>
-</div>
-<div class="attack-card">
-<div class="attack-name">Markov</div>
-<div class="attack-time" id="attack-markov">—</div>
-<div class="attack-rank" id="rank-markov">—</div>
-</div>
-<div class="attack-card">
-<div class="attack-name">PCFG</div>
-<div class="attack-time" id="attack-pcfg">—</div>
-<div class="attack-rank" id="rank-pcfg">—</div>
-</div>
-</div>
-<div class="best-attack">
-<span class="label">Melhor ataque.</span>
-<span class="value" id="best-attack-name">—</span>
-<span class="time" id="best-attack-time">—</span>
-</div>
-</div>
-</div>
-</main><footer id="site-footer"></footer><script src="../includes.js"></script><script type="module">
-    import { calcCrackTime } from './core/calc.js';
-    import { rankToSeconds } from './core/time.js';
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Générateur de mot de passe sécurisé — Time2Crack</title><link rel="preload" href="./style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="./style.min.css" rel="stylesheet"></noscript><script src="./detect-language.js"></script><meta name="description" content="Générez des mots de passe robustes avec Time2Crack. Choisissez les caractères, évitez les ambiguïtés et créez des secrets adaptés à votre usage."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Générateur de mot de passe sécurisé — Time2Crack"><meta property="og:description" content="Générez des mots de passe robustes avec Time2Crack. Choisissez les caractères, évitez les ambiguïtés et créez des secrets adaptés à votre usage."><meta property="og:image" content="https://time2crack.eu/favicon.svg"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/generator.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Générateur de mot de passe sécurisé — Time2Crack"><meta name="twitter:description" content="Générez des mots de passe robustes avec Time2Crack. Choisissez les caractères, évitez les ambiguïtés et créez des secrets adaptés à votre usage."><meta name="twitter:image" content="https://time2crack.eu/favicon.svg"><link rel="canonical" href="https://time2crack.eu/generator.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/generator.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/generator.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/generator.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/generator.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/generator.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/generator.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/generator.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/generator.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/generator.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
 
-    // ========== CONFIGURATION ==========
-    const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
-    const NUMBERS = '0123456789';
-    const SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    const AMBIGUOUS = 'lIO0';
-
-    const PRESETS = {
-      weak: { length: 8, uppercase: false, lowercase: true, numbers: true, symbols: false, excludeAmbiguous: false },
-      medium: { length: 16, uppercase: true, lowercase: true, numbers: true, symbols: false, excludeAmbiguous: true },
-      strong: { length: 20, uppercase: true, lowercase: true, numbers: true, symbols: true, excludeAmbiguous: true },
-      paranoia: { length: 32, uppercase: true, lowercase: true, numbers: true, symbols: true, excludeAmbiguous: true },
-    };
-
-    // ========== DOM ELEMENTS ==========
-    const lengthSlider = document.getElementById('length');
-    const lengthDisplay = document.getElementById('length-display');
-    const includeUppercase = document.getElementById('include-uppercase');
-    const includeLowercase = document.getElementById('include-lowercase');
-    const includeNumbers = document.getElementById('include-numbers');
-    const includeSymbols = document.getElementById('include-symbols');
-    const excludeAmbiguous = document.getElementById('exclude-ambiguous');
-    const generateBtn = document.getElementById('generate-btn');
-    const copyBtn = document.getElementById('copy-btn');
-    const generatedPassword = document.getElementById('generated-password');
-    const feedback = document.getElementById('generator-feedback');
-    const strengthFill = document.getElementById('strength-fill');
-    const strengthLabel = document.getElementById('strength-label');
-    const entropyText = document.getElementById('entropy-text');
-    const entropyBadge = document.getElementById('entropy-badge');
-
-    // ========== EVENT LISTENERS ==========
-    lengthSlider.addEventListener('input', updateEntropy);
-    includeUppercase.addEventListener('change', updateEntropy);
-    includeLowercase.addEventListener('change', updateEntropy);
-    includeNumbers.addEventListener('change', updateEntropy);
-    includeSymbols.addEventListener('change', updateEntropy);
-
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-      btn.addEventListener('click', () => applyPreset(btn.dataset.preset));
-    });
-
-    generateBtn.addEventListener('click', generatePassword);
-    copyBtn.addEventListener('click', copyToClipboard);
-
-    // ========== FONCTIONS ==========
-    function calculateEntropy() {
-      let charset = '';
-      if (includeUppercase.checked) charset += UPPERCASE;
-      if (includeLowercase.checked) charset += LOWERCASE;
-      if (includeNumbers.checked) charset += NUMBERS;
-      if (includeSymbols.checked) charset += SYMBOLS;
-
-      if (excludeAmbiguous.checked) {
-        charset = charset.split('').filter(c => !AMBIGUOUS.includes(c)).join('');
-      }
-
-      const length = parseInt(lengthSlider.value);
-      const combinations = Math.pow(charset.length, length);
-      const bits = Math.log2(combinations);
-
-      return { bits: Math.round(bits), charset };
-    }
-
-    function updateEntropy() {
-      const { bits, charset } = calculateEntropy();
-      lengthDisplay.textContent = lengthSlider.value;
-      entropyBadge.textContent = `${bits} bits`;
-      entropyText.textContent = `${bits} bits`;
-
-      // Update strength indicator
-      let strength = 'Faible';
-      let percentage = 0;
-      let color = '#ef4444';
-
-      if (bits < 50) {
-        strength = 'Très faible';
-        percentage = 20;
-        color = '#dc2626';
-      } else if (bits < 80) {
-        strength = 'Faible';
-        percentage = 40;
-        color = '#f97316';
-      } else if (bits < 120) {
-        strength = 'Moyen';
-        percentage = 60;
-        color = '#eab308';
-      } else if (bits < 180) {
-        strength = 'Fort';
-        percentage = 80;
-        color = '#84cc16';
-      } else {
-        strength = 'Excellent';
-        percentage = 100;
-        color = '#22c55e';
-      }
-
-      strengthLabel.textContent = strength;
-      strengthFill.style.width = percentage + '%';
-      strengthFill.style.backgroundColor = color;
-    }
-
-    function applyPreset(preset) {
-      const config = PRESETS[preset];
-      lengthSlider.value = config.length;
-      includeUppercase.checked = config.uppercase;
-      includeLowercase.checked = config.lowercase;
-      includeNumbers.checked = config.numbers;
-      includeSymbols.checked = config.symbols;
-      excludeAmbiguous.checked = config.excludeAmbiguous;
-      updateEntropy();
-      generatePassword();
-    }
-
-    async function generatePassword() {
-      const { charset } = calculateEntropy();
-
-      if (!charset) {
-        showFeedback('Sélectionnez au moins une option', 'error');
-        return;
-      }
-
-      const length = parseInt(lengthSlider.value);
-      let password = '';
-      const array = new Uint8Array(length);
-      crypto.getRandomValues(array);
-
-      for (let i = 0; i < length; i++) {
-        password += charset[array[i] % charset.length];
-      }
-
-      generatedPassword.value = password;
-      copyBtn.disabled = false;
-      showFeedback('Mot de passe généré ✓', 'success');
-      await calculateCrackingTime(password);
-    }
-
-    async function calculateCrackingTime(password) {
-      try {
-        // Use real Time2Crack calculation
-        const result = await calcCrackTime(password, { lang: 'fr' });
-        const { rank, best_attack, profile } = result;
-
-        // Map attack names
-        const attackMap = {
-          brute: { id: 'brute', name: 'Force Brute' },
-          dictionary: { id: 'dict', name: 'Dictionary' },
-          hybrid: { id: 'hybrid', name: 'Hybrid' },
-          mask: { id: 'mask', name: 'Mask' },
-          markov: { id: 'markov', name: 'Markov' },
-          pcfg: { id: 'pcfg', name: 'PCFG' },
-        };
-
-        const times = {};
-        const ranks = {};
-        let bestTime = Infinity;
-        let bruteForceSeconds = 0;
-
-        // Extract attack times from result using rankToSeconds for SHA-256
-        for (const [attackKey, attackInfo] of Object.entries(attackMap)) {
-          const attackRank = rank.details[attackKey]?.rank ?? null;
-
-          if (attackRank === null) {
-            times[attackInfo.id] = '—';
-            ranks[attackInfo.id] = '—';
-          } else {
-            // Convert rank to seconds using SHA-256 (experienced profile)
-            const seconds = rankToSeconds(attackRank, 'sha256', profile);
-            times[attackInfo.id] = formatCrackingTime(seconds);
-            ranks[attackInfo.id] = formatRank(attackRank);
-
-            // Capture brute force seconds for detailed display
-            if (attackKey === 'brute') {
-              bruteForceSeconds = seconds;
-            }
-
-            if (seconds < bestTime && seconds > 0) {
-              bestTime = seconds;
-            }
-          }
-        }
-
-        // Update UI
-        document.getElementById('attack-brute').textContent = times.brute;
-        document.getElementById('rank-brute').textContent = ranks.brute;
-        document.getElementById('attack-dict').textContent = times.dict;
-        document.getElementById('rank-dict').textContent = ranks.dict;
-        document.getElementById('attack-hybrid').textContent = times.hybrid;
-        document.getElementById('rank-hybrid').textContent = ranks.hybrid;
-        document.getElementById('attack-mask').textContent = times.mask;
-        document.getElementById('rank-mask').textContent = ranks.mask;
-        document.getElementById('attack-markov').textContent = times.markov;
-        document.getElementById('rank-markov').textContent = ranks.markov;
-        document.getElementById('attack-pcfg').textContent = times.pcfg;
-        document.getElementById('rank-pcfg').textContent = ranks.pcfg;
-
-        const bestAttackNames = {
-          brute: 'Force Brute',
-          dict: 'Dictionary',
-          hybrid: 'Hybrid',
-          mask: 'Mask',
-          markov: 'Markov',
-          pcfg: 'PCFG',
-        };
-
-        document.getElementById('best-attack-name').textContent = bestAttackNames[best_attack];
-        document.getElementById('best-attack-time').textContent = times[attackMap[best_attack]?.id || 'brute'];
-
-        // Display detailed brute force time breakdown
-        displayBruteForceBreakdown(bruteForceSeconds);
-
-        document.getElementById('cracking-results').style.display = 'block';
-      } catch (err) {
-        console.error('Erreur calcul crack time:', err);
-        showFeedback('Erreur lors du calcul', 'error');
-      }
-    }
-
-    function displayBruteForceBreakdown(seconds) {
-      const formatted = document.getElementById('brute-time-formatted');
-      const breakdown = document.getElementById('brute-time-breakdown');
-
-      if (seconds < 1) {
-        formatted.textContent = '< 1 seconde';
-        breakdown.innerHTML = '';
-        return;
-      }
-
-      // Main formatted time
-      const mainTime = formatCrackingTimeDetailed(seconds);
-      formatted.textContent = mainTime;
-
-      // Detailed breakdown
-      const parts = [];
-      let remaining = seconds;
-
-      const years = Math.floor(remaining / 31536000);
-      remaining %= 31536000;
-
-      const months = Math.floor(remaining / 2592000);
-      remaining %= 2592000;
-
-      const days = Math.floor(remaining / 86400);
-      remaining %= 86400;
-
-      const hours = Math.floor(remaining / 3600);
-      remaining %= 3600;
-
-      const minutes = Math.floor(remaining / 60);
-      const secs = Math.floor(remaining % 60);
-
-      if (years > 0) parts.push(`${years.toLocaleString('fr-FR')} année${years > 1 ? 's' : ''}`);
-      if (months > 0) parts.push(`${months} mois`);
-      if (days > 0) parts.push(`${days} jour${days > 1 ? 's' : ''}`);
-      if (hours > 0) parts.push(`${hours} heure${hours > 1 ? 's' : ''}`);
-      if (minutes > 0) parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
-      if (secs > 0 && years === 0 && months === 0) parts.push(`${secs} seconde${secs > 1 ? 's' : ''}`);
-
-      if (parts.length > 0 && years === 0 && months === 0) {
-        breakdown.innerHTML = `<div>≈ ${parts.slice(0, 3).join(', ')}</div>`;
-      } else if (parts.length > 0) {
-        breakdown.innerHTML = parts.map(part => `<div>• ${part}</div>`).join('');
-      }
-    }
-
-    function formatCrackingTimeDetailed(seconds) {
-      if (seconds < 1) return '< 1 sec';
-      if (seconds < 60) return Math.round(seconds) + ' secondes';
-      if (seconds < 3600) return (seconds / 60).toFixed(1) + ' minutes';
-      if (seconds < 86400) return (seconds / 3600).toFixed(1) + ' heures';
-      if (seconds < 31536000) return (seconds / 86400).toFixed(1) + ' jours';
-
-      const years = seconds / 31536000;
-      if (years < 1000) return years.toFixed(1) + ' ans';
-      if (years < 1e6) return (years / 1000).toFixed(1) + 'k ans';
-      if (years < 1e9) return (years / 1e6).toFixed(1) + 'M ans';
-      return '∞';
-    }
-
-    function formatCrackingTime(seconds) {
-      if (seconds < 1) return '< 1 sec';
-      if (seconds < 60) return Math.round(seconds) + ' s';
-      if (seconds < 3600) return (seconds / 60).toFixed(1) + ' min';
-      if (seconds < 86400) return (seconds / 3600).toFixed(1) + ' h';
-      if (seconds < 31536000) return (seconds / 86400).toFixed(1) + ' j';
-
-      const years = seconds / 31536000;
-      if (years < 1000) return years.toFixed(1) + ' ans';
-      if (years < 1e9) return (years / 1e6).toFixed(1) + 'M ans';
-      return '∞';
-    }
-
-    function formatRank(rank) {
-      if (rank < 1e6) return rank.toLocaleString('fr-FR');
-      if (rank < 1e9) return (rank / 1e6).toFixed(1) + 'M';
-      if (rank < 1e12) return (rank / 1e9).toFixed(1) + 'B';
-      return (rank / 1e12).toFixed(1) + 'T';
-    }
-
-    function copyToClipboard() {
-      if (!generatedPassword.value) return;
-
-      navigator.clipboard.writeText(generatedPassword.value).then(() => {
-        showFeedback('Copié dans le presse-papiers ✓', 'success');
-      }).catch(() => {
-        showFeedback('Erreur lors de la copie', 'error');
-      });
-    }
-
-    function showFeedback(message, type) {
-      feedback.textContent = message;
-      feedback.className = `feedback feedback--${type}`;
-      feedback.style.display = 'block';
-      setTimeout(() => {
-        feedback.style.display = 'none';
-      }, 3000);
-    }
-
-    // ========== INITIALISATION ==========
-    updateEntropy();
-    generatePassword();
-  </script><style>
+<style>
     .generator-container {
       max-width: 600px;
       margin: 2rem auto;
@@ -1020,4 +491,558 @@ A única solicitação externa é uma verificação de vazamento anônima
         grid-template-columns: 1fr;
       }
     }
-  </style></body></html>
+  </style>
+</head><body><header class="site-header">
+<div class="site-header__top">
+<h1><a class="site-logo" href="index.html">Time2Crack</a></h1>
+<select aria-label="Language / Language" class="lang-select" id="lang-select">
+<option selected="" value="fr">EN</option>
+<option value="en">EN</option>
+</select>
+</div>
+<nav aria-label="Main navigation" class="site-nav">
+<div class="site-nav__primary">
+<a class="site-nav__link nav-home" href="index.html">Test Password</a>
+<a aria-current="page" class="site-nav__link nav-generator" href="generator.html">Generate a password</a>
+</div>
+<button aria-controls="drawer" aria-expanded="false" aria-label="Open menu" class="hamburger" id="hamburger-btn">
+<span class="hamburger__icon"></span>
+</button>
+<div class="site-nav__secondary">
+<div class="site-nav__dropdown">
+<button aria-expanded="false" aria-label="Science" class="site-nav__dropdown-toggle">
+            Science <span class="dropdown-arrow">▼</span>
+</button>
+<ul aria-label="Science submenu" class="site-nav__dropdown-menu" role="menu">
+<li role="none"><a class="site-nav__dropdown-item" href="how-time2crack-works.html" role="menuitem">How does it work?</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/bruteforce.html" role="menuitem">Gross Force</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/dictionary.html" role="menuitem">Dictionary</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/hybrid.html" role="menuitem">Hybrid</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/mask.html" role="menuitem">Mask</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/markov.html" role="menuitem">Markov</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/pcfg.html" role="menuitem">PCFG</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="methode/combinator.html" role="menuitem">Combiner</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="sources.html" role="menuitem">Sources</a></li>
+</ul>
+</div>
+<div class="site-nav__dropdown">
+<button aria-expanded="false" aria-label="Security" class="site-nav__dropdown-toggle">
+            Security <span class="dropdown-arrow">▼</span>
+</button>
+<ul aria-label="Security submenu" class="site-nav__dropdown-menu" role="menu">
+<li role="none"><a class="site-nav__dropdown-item" href="hibp.html" role="menuitem">HIBP</a></li>
+<li role="none"><a class="site-nav__dropdown-item" href="privacy.html" role="menuitem">Confidentiality</a></li>
+</ul>
+</div>
+</div>
+</nav>
+<aside aria-hidden="true" aria-label="Secondary menu" class="drawer" id="drawer" role="complementary">
+<div class="drawer__header">
+<button aria-label="Close Menu" class="drawer__close" id="drawer-close-btn"></button>
+</div>
+<nav aria-label="Secondary navigation" class="drawer__nav">
+<details class="drawer__details">
+<summary class="drawer__summary">Science</summary>
+<a class="drawer__link" href="how-time2crack-works.html">How does it work?</a>
+<a class="drawer__link" href="methode/bruteforce.html">Gross Force</a>
+<a class="drawer__link" href="methode/dictionary.html">Dictionary</a>
+<a class="drawer__link" href="methode/hybrid.html">Hybrid</a>
+<a class="drawer__link" href="methode/mask.html">Mask</a>
+<a class="drawer__link" href="methode/markov.html">Markov</a>
+<a class="drawer__link" href="methode/pcfg.html">PCFG</a>
+<a class="drawer__link" href="methode/combinator.html">Combiner</a>
+<a class="drawer__link" href="sources.html">Sources</a>
+</details>
+<details class="drawer__details">
+<summary class="drawer__summary">Security</summary>
+<a class="drawer__link" href="hibp.html">HIBP</a>
+<a class="drawer__link" href="privacy.html">Confidentiality</a>
+</details>
+</nav>
+<footer class="drawer__footer">
+<p>v2.0.6 • Local crack estimate </p>
+</footer>
+</aside>
+<div aria-hidden="true" class="drawer-backdrop" hidden="" id="drawer-backdrop"></div>
+<div aria-label="Privacy note" class="privacy-notice" role="note">
+<span aria-hidden="true" class="privacy-notice__icon"></span>
+<div class="privacy-notice__text">
+<strong>Everything stays in your browser.</strong>
+        No password is transmitted. The calculation is entirely local.
+The only external request is an anonymous leak check
+(5 first hash SHA-1 characters, never password).
+      </div>
+</div>
+</header><main>
+<div class="generator-container">
+<h2>Secured Password Generator</h2>
+<p><small><a href="index.html">Test the strength of your passwords →</a> • <a href="how-time2crack-works.html">Understanding the model →</a></small></p>
+ RAPID BENEFITS 
+<div class="presets">
+<button aria-label="Low: 8 characters, tiny and digits" class="preset-btn" data-preset="weak" title="Minimum 8 characters, lower case + digits">Low</button>
+<button aria-label="Average: 16 characters, all types" class="preset-btn" data-preset="medium" title="16 characters, uppercase + lowercase + digits">Average</button>
+<button aria-label="Strong: 20 characters, all types" class="preset-btn" data-preset="strong" title="20 characters, uppercase + lowercase + digits + symbols">Strong</button>
+<button aria-label="Paranoia: 32 characters, without ambiguous characters" class="preset-btn" data-preset="paranoia" title="32 characters, without ambiguous characters (l, I, O, 0)">- Paranoia</button>
+</div>
+ MAIN CONTROLS 
+<div class="generator-controls">
+<div class="control-group">
+<label for="length">
+            Length: <span id="length-display">16</span> characters
+            <span class="entropy-badge" id="entropy-badge">105 bits</span>
+</label>
+<input aria-label="Password length" id="length" max="128" min="8" type="range" value="16">
+<small>Maximum: 128 characters (maximum theoretical security)</small>
+</div>
+<fieldset class="control-group">
+<legend>Characters to include:</legend>
+<div class="charset-grid">
+<label class="charset-option">
+<input aria-label="Majuscules" checked="" id="include-uppercase" type="checkbox">
+<span class="charset-label">Majuscules</span>
+<span class="charset-range">(A-Z)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Minuscules" checked="" id="include-lowercase" type="checkbox">
+<span class="charset-label">Minuscules</span>
+<span class="charset-range">(a-z)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Figures" checked="" id="include-numbers" type="checkbox">
+<span class="charset-label">Figures</span>
+<span class="charset-range">(0-9)</span>
+</label>
+<label class="charset-option">
+<input aria-label="Symbols" checked="" id="include-symbols" type="checkbox">
+<span class="charset-label">Symbols</span>
+<span class="charset-range">(!</span>
+</label>
+</div>
+</fieldset>
+<fieldset class="control-group">
+<legend>Advanced Options:</legend>
+<label>
+<input aria-label="Avoid ambiguous" checked="" id="exclude-ambiguous" type="checkbox">
+            Avoid ambiguous characters (l, I, O, 0)
+          </label>
+<small>Improve readability if manual copy</small>
+</fieldset>
+</div>
+ FORCE INDICATOR 
+<div class="strength-meter">
+<div class="strength-bar">
+<div class="strength-fill" id="strength-fill"></div>
+</div>
+<div class="strength-text">
+<span id="strength-label">Medium</span>
+<span id="entropy-text">105 bits</span>
+</div>
+</div>
+ BUILDINGS 
+<div class="generator-buttons">
+<button class="btn btn-primary" id="generate-btn">Generate</button>
+<button class="btn btn-secondary" disabled="" id="copy-btn">Copy</button>
+</div>
+ RESULT 
+<div class="generator-output">
+<input aria-label="Password generated" class="password-output" id="generated-password" placeholder="The generated password will appear here" readonly="" type="text">
+</div>
+<div class="feedback" id="generator-feedback" style="display: none;"></div>
+ RACKING RESULTS 
+<div class="cracking-results" id="cracking-results" style="display: none;">
+<h3>Resistance to Attacks</h3>
+<p class="cracking-subtitle">Estimated time to crack this password (SHA-256, GPU experienced)</p>
+ BRUTE TIME FORMED FORCE 
+<div class="brute-force-display">
+<div class="brute-time-label">Gross Time Force:</div>
+<div class="brute-time-formatted" id="brute-time-formatted">—</div>
+<div class="brute-time-breakdown" id="brute-time-breakdown"></div>
+</div>
+<div class="attacks-grid" id="attacks-grid">
+<div class="attack-card">
+<div class="attack-name">Gross Force</div>
+<div class="attack-time" id="attack-brute">—</div>
+<div class="attack-rank" id="rank-brute">—</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Dictionary</div>
+<div class="attack-time" id="attack-dict">—</div>
+<div class="attack-rank" id="rank-dict">—</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Hybrid</div>
+<div class="attack-time" id="attack-hybrid">—</div>
+<div class="attack-rank" id="rank-hybrid">—</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Mask</div>
+<div class="attack-time" id="attack-mask">—</div>
+<div class="attack-rank" id="rank-mask">—</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">Markov</div>
+<div class="attack-time" id="attack-markov">—</div>
+<div class="attack-rank" id="rank-markov">—</div>
+</div>
+<div class="attack-card">
+<div class="attack-name">PCFG</div>
+<div class="attack-time" id="attack-pcfg">—</div>
+<div class="attack-rank" id="rank-pcfg">—</div>
+</div>
+</div>
+<div class="best-attack">
+<span class="label">Better attack:</span>
+<span class="value" id="best-attack-name">—</span>
+<span class="time" id="best-attack-time">—</span>
+</div>
+</div>
+</div>
+</main><footer id="site-footer"></footer><script src="./includes.js"></script><script type="module">
+    import { calcCrackTime, initMarkov, initPCFG } from '../core/calc.js';
+    import { rankToSeconds } from '../core/time.js';
+
+    // ========== CONFIGURATION ==========
+    const UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
+    const NUMBERS = '0123456789';
+    const SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const AMBIGUOUS = 'lIO0';
+
+    const PRESETS = {
+      weak: { length: 8, uppercase: false, lowercase: true, numbers: true, symbols: false, excludeAmbiguous: false },
+      medium: { length: 16, uppercase: true, lowercase: true, numbers: true, symbols: false, excludeAmbiguous: true },
+      strong: { length: 20, uppercase: true, lowercase: true, numbers: true, symbols: true, excludeAmbiguous: true },
+      paranoia: { length: 32, uppercase: true, lowercase: true, numbers: true, symbols: true, excludeAmbiguous: true },
+    };
+
+    // ========== DOM ELEMENTS ==========
+    const lengthSlider = document.getElementById('length');
+    const lengthDisplay = document.getElementById('length-display');
+    const includeUppercase = document.getElementById('include-uppercase');
+    const includeLowercase = document.getElementById('include-lowercase');
+    const includeNumbers = document.getElementById('include-numbers');
+    const includeSymbols = document.getElementById('include-symbols');
+    const excludeAmbiguous = document.getElementById('exclude-ambiguous');
+    const generateBtn = document.getElementById('generate-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    const generatedPassword = document.getElementById('generated-password');
+    const feedback = document.getElementById('generator-feedback');
+    const strengthFill = document.getElementById('strength-fill');
+    const strengthLabel = document.getElementById('strength-label');
+    const entropyText = document.getElementById('entropy-text');
+    const entropyBadge = document.getElementById('entropy-badge');
+
+    // ========== EVENT LISTENERS ==========
+    lengthSlider.addEventListener('input', updateEntropy);
+    includeUppercase.addEventListener('change', updateEntropy);
+    includeLowercase.addEventListener('change', updateEntropy);
+    includeNumbers.addEventListener('change', updateEntropy);
+    includeSymbols.addEventListener('change', updateEntropy);
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyPreset(btn.dataset.preset));
+    });
+
+    generateBtn.addEventListener('click', generatePassword);
+    copyBtn.addEventListener('click', copyToClipboard);
+
+    // ========== FONCTIONS ==========
+    function calculateEntropy() {
+      let charset = '';
+      if (includeUppercase.checked) charset += UPPERCASE;
+      if (includeLowercase.checked) charset += LOWERCASE;
+      if (includeNumbers.checked) charset += NUMBERS;
+      if (includeSymbols.checked) charset += SYMBOLS;
+
+      if (excludeAmbiguous.checked) {
+        charset = charset.split('').filter(c => !AMBIGUOUS.includes(c)).join('');
+      }
+
+      const length = parseInt(lengthSlider.value);
+      const combinations = Math.pow(charset.length, length);
+      const bits = Math.log2(combinations);
+
+      return { bits: Math.round(bits), charset };
+    }
+
+    function updateEntropy() {
+      const { bits, charset } = calculateEntropy();
+      lengthDisplay.textContent = lengthSlider.value;
+      entropyBadge.textContent = `${bits} bits`;
+      entropyText.textContent = `${bits} bits`;
+
+      // Update strength indicator
+      let strength = 'Faible';
+      let percentage = 0;
+      let color = '#ef4444';
+
+      if (bits < 50) {
+        strength = 'Très faible';
+        percentage = 20;
+        color = '#dc2626';
+      } else if (bits < 80) {
+        strength = 'Faible';
+        percentage = 40;
+        color = '#f97316';
+      } else if (bits < 120) {
+        strength = 'Moyen';
+        percentage = 60;
+        color = '#eab308';
+      } else if (bits < 180) {
+        strength = 'Fort';
+        percentage = 80;
+        color = '#84cc16';
+      } else {
+        strength = 'Excellent';
+        percentage = 100;
+        color = '#22c55e';
+      }
+
+      strengthLabel.textContent = strength;
+      strengthFill.style.width = percentage + '%';
+      strengthFill.style.backgroundColor = color;
+    }
+
+    function applyPreset(preset) {
+      const config = PRESETS[preset];
+      lengthSlider.value = config.length;
+      includeUppercase.checked = config.uppercase;
+      includeLowercase.checked = config.lowercase;
+      includeNumbers.checked = config.numbers;
+      includeSymbols.checked = config.symbols;
+      excludeAmbiguous.checked = config.excludeAmbiguous;
+      updateEntropy();
+      generatePassword();
+    }
+
+    let modelsLoaded = false;
+    async function lazyLoadModels() {
+      if (modelsLoaded) return;
+
+      try {
+        const [markovData, pcfgData] = await Promise.all([
+          fetch('../data/calibration/markov-ngrams-fr.json').then(r => r.json()),
+          fetch('../data/calibration/pcfg-data-fr.json').then(r => r.json())
+        ]);
+
+        initMarkov(markovData);
+        initPCFG(pcfgData);
+        modelsLoaded = true;
+      } catch (err) {
+        console.error('Erreur lors du chargement des modèles:', err);
+      }
+    }
+
+    async function generatePassword() {
+      const { charset } = calculateEntropy();
+
+      if (!charset) {
+        showFeedback('Sélectionnez au moins une option', 'error');
+        return;
+      }
+
+      const length = parseInt(lengthSlider.value);
+      let password = '';
+      const array = new Uint8Array(length);
+      crypto.getRandomValues(array);
+
+      for (let i = 0; i < length; i++) {
+        password += charset[array[i] % charset.length];
+      }
+
+      generatedPassword.value = password;
+      copyBtn.disabled = false;
+      showFeedback('Mot de passe généré ✓', 'success');
+      await calculateCrackingTime(password);
+    }
+
+    async function calculateCrackingTime(password) {
+      try {
+        // Initialize Markov and PCFG models if not already done
+        await lazyLoadModels();
+
+        // Use real Time2Crack calculation
+        const result = await calcCrackTime(password, { lang: 'fr' });
+        const { rank, best_attack, profile } = result;
+
+        // Map attack names
+        const attackMap = {
+          brute: { id: 'brute', name: 'Force Brute' },
+          dictionary: { id: 'dict', name: 'Dictionary' },
+          hybrid: { id: 'hybrid', name: 'Hybrid' },
+          mask: { id: 'mask', name: 'Mask' },
+          markov: { id: 'markov', name: 'Markov' },
+          pcfg: { id: 'pcfg', name: 'PCFG' },
+        };
+
+        const times = {};
+        const ranks = {};
+        let bestTime = Infinity;
+        let bruteForceSeconds = 0;
+
+        // Extract attack times from result using rankToSeconds for SHA-256
+        for (const [attackKey, attackInfo] of Object.entries(attackMap)) {
+          const attackRank = rank.details[attackKey]?.rank ?? null;
+
+          if (attackRank === null) {
+            times[attackInfo.id] = '—';
+            ranks[attackInfo.id] = '—';
+          } else {
+            // Convert rank to seconds using SHA-256 (experienced profile)
+            const seconds = rankToSeconds(attackRank, 'sha256', profile);
+            times[attackInfo.id] = formatCrackingTime(seconds);
+            ranks[attackInfo.id] = formatRank(attackRank);
+
+            // Capture brute force seconds for detailed display
+            if (attackKey === 'brute') {
+              bruteForceSeconds = seconds;
+            }
+
+            if (seconds < bestTime && seconds > 0) {
+              bestTime = seconds;
+            }
+          }
+        }
+
+        // Update UI
+        document.getElementById('attack-brute').textContent = times.brute;
+        document.getElementById('rank-brute').textContent = ranks.brute;
+        document.getElementById('attack-dict').textContent = times.dict;
+        document.getElementById('rank-dict').textContent = ranks.dict;
+        document.getElementById('attack-hybrid').textContent = times.hybrid;
+        document.getElementById('rank-hybrid').textContent = ranks.hybrid;
+        document.getElementById('attack-mask').textContent = times.mask;
+        document.getElementById('rank-mask').textContent = ranks.mask;
+        document.getElementById('attack-markov').textContent = times.markov;
+        document.getElementById('rank-markov').textContent = ranks.markov;
+        document.getElementById('attack-pcfg').textContent = times.pcfg;
+        document.getElementById('rank-pcfg').textContent = ranks.pcfg;
+
+        const bestAttackNames = {
+          brute: 'Force Brute',
+          dict: 'Dictionary',
+          hybrid: 'Hybrid',
+          mask: 'Mask',
+          markov: 'Markov',
+          pcfg: 'PCFG',
+        };
+
+        document.getElementById('best-attack-name').textContent = bestAttackNames[best_attack];
+        document.getElementById('best-attack-time').textContent = times[attackMap[best_attack]?.id || 'brute'];
+
+        // Display detailed brute force time breakdown
+        displayBruteForceBreakdown(bruteForceSeconds);
+
+        document.getElementById('cracking-results').style.display = 'block';
+      } catch (err) {
+        console.error('Erreur calcul crack time:', err);
+        showFeedback('Erreur lors du calcul', 'error');
+      }
+    }
+
+    function displayBruteForceBreakdown(seconds) {
+      const formatted = document.getElementById('brute-time-formatted');
+      const breakdown = document.getElementById('brute-time-breakdown');
+
+      if (seconds < 1) {
+        formatted.textContent = '< 1 seconde';
+        breakdown.innerHTML = '';
+        return;
+      }
+
+      // Main formatted time
+      const mainTime = formatCrackingTimeDetailed(seconds);
+      formatted.textContent = mainTime;
+
+      // Detailed breakdown
+      const parts = [];
+      let remaining = seconds;
+
+      const years = Math.floor(remaining / 31536000);
+      remaining %= 31536000;
+
+      const months = Math.floor(remaining / 2592000);
+      remaining %= 2592000;
+
+      const days = Math.floor(remaining / 86400);
+      remaining %= 86400;
+
+      const hours = Math.floor(remaining / 3600);
+      remaining %= 3600;
+
+      const minutes = Math.floor(remaining / 60);
+      const secs = Math.floor(remaining % 60);
+
+      if (years > 0) parts.push(`${years.toLocaleString('fr-FR')} année${years > 1 ? 's' : ''}`);
+      if (months > 0) parts.push(`${months} mois`);
+      if (days > 0) parts.push(`${days} jour${days > 1 ? 's' : ''}`);
+      if (hours > 0) parts.push(`${hours} heure${hours > 1 ? 's' : ''}`);
+      if (minutes > 0) parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
+      if (secs > 0 && years === 0 && months === 0) parts.push(`${secs} seconde${secs > 1 ? 's' : ''}`);
+
+      if (parts.length > 0 && years === 0 && months === 0) {
+        breakdown.innerHTML = `<div>≈ ${parts.slice(0, 3).join(', ')}</div>`;
+      } else if (parts.length > 0) {
+        breakdown.innerHTML = parts.map(part => `<div>• ${part}</div>`).join('');
+      }
+    }
+
+    function formatCrackingTimeDetailed(seconds) {
+      if (seconds < 1) return '< 1 sec';
+      if (seconds < 60) return Math.round(seconds) + ' secondes';
+      if (seconds < 3600) return (seconds / 60).toFixed(1) + ' minutes';
+      if (seconds < 86400) return (seconds / 3600).toFixed(1) + ' heures';
+      if (seconds < 31536000) return (seconds / 86400).toFixed(1) + ' jours';
+
+      const years = seconds / 31536000;
+      if (years < 1000) return years.toFixed(1) + ' ans';
+      if (years < 1e6) return (years / 1000).toFixed(1) + 'k ans';
+      if (years < 1e9) return (years / 1e6).toFixed(1) + 'M ans';
+      return '∞';
+    }
+
+    function formatCrackingTime(seconds) {
+      if (seconds < 1) return '< 1 sec';
+      if (seconds < 60) return Math.round(seconds) + ' s';
+      if (seconds < 3600) return (seconds / 60).toFixed(1) + ' min';
+      if (seconds < 86400) return (seconds / 3600).toFixed(1) + ' h';
+      if (seconds < 31536000) return (seconds / 86400).toFixed(1) + ' j';
+
+      const years = seconds / 31536000;
+      if (years < 1000) return years.toFixed(1) + ' ans';
+      if (years < 1e9) return (years / 1e6).toFixed(1) + 'M ans';
+      return '∞';
+    }
+
+    function formatRank(rank) {
+      if (rank < 1e6) return rank.toLocaleString('fr-FR');
+      if (rank < 1e9) return (rank / 1e6).toFixed(1) + 'M';
+      if (rank < 1e12) return (rank / 1e9).toFixed(1) + 'B';
+      return (rank / 1e12).toFixed(1) + 'T';
+    }
+
+    function copyToClipboard() {
+      if (!generatedPassword.value) return;
+
+      navigator.clipboard.writeText(generatedPassword.value).then(() => {
+        showFeedback('Copié dans le presse-papiers ✓', 'success');
+      }).catch(() => {
+        showFeedback('Erreur lors de la copie', 'error');
+      });
+    }
+
+    function showFeedback(message, type) {
+      feedback.textContent = message;
+      feedback.className = `feedback feedback--${type}`;
+      feedback.style.display = 'block';
+      setTimeout(() => {
+        feedback.style.display = 'none';
+      }, 3000);
+    }
+
+    // ========== INITIALISATION ==========
+    (async () => {
+      updateEntropy();
+      await generatePassword();
+    })();
+  </script></body></html>

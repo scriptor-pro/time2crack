@@ -2911,6 +2911,11 @@
     }
   }
 
+  // DOM element references (declared here for access from setLang)
+  let input, toggleBtn, barWrapper, resetBtn;
+  let resultLabelFast, crackDurationFast, crackDateFast, resultSentenceFast;
+  let liveDetailsVisible, vulnTagsEl;
+
   function setLang(lang) {
     LANG = lang;
     document.documentElement.setAttribute('lang', lang);
@@ -3016,12 +3021,12 @@
 
   document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
-  const input = $("pw-input");
+  input = $("pw-input");
 
   // Early return if page doesn't have password input (not index/generator)
   if (!input) return;
 
-  const toggleBtn = $("toggle-visibility");
+  toggleBtn = $("toggle-visibility");
   const strengthIcon = $("strength-icon");
   const strengthLabel = $("strength-label");
   const strengthBits = $("strength-bits");
@@ -3030,10 +3035,10 @@
   const barLabel = strengthIcon ? strengthIcon.parentElement : null;
   const strengthSegments = document.querySelectorAll(".strength-bar-segments .segment");
   const resultsDiv = $("results");
-  const crackDateFast = $("crack-date-fast");
-  const crackDurationFast = $("crack-duration-fast");
-  const resultSentenceFast = $("result-sentence-fast");
-  const resultLabelFast = $("result-label-fast");
+  crackDateFast = $("crack-date-fast");
+  crackDurationFast = $("crack-duration-fast");
+  resultSentenceFast = $("result-sentence-fast");
+  resultLabelFast = $("result-label-fast");
   const crackDatePro = $("crack-date-pro");
   const crackDurationPro = $("crack-duration-pro");
   const resultSentencePro = $("result-sentence-pro");
@@ -3043,9 +3048,9 @@
   const detailCharsetLive = $("detail-charset-live");
   const detailEntropyLive = $("detail-entropy-live");
   const detailCombosLive = $("detail-combos-live");
-  const liveDetailsVisible = $("live-details-visible");
-  const barWrapper = document.querySelector(".strength-bar-wrapper");
-  const resetBtn = $("reset-btn");
+  liveDetailsVisible = $("live-details-visible");
+  barWrapper = document.querySelector(".strength-bar-wrapper");
+  resetBtn = $("reset-btn");
   const ctList = $("ct-list");
   const ctFastestValue = $("ct-fastest-value");
   const ctFastestSub = $("ct-fastest-sub");
@@ -3053,7 +3058,7 @@
   const ctProfile = $("ct-profile");
   const hfToggle = $("hf-toggle");
   const hfStatus = $("hf-status");
-  const vulnTagsEl = $("vuln-tags");
+  vulnTagsEl = $("vuln-tags");
 
   const hibpCount = $("hibp-count");
   const copyBtn = $("copy-btn");

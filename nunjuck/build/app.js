@@ -2911,8 +2911,108 @@
     }
   }
 
-  // Placeholder - will be defined inside DOMContentLoaded
-  let setLang;
+  function setLang(lang) {
+    LANG = lang;
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.lang = lang;
+    document.title =
+      "Time2Crack — " +
+      (lang === "fr"
+        ? "Quand votre mot de passe sera-t-il craqué ?"
+        : "When will your password be cracked?");
+    
+    // Update canonical URL dynamically for SEO
+    const canonicalLink = document.getElementById('canonical-link');
+    if (canonicalLink) {
+      canonicalLink.setAttribute('href', `https://time2crack.eu/?lang=${lang}`);
+    }
+    
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const k = el.getAttribute("data-i18n");
+      if (I[lang][k]) el.textContent = I[lang][k];
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+      const k = el.getAttribute("data-i18n-html");
+      if (I[lang][k]) el.innerHTML = I[lang][k];
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+      const k = el.getAttribute("data-i18n-placeholder");
+      if (I[lang][k]) el.placeholder = I[lang][k];
+    });
+    // Update toggle button text (preserve icon)
+    if (input) {
+      const isVisible = input.type === "text";
+      if (toggleBtn) {
+        const textSpan = toggleBtn.querySelector("span");
+        if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
+        toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+      }
+    }
+    // Update lang selector (globe button + menu)
+    const langCodeSpan = document.getElementById("lang-code");
+    if (langCodeSpan) {
+      langCodeSpan.textContent = lang.toUpperCase();
+    }
+    // Update menu item aria-current
+    document.querySelectorAll(".lang-option").forEach((b) => {
+      const isCurrent = b.getAttribute("data-lang") === lang;
+      if (isCurrent) {
+        b.setAttribute("aria-current", "page");
+      } else {
+        b.removeAttribute("aria-current");
+      }
+    });
+    syncA11yLabels();
+    renderAttackTabs();
+    updateAttackDescription();
+    updateHighFidelityUI();
+    // Load dictionary for the new language (async, non-blocking)
+    loadDictionary(lang);
+    // Re-render if there's content
+    if (input && input.value.length) render();
+  }
+
+  // Lang selector: toggle dropdown menu
+  const langToggle = document.getElementById("lang-toggle");
+  const langMenu = document.getElementById("lang-menu");
+  const langSelector = document.getElementById("lang-selector");
+  
+  if (langToggle && langMenu) {
+    langToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = langMenu.hidden;
+      if (isOpen) {
+        langMenu.hidden = false;
+        langToggle.setAttribute("aria-expanded", "true");
+      } else {
+        langMenu.hidden = true;
+        langToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  // Lang menu option clicks
+  document.querySelectorAll(".lang-option").forEach((b) => {
+    b.addEventListener("click", () => {
+      const newLang = b.getAttribute("data-lang");
+      setLang(newLang);
+      // Close menu after selection
+      if (langMenu) {
+        langMenu.hidden = true;
+        langToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (langMenu && langToggle && langSelector) {
+      if (!langSelector.contains(e.target) && !langMenu.hidden) {
+        langMenu.hidden = true;
+        langToggle.setAttribute("aria-expanded", "false");
+      }
+    }
+  });
 
   document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
@@ -2990,110 +3090,6 @@
       localStorage.setItem("t2c_high_fidelity", HIGH_FIDELITY ? "1" : "0");
     } catch (_) {}
   }
-
-  // Define setLang after all variables are available
-  setLang = function(lang) {
-    LANG = lang;
-    document.documentElement.setAttribute('lang', lang);
-    document.documentElement.lang = lang;
-    document.title =
-      "Time2Crack — " +
-      (lang === "fr"
-        ? "Quand votre mot de passe sera-t-il craqué ?"
-        : "When will your password be cracked?");
-
-    // Update canonical URL dynamically for SEO
-    const canonicalLink = document.getElementById('canonical-link');
-    if (canonicalLink) {
-      canonicalLink.setAttribute('href', `https://time2crack.eu/?lang=${lang}`);
-    }
-
-    document.querySelectorAll("[data-i18n]").forEach((el) => {
-      const k = el.getAttribute("data-i18n");
-      if (I[lang][k]) el.textContent = I[lang][k];
-    });
-    document.querySelectorAll("[data-i18n-html]").forEach((el) => {
-      const k = el.getAttribute("data-i18n-html");
-      if (I[lang][k]) el.innerHTML = I[lang][k];
-    });
-    document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
-      const k = el.getAttribute("data-i18n-placeholder");
-      if (I[lang][k]) el.placeholder = I[lang][k];
-    });
-    // Update toggle button text (preserve icon)
-    if (input) {
-      const isVisible = input.type === "text";
-      if (toggleBtn) {
-        const textSpan = toggleBtn.querySelector("span");
-        if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
-        toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
-      }
-    }
-    // Update lang selector (globe button + menu)
-    const langCodeSpan = document.getElementById("lang-code");
-    if (langCodeSpan) {
-      langCodeSpan.textContent = lang.toUpperCase();
-    }
-    // Update menu item aria-current
-    document.querySelectorAll(".lang-option").forEach((b) => {
-      const isCurrent = b.getAttribute("data-lang") === lang;
-      if (isCurrent) {
-        b.setAttribute("aria-current", "page");
-      } else {
-        b.removeAttribute("aria-current");
-      }
-    });
-    syncA11yLabels();
-    renderAttackTabs();
-    updateAttackDescription();
-    updateHighFidelityUI();
-    // Load dictionary for the new language (async, non-blocking)
-    loadDictionary(lang);
-    // Re-render if there's content
-    if (input && input.value.length) render();
-  };
-
-  // Lang selector: toggle dropdown menu
-  const langToggle = document.getElementById("lang-toggle");
-  const langMenu = document.getElementById("lang-menu");
-  const langSelector = document.getElementById("lang-selector");
-
-  if (langToggle && langMenu) {
-    langToggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isOpen = langMenu.hidden;
-      if (isOpen) {
-        langMenu.hidden = false;
-        langToggle.setAttribute("aria-expanded", "true");
-      } else {
-        langMenu.hidden = true;
-        langToggle.setAttribute("aria-expanded", "false");
-      }
-    });
-  }
-
-  // Lang menu option clicks
-  document.querySelectorAll(".lang-option").forEach((b) => {
-    b.addEventListener("click", () => {
-      const newLang = b.getAttribute("data-lang");
-      setLang(newLang);
-      // Close menu after selection
-      if (langMenu) {
-        langMenu.hidden = true;
-        langToggle.setAttribute("aria-expanded", "false");
-      }
-    });
-  });
-
-  // Close menu when clicking outside
-  document.addEventListener("click", (e) => {
-    if (langMenu && langToggle && langSelector) {
-      if (!langSelector.contains(e.target) && !langMenu.hidden) {
-        langMenu.hidden = true;
-        langToggle.setAttribute("aria-expanded", "false");
-      }
-    }
-  });
 
   function renderCtList(all) {
     if (!ctList) return;
@@ -5378,12 +5374,12 @@
       barWrapper.setAttribute("aria-valuenow", "0");
       barWrapper.setAttribute("aria-valuetext", "No password entered");
     }
-    if (resultLabelFast) resultLabelFast.textContent = "—";
-    if (crackDurationFast) crackDurationFast.textContent = "";
-    if (crackDateFast) crackDateFast.textContent = "—";
-    if (resultSentenceFast) resultSentenceFast.textContent = "";
-    if (liveDetailsVisible) liveDetailsVisible.hidden = true;
-    if (vulnTagsEl) vulnTagsEl.innerHTML = "";
+    resultLabelFast.textContent = "—";
+    crackDurationFast.textContent = "";
+    crackDateFast.textContent = "—";
+    resultSentenceFast.textContent = "";
+    liveDetailsVisible.hidden = true;
+    vulnTagsEl.innerHTML = "";
   }
 
   input.addEventListener("input", () => {

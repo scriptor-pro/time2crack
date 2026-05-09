@@ -3010,21 +3010,9 @@
     }
   });
 
-  // Defer password analyzer initialization to DOMContentLoaded
-  // This ensures DOM is ready and prevents crashes on pages without password input
   document.addEventListener("DOMContentLoaded", () => {
-    const $ = (id) => document.getElementById(id);
-    const input = $("pw-input");
-
-    // If page doesn't have password input, don't initialize analyzer
-    if (!input) return;
-
-    // Check for critical elements required by the analyzer
-    const resultsDiv = $("results");
-    if (!resultsDiv) return; // Can't render results without results div
-
-  // Only run password analysis code on pages that have the password input (index + generator)
-  if (input) {
+  const $ = (id) => document.getElementById(id);
+  const input = $("pw-input");
   const toggleBtn = $("toggle-visibility");
   const strengthIcon = $("strength-icon");
   const strengthLabel = $("strength-label");
@@ -3071,17 +3059,10 @@
     { cat: "brute", labelKey: "aBrute", emoji: "🔨" },
     { cat: "dict", labelKey: "aDict", emoji: "📖" },
     { cat: "hybrid", labelKey: "aHybrid", emoji: "🔀" },
-    { cat: "rule", labelKey: "aRule", emoji: "📐" },
-    { cat: "prince", labelKey: "aPrince", emoji: "🔮" },
     { cat: "mask", labelKey: "aMask", emoji: "🎭" },
-    { cat: "rainbow", labelKey: "aRainbow", emoji: "🌈" },
-    { cat: "spray", labelKey: "aSpray", emoji: "🌬️" },
-    { cat: "targeted", labelKey: "aTargeted", emoji: "🎯" },
     { cat: "markov", labelKey: "aMarkov", emoji: "📊" },
-    { cat: "neural", labelKey: "aNeural", emoji: "🤖" },
     { cat: "pcfg", labelKey: "aPCFG", emoji: "🏗️" },
     { cat: "combi", labelKey: "aCombi", emoji: "🔗" },
-    { cat: "morph", labelKey: "aMorph", emoji: "📚" },
   ];
   let selectedAlgo = "sha256";
   let selectedProfileMult = 12;
@@ -3389,7 +3370,7 @@
   }
 
   // Toggle visibility
-  if (toggleBtn) toggleBtn.addEventListener("click", () => {
+  toggleBtn.addEventListener("click", () => {
     const show = input.type === "password";
     input.type = show ? "text" : "password";
     const textSpan = toggleBtn.querySelector("span");
@@ -5492,21 +5473,14 @@
 
     const rows = [];
 
-    // Add attacks in organized groups
+    // Add attacks in organized groups (7 supported attack types)
     addBruteForceAttacks(rows, full, weak);
     addDictionaryAttacks(rows, common, weak, dictWord);
     addHybridAttacks(rows, hybridVuln, weak, common, dictWord);
-    addRuleBasedAttacks(rows, hybridVuln, kbPat, seq, dt, weak);
-    addPrinceAttacks(rows, full, pw, looksPassphrase, dictWord, len, cs, dt, seq, weak);
     addMaskAttacks(rows, full, len, cs, kbPat, seq, weak, dt, pw);
-    addRainbowTableAttacks(rows, len, cs, common, weak);
-    addSprayAttacks(rows, pw, weak);
-    addTargetedAttacks(rows, pw, common, dt, weak);
     addMarkovAttacks(rows, full, hybridVuln, kbPat, seq, dt, rep, weak, cs, len, pw);
-    addNeuralAttacks(rows, full, hybridVuln, kbPat, seq, dt, rep, weak, cs, len, pw, mlProb);
     addPCFGAttacks(rows, weak, pw);
     addCombinatorAttacks(rows, len, pw, common, looksPassphrase, weak);
-    addMorphologicalAttacks(rows, dictWord, deleet, pw, weak);
 
     const targetedPattern = /^[A-Z][a-z]+(?:[-_. ]?[A-Z][a-z]+)?\d{0,4}[!@#$%^&*]?$/u.test(pw) || /(?:1[6-9]|20)\d{2}/.test(pw);
     applyHighFidelityCalibration(rows, {
@@ -5757,7 +5731,7 @@
   function setPendingState() {
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
-    if (resetBtn) resetBtn.classList.add("visible");
+    resetBtn.classList.add("visible");
     
     // Reset strength bar segments
     strengthSegments.forEach((seg) => seg.classList.remove("active"));
@@ -5996,9 +5970,9 @@
     const pw = inputPw;
 
     if (inputEmpty) {
-      if (resetBtn) resetBtn.classList.remove("visible");
+      resetBtn.classList.remove("visible");
       resultsDiv.classList.add("visible");
-      resultsDiv.classList.add("is-empty");
+      resultsDiv.classList.remove("is-empty");
       if (attackerFrame) attackerFrame.hidden = false;
 
       // Neutral strength state (visible placeholders)
@@ -6054,7 +6028,7 @@
       return;
     }
 
-    if (resetBtn) resetBtn.classList.add("visible");
+    resetBtn.classList.add("visible");
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
     if (attackerFrame) attackerFrame.hidden = false;  // Show force bar
@@ -6526,27 +6500,25 @@
   }
 
   // Reset
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      input.value = "";
-      input.type = "password";
-      const textSpan = toggleBtn.querySelector("span");
-      if (textSpan) textSpan.textContent = t("show");
-      toggleBtn.setAttribute("aria-label", t("showAria"));
+  resetBtn.addEventListener("click", () => {
+    input.value = "";
+    input.type = "password";
+    const textSpan = toggleBtn.querySelector("span");
+    if (textSpan) textSpan.textContent = t("show");
+    toggleBtn.setAttribute("aria-label", t("showAria"));
 
-      // Cancel pending renders/checks and force a fresh empty-state render
-      clearTimeout(timer);
-      userPinnedAlgo = false;
-      selectedAlgo = "sha256";
-      if (ctAlgo) ctAlgo.value = "sha256";
-      if (hibpAbort) hibpAbort.abort();
-      clearTimeout(hibpDebounce);
-      lastCheckedPw = "";
+    // Cancel pending renders/checks and force a fresh empty-state render
+    clearTimeout(timer);
+    userPinnedAlgo = false;
+    selectedAlgo = "sha256";
+    if (ctAlgo) ctAlgo.value = "sha256";
+    if (hibpAbort) hibpAbort.abort();
+    clearTimeout(hibpDebounce);
+    lastCheckedPw = "";
 
-      render();
-      input.focus();
-    });
-  }
+    render();
+    input.focus();
+  });
 
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -6766,7 +6738,6 @@
       if (!BLOOM_LOADED && !BLOOM_LOADING) loadBloomFilter();
     });
   }
-  } // End of: if (input) block
 
   // Initialize i18n and load dictionary on page load
   // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
@@ -6774,8 +6745,6 @@
   loadDictionary(LANG); // Load in background, don't block initialization
   loadPcfgCalibration();
   loadMarkovCalibration();
-  loadNeuralCalibration();
-  loadPrinceCalibration();
   render(); // Keep layout fully visible even with empty input
   }); // End DOMContentLoaded
 })();

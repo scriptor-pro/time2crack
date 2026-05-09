@@ -2,64 +2,112 @@
   "use strict";
 
   // ============================================================
-  // I18N
+  // ARCHITECTURE OVERVIEW
   // ============================================================
-  
-  // Detect browser language
+  // This is a password strength analyzer that estimates how quickly
+  // a password can be cracked using different attack types and hashing
+  // algorithms. It runs entirely in the browser (no passwords sent).
+  //
+  // Key Design Principles:
+  // 1. Lazy Loading: Heavy resources (ML models, dictionaries, Bloom
+  //    filters) are loaded only when needed to minimize initial load time
+  // 2. Caching: Results are cached in IndexedDB to speed up repeat visits
+  // 3. Internationalization (i18n): Full 9-language support with dynamic
+  //    language switching
+  // 4. Privacy: No passwords or sensitive data leave the browser
+  //
+  // Main Flow:
+  // 1. User types password → input event triggers analysis
+  // 2. Multiple attack types calculate crack times simultaneously
+  // 3. Results rendered with visual strength indicators
+  // 4. HIBP check (k-anonymity) verifies against known breaches
+  //
+  // Global State is organized by category:
+  // - Language (LANG, I18N strings)
+  // - Dictionaries (DICT_WORDS, DICT_LANG)
+  // - Calibration profiles (PCFG, Markov, Neural, Prince)
+  // - ML models and cache
+  // - DOM references
+  // - Attack configurations
+  // ============================================================
+
+  // ============================================================
+  // I18N (INTERNATIONALIZATION) SECTION
+  // ============================================================
+  // Handles 9 languages: English, French, Spanish, Portuguese,
+  // German, Turkish, Italian, Polish, Dutch
+
+  // Detect browser language and return supported language code
   function detectBrowserLanguage() {
-    // Get browser language (e.g., "fr-FR", "en-US", "es-ES")
+    // navigator.language gives browser locale (e.g., "fr-FR", "en-US")
     const browserLang = navigator.language || navigator.userLanguage || "en";
-    
-    // Extract the primary language code (e.g., "fr" from "fr-FR")
+
+    // Extract language code (e.g., "fr" from "fr-FR")
     const langCode = browserLang.split("-")[0].toLowerCase();
-    
-    // List of supported languages
+
+    // Map of all supported languages
     const supportedLangs = ["en", "fr", "es", "pt", "de", "tr", "it", "pl", "nl"];
-    
-    // Return the language if supported, otherwise default to English
+
+    // Return detected language if supported, else default to English
     return supportedLangs.includes(langCode) ? langCode : "en";
   }
-  
+
+  // Current active language (can be changed by user via language menu)
   let LANG = detectBrowserLanguage();
 
-  // Wordlist for active language (loaded lazily on language change)
-  let DICT_WORDS = null;   // Set<string> | null
-  let DICT_LANG = null;    // language of currently loaded dictionary
-  let DICT_LOADING = false; // prevent double-fetch
-  let DICT_PENDING_LANG = null; // queue latest requested language while loading
+  // ============================================================
+  // DICTIONARY CACHING
+  // ============================================================
+  // The dictionary is a Set of common words used by dictionary attacks.
+  // Loaded lazily to avoid 5-10MB initial load. Cached in IndexedDB.
 
-  // PCFG calibration profiles (lazy-loaded, fallback to built-in defaults)
-  let PCFG_CALIBRATION = null;
-  let PCFG_CALIB_LOADING = false;
+  let DICT_WORDS = null;        // Set<string> | null — the actual wordlist
+  let DICT_LANG = null;         // string — language of currently loaded dictionary
+  let DICT_LOADING = false;     // boolean — prevent multiple simultaneous loads
+  let DICT_PENDING_LANG = null; // string | null — language queued while loading
 
-  // Markov calibration profiles (lazy-loaded, fallback to built-in defaults)
-  let MARKOV_CALIBRATION = null;
-  let MARKOV_CALIB_LOADING = false;
+  // ============================================================
+  // CALIBRATION PROFILES (LAZY-LOADED)
+  // ============================================================
+  // Each attack type (PCFG, Markov, Neural, Prince) has calibration data
+  // that improves crack-time estimates. Downloaded on demand (fallback to defaults).
 
-  // Neural calibration profiles (lazy-loaded, fallback to built-in defaults)
-  let NEURAL_CALIBRATION = null;
-  let NEURAL_CALIB_LOADING = false;
+  let PCFG_CALIBRATION = null;    // object — PCFG model parameters by algorithm
+  let PCFG_CALIB_LOADING = false; // boolean — prevent double-load
 
-  // PRINCE calibration profiles (lazy-loaded, fallback to built-in defaults)
-  let PRINCE_CALIBRATION = null;
-  let PRINCE_CALIB_LOADING = false;
+  let MARKOV_CALIBRATION = null;    // object — Markov chain parameters
+  let MARKOV_CALIB_LOADING = false; // boolean
 
-  // RockYou Bloom Filter (lazy-loaded on user request)
-  let BLOOM_FILTER = null;   // { bitArray: Uint8Array, m: number, k: number } | null
-  let BLOOM_LOADING = false; // prevent double-fetch
-  let BLOOM_LOADED = false;  // user has triggered load
+  let NEURAL_CALIBRATION = null;    // object — Neural network parameters
+  let NEURAL_CALIB_LOADING = false; // boolean
+
+  let PRINCE_CALIBRATION = null;    // object — PRINCE chaining parameters
+  let PRINCE_CALIB_LOADING = false; // boolean
+
+  // ============================================================
+  // BLOOM FILTER (RockYou DATASET)
+  // ============================================================
+  // Bloomfilter with RockYou's 14M most common passwords.
+  // User can click button to load this ~70KB filter for extra verification.
+
+  let BLOOM_FILTER = null;   // Uint8Array | null — the actual filter bits
+  let BLOOM_LOADING = false; // boolean — prevent double-fetch during load
+  let BLOOM_LOADED = false;  // boolean — track if user clicked "Load Bloom"
   let BLOOM_RESULT = null;   // "found" | "not_found" | "error" | null
 
   // ============================================================
-  // ML MODEL
+  // ML MODEL (MACHINE LEARNING)
   // ============================================================
-  let ML_MODEL = null;           // TensorFlow.js model
-  let ML_NORMALIZATION = null;   // Mean and std for feature normalization
-  let ML_LOADING = false;        // Prevent double-load
-  const ML_PRED_CACHE = new Map(); // password -> probability
-  const ML_MIN_LENGTH = 10;
-  const ML_SCORE_MIN = 35;
-  const ML_SCORE_MAX = 80;
+  // TensorFlow.js model that estimates password "humanness" to improve
+  // crack-time predictions. Loaded on first password entry (~500KB).
+
+  let ML_MODEL = null;           // ONNX model | null — the actual neural network
+  let ML_NORMALIZATION = null;   // {mean, std} — feature scaling for model input
+  let ML_LOADING = false;        // boolean — prevent double-load
+  const ML_PRED_CACHE = new Map(); // Map<password, probability> — avoid re-computing
+  const ML_MIN_LENGTH = 10;      // minimum password length for ML analysis
+  const ML_SCORE_MIN = 35;       // minimum humanness score (0-100)
+  const ML_SCORE_MAX = 80;       // maximum humanness score
 
   const I = {
     en: {
@@ -1844,10 +1892,22 @@
     },
   };
 
+  // ============================================================
+  // TRANSLATION HELPER
+  // ============================================================
+  // Returns the translated string for key 'k' in the current language.
+  // Falls back to English if translation missing, then to the key itself.
+  // Usage: t("weak") returns "Weak" in English, "Faible" in French, etc.
   function t(k) {
     return I[LANG][k] || I.en[k] || k;
   }
 
+  // ============================================================
+  // ACCESSIBILITY LABELS SYNCHRONIZATION
+  // ============================================================
+  // Updates ARIA labels when language changes. These labels are read by
+  // screen readers to describe UI elements to visually impaired users.
+  // Called whenever language is switched via the language menu.
   function syncA11yLabels() {
     const langToggleBtn = document.getElementById("lang-toggle");
     if (langToggleBtn) langToggleBtn.setAttribute("aria-label", t("languageAria") || "Change language");
@@ -1880,42 +1940,67 @@
       ? "data/wordlists/"
       : "https://time2crack.b-cdn.net/data/wordlists/");
 
+  // ============================================================
+  // LOAD DICTIONARY FOR LANGUAGE
+  // ============================================================
+  // Fetches a wordlist (4-letter+ words) for dictionary attacks.
+  // Lazy-loaded on first use to avoid 5-10MB initial download.
+  //
+  // Features:
+  // - Caches loaded dictionaries (only fetch once per session)
+  // - Prevents double-downloads via DICT_LOADING flag
+  // - Queues pending language requests while loading
+  // - Normalizes words (NFC, trim, lowercase)
+  // - Shows/hides loading progress indicator
+  //
+  // Called by: setLang(), render() on first password entry
   async function loadDictionary(lang) {
+    // Optimization: if this language is already loaded, skip
     if (DICT_LANG === lang && DICT_WORDS) return;
+
+    // If load in progress, queue this language request for later
     if (DICT_LOADING) {
       DICT_PENDING_LANG = lang;
       return;
     }
+
+    // Mark as loading to prevent concurrent fetches
     DICT_LOADING = true;
     DICT_PENDING_LANG = null;
-    
-    // Show loading indicator
+
+    // Show visual loading indicator (progress bar)
     const dictLoadingEl = document.getElementById('dict-loading');
     if (dictLoadingEl) {
       dictLoadingEl.hidden = false;
     }
-    
+
     try {
+      // Fetch wordlist file (e.g., "en.txt", "fr.txt") from CDN or local
       const res = await fetch(`${WORDLISTS_BASE_URL}${lang}.txt`);
       if (!res.ok) throw new Error(res.status);
       const text = await res.text();
-      
-      // Clear old dictionary to prevent memory leak
+
+      // Clear old dictionary to free memory before loading new one
       if (DICT_WORDS) {
         DICT_WORDS.clear();
       }
-      
+
+      // Build Set of normalized words
+      // - Split by newline
+      // - Normalize Unicode (NFC = composed form)
+      // - Trim whitespace and convert to lowercase
+      // - Filter out words < 4 chars (too short for dictionary attack)
       DICT_WORDS = new Set(
         text.split("\n")
             .map(w => w.normalize("NFC").trim().toLowerCase())
             .filter(w => w.length >= 4)
       );
-      DICT_LANG = lang;
+      DICT_LANG = lang; // Mark language as successfully loaded
     } catch {
-      DICT_WORDS = null; // silently fail
+      DICT_WORDS = null; // Silently fail (dictionary is optional, analysis continues)
     } finally {
-      DICT_LOADING = false;
-      
+      DICT_LOADING = false; // Mark loading as complete
+
       // Hide loading indicator
       if (dictLoadingEl) {
         dictLoadingEl.hidden = true;
@@ -2911,27 +2996,78 @@
     }
   }
 
-  // DOM element references (declared here for access from setLang)
+  // ============================================================
+  // DOM ELEMENT HELPER
+  // ============================================================
+  // Shorthand for getElementById. Declared early so it's accessible
+  // throughout the code (needed by functions before DOMContentLoaded).
+  // Returns null if element doesn't exist (safe for optional elements).
+  const $ = (id) => document.getElementById(id);
+
+  // ============================================================
+  // DOM ELEMENT REFERENCES
+  // ============================================================
+  // These are declared as module-level variables (not const in
+  // DOMContentLoaded) so they can be accessed by functions like setLang()
+  // and render() that may be called before DOMContentLoaded completes.
+  //
+  // Key elements:
+  // - input: password input field (#pw-input)
+  // - toggleBtn: show/hide password button (#toggle-visibility)
+  // - barWrapper: password strength visual bar
+  // - resetBtn: reset password button (#reset-btn)
+  // - resultLabelFast, crackDurationFast, etc: result display elements
+  // - copyBtn: copy to clipboard button (#copy-btn)
+  //
+  // All may be null on pages without the password analyzer (e.g., /about).
   let input, toggleBtn, barWrapper, resetBtn;
   let resultLabelFast, crackDurationFast, crackDateFast, resultSentenceFast;
-  let liveDetailsVisible, vulnTagsEl;
+  let liveDetailsVisible, vulnTagsEl, copyBtn;
 
+  // ============================================================
+  // LANGUAGE SWITCHING FUNCTION
+  // ============================================================
+  // Changes the active language and re-renders all translated content.
+  // Called when:
+  // 1. Page loads (auto-detect browser language)
+  // 2. User clicks language selector menu
+  //
+  // Steps:
+  // 1. Update LANG variable
+  // 2. Set HTML lang attribute (for screen readers, font selection)
+  // 3. Update page title
+  // 4. Re-translate all UI strings via [data-i18n] attributes
+  // 5. Update accessibility labels
+  // 6. Load new language dictionary (for dictionary attacks)
+  // 7. Re-render password analysis if one exists
   function setLang(lang) {
+    // Update global language state
     LANG = lang;
+
+    // Set HTML lang attribute (used by browsers for hyphenation, quotes, etc.)
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.lang = lang;
+
+    // Update page title (different per language)
     document.title =
       "Time2Crack — " +
       (lang === "fr"
         ? "Quand votre mot de passe sera-t-il craqué ?"
         : "When will your password be cracked?");
-    
-    // Update canonical URL dynamically for SEO
+
+    // Update canonical link for SEO (tells search engines about language variant)
     const canonicalLink = document.getElementById('canonical-link');
     if (canonicalLink) {
       canonicalLink.setAttribute('href', `https://time2crack.eu/?lang=${lang}`);
     }
-    
+
+    // ============================================================
+    // TRANSLATE ALL UI ELEMENTS
+    // ============================================================
+    // Find all elements with [data-i18n], [data-i18n-html], [data-i18n-placeholder]
+    // attributes and update their text/HTML/placeholder with translated strings.
+
+    // Elements with data-i18n: update .textContent (safe for user input, no HTML)
     document.querySelectorAll("[data-i18n]").forEach((el) => {
       const k = el.getAttribute("data-i18n");
       if (I[lang][k]) el.textContent = I[lang][k];
@@ -3019,66 +3155,117 @@
     }
   });
 
+  // ============================================================
+  // DOM CONTENT LOADED EVENT
+  // ============================================================
+  // Main initialization: Called when HTML parsing is complete and all
+  // DOM elements are accessible. Initializes event listeners, caches
+  // DOM references, and sets up the password analyzer if the page
+  // has a password input field.
+  //
+  // Pages with password analyzer:
+  // - /index.html (main analyzer)
+  // - /en/generator.html, /fr/generator.html, etc.
+  //
+  // Pages without (skipped via early return):
+  // - /about.html, /privacy.html, /faq.html, etc.
   document.addEventListener("DOMContentLoaded", () => {
-  const $ = (id) => document.getElementById(id);
+  // ============================================================
+  // DOM ELEMENT CACHING
+  // ============================================================
+  // Cache all needed DOM references once at initialization.
+  // This is more efficient than repeated querySelectorAll calls.
+  // Variables declared at module scope (not const) so they're
+  // accessible to render() and other functions.
+
+  // Check if page has password analyzer
   input = $("pw-input");
 
-  // Early return if page doesn't have password input (not index/generator)
+  // Early return: if page doesn't have password input, skip initialization
+  // (e.g., /about, /faq pages don't need event listeners)
   if (!input) return;
 
-  toggleBtn = $("toggle-visibility");
-  const strengthIcon = $("strength-icon");
-  const strengthLabel = $("strength-label");
-  const strengthBits = $("strength-bits");
-  const strengthInfoBtn = $("strength-info-btn");
-  const strengthTooltip = $("strength-tooltip");
+  // Strength meter elements
+  toggleBtn = $("toggle-visibility");        // Show/hide password button
+  const strengthIcon = $("strength-icon");    // Icon (🔴 🟠 🟡 🟢)
+  const strengthLabel = $("strength-label");  // Text label (Weak, Strong, etc)
+  const strengthBits = $("strength-bits");    // Entropy bits display
+  const strengthInfoBtn = $("strength-info-btn"); // Info icon
+  const strengthTooltip = $("strength-tooltip"); // Tooltip content
   const barLabel = strengthIcon ? strengthIcon.parentElement : null;
   const strengthSegments = document.querySelectorAll(".strength-bar-segments .segment");
-  const resultsDiv = $("results");
+  const resultsDiv = $("results");             // Main results container
+
+  // Fast attack profile display (12 GPUs, standard)
   crackDateFast = $("crack-date-fast");
   crackDurationFast = $("crack-duration-fast");
   resultSentenceFast = $("result-sentence-fast");
   resultLabelFast = $("result-label-fast");
+
+  // Professional attack profile (100 GPUs)
   const crackDatePro = $("crack-date-pro");
   const crackDurationPro = $("crack-duration-pro");
   const resultSentencePro = $("result-sentence-pro");
   const resultLabelPro = $("result-label-pro");
-  // Live details (always visible, below heatmap)
+
+  // Live character-by-character analysis
   const detailLengthLive = $("detail-length-live");
   const detailCharsetLive = $("detail-charset-live");
   const detailEntropyLive = $("detail-entropy-live");
   const detailCombosLive = $("detail-combos-live");
   liveDetailsVisible = $("live-details-visible");
+
+  // Visual strength bar and controls
   barWrapper = document.querySelector(".strength-bar-wrapper");
-  resetBtn = $("reset-btn");
-  const ctList = $("ct-list");
+  resetBtn = $("reset-btn");                  // Clear password button
+
+  // Crack time table elements
+  const ctList = $("ct-list");                // Table of all attack speeds
   const ctFastestValue = $("ct-fastest-value");
   const ctFastestSub = $("ct-fastest-sub");
-  const ctAlgo = $("ct-algo");
-  const ctProfile = $("ct-profile");
-  const hfToggle = $("hf-toggle");
-  const hfStatus = $("hf-status");
-  vulnTagsEl = $("vuln-tags");
+  const ctAlgo = $("ct-algo");                // Algorithm selector (MD5, SHA-256, bcrypt, etc)
+  const ctProfile = $("ct-profile");          // Profile selector (Amateur, Standard, Pro, Nation)
 
-  const hibpCount = $("hibp-count");
-  const copyBtn = $("copy-btn");
-  const qualityBadge = $("quality-badge");
-  const patternBadge = $("pattern-badge");
-  const hibpStatusBadge = $("hibp-status-badge");
-  const attackerFrame = $("attacker-frame");
-  const attackerTabsNodes = document.querySelectorAll(".attacker-tab");
+  // High-fidelity mode toggle
+  const hfToggle = $("hf-toggle");            // Toggle for calibration mode
+  const hfStatus = $("hf-status");            // Status display (Standard/High-Fidelity)
 
+  // Vulnerability/pattern display
+  vulnTagsEl = $("vuln-tags");                // Patterns detected in password
+
+  // Additional UI elements
+  const hibpCount = $("hibp-count");          // Count of breaches
+  copyBtn = $("copy-btn");                    // Copy button (for generated passwords)
+  const qualityBadge = $("quality-badge");    // Quality status badge
+  const patternBadge = $("pattern-badge");    // Pattern status badge
+  const hibpStatusBadge = $("hibp-status-badge"); // HIBP status badge
+  const attackerFrame = $("attacker-frame");  // Container for attack tabs
+  const attackerTabsNodes = document.querySelectorAll(".attacker-tab"); // Tab list
+
+  // ============================================================
+  // ATTACK CONFIGURATION
+  // ============================================================
+  // Configuration for the 7 supported attack types.
+  // Each attack has a category ID, i18n label, and emoji icon.
+  // Used to render attack tabs and categorize results.
   const ATTACK_TAB_CONFIG = [
-    { cat: "brute", labelKey: "aBrute", emoji: "🔨" },
-    { cat: "dict", labelKey: "aDict", emoji: "📖" },
-    { cat: "hybrid", labelKey: "aHybrid", emoji: "🔀" },
-    { cat: "mask", labelKey: "aMask", emoji: "🎭" },
-    { cat: "markov", labelKey: "aMarkov", emoji: "📊" },
-    { cat: "pcfg", labelKey: "aPCFG", emoji: "🏗️" },
-    { cat: "combi", labelKey: "aCombi", emoji: "🔗" },
+    { cat: "brute", labelKey: "aBrute", emoji: "🔨" },       // Brute force
+    { cat: "dict", labelKey: "aDict", emoji: "📖" },         // Dictionary
+    { cat: "hybrid", labelKey: "aHybrid", emoji: "🔀" },     // Hybrid (dict + rules)
+    { cat: "mask", labelKey: "aMask", emoji: "🎭" },         // Mask (pattern-based)
+    { cat: "markov", labelKey: "aMarkov", emoji: "📊" },     // Markov chains
+    { cat: "pcfg", labelKey: "aPCFG", emoji: "🏗️" },        // Probabilistic context-free grammar
+    { cat: "combi", labelKey: "aCombi", emoji: "🔗" },       // Combinator (2 words)
   ];
-  let selectedAlgo = "sha256";
-  let selectedProfileMult = 12;
+
+  // ============================================================
+  // ALGORITHM AND PROFILE STATE
+  // ============================================================
+  // User-selected hashing algorithm and attacker profile.
+  // Controls which crack times are displayed in the table.
+
+  let selectedAlgo = "sha256";     // Default hashing algorithm
+  let selectedProfileMult = 12;    // Default: 12 GPUs (experienced attacker)
   let userPinnedAlgo = false; // true once user manually changes ct-algo select
   let HIGH_FIDELITY = false;
 
@@ -5596,24 +5783,51 @@
     }).join("");
   }
 
+  // ============================================================
+  // MAIN RENDERING FUNCTION
+  // ============================================================
+  // Core function that:
+  // 1. Reads password from input field
+  // 2. Runs all 7 attack algorithms in parallel
+  // 3. Updates UI with crack-time estimates and analysis
+  // 4. Handles both empty and non-empty passwords
+  // 5. Debounces HIBP requests (rate limiting)
+  //
+  // Async because:
+  // - Lazy-loads ML model and dictionaries
+  // - Fetches HIBP breach database
+  // - Loads calibration profiles
+  //
+  // Called by: password input event (debounced), language change, page load
   async function render() {
+    // runId ensures we ignore stale renders if user types faster than async ops
+    // (prevents rendering old results after newer ones start)
     const runId = ++renderRunId;
+
+    // Get current password from input field
     const inputPw = input.value;
     const inputEmpty = !inputPw.length;
     const pw = inputPw;
 
+    // ============================================================
+    // EMPTY PASSWORD STATE
+    // ============================================================
+    // When password is empty, show neutral/grayed-out placeholders
     if (inputEmpty) {
+      // Hide reset button (only shown after user types)
       if (resetBtn) resetBtn.classList.remove("visible");
+
+      // Show results section but mark as empty (grayed out, opacity: 0.5)
       resultsDiv.classList.add("visible");
       resultsDiv.classList.remove("is-empty");
       if (attackerFrame) attackerFrame.hidden = false;
 
-      // Neutral strength state (visible placeholders)
+      // Reset strength indicator to neutral "—" (dash)
       strengthSegments.forEach((seg) => seg.classList.remove("active"));
       if (strengthIcon) strengthIcon.textContent = "—";
       if (strengthLabel) {
         strengthLabel.textContent = "—";
-        strengthLabel.style.color = "";
+        strengthLabel.style.color = ""; // Clear any colored state
       }
       if (strengthBits) strengthBits.textContent = "—";
       if (barLabel) barLabel.style.display = "flex";
@@ -5623,13 +5837,14 @@
         barWrapper.setAttribute("aria-valuetext", "No password entered");
       }
 
-      // Reset attacker cards to neutral "—" state (mirrors initial HTML)
-      resultLabelFast.textContent = "—";
-      crackDurationFast.textContent = "—";
-      crackDurationFast.style.color = "";
-      crackDateFast.textContent = "—";
-      crackDateFast.style.color = "";
-      resultSentenceFast.textContent = "";
+      // Reset crack-time estimates to neutral "—" state
+      // (these would show real values once password is entered)
+      if (resultLabelFast) resultLabelFast.textContent = "—";
+      if (crackDurationFast) crackDurationFast.textContent = "—";
+      if (crackDurationFast) crackDurationFast.style.color = "";
+      if (crackDateFast) crackDateFast.textContent = "—";
+      if (crackDateFast) crackDateFast.style.color = "";
+      if (resultSentenceFast) resultSentenceFast.textContent = "";
       if (resultLabelPro) resultLabelPro.textContent = "—";
       if (crackDurationPro) { crackDurationPro.textContent = "—"; crackDurationPro.style.color = ""; }
       if (crackDatePro) { crackDatePro.textContent = "—"; crackDatePro.style.color = ""; }

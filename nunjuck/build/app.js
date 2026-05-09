@@ -2941,9 +2941,11 @@
     });
     // Update toggle button text (preserve icon)
     const isVisible = input.type === "text";
-    const textSpan = toggleBtn.querySelector("span");
-    if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
-    toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+    if (toggleBtn) {
+      const textSpan = toggleBtn.querySelector("span");
+      if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
+      toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+    }
     // Update lang selector (globe button + menu)
     const langCodeSpan = document.getElementById("lang-code");
     if (langCodeSpan) {
@@ -3374,14 +3376,16 @@
   }
 
   // Toggle visibility
-  if (toggleBtn) toggleBtn.addEventListener("click", () => {
-    const show = input.type === "password";
-    input.type = show ? "text" : "password";
-    const textSpan = toggleBtn.querySelector("span");
-    if (textSpan) textSpan.textContent = show ? t("hide") : t("show");
-    toggleBtn.setAttribute("aria-label", show ? t("hideAria") : t("showAria"));
-    input.focus();
-  });
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      const textSpan = toggleBtn.querySelector("span");
+      if (textSpan) textSpan.textContent = show ? t("hide") : t("show");
+      toggleBtn.setAttribute("aria-label", show ? t("hideAria") : t("showAria"));
+      input.focus();
+    });
+  }
 
   // ============================================================
   // CONSTANTS & THRESHOLDS

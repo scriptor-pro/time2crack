@@ -27,27 +27,14 @@
   const bloomTrigger = $("bloom-trigger");
   const bloomSection = $("bloom-section");
   if (bloomTrigger) bloomTrigger.hidden = true;  // Trigger moved to badge
-  if (bloomSection) bloomSection.hidden = !BLOOM_LOADED && !BLOOM_LOADING;
-
-  // Update RockYou compact badge
-  const rockyouBadge = $("rockyou-status-badge");
-  if (rockyouBadge && !state.ui.bloomLoaded && !state.ui.bloomLoading) {
-    rockyouBadge.textContent = state.lang === "fr" ? "Vérifier RockYou" : "Check RockYou";
-    rockyouBadge.style.background = "var(--surface-elev)";
-    rockyouBadge.style.color = "var(--text-muted)";
-    rockyouBadge.style.cursor = "pointer";
-    rockyouBadge.title = t("bloomCheckNote");
-  } else if (rockyouBadge) {
-    rockyouBadge.style.cursor = "";
-    rockyouBadge.title = "";
-  }
+  if (bloomSection) bloomSection.hidden = !state.ui.bloomLoaded && !state.ui.bloomLoading;
 
   // Check password against bloom filter if already loaded
   if (!inputEmpty && state.ui.bloomLoaded && state.cache.bloomFilter) {
     checkBloom(pw);
   } else if (!state.ui.bloomLoaded || inputEmpty) {
     // Reset bloom result if filter not loaded
-    BLOOM_RESULT = null;
+    state.cache.bloomResult = null;
     updateBloomBanner(null);
   }
   const { size: cs, types } = getCharset(pw);
@@ -709,13 +696,6 @@ const bloomBtn = $("bloom-check-btn");
 if (bloomBtn) {
   bloomBtn.addEventListener("click", () => loadBloomFilter());
 }
-const rockyouBadgeBtn = $("rockyou-status-badge");
-if (rockyouBadgeBtn) {
-  rockyouBadgeBtn.addEventListener("click", () => {
-    if (!BLOOM_LOADED && !BLOOM_LOADING) loadBloomFilter();
-  });
-}
-} // End of: if (input) block
 
 // Initialize i18n and load dictionary on page load
 // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
@@ -728,5 +708,4 @@ if (state.dom.input) {
   loadPrinceCalibration();
   render(); // Keep layout fully visible even with empty input
 }
-}); // End DOMContentLoaded
 })();

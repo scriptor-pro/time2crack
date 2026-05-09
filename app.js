@@ -1984,7 +1984,7 @@ function tokenizeForPCFG(pw) {
   return segs;
 }
 function getPcfgProfile(lang) {
-  const source = PCFG_CALIBRATION || DEFAULT_PCFG_CALIBRATION;
+  const source = state.cache.calibrations.pcfg || DEFAULT_PCFG_CALIBRATION;
   const g = source.global || {};
   const l = (source.langs && source.langs[lang]) || {};
   const tokenBase = g.tokenRanks || {};
@@ -2035,7 +2035,7 @@ function clamp01(v) {
   return Math.max(0, Math.min(1, v));
 }
 function getMarkovProfile(lang) {
-  const source = MARKOV_CALIBRATION || DEFAULT_MARKOV_CALIBRATION;
+  const source = state.cache.calibrations.markov || DEFAULT_MARKOV_CALIBRATION;
   const g = source.global || {};
   const l = (source.langs && source.langs[lang]) || {};
   const tBase = g.tokenRanks || {};
@@ -2119,7 +2119,7 @@ const PRINCE_MAX_GUESSES = 1e19;
 const NEURAL_SOFTCAP_KNEE = 1e15;
 const NEURAL_MAX_GUESSES = 1e19;
 function getNeuralProfile(lang) {
-  const source = NEURAL_CALIBRATION || DEFAULT_NEURAL_CALIBRATION;
+  const source = state.cache.calibrations.neural || DEFAULT_NEURAL_CALIBRATION;
   const g = source.global || {};
   const l = (source.langs && source.langs[lang]) || {};
   const tBase = g.tokenRanks || {};
@@ -2211,7 +2211,7 @@ function neuralExpectedGuesses(pw, full, context, mlProb, lang = state.lang) {
   return softCapGuesses(Math.min(blendedRank, full), NEURAL_SOFTCAP_KNEE, NEURAL_MAX_GUESSES);
 }
 function getPrinceProfile(lang) {
-  const source = PRINCE_CALIBRATION || DEFAULT_PRINCE_CALIBRATION;
+  const source = state.cache.calibrations.prince || DEFAULT_PRINCE_CALIBRATION;
   const g = source.global || {};
   const l = (source.langs && source.langs[lang]) || {};
   const tBase = g.tokenRanks || {};
@@ -4385,8 +4385,8 @@ const DEFAULT_PCFG_CALIBRATION = {
 };
 
 async function loadPcfgCalibration() {
-  if (PCFG_CALIBRATION || PCFG_CALIB_LOADING) return;
-  PCFG_CALIB_LOADING = true;
+  if (state.cache.calibrations.pcfg || state.ui.pcfgCalibLoading) return;
+  state.ui.pcfgCalibLoading = true;
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -4394,13 +4394,13 @@ async function loadPcfgCalibration() {
     clearTimeout(timeout);
     if (!res.ok) throw new Error(res.status);
     const json = await res.json();
-    if (json && typeof json === "object") PCFG_CALIBRATION = json;
+    if (json && typeof json === "object") state.cache.calibrations.pcfg = json;
   } catch (err) {
     console.warn("PCFG calibration load failed:", err.message);
-    PCFG_CALIBRATION = null;
+    state.cache.calibrations.pcfg = null;
   } finally {
-    PCFG_CALIB_LOADING = false;
-    if (input && input.value.length) render();
+    state.ui.pcfgCalibLoading = false;
+    if (state.dom.input && state.dom.input.value.length) render();
   }
 }
 
@@ -4492,8 +4492,8 @@ const DEFAULT_MARKOV_CALIBRATION = {
 };
 
 async function loadMarkovCalibration() {
-  if (MARKOV_CALIBRATION || MARKOV_CALIB_LOADING) return;
-  MARKOV_CALIB_LOADING = true;
+  if (state.cache.calibrations.markov || state.ui.markovCalibLoading) return;
+  state.ui.markovCalibLoading = true;
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -4501,13 +4501,13 @@ async function loadMarkovCalibration() {
     clearTimeout(timeout);
     if (!res.ok) throw new Error(res.status);
     const json = await res.json();
-    if (json && typeof json === "object") MARKOV_CALIBRATION = json;
+    if (json && typeof json === "object") state.cache.calibrations.markov = json;
   } catch (err) {
     console.warn("Markov calibration load failed:", err.message);
-    MARKOV_CALIBRATION = null;
+    state.cache.calibrations.markov = null;
   } finally {
-    MARKOV_CALIB_LOADING = false;
-    if (input && input.value.length) render();
+    state.ui.markovCalibLoading = false;
+    if (state.dom.input && state.dom.input.value.length) render();
   }
 }
 
@@ -4606,8 +4606,8 @@ const DEFAULT_NEURAL_CALIBRATION = {
 };
 
 async function loadNeuralCalibration() {
-  if (NEURAL_CALIBRATION || NEURAL_CALIB_LOADING) return;
-  NEURAL_CALIB_LOADING = true;
+  if (state.cache.calibrations.neural || state.ui.neuralCalibLoading) return;
+  state.ui.neuralCalibLoading = true;
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -4615,13 +4615,13 @@ async function loadNeuralCalibration() {
     clearTimeout(timeout);
     if (!res.ok) throw new Error(res.status);
     const json = await res.json();
-    if (json && typeof json === "object") NEURAL_CALIBRATION = json;
+    if (json && typeof json === "object") state.cache.calibrations.neural = json;
   } catch (err) {
     console.warn("Neural calibration load failed:", err.message);
-    NEURAL_CALIBRATION = null;
+    state.cache.calibrations.neural = null;
   } finally {
-    NEURAL_CALIB_LOADING = false;
-    if (input && input.value.length) render();
+    state.ui.neuralCalibLoading = false;
+    if (state.dom.input && state.dom.input.value.length) render();
   }
 }
 
@@ -4714,8 +4714,8 @@ const DEFAULT_PRINCE_CALIBRATION = {
 };
 
 async function loadPrinceCalibration() {
-  if (PRINCE_CALIBRATION || PRINCE_CALIB_LOADING) return;
-  PRINCE_CALIB_LOADING = true;
+  if (state.cache.calibrations.prince || state.ui.princeCalibLoading) return;
+  state.ui.princeCalibLoading = true;
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -4723,13 +4723,13 @@ async function loadPrinceCalibration() {
     clearTimeout(timeout);
     if (!res.ok) throw new Error(res.status);
     const json = await res.json();
-    if (json && typeof json === "object") PRINCE_CALIBRATION = json;
+    if (json && typeof json === "object") state.cache.calibrations.prince = json;
   } catch (err) {
     console.warn("Prince calibration load failed:", err.message);
-    PRINCE_CALIBRATION = null;
+    state.cache.calibrations.prince = null;
   } finally {
-    PRINCE_CALIB_LOADING = false;
-    if (input && input.value.length) render();
+    state.ui.princeCalibLoading = false;
+    if (state.dom.input && state.dom.input.value.length) render();
   }
 }
 
@@ -4814,21 +4814,21 @@ async function loadBloomFilter() {
     // Zero-copy view of bit array (no memory duplication)
     const bitArray = new Uint8Array(buf, 20);
 
-    BLOOM_FILTER = { bitArray, m, k };
-    BLOOM_LOADED = true;
+    state.cache.bloomFilter = { bitArray, m, k };
+    state.ui.bloomLoaded = true;
 
     // Check current password if one is entered
-    if (input && input.value.length) {
-      checkBloom(input.value);
+    if (state.dom.input && state.dom.input.value.length) {
+      checkBloom(state.dom.input.value);
     }
-    updateBloomBanner(BLOOM_RESULT);
+    updateBloomBanner(state.cache.bloomResult);
   } catch (e) {
     console.error("Failed to load bloom filter:", e);
-    BLOOM_RESULT = "error";
-    BLOOM_LOADED = false; // allow retry
+    state.cache.bloomResult = "error";
+    state.ui.bloomLoaded = false; // allow retry
     updateBloomBanner("error");
   } finally {
-    BLOOM_LOADING = false;
+    state.ui.bloomLoading = false;
     if (bloomLoadingEl) bloomLoadingEl.hidden = true;
     if (bloomBtnEl) bloomBtnEl.disabled = false;
     // Don't hide bloom-trigger here — render() controls visibility
@@ -4839,16 +4839,16 @@ async function loadBloomFilter() {
  * Check password against loaded bloom filter
  */
 function checkBloom(pw) {
-  if (!BLOOM_FILTER || !pw) return;
-  const found = bloomHas(BLOOM_FILTER, pw);
-  BLOOM_RESULT = found ? "found" : "not_found";
-  updateBloomBanner(BLOOM_RESULT);
+  if (!state.cache.bloomFilter || !pw) return;
+  const found = bloomHas(state.cache.bloomFilter, pw);
+  state.cache.bloomResult = found ? "found" : "not_found";
+  updateBloomBanner(state.cache.bloomResult);
 }
 
 /**
  * Update bloom filter UI banners based on state
  */
-function updateBloomBanner(state) {
+function updateBloomBanner(bloomState) {
   const bannerEl = safe("bloom-banner");
   const safeEl = safe("bloom-safe");
   const errorEl = safe("bloom-error");
@@ -4856,27 +4856,27 @@ function updateBloomBanner(state) {
   const hintEl = safe("rockyou-hint");
   const wrapperEl = safe("qp-rockyou-wrapper");
 
-  if (bannerEl) bannerEl.hidden = state !== "found";
-  if (safeEl) safeEl.hidden = state !== "not_found";
-  if (errorEl) errorEl.hidden = state !== "error";
+  if (bannerEl) bannerEl.hidden = bloomState !== "found";
+  if (safeEl) safeEl.hidden = bloomState !== "not_found";
+  if (errorEl) errorEl.hidden = bloomState !== "error";
 
   // Update compact badge in status bar
   if (badge) {
-    if (state === "found") {
-      badge.textContent = LANG === "fr" ? "💀 Trouvé - votre mot de passe est dans la fuite RockYou" : "💀 Found - your password is in the RockYou leak";
+    if (bloomState === "found") {
+      badge.textContent = state.lang === "fr" ? "💀 Trouvé - votre mot de passe est dans la fuite RockYou" : "💀 Found - your password is in the RockYou leak";
       badge.style.background = "var(--critical)";
       badge.style.color = "#fff";
       if (hintEl) hintEl.hidden = true;
-    } else if (state === "not_found") {
-      badge.textContent = LANG === "fr" ? "✓ Absent de RockYou" : "✓ Not in RockYou";
+    } else if (bloomState === "not_found") {
+      badge.textContent = state.lang === "fr" ? "✓ Absent de RockYou" : "✓ Not in RockYou";
       badge.style.background = "var(--success)";
       badge.style.color = "#fff";
       if (hintEl) hintEl.hidden = true;
-    } else if (state === "loading") {
+    } else if (bloomState === "loading") {
       badge.textContent = "⏳ " + t("bloomLoading").slice(0, 20) + "…";
       badge.style.background = "var(--surface-elev)";
       badge.style.color = "var(--text-muted)";
-    } else if (state === "error") {
+    } else if (bloomState === "error") {
       badge.textContent = "⚠ " + t("bloomError");
       badge.style.background = "var(--warning)";
       badge.style.color = "#fff";
@@ -6179,7 +6179,6 @@ if (state.dom.input) {
   loadPrinceCalibration();
   render(); // Keep layout fully visible even with empty input
 }
-}); // End DOMContentLoaded
 })();
 
 

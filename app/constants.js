@@ -62,7 +62,7 @@ function tokenizeForPCFG(pw) {
 }
 
 function getPcfgProfile(lang) {
-  const source = PCFG_CALIBRATION || DEFAULT_PCFG_CALIBRATION;
+  const source = state.cache.calibrations.pcfg || DEFAULT_PCFG_CALIBRATION;
   const g = source.global || {};
   const l = (source.langs && source.langs[lang]) || {};
 
@@ -125,7 +125,7 @@ function clamp01(v) {
 }
 
 function getMarkovProfile(lang) {
-  const source = MARKOV_CALIBRATION || DEFAULT_MARKOV_CALIBRATION;
+  const source = state.cache.calibrations.markov || DEFAULT_MARKOV_CALIBRATION;
   const g = source.global || {};
   const l = (source.langs && source.langs[lang]) || {};
   const tBase = g.tokenRanks || {};
@@ -224,7 +224,7 @@ const NEURAL_SOFTCAP_KNEE = 1e15;
 const NEURAL_MAX_GUESSES = 1e19;
 
 function getNeuralProfile(lang) {
-  const source = NEURAL_CALIBRATION || DEFAULT_NEURAL_CALIBRATION;
+  const source = state.cache.calibrations.neural || DEFAULT_NEURAL_CALIBRATION;
   const g = source.global || {};
   const l = (source.langs && source.langs[lang]) || {};
   const tBase = g.tokenRanks || {};
@@ -329,7 +329,7 @@ function neuralExpectedGuesses(pw, full, context, mlProb, lang = state.lang) {
 }
 
 function getPrinceProfile(lang) {
-  const source = PRINCE_CALIBRATION || DEFAULT_PRINCE_CALIBRATION;
+  const source = state.cache.calibrations.prince || DEFAULT_PRINCE_CALIBRATION;
   const g = source.global || {};
   const l = (source.langs && source.langs[lang]) || {};
   const tBase = g.tokenRanks || {};

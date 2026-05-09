@@ -116,41 +116,8 @@ function updateBloomBanner(bloomResult) {
   const bannerEl = safe("bloom-banner");
   const safeEl = safe("bloom-safe");
   const errorEl = safe("bloom-error");
-  const badge = safe("rockyou-status-badge");
-  const hintEl = safe("rockyou-hint");
-  const wrapperEl = safe("qp-rockyou-wrapper");
 
   if (bannerEl) bannerEl.hidden = bloomResult !== "found";
   if (safeEl) safeEl.hidden = bloomResult !== "not_found";
   if (errorEl) errorEl.hidden = bloomResult !== "error";
-
-  // Update compact badge in status bar
-  if (badge) {
-    if (bloomResult === "found") {
-      badge.textContent = state.lang === "fr" ? "💀 Trouvé - votre mot de passe est dans la fuite RockYou" : "💀 Found - your password is in the RockYou leak";
-      badge.style.background = "var(--critical)";
-      badge.style.color = "#fff";
-      if (hintEl) hintEl.hidden = true;
-    } else if (bloomResult === "not_found") {
-      badge.textContent = state.lang === "fr" ? "✓ Absent de RockYou" : "✓ Not in RockYou";
-      badge.style.background = "var(--success)";
-      badge.style.color = "#fff";
-      if (hintEl) hintEl.hidden = true;
-    } else if (bloomResult === "loading") {
-      badge.textContent = "⏳ " + t("bloomLoading").slice(0, 20) + "…";
-      badge.style.background = "var(--surface-elev)";
-      badge.style.color = "var(--text-muted)";
-    } else if (bloomResult === "error") {
-      badge.textContent = "⚠ " + t("bloomError");
-      badge.style.background = "var(--warning)";
-      badge.style.color = "#fff";
-    } else {
-      // null: not loaded yet — show trigger button state
-      badge.textContent = "—";
-      badge.style.background = "";
-      badge.style.color = "";
-    }
-  }
-  // Show/hide the RockYou wrapper only when there's a password
-  if (wrapperEl) wrapperEl.hidden = false;
 }

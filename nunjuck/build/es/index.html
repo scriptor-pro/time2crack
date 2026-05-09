@@ -40,7 +40,7 @@
 <meta name="twitter:description" content="Analiza la verdadera fortaleza de tu contraseña con 7 modelos de ataque y 6 algoritmos hash. Cálculo 100% local, sin transmisión de contraseña.">
 <meta name="twitter:image" content="https://time2crack.eu/logo.png">
 
-<link rel="canonical" href="https://time2crack.eu/es/index.html">
+<link id="canonical-link" rel="canonical" href="https://time2crack.eu/es/index.html">
 <link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/index.html">
 <link rel="alternate" hreflang="en" href="https://time2crack.eu/en/index.html">
 <link rel="alternate" hreflang="es" href="https://time2crack.eu/es/index.html">
@@ -181,6 +181,18 @@ window.RESOURCE_BASE = '/';
       </div>
     </div>
 
+    <!-- Placeholder elements for JavaScript compatibility -->
+    <div id="dict-loading" style="display: none;"></div>
+    <div id="char-preview" style="display: none;"></div>
+    <div id="speed-tooltip" style="display: none;"></div>
+    <div id="lang-code" style="display: none;"></div>
+    <div id="lang-selector" style="display: none;"></div>
+    <div id="character-analysis-wrapper" style="display: none;"></div>
+    <div id="character-analysis" style="display: none;"></div>
+    <div id="character-analysis-live-wrapper" style="display: none;"></div>
+    <div id="character-analysis-live" style="display: none;"></div>
+    <div id="copy-btn" style="display: none;"></div>
+
     <p id="status" aria-live="polite"></p>
 
     <div id="results" hidden="">
@@ -275,10 +287,10 @@ window.RESOURCE_BASE = '/';
     </div>
 
   
-<script src="/app.js" type="module"></script>
+<script src="/app.js"></script>
 </main>
 <footer id="site-footer" class="site-footer">
-  <p>Cálculo local · verificación HIBP · Código abierto</p>
+  <p>Cálculo local · verificación HIBP · Código abierto • Last modified: 2026-05-08 11:45 UTC</p>
   <div class="footer-social">
     <a href="https://linkedin.com/company/time2crack" class="footer-social__link" aria-label="Síguenos en LinkedIn">
       <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true" width="24" height="24">

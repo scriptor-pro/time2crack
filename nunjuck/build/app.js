@@ -2940,11 +2940,13 @@
       if (I[lang][k]) el.placeholder = I[lang][k];
     });
     // Update toggle button text (preserve icon)
-    const isVisible = input.type === "text";
-    if (toggleBtn) {
-      const textSpan = toggleBtn.querySelector("span");
-      if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
-      toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+    if (input) {
+      const isVisible = input.type === "text";
+      if (toggleBtn) {
+        const textSpan = toggleBtn.querySelector("span");
+        if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
+        toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+      }
     }
     // Update lang selector (globe button + menu)
     const langCodeSpan = document.getElementById("lang-code");

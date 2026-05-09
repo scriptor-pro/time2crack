@@ -2969,7 +2969,7 @@
     // Load dictionary for the new language (async, non-blocking)
     loadDictionary(lang);
     // Re-render if there's content
-    if (input.value.length) render();
+    if (input && input.value.length) render();
   }
 
   // Lang selector: toggle dropdown menu

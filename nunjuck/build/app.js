@@ -3013,6 +3013,10 @@
   document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
   const input = $("pw-input");
+
+  // Early return if page doesn't have password input (not index/generator)
+  if (!input) return;
+
   const toggleBtn = $("toggle-visibility");
   const strengthIcon = $("strength-icon");
   const strengthLabel = $("strength-label");

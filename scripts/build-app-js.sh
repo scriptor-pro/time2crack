@@ -32,6 +32,78 @@ echo "// ============================================================" >> "$TEMP
 grep -v "^// ===" "$APP_DIR/state.js" | grep -v "^$" >> "$TEMP_FILE"
 echo "" >> "$TEMP_FILE"
 
+# 1B. INITIALIZE DOM & CREATE LOCAL ALIASES
+echo "// ============================================================" >> "$TEMP_FILE"
+echo "// 1B. INITIALIZE DOM ELEMENTS" >> "$TEMP_FILE"
+echo "// ============================================================" >> "$TEMP_FILE"
+cat >> "$TEMP_FILE" << 'INIT_DOM'
+// Initialize DOM elements and create local aliases for shared scope
+initializeDOMElements();
+
+// Create local aliases for backward compatibility throughout the app
+const input = state.dom.input;
+const resultsDiv = state.dom.results;
+const resetBtn = state.dom.resetBtn;
+const strengthSegments = state.dom.strengthSegments;
+const barLabel = state.dom.barLabel;
+const strengthLabel = state.dom.strengthLabel;
+const strengthIcon = state.dom.strengthIcon;
+const strengthBits = state.dom.strengthBits;
+const barWrapper = state.dom.barWrapper;
+const detailLengthLive = state.dom.detailLengthLive;
+const detailCharsetLive = state.dom.detailCharsetLive;
+const detailEntropyLive = state.dom.detailEntropyLive;
+const detailCombosLive = state.dom.detailCombosLive;
+const liveDetailsVisible = state.dom.liveDetailsVisible;
+const resultLabelFast = state.dom.resultLabelFast;
+const crackDurationFast = state.dom.crackDurationFast;
+const crackDateFast = state.dom.crackDateFast;
+const resultSentenceFast = state.dom.resultSentenceFast;
+const resultLabelPro = state.dom.resultLabelPro;
+const crackDurationPro = state.dom.crackDurationPro;
+const crackDatePro = state.dom.crackDatePro;
+const resultSentencePro = state.dom.resultSentencePro;
+const ctList = state.dom.ctList;
+const ctAlgo = state.dom.ctAlgo;
+const vulnTagsEl = state.dom.vulnTagsEl;
+const attackerFrame = state.dom.attackerFrame;
+const attackerTabsNodes = state.dom.attackerTabsNodes;
+const copyBtn = state.dom.copyBtn;
+const strengthInfoBtn = state.dom.strengthInfoBtn;
+const strengthTooltip = state.dom.strengthTooltip;
+
+// Generator elements
+const genTrigger = state.dom.genAccordionTrigger;
+const genPanel = state.dom.genPanel;
+const genLenRange = state.dom.genLenRange;
+const genLenVal = state.dom.genLenVal;
+const genWordInput = state.dom.genWordInput;
+const genPreviewTxt = state.dom.genPreviewText;
+const genPreviewStr = state.dom.genPreviewStrength;
+const genMaskToggle = state.dom.genMaskToggle;
+const genMaskIcon = state.dom.genMaskIcon;
+const genBtnRegen = state.dom.genBtnRegen;
+const genBtnUse = state.dom.genBtnUse;
+const genMemBadge = state.dom.genMemBadge;
+const genMiniSegs = state.dom.genMiniSegs;
+const genTypeChips = state.dom.genTypeChips;
+const genChkU = state.dom.genChkU;
+const genChkL = state.dom.genChkL;
+const genChkD = state.dom.genChkD;
+const genChkS = state.dom.genChkS;
+
+// Local variables for state management (shared scope)
+let timer;
+let renderRunId = 0;
+let hibpDebounce;
+let lastCheckedPw = "";
+let hibpAbort;
+
+// Placeholder render function (will be defined in render.js)
+let render = () => {};
+INIT_DOM
+echo "" >> "$TEMP_FILE"
+
 # 2. I18N
 echo "// ============================================================" >> "$TEMP_FILE"
 echo "// 2. I18N (TRANSLATIONS)" >> "$TEMP_FILE"

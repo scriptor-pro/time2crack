@@ -708,4 +708,3 @@ if (state.dom.input) {
   loadPrinceCalibration();
   render(); // Keep layout fully visible even with empty input
 }
-})();

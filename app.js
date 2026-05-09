@@ -13,6 +13,79 @@
 const SUPPORTED_LANGS = ["en", "fr", "es", "pt", "de", "it", "tr", "pl", "nl"];
 const safe = (id) => document.getElementById(id);
 const isReal = (el) => el !== null && el !== undefined;
+function initializeDOMElements() {
+  state.dom.input = safe("password-input");
+  state.dom.toggleVisibility = safe("toggle-visibility");
+  state.dom.results = safe("results");
+  state.dom.resultLabelFast = safe("result-label-fast");
+  state.dom.crackDurationFast = safe("crack-duration-fast");
+  state.dom.crackDateFast = safe("crack-date-fast");
+  state.dom.resultSentenceFast = safe("result-sentence-fast");
+  state.dom.strengthLabel = safe("strength-label");
+  state.dom.strengthIcon = safe("strength-icon");
+  state.dom.strengthBits = safe("strength-bits");
+  state.dom.barWrapper = document.querySelector(".strength-bar-wrapper");
+  state.dom.barLabel = state.dom.strengthIcon ? state.dom.strengthIcon.parentElement : null;
+  state.dom.strengthSegments = Array.from(document.querySelectorAll(".strength-bar-segments .segment"));
+  state.dom.ctList = safe("ct-list");
+  state.dom.ctFastestValue = safe("ct-fastest-value");
+  state.dom.ctAlgo = safe("ct-algo");
+  state.dom.vulnTagsEl = safe("vuln-tags");
+  state.dom.liveDetailsVisible = safe("live-details-visible");
+  state.dom.detailLengthLive = safe("detail-length-live");
+  state.dom.detailCharsetLive = safe("detail-charset-live");
+  state.dom.detailEntropyLive = safe("detail-entropy-live");
+  state.dom.detailCombosLive = safe("detail-combos-live");
+  state.dom.langToggle = safe("lang-toggle");
+  state.dom.langSelector = document.querySelector(".lang-selector");
+  state.dom.langMenu = safe("lang-menu");
+  state.dom.langCode = safe("lang-code");
+  state.dom.dictLoading = safe("dict-loading");
+  state.dom.resetBtn = safe("reset-btn");
+  state.dom.copyBtn = safe("copy-btn");
+  state.dom.genAccordionTrigger = safe("gen-accordion-trigger");
+  state.dom.genPanel = safe("gen-accordion-panel");
+  state.dom.hibpLoading = safe("hibp-loading");
+  state.dom.hibpCount = safe("hibp-count");
+  state.dom.hibpBanner = safe("hibp-banner");
+  // Additional elements
+  state.dom.crackDatePro = safe("crack-date-pro");
+  state.dom.crackDurationPro = safe("crack-duration-pro");
+  state.dom.resultLabelPro = safe("result-label-pro");
+  state.dom.resultSentencePro = safe("result-sentence-pro");
+  state.dom.characterAnalysis = safe("character-analysis");
+  state.dom.characterAnalysisWrapper = safe("character-analysis-wrapper");
+  state.dom.characterAnalysisLive = safe("character-analysis-live");
+  state.dom.characterAnalysisLiveWrapper = safe("character-analysis-live-wrapper");
+  state.dom.bloomBanner = safe("bloom-banner");
+  state.dom.bloomSafe = safe("bloom-safe");
+  state.dom.bloomError = safe("bloom-error");
+  state.dom.bloomLoading = safe("bloom-loading");
+  state.dom.bloomTrigger = safe("bloom-trigger");
+  state.dom.bloomSection = safe("bloom-section");
+  state.dom.bloomCheckBtn = safe("bloom-check-btn");
+  state.dom.strengthInfoBtn = safe("strength-info-btn");
+  state.dom.strengthTooltip = safe("strength-tooltip");
+  state.dom.attackerFrame = safe("attacker-frame");
+  state.dom.attackerTabsNodes = Array.from(document.querySelectorAll(".attacker-tab"));
+  // Password generator
+  state.dom.genLenRange = safe("gen-len-range");
+  state.dom.genLenVal = safe("gen-len-val");
+  state.dom.genWordInput = safe("gen-word-input");
+  state.dom.genPreviewText = safe("gen-preview-text");
+  state.dom.genPreviewStrength = safe("gen-preview-strength");
+  state.dom.genMaskToggle = safe("gen-mask-toggle");
+  state.dom.genMaskIcon = safe("gen-mask-icon");
+  state.dom.genBtnRegen = safe("gen-btn-regen");
+  state.dom.genBtnUse = safe("gen-btn-use");
+  state.dom.genMemBadge = safe("gen-mem-badge");
+  state.dom.genMiniSegs = [0,1,2,3,4,5].map(i => safe("gen-mb"+i)).filter(isReal);
+  state.dom.genTypeChips = Array.from(document.querySelectorAll(".gen-type-chip"));
+  state.dom.genChkU = safe("gen-chk-u");
+  state.dom.genChkL = safe("gen-chk-l");
+  state.dom.genChkD = safe("gen-chk-d");
+  state.dom.genChkS = safe("gen-chk-s");
+}
 function clamp(val, min, max) {
   return Math.max(min, Math.min(max, val));
 }
@@ -64,6 +137,47 @@ const state = {
     hibpLoading: null,
     hibpCount: null,
     hibpBanner: null,
+    // Password analysis & results
+    crackDatePro: null,
+    crackDurationPro: null,
+    resultLabelPro: null,
+    resultSentencePro: null,
+    // Character analysis
+    characterAnalysis: null,
+    characterAnalysisWrapper: null,
+    characterAnalysisLive: null,
+    characterAnalysisLiveWrapper: null,
+    // Bloom filter UI
+    bloomBanner: null,
+    bloomSafe: null,
+    bloomError: null,
+    bloomLoading: null,
+    bloomTrigger: null,
+    bloomSection: null,
+    bloomCheckBtn: null,
+    // Password strength tooltip
+    strengthInfoBtn: null,
+    strengthTooltip: null,
+    // Attacker tabs
+    attackerFrame: null,
+    attackerTabsNodes: [],
+    // Password generator
+    genLenRange: null,
+    genLenVal: null,
+    genWordInput: null,
+    genPreviewText: null,
+    genPreviewStrength: null,
+    genMaskToggle: null,
+    genMaskIcon: null,
+    genBtnRegen: null,
+    genBtnUse: null,
+    genMemBadge: null,
+    genMiniSegs: [],
+    genTypeChips: [],
+    genChkU: null,
+    genChkL: null,
+    genChkD: null,
+    genChkS: null,
   },
   // Data caches
   cache: {
@@ -117,6 +231,74 @@ const state = {
   // Translations (loaded from I[lang])
   i18n: {},
 };
+
+// ============================================================
+// 1B. INITIALIZE DOM ELEMENTS
+// ============================================================
+// Initialize DOM elements and create local aliases for shared scope
+initializeDOMElements();
+
+// Create local aliases for backward compatibility throughout the app
+const input = state.dom.input;
+const resultsDiv = state.dom.results;
+const resetBtn = state.dom.resetBtn;
+const strengthSegments = state.dom.strengthSegments;
+const barLabel = state.dom.barLabel;
+const strengthLabel = state.dom.strengthLabel;
+const strengthIcon = state.dom.strengthIcon;
+const strengthBits = state.dom.strengthBits;
+const barWrapper = state.dom.barWrapper;
+const detailLengthLive = state.dom.detailLengthLive;
+const detailCharsetLive = state.dom.detailCharsetLive;
+const detailEntropyLive = state.dom.detailEntropyLive;
+const detailCombosLive = state.dom.detailCombosLive;
+const liveDetailsVisible = state.dom.liveDetailsVisible;
+const resultLabelFast = state.dom.resultLabelFast;
+const crackDurationFast = state.dom.crackDurationFast;
+const crackDateFast = state.dom.crackDateFast;
+const resultSentenceFast = state.dom.resultSentenceFast;
+const resultLabelPro = state.dom.resultLabelPro;
+const crackDurationPro = state.dom.crackDurationPro;
+const crackDatePro = state.dom.crackDatePro;
+const resultSentencePro = state.dom.resultSentencePro;
+const ctList = state.dom.ctList;
+const ctAlgo = state.dom.ctAlgo;
+const vulnTagsEl = state.dom.vulnTagsEl;
+const attackerFrame = state.dom.attackerFrame;
+const attackerTabsNodes = state.dom.attackerTabsNodes;
+const copyBtn = state.dom.copyBtn;
+const strengthInfoBtn = state.dom.strengthInfoBtn;
+const strengthTooltip = state.dom.strengthTooltip;
+
+// Generator elements
+const genTrigger = state.dom.genAccordionTrigger;
+const genPanel = state.dom.genPanel;
+const genLenRange = state.dom.genLenRange;
+const genLenVal = state.dom.genLenVal;
+const genWordInput = state.dom.genWordInput;
+const genPreviewTxt = state.dom.genPreviewText;
+const genPreviewStr = state.dom.genPreviewStrength;
+const genMaskToggle = state.dom.genMaskToggle;
+const genMaskIcon = state.dom.genMaskIcon;
+const genBtnRegen = state.dom.genBtnRegen;
+const genBtnUse = state.dom.genBtnUse;
+const genMemBadge = state.dom.genMemBadge;
+const genMiniSegs = state.dom.genMiniSegs;
+const genTypeChips = state.dom.genTypeChips;
+const genChkU = state.dom.genChkU;
+const genChkL = state.dom.genChkL;
+const genChkD = state.dom.genChkD;
+const genChkS = state.dom.genChkS;
+
+// Local variables for state management (shared scope)
+let timer;
+let renderRunId = 0;
+let hibpDebounce;
+let lastCheckedPw = "";
+let hibpAbort;
+
+// Placeholder render function (will be defined in render.js)
+let render = () => {};
 
 // ============================================================
 // 2. I18N (TRANSLATIONS)
@@ -4852,43 +5034,10 @@ function updateBloomBanner(bloomState) {
   const bannerEl = safe("bloom-banner");
   const safeEl = safe("bloom-safe");
   const errorEl = safe("bloom-error");
-  const badge = safe("rockyou-status-badge");
-  const hintEl = safe("rockyou-hint");
-  const wrapperEl = safe("qp-rockyou-wrapper");
 
   if (bannerEl) bannerEl.hidden = bloomState !== "found";
   if (safeEl) safeEl.hidden = bloomState !== "not_found";
   if (errorEl) errorEl.hidden = bloomState !== "error";
-
-  // Update compact badge in status bar
-  if (badge) {
-    if (bloomState === "found") {
-      badge.textContent = state.lang === "fr" ? "💀 Trouvé - votre mot de passe est dans la fuite RockYou" : "💀 Found - your password is in the RockYou leak";
-      badge.style.background = "var(--critical)";
-      badge.style.color = "#fff";
-      if (hintEl) hintEl.hidden = true;
-    } else if (bloomState === "not_found") {
-      badge.textContent = state.lang === "fr" ? "✓ Absent de RockYou" : "✓ Not in RockYou";
-      badge.style.background = "var(--success)";
-      badge.style.color = "#fff";
-      if (hintEl) hintEl.hidden = true;
-    } else if (bloomState === "loading") {
-      badge.textContent = "⏳ " + t("bloomLoading").slice(0, 20) + "…";
-      badge.style.background = "var(--surface-elev)";
-      badge.style.color = "var(--text-muted)";
-    } else if (bloomState === "error") {
-      badge.textContent = "⚠ " + t("bloomError");
-      badge.style.background = "var(--warning)";
-      badge.style.color = "#fff";
-    } else {
-      // null: not loaded yet — show trigger button state
-      badge.textContent = "—";
-      badge.style.background = "";
-      badge.style.color = "";
-    }
-  }
-  // Show/hide the RockYou wrapper only when there's a password
-  if (wrapperEl) wrapperEl.hidden = false;
 }
 
 /**
@@ -5091,43 +5240,10 @@ function updateBloomBanner(bloomResult) {
   const bannerEl = safe("bloom-banner");
   const safeEl = safe("bloom-safe");
   const errorEl = safe("bloom-error");
-  const badge = safe("rockyou-status-badge");
-  const hintEl = safe("rockyou-hint");
-  const wrapperEl = safe("qp-rockyou-wrapper");
 
   if (bannerEl) bannerEl.hidden = bloomResult !== "found";
   if (safeEl) safeEl.hidden = bloomResult !== "not_found";
   if (errorEl) errorEl.hidden = bloomResult !== "error";
-
-  // Update compact badge in status bar
-  if (badge) {
-    if (bloomResult === "found") {
-      badge.textContent = state.lang === "fr" ? "💀 Trouvé - votre mot de passe est dans la fuite RockYou" : "💀 Found - your password is in the RockYou leak";
-      badge.style.background = "var(--critical)";
-      badge.style.color = "#fff";
-      if (hintEl) hintEl.hidden = true;
-    } else if (bloomResult === "not_found") {
-      badge.textContent = state.lang === "fr" ? "✓ Absent de RockYou" : "✓ Not in RockYou";
-      badge.style.background = "var(--success)";
-      badge.style.color = "#fff";
-      if (hintEl) hintEl.hidden = true;
-    } else if (bloomResult === "loading") {
-      badge.textContent = "⏳ " + t("bloomLoading").slice(0, 20) + "…";
-      badge.style.background = "var(--surface-elev)";
-      badge.style.color = "var(--text-muted)";
-    } else if (bloomResult === "error") {
-      badge.textContent = "⚠ " + t("bloomError");
-      badge.style.background = "var(--warning)";
-      badge.style.color = "#fff";
-    } else {
-      // null: not loaded yet — show trigger button state
-      badge.textContent = "—";
-      badge.style.background = "";
-      badge.style.color = "";
-    }
-  }
-  // Show/hide the RockYou wrapper only when there's a password
-  if (wrapperEl) wrapperEl.hidden = false;
 }
 // ============================================================
 // 10. RENDERING
@@ -5478,27 +5594,14 @@ async function render() {
   const bloomTrigger = $("bloom-trigger");
   const bloomSection = $("bloom-section");
   if (bloomTrigger) bloomTrigger.hidden = true;  // Trigger moved to badge
-  if (bloomSection) bloomSection.hidden = !BLOOM_LOADED && !BLOOM_LOADING;
-
-  // Update RockYou compact badge
-  const rockyouBadge = $("rockyou-status-badge");
-  if (rockyouBadge && !state.ui.bloomLoaded && !state.ui.bloomLoading) {
-    rockyouBadge.textContent = state.lang === "fr" ? "Vérifier RockYou" : "Check RockYou";
-    rockyouBadge.style.background = "var(--surface-elev)";
-    rockyouBadge.style.color = "var(--text-muted)";
-    rockyouBadge.style.cursor = "pointer";
-    rockyouBadge.title = t("bloomCheckNote");
-  } else if (rockyouBadge) {
-    rockyouBadge.style.cursor = "";
-    rockyouBadge.title = "";
-  }
+  if (bloomSection) bloomSection.hidden = !state.ui.bloomLoaded && !state.ui.bloomLoading;
 
   // Check password against bloom filter if already loaded
   if (!inputEmpty && state.ui.bloomLoaded && state.cache.bloomFilter) {
     checkBloom(pw);
   } else if (!state.ui.bloomLoaded || inputEmpty) {
     // Reset bloom result if filter not loaded
-    BLOOM_RESULT = null;
+    state.cache.bloomResult = null;
     updateBloomBanner(null);
   }
   const { size: cs, types } = getCharset(pw);
@@ -6160,13 +6263,6 @@ const bloomBtn = $("bloom-check-btn");
 if (bloomBtn) {
   bloomBtn.addEventListener("click", () => loadBloomFilter());
 }
-const rockyouBadgeBtn = $("rockyou-status-badge");
-if (rockyouBadgeBtn) {
-  rockyouBadgeBtn.addEventListener("click", () => {
-    if (!BLOOM_LOADED && !BLOOM_LOADING) loadBloomFilter();
-  });
-}
-} // End of: if (input) block
 
 // Initialize i18n and load dictionary on page load
 // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
@@ -6179,7 +6275,6 @@ if (state.dom.input) {
   loadPrinceCalibration();
   render(); // Keep layout fully visible even with empty input
 }
-})();
 
 
 })();

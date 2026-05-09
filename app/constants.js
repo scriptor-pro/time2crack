@@ -84,7 +84,7 @@ function getPcfgProfile(lang) {
   };
 }
 
-function pcfgKeyspace(pw, lang = LANG) {
+function pcfgKeyspace(pw, lang = state.lang) {
   const segs = tokenizeForPCFG(pw);
   if (!segs.length) return 1;
 
@@ -153,7 +153,7 @@ function getMarkovProfile(lang) {
   };
 }
 
-function markovExpectedGuesses(pw, full, context, lang = LANG) {
+function markovExpectedGuesses(pw, full, context, lang = state.lang) {
   const segs = tokenizeForPCFG(pw);
   if (!segs.length) return 1;
 
@@ -257,7 +257,7 @@ function getNeuralProfile(lang) {
   };
 }
 
-function neuralExpectedGuesses(pw, full, context, mlProb, lang = LANG) {
+function neuralExpectedGuesses(pw, full, context, mlProb, lang = state.lang) {
   const segs = tokenizeForPCFG(pw);
   if (!segs.length) return 1;
 
@@ -374,7 +374,7 @@ function princeChainabilityScore(pw, context) {
   return clamp01(scoreRaw / 2.8);
 }
 
-function princeExpectedGuesses(pw, full, context, lang = LANG) {
+function princeExpectedGuesses(pw, full, context, lang = state.lang) {
   const segs = tokenizeForPCFG(pw);
   if (!segs.length) return 1;
 

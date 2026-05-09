@@ -8,54 +8,52 @@ const WORDLISTS_BASE_URL =
     : "https://time2crack.b-cdn.net/data/wordlists/");
 
 async function loadDictionary(lang) {
-  if (DICT_LANG === lang && DICT_WORDS) return;
-  if (DICT_LOADING) {
-    DICT_PENDING_LANG = lang;
+  if (state.cache.dictLang === lang && state.cache.dictWords) return;
+  if (state.ui.dictLoading) {
+    state.ui.dictPendingLang = lang;
     return;
   }
-  DICT_LOADING = true;
-  DICT_PENDING_LANG = null;
-  
+  state.ui.dictLoading = true;
+  state.ui.dictPendingLang = null;
+
   // Show loading indicator
   const dictLoadingEl = safe('dict-loading');
   if (dictLoadingEl) {
     dictLoadingEl.hidden = false;
   }
-  
+
   try {
     const res = await fetch(`${WORDLISTS_BASE_URL}${lang}.txt`);
     if (!res.ok) throw new Error(res.status);
     const text = await res.text();
-    
+
     // Clear old dictionary to prevent memory leak
-    if (DICT_WORDS) {
-      DICT_WORDS.clear();
+    if (state.cache.dictWords) {
+      state.cache.dictWords.clear();
     }
-    
-    DICT_WORDS = new Set(
+
+    state.cache.dictWords = new Set(
       text.split("\n")
           .map(w => w.normalize("NFC").trim().toLowerCase())
           .filter(w => w.length >= 4)
     );
-    DICT_LANG = lang;
+    state.cache.dictLang = lang;
   } catch {
-    DICT_WORDS = null; // silently fail
+    state.cache.dictWords = null; // silently fail
   } finally {
-    DICT_LOADING = false;
-    
+    state.ui.dictLoading = false;
+
     // Hide loading indicator
     if (dictLoadingEl) {
       dictLoadingEl.hidden = true;
     }
 
-    if (DICT_PENDING_LANG && DICT_PENDING_LANG !== DICT_LANG) {
-      const nextLang = DICT_PENDING_LANG;
-      DICT_PENDING_LANG = null;
+    if (state.ui.dictPendingLang && state.ui.dictPendingLang !== state.cache.dictLang) {
+      const nextLang = state.ui.dictPendingLang;
+      state.ui.dictPendingLang = null;
       loadDictionary(nextLang);
     }
-    
-    if (input && input.value.length) render();
+
+    if (state.dom.input && state.dom.input.value.length) render(state);
   }
 }
-
-const DEFAULT_PCFG_CALIBRATION = {

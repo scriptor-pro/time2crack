@@ -1785,7 +1785,7 @@ const I = {
 };
 
 function t(k) {
-  return I[LANG][k] || I.en[k] || k;
+  return I[state.lang][k] || I.en[k] || k;
 }
 
 

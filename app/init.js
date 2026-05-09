@@ -31,8 +31,8 @@
 
   // Update RockYou compact badge
   const rockyouBadge = $("rockyou-status-badge");
-  if (rockyouBadge && !BLOOM_LOADED && !BLOOM_LOADING) {
-    rockyouBadge.textContent = LANG === "fr" ? "Vérifier RockYou" : "Check RockYou";
+  if (rockyouBadge && !state.ui.bloomLoaded && !state.ui.bloomLoading) {
+    rockyouBadge.textContent = state.lang === "fr" ? "Vérifier RockYou" : "Check RockYou";
     rockyouBadge.style.background = "var(--surface-elev)";
     rockyouBadge.style.color = "var(--text-muted)";
     rockyouBadge.style.cursor = "pointer";
@@ -43,9 +43,9 @@
   }
 
   // Check password against bloom filter if already loaded
-  if (!inputEmpty && BLOOM_LOADED && BLOOM_FILTER) {
+  if (!inputEmpty && state.ui.bloomLoaded && state.cache.bloomFilter) {
     checkBloom(pw);
-  } else if (!BLOOM_LOADED || inputEmpty) {
+  } else if (!state.ui.bloomLoaded || inputEmpty) {
     // Reset bloom result if filter not loaded
     BLOOM_RESULT = null;
     updateBloomBanner(null);
@@ -719,9 +719,9 @@ if (rockyouBadgeBtn) {
 
 // Initialize i18n and load dictionary on page load
 // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
-if (input) {
-  setLang(LANG);
-  loadDictionary(LANG); // Load in background, don't block initialization
+if (state.dom.input) {
+  setLang(state.lang);
+  loadDictionary(state.lang); // Load in background, don't block initialization
   loadPcfgCalibration();
   loadMarkovCalibration();
   loadNeuralCalibration();

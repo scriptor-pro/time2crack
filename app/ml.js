@@ -1,37 +1,3 @@
-    { suffix: 'n', replacement: '' },         // hund → hun (less likely)
-  ];
-
-  for (const { suffix, replacement } of patterns) {
-    const stem = removeSuffix(w, suffix, replacement);
-    if (stem) variations.add(stem);
-  }
-
-  return Array.from(variations);
-}
-
-/**
- * Check if word appears in dictionary with morphological variations
- */
-function isDictWord(pw) {
-  if (!DICT_WORDS) return false;
-  const l = pw.normalize("NFC").toLowerCase();
-
-  // Direct checks
-  if (DICT_WORDS.has(l) || DICT_WORDS.has(deLeet(pw))) return true;
-
-  // Morphological variations
-  const deleetWord = deLeet(pw);
-  const variations = getMorphVariations(deleetWord);
-
-  for (const variation of variations) {
-    if (DICT_WORDS.has(variation)) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
 // ============================================================
 // ML MODEL — ONNX RUNTIME WEB
 // ============================================================
@@ -40,15 +6,14 @@ function isDictWord(pw) {
 // Legacy TensorFlow.js format (model.json + weights.bin) removed 2026-03-22
 // ============================================================
 
-let ML_SESSION = null;
-let ML_RUNTIME_LOADED = false;
+// state.cache.ml.session and state.cache.ml.normalization are stored in state.cache.ml
 
 /**
  * Dynamically load ONNX Runtime from jsDelivr CDN
  * (Production: replace with https://cdn.time2crack.eu)
  */
 async function loadONNXRuntime() {
-  if (ML_RUNTIME_LOADED) return window.ort;
+  if (state.ui.mlRuntimeLoaded) return window.ort;
 
   try {
     // Load ONNX Runtime from jsDelivr (public CDN, free)
@@ -58,7 +23,7 @@ async function loadONNXRuntime() {
 
     await new Promise((resolve, reject) => {
       script.onload = () => {
-        ML_RUNTIME_LOADED = true;
+        state.ui.mlRuntimeLoaded = true;
         resolve(window.ort);
       };
       script.onerror = reject;
@@ -76,7 +41,7 @@ async function loadONNXRuntime() {
  * Load ML model (ONNX format) and normalization parameters
  */
 async function loadMLModel() {
-  if (ML_SESSION) return;
+  if (state.cache.ml.session) return;
 
   try {
     const ort = await loadONNXRuntime();
@@ -90,21 +55,21 @@ async function loadMLModel() {
     // Load normalization parameters
     const normRes = await fetch('data/model-v2/normalization.json');
     if (!normRes.ok) throw new Error('Normalization file not found');
-    ML_NORMALIZATION = await normRes.json();
+    state.cache.ml.normalization = await normRes.json();
 
     // Load ONNX model
-    ML_SESSION = await ort.InferenceSession.create('data/model-v2/model.onnx', {
+    state.cache.ml.session = await ort.InferenceSession.create('data/model-v2/model.onnx', {
       executionProviders: ['wasm'],
       logSeverityLevel: 3, // Error only
     });
 
     console.log('✓ ML model v2 loaded (ONNX Runtime)');
-    console.log(`  Input: ${ML_SESSION.inputNames[0]}`);
-    console.log(`  Output: ${ML_SESSION.outputNames[0]}`);
+    console.log(`  Input: ${state.cache.ml.session.inputNames[0]}`);
+    console.log(`  Output: ${state.cache.ml.session.outputNames[0]}`);
   } catch (err) {
     console.warn('ML model not available:', err);
-    ML_SESSION = null;
-    ML_NORMALIZATION = null;
+    state.cache.ml.session = null;
+    state.cache.ml.normalization = null;
   }
 }
 
@@ -294,11 +259,11 @@ function extractMLFeatures(pw) {
  */
 async function predictHumanPattern(pw) {
   // Lazy load ML model on first prediction
-  if (!ML_SESSION || !ML_NORMALIZATION) {
+  if (!state.cache.ml.session || !state.cache.ml.normalization) {
     await loadMLModel();
   }
 
-  if (!ML_SESSION || !ML_NORMALIZATION) return null;
+  if (!state.cache.ml.session || !state.cache.ml.normalization) return null;
 
   try {
     const ort = await loadONNXRuntime();
@@ -308,7 +273,7 @@ async function predictHumanPattern(pw) {
 
     // Normalize features using training mean/std
     const normalized = features.map((f, i) =>
-      (f - ML_NORMALIZATION.mean[i]) / (ML_NORMALIZATION.std[i] + 1e-7)
+      (f - state.cache.ml.normalization.mean[i]) / (state.cache.ml.normalization.std[i] + 1e-7)
     );
 
     // Create input tensor
@@ -316,12 +281,12 @@ async function predictHumanPattern(pw) {
     const inputTensor = new ort.Tensor('float32', inputData, [1, 35]);
 
     // Get input/output names from session
-    const inputName = ML_SESSION.inputNames[0];
-    const outputName = ML_SESSION.outputNames[0];
+    const inputName = state.cache.ml.session.inputNames[0];
+    const outputName = state.cache.ml.session.outputNames[0];
 
     // Run inference
     const feeds = { [inputName]: inputTensor };
-    const results = await ML_SESSION.run(feeds);
+    const results = await state.cache.ml.session.run(feeds);
     const outputTensor = results[outputName];
 
     // Extract probability
@@ -335,7 +300,7 @@ async function predictHumanPattern(pw) {
 }
 
 function setLang(lang) {
-  LANG = lang;
+  state.lang = lang;
   document.documentElement.setAttribute('lang', lang);
   document.documentElement.lang = lang;
   document.title =

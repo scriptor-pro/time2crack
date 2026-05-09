@@ -47,8 +47,8 @@ function bloomHas(filter, word) {
  * This is a user-triggered action (not automatic on page load)
  */
 async function loadBloomFilter() {
-  if (BLOOM_LOADING || BLOOM_LOADED) return;
-  BLOOM_LOADING = true;
+  if (state.ui.bloomLoading || state.ui.bloomLoaded) return;
+  state.ui.bloomLoading = true;
 
   const bloomLoadingEl = safe("bloom-loading");
   const bloomBtnEl = safe("bloom-check-btn");
@@ -78,21 +78,21 @@ async function loadBloomFilter() {
     // Zero-copy view of bit array (no memory duplication)
     const bitArray = new Uint8Array(buf, 20);
 
-    BLOOM_FILTER = { bitArray, m, k };
-    BLOOM_LOADED = true;
+    state.cache.bloomFilter = { bitArray, m, k };
+    state.ui.bloomLoaded = true;
 
     // Check current password if one is entered
-    if (input && input.value.length) {
-      checkBloom(input.value);
+    if (state.dom.input && state.dom.input.value.length) {
+      checkBloom(state.dom.input.value);
     }
-    updateBloomBanner(BLOOM_RESULT);
+    updateBloomBanner(state.cache.bloomResult);
   } catch (e) {
     console.error("Failed to load bloom filter:", e);
-    BLOOM_RESULT = "error";
-    BLOOM_LOADED = false; // allow retry
+    state.cache.bloomResult = "error";
+    state.ui.bloomLoaded = false; // allow retry
     updateBloomBanner("error");
   } finally {
-    BLOOM_LOADING = false;
+    state.ui.bloomLoading = false;
     if (bloomLoadingEl) bloomLoadingEl.hidden = true;
     if (bloomBtnEl) bloomBtnEl.disabled = false;
     // Don't hide bloom-trigger here — render() controls visibility
@@ -103,16 +103,16 @@ async function loadBloomFilter() {
  * Check password against loaded bloom filter
  */
 function checkBloom(pw) {
-  if (!BLOOM_FILTER || !pw) return;
-  const found = bloomHas(BLOOM_FILTER, pw);
-  BLOOM_RESULT = found ? "found" : "not_found";
-  updateBloomBanner(BLOOM_RESULT);
+  if (!state.cache.bloomFilter || !pw) return;
+  const found = bloomHas(state.cache.bloomFilter, pw);
+  state.cache.bloomResult = found ? "found" : "not_found";
+  updateBloomBanner(state.cache.bloomResult);
 }
 
 /**
  * Update bloom filter UI banners based on state
  */
-function updateBloomBanner(state) {
+function updateBloomBanner(bloomResult) {
   const bannerEl = safe("bloom-banner");
   const safeEl = safe("bloom-safe");
   const errorEl = safe("bloom-error");
@@ -120,27 +120,27 @@ function updateBloomBanner(state) {
   const hintEl = safe("rockyou-hint");
   const wrapperEl = safe("qp-rockyou-wrapper");
 
-  if (bannerEl) bannerEl.hidden = state !== "found";
-  if (safeEl) safeEl.hidden = state !== "not_found";
-  if (errorEl) errorEl.hidden = state !== "error";
+  if (bannerEl) bannerEl.hidden = bloomResult !== "found";
+  if (safeEl) safeEl.hidden = bloomResult !== "not_found";
+  if (errorEl) errorEl.hidden = bloomResult !== "error";
 
   // Update compact badge in status bar
   if (badge) {
-    if (state === "found") {
-      badge.textContent = LANG === "fr" ? "💀 Trouvé - votre mot de passe est dans la fuite RockYou" : "💀 Found - your password is in the RockYou leak";
+    if (bloomResult === "found") {
+      badge.textContent = state.lang === "fr" ? "💀 Trouvé - votre mot de passe est dans la fuite RockYou" : "💀 Found - your password is in the RockYou leak";
       badge.style.background = "var(--critical)";
       badge.style.color = "#fff";
       if (hintEl) hintEl.hidden = true;
-    } else if (state === "not_found") {
-      badge.textContent = LANG === "fr" ? "✓ Absent de RockYou" : "✓ Not in RockYou";
+    } else if (bloomResult === "not_found") {
+      badge.textContent = state.lang === "fr" ? "✓ Absent de RockYou" : "✓ Not in RockYou";
       badge.style.background = "var(--success)";
       badge.style.color = "#fff";
       if (hintEl) hintEl.hidden = true;
-    } else if (state === "loading") {
+    } else if (bloomResult === "loading") {
       badge.textContent = "⏳ " + t("bloomLoading").slice(0, 20) + "…";
       badge.style.background = "var(--surface-elev)";
       badge.style.color = "var(--text-muted)";
-    } else if (state === "error") {
+    } else if (bloomResult === "error") {
       badge.textContent = "⚠ " + t("bloomError");
       badge.style.background = "var(--warning)";
       badge.style.color = "#fff";
@@ -154,13 +154,3 @@ function updateBloomBanner(state) {
   // Show/hide the RockYou wrapper only when there's a password
   if (wrapperEl) wrapperEl.hidden = false;
 }
-
-/**
- * Generate morphological variations of a word (plurals, verb forms, suffixes)
- * Detects ~80% of common morphological variations across languages
- * Supports EN, FR, ES, PT, DE, TR, IT, PL, NL
- */
-function getMorphVariations(word) {
-  const variations = new Set([word]); // Include original
-  const w = word.toLowerCase();
-

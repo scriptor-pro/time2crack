@@ -157,7 +157,7 @@ function updateHibpStatusBadge(hibpState) {
       hibpColor = "var(--warning)";
       break;
     case "leaked":
-      hibpText = LANG === "fr" ? "💀 Trouvé - votre mot de passe est dans la base HIBP" : "💀 Found - your password is in the HIBP database";
+      hibpText = state.lang === "fr" ? "💀 Trouvé - votre mot de passe est dans la base HIBP" : "💀 Found - your password is in the HIBP database";
       hibpColor = "var(--critical)";
       break;
     case "safe":

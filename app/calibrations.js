@@ -659,3 +659,12 @@ function getMorphVariations(word) {
     { suffix: 'e', replacement: '' },         // Hunde → Hund
     { suffix: 'en', replacement: '' },        // hunden → hund
     { suffix: 'n', replacement: '' },         // hund → hun (less likely)
+  ];
+
+  for (const { suffix, replacement } of patterns) {
+    const stem = removeSuffix(w, suffix, replacement);
+    if (stem) variations.add(stem);
+  }
+
+  return Array.from(variations);
+}

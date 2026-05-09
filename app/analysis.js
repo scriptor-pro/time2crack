@@ -43,9 +43,9 @@ function deLeet(pw) {
   const withI = deLeetWith(pw, { i: "1!", l: "" });
   const withL = deLeetWith(pw, { l: "1", i: "!" });
   // If dictionary loaded, prefer the variant that matches
-  if (DICT_WORDS) {
-    if (DICT_WORDS.has(withL)) return withL;
-    if (DICT_WORDS.has(withI)) return withI;
+  if (state.cache.dictWords) {
+    if (state.cache.dictWords.has(withL)) return withL;
+    if (state.cache.dictWords.has(withI)) return withI;
   }
   // Default: try both, return the one with fewer digits remaining (more resolved)
   const digitsI = (withI.match(/\d/g) || []).length;

@@ -16,7 +16,7 @@ function addDictionaryAttacks(rows, common, weak, dictWord) {
   // Using COMMON.size / rate ensures the formula matches the real keyspace being modelled,
   // not a fictitious "top 10k HIBP" that COMMON does not represent.
   const COMMON_KEYSPACE = COMMON.size; // ~400 entries — passwords at HIBP top-400 rank
-  const DICT_KEYSPACE = DICT_WORDS ? DICT_WORDS.size : 200000; // actual wordlist size per language
+  const DICT_KEYSPACE = state.cache.dictWords ? state.cache.dictWords.size : 200000; // actual wordlist size per language
   for (const a of ALGOS) {
     // weak     = TOP_100 hit → ~100 guesses (position 1-100 in any priority list)
     // common   = COMMON hit → ~COMMON.size guesses (position 100-400 in HIBP ordered list)
@@ -100,7 +100,7 @@ function addPrinceAttacks(rows, full, pw, looksPassphrase, dictWord, len, cs, dt
     pw,
     full,
     { looksPassphrase, dictWord, len, cs, dt, seq, hasSeparator },
-    LANG
+    state.lang
   );
   const note = weak ? t("nWeakPassword") : out.chainability >= 0.28 ? t("nPrinceChain") : t("nNotPassphrase");
   for (const a of ALGOS) {
@@ -292,7 +292,7 @@ function addMarkovAttacks(rows, full, hybridVuln, kbPat, seq, dt, rep, weak, cs,
       pw,
       full,
       { hybridVuln, kbPat, seq, dt, rep, cs, len },
-      LANG
+      state.lang
     );
     // Keep messaging neutral: this v2 is rank-based and no longer tied to fixed % reductions.
     const note = kbPat ? t("nKeyboardUltra") : t("nStatPrio");
@@ -316,7 +316,7 @@ function addNeuralAttacks(rows, full, hybridVuln, kbPat, seq, dt, rep, weak, cs,
     full,
     { hybridVuln, kbPat, seq, dt, rep, cs, len, looksHuman },
     mlProb,
-    LANG
+    state.lang
   );
   for (const a of ALGOS) {
     rows.push({
@@ -348,7 +348,7 @@ function addCombinatorAttacks(rows, len, pw, common, looksPassphrase, weak) {
   if (looksPassphrase || common || weak) {
     // Calcul dynamique du keyspace basé sur le mot de passe réel
     // (nombre de mots + taille du dictionnaire)
-    const combiKeyspace = calculateCombiKeyspace(pw, DICT_WORDS, looksPassphrase);
+    const combiKeyspace = calculateCombiKeyspace(pw, state.cache.dictWords, looksPassphrase);
 
     for (const a of ALGOS) {
       rows.push({

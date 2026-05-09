@@ -2,6 +2,8 @@
 // STATE & HELPERS
 // ============================================================
 
+const SUPPORTED_LANGS = ["en", "fr", "es", "pt", "de", "it", "tr", "pl", "nl"];
+
 const safe = (id) => document.getElementById(id);
 const isReal = (el) => el !== null && el !== undefined;
 
@@ -10,7 +12,6 @@ function clamp(val, min, max) {
 }
 
 function detectBrowserLanguage() {
-  const SUPPORTED_LANGS = ["en", "fr", "es", "pt", "de", "it", "tr", "pl", "nl"];
   const browserLang = (navigator.language || navigator.userLanguage || "en")
     .split("-")[0]
     .toLowerCase();
@@ -30,6 +31,10 @@ const state = {
     input: null,
     toggleVisibility: null,
     results: null,
+    resultLabelFast: null,
+    crackDurationFast: null,
+    crackDateFast: null,
+    resultSentenceFast: null,
     strengthLabel: null,
     strengthIcon: null,
     strengthBits: null,
@@ -37,12 +42,23 @@ const state = {
     barLabel: null,
     strengthSegments: [],
     ctList: null,
+    ctFastestValue: null,
+    ctAlgo: null,
     vulnTagsEl: null,
+    liveDetailsVisible: null,
+    detailLengthLive: null,
+    detailCharsetLive: null,
+    detailEntropyLive: null,
+    detailCombosLive: null,
     langToggle: null,
+    langSelector: null,
     langMenu: null,
+    langCode: null,
     dictLoading: null,
     resetBtn: null,
     copyBtn: null,
+    genAccordionTrigger: null,
+    genPanel: null,
     hibpLoading: null,
     hibpCount: null,
     hibpBanner: null,
@@ -79,6 +95,11 @@ const state = {
     markovCalibLoading: false,
     neuralCalibLoading: false,
     princeCalibLoading: false,
+    mlRuntimeLoaded: false,
+    selectedAlgo: "md5",
+    selectedProfile: "experienced",
+    userPinnedAlgo: false,
+    langMenuOpen: false,
   },
 
   // Analysis results

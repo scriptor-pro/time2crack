@@ -36,7 +36,7 @@ function fmtDuration(s) {
   if (!isFinite(s) || s > 1e18) {
     // Display exact value instead of generic message
     const years = Math.floor(s / 31557600);
-    const yearStr = fmtBig(years) + " " + (LANG === "fr" ? "d'années" : " years");
+    const yearStr = fmtBig(years) + " " + (state.lang === "fr" ? "d'années" : " years");
     return { text: yearStr, ok: false, inf: true };
   }
   if (s < 0.01) return { text: t("instant"), ok: true, instant: true };
@@ -51,7 +51,7 @@ function fmtDuration(s) {
   const p = [];
    if (y > 0) {
      const yearPart = y === 1 ? t("yr") : t("yrs");
-     const separator = LANG === "fr" ? "d'" : " ";
+     const separator = state.lang === "fr" ? "d'" : " ";
      p.push(fmtBig(y) + " " + separator + yearPart);
    }
   if (mo > 0) p.push(mo + " " + t("mo"));
@@ -67,7 +67,7 @@ function fmtDate(s) {
   const d = new Date(Date.now() + s * 1000);
   return isNaN(d.getTime())
     ? null
-    : d.toLocaleDateString(LANG === "fr" ? "fr-FR" : "en-US", {
+    : d.toLocaleDateString(state.lang === "fr" ? "fr-FR" : "en-US", {
         weekday: "long",
         year: "numeric",
         month: "long",
@@ -85,10 +85,10 @@ function fmtSpeed(r) {
 function confidenceText(value) {
   const v = Number.isFinite(value) ? value : 0;
   let level;
-  if (v >= 0.85) level = LANG === "fr" ? "élevée" : "high";
-  else if (v >= 0.65) level = LANG === "fr" ? "moyenne" : "medium";
-  else level = LANG === "fr" ? "faible" : "low";
-  return LANG === "fr"
+  if (v >= 0.85) level = state.lang === "fr" ? "élevée" : "high";
+  else if (v >= 0.65) level = state.lang === "fr" ? "moyenne" : "medium";
+  else level = state.lang === "fr" ? "faible" : "low";
+  return state.lang === "fr"
     ? ` Confiance de l'estimation : <strong>${level}</strong>.`
     : ` Estimate confidence: <strong>${level}</strong>.`;
 }

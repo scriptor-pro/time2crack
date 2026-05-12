@@ -124,12 +124,16 @@
         </div>
       </div>
 
-      <div class="best-attack-card">
-        <p class="best-attack-label">⚡ Attaque la plus rapide</p>
-        <p class="best-attack-result"><span id="best-attack-name"></span><strong id="best-attack-time"></strong></p>
+      <div class="best-attack-card best-attack-card--featured">
+        <p class="best-attack-label">Temps de crack estimé</p>
+        <div class="best-attack-result">
+          <strong id="best-attack-time" class="best-attack-time">—</strong>
+          <span id="best-attack-name" class="best-attack-name">Force brute</span>
+        </div>
+        <p class="best-attack-meta">Force brute · Standard · MD5</p>
       </div>
 
-      <div class="profile-info-card" id="profile-info-card" role="status" aria-live="polite">
+      <div class="profile-info-card profile-info-card--compact" id="profile-info-card" role="status" aria-live="polite">
         <div class="profile-info-card__header">
           <span id="profile-info-name"></span>
           <span id="profile-info-gpus" class="profile-info-card__gpus"></span>

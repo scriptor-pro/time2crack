@@ -1,0 +1,649 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hibrit — Saldırı yöntemleri — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Adayları genişletmek için sözlük, maske veya kuralları birleştirin. Tahmin edilebilir değişikliklere karşı etkilidir."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Hibrit — Saldırı yöntemleri — Time2Crack"><meta property="og:description" content="Adayları genişletmek için sözlük, maske veya kuralları birleştirin. Tahmin edilebilir değişikliklere karşı etkilidir."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/tr/methode/hybrid.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="tr_TR"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Hibrit — Saldırı yöntemleri — Time2Crack"><meta name="twitter:description" content="Adayları genişletmek için sözlük, maske veya kuralları birleştirin. Tahmin edilebilir değişikliklere karşı etkilidir."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="hybrid.html"><link rel="alternate" hreflang="fr" href="../../fr/methode/hybrid.html"><link rel="alternate" hreflang="en" href="../../en/methode/hybrid.html"><link rel="alternate" hreflang="es" href="../../es/methode/hybrid.html"><link rel="alternate" hreflang="pt" href="../../pt/methode/hybrid.html"><link rel="alternate" hreflang="de" href="../../de/methode/hybrid.html"><link rel="alternate" hreflang="it" href="../../it/methode/hybrid.html"><link rel="alternate" hreflang="tr" href="hybrid.html"><link rel="alternate" hreflang="pl" href="../../pl/methode/hybrid.html"><link rel="alternate" hreflang="nl" href="../../nl/methode/hybrid.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">Hibrit saldırı - Kapsamlı Operasyon</h1>
+<blockquote>
+Project reference document Time2Crack
+</blockquote>
+<blockquote>Recipients: geliştiricileri, güvenlik araştırmacıları, gelişmiş kullanıcılar</blockquote>
+<hr>
+<h2>İçerikler</h2>
+<li><a href="hybrid.html#1-vue-densemble">Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış</a></li>
+<li><a href="hybrid.html#2-contexte-historique-et-académique">Tarihsel ve akademik arka plan</a></li>
+<li><a href="hybrid.html#3-fondements-conceptuels--pourquoi-lhybride-fonctionne">Kavramsal Vakıflar: Hybrid Works</a></li>
+<li><a href="hybrid.html#4-architecture-dune-attaque-hybride-moderne">Modern bir hibrit saldırı mimarisi</a></li>
+<li><a href="hybrid.html#5-les-jeux-de-règles-de-mutation">mutasyon kurallarının oyunu</a></li>
+<li><a href="hybrid.html#6-règles-best64--le-jeu-de-référence">En İyi64 kurallar: referans oyunu</a></li>
+<li><a href="hybrid.html#7-taxonomie-complète-des-transformations">Dönüşümlerin Tamamen Vergionomi</a></li>
+<li><a href="hybrid.html#8-priorisation-par-fréquence--le-cœur-de-lefficacité">Frekans önceliği: verimliliğinin kalbi</a></li>
+<li><a href="hybrid.html#9-implémentation-dans-time2crack--addhybridattacks">Time2Crack'de Uygulama: <code>addHybridAttacks()</code></a></li>
+<li><a href="hybrid.html#10-les-trois-keyspaces-hybrides-et-leur-justification">Üç hibrit anahtar alanı ve onların gerekçeleri</a></li>
+<li><a href="hybrid.html#11-calibration-haute-fidélité">Yüksek sadakat kalibrasyonu</a></li>
+<li><a href="hybrid.html#12-relation-avec-les-attaques-dérivées">Türlü saldırılar</a></li>
+<li><a href="hybrid.html#13-benchmarks-par-algorithme-de-hachage">Benchmarks by hash algoritma</a></li>
+<li><a href="hybrid.html#14-exemples-concrets-de-cracking-hybride">Hibrit çatlakların beton örnekleri</a></li>
+<li><a href="hybrid.html#15-limites-de-lattaque-hybride">Hibrit saldırı limitleri</a></li>
+<li><a href="hybrid.html#16-défenses-efficaces">Etkili savunmalar</a></li>
+<li><a href="hybrid.html#17-références-bibliographiques">Referanslar Referanslar</a></li>
+<hr>
+<h2>1. Genel bakış</h2>
+<p>Hibrit saldırı, birleştiriren çatlak yöntemdir <strong>Bir sözlük kelime listesi</strong> ile birlikte <strong>Bir dizi dönüşüm kuralı</strong>Her kelimenin sözlükteki her kelimeyi test etmek yerine (sözcülük saldırısı), her kelimenin tüm plausible varyantlarını ortaya koyar - sermayeleşmeleri, karakter altkuruları, ek /suffix ekleri, inverss - ve sistematik olarak test eder.</p>
+<strong>Neden bu kadar etkili?</strong> İnsanlar bir şifre olarak "password" seçmezler, "Password1", "p@sw0rd", "PASSWORD123" veya "password!" gibi daha güçlü görünüyorlar, çünkü ham sözlük listesinde değiller - henüz herhangi bir modern hibrit çatlaklar aracı tarafından üretilen ilk kişi arasındalar.
+<p>Hibrit saldırı tarihsel olarak gerçek "mean" şifre çatlaklarının çoğunluğu için sorumlu yöntemdir - güçlü olmayan görünürler Ma ve al. (2014, IEEE S&amp;P), <strong>Mevcut bir kelimeye uygulanan ilk 8 ila 10 kural, medyan şifresini kırmak için yeterlidir</strong> Nüfus.</p>
+<p>Time2Crack'de, hibrit saldırı modellendi:
+</p><li>Şifrenin veya bir sözlük kelimesinden elde edilen algılama</li>
+<li>Adayların sayısının bir saldırganı kesin değişken bulmadan önce test etmelidir</li>
+<li>Hedefe göre ilgili zamanın hesaplanması, algoritmaya göre</li><p></p>
+<hr>
+<h2>2. Tarihsel ve akademik arka plan</h2>
+<h3>2.1 Origins: John the Ripper ve mutasyon kuralları</h3>
+<p>Hibrit saldırı resmi olarak doğdu <strong>John the Ripper</strong> (Solar Designer, 1996), ilk kamu aracı, yapılandırılabilir bir kural motoru ile bir kelime listesini bir araya getirmek için.John the Ripper'dan önce, sözlük saldırıları çiğ kelimeleri test etti; John her kelimenin bir adayı oluşturduğunu açıkladı.</p>
+<strong>Chronology ofroads</strong> :
+YılEvent Event Event
+- ►- !!!
+1979 1979 1979Morris &amp; Thompson: kullanıcılar şifrelerini "gizli" olarak yerine getirir
+1996 1996 1996 1996John the Ripper 1.0: ilk genel kural motoru, JtR sözlüğü (İngilizce).<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)
+2000 2000 2000 2000Alec Muffett gerçek çatlakların %80'inin kelime listesi+rules üzerinden gittiğini belgeliyor, brute güç değil
+2006 2006 2006 2006Hashcat 0.01: GPU'da geçiş, kurallar 1M+1000M adayı / saniye
+2009 2009 2009RockYou: 14.3M net şifreler en etkili kuralların ampirik kalibrasyonuna izin verir
+2012 2012 2012Gosney (Passwordscon): 8 GPU GTX 580, en iyi64 kurallar, &lt; 6 gün içinde% 90 LinkedIn
+2013 2013 2013 2013Löf iplik: "en iyi64.rule", mevcut insan dönüşümlerinin 85-% 90'ını kapsayan 64 kural
+2014 2014 2014 2014Ma et al. (IEEE S&amp;P): İlk akademik çalışma, kural sıralaması ile etkinliğini ölçmek
+2016Hashcat açık kaynak: En iyi64, MD5 hız 2 TH /s 8× GTX 1080
+2019 2019 2019 2019Hashcat 6.0: OneRuleToRuleThemAll game (52k kurallar) ML tarafından şifrelendi
+2023 2023 2023 2023NSA Danışma: Kurumsal şifreleri hibrit araçlarla test etmeyi açıkça tavsiye eder
+<h3>2.2 Ampirik çalışmalar</h3>
+<strong>Klein (1990)</strong> - 15,000 Unix şifrelerinin analizi, 24.2%'nin saf bir sözlüğe sıkıştırılabilir olduğunu kabul eder, ancak% 32 ek basit dönüşümlerle kırılabilir (kapitalizasyon, son sayısallaştırma). Toplam:% 56.2% ilkel bir hibrit araçla.
+<strong>Weir et al. (2009, IEEE S&amp;P)</strong> - PCFG modelini taklit eder, ancak en iyi 64 kelime ile üretilen ilk 100 aday arasında RockYou'de gözlemlenen dönüşümlerin% 78'ini kapsar.
+<strong>Ma et al. (2014, IEEE S&amp;P)</strong> - Hibrit kuralların etkinliğinin en çok alıntı çalışması.
+<ul>
+<li>Kural 1 (<code>: → mot brut</code>) : dict tabanlı şifrelerin% 18'ini kırın</li>
+</ul>
+<li>Kurallar 1-10: 51</li>
+<li>Kurallar 1–64 (en iyi64): % 79'u kırın</li>
+<li>Kurallar 1-500:  88</li>
+<li><strong>Anahtar Sonuç</strong> İlk 10 kural işin çoğunu yapar.</li>
+<strong>Durmuth et al. (2015,IERICS)</strong> — JtR vs Hashcat vs PCFG kuralları. Concludes that the Hashcat best64 kuralları amfily the most effective for seen open password, crossing PCFG by 12% on RockYou cover.
+<h3>2.3 LinkedIn bir okul durumu olarak uçuş</h3>
+<p>2012 LinkedIn sızıntı (6.5 milyon dolar değerinde olmayan SHA-1s) karmanın gücünü mükemmel bir şekilde göstermektedir. 72 saat içinde, hashcat topluluğu kırmıştı:
+</p><li>En iyi-10M kelime listelerinde% 100 şifre (pure sözlüğü)</li>
+<li>90 daha iyi64 + Kombinatörü saldırısı</li>
+<li>Dayanıklı şifreler: sadece herhangi bir sözlük yapısı olmadan olanlar</li><p></p>
+<p>Post-crack analizi, "linkedin1", "Linkedin1", "l!nked!n" ve "LINKEDIN" - tüm "linkedin" biçimleri - kolektif olarak on binlerce uzlaşma hesabı temsil etti.</p>
+<hr>
+<h2>3. Kavramsal Vakıflar: Hybrid Works</h2>
+<h3>3.1 "gizli" insan davranışı</h3>
+<p>Bir sistem karmaşıklık kurallarını yüklerken (majuscule, sayı, sembolü), kullanıcılar rastgele üretmez - rastgele yaratmazlar - <strong>Güvenilir kelimeler için öngörülebilir dönüşümler</strong> :</p>
+İnsan stratejisiÖrnek Örnek Örnek Örnek Örnek Örnek Örnekİlgili Hibrit Kural
+---- *►---- !!!
+İlk mektubu Sermayelendirmek"sunshine" → "Sunshine"<code>c</code> (İlk önce dikkat edin)
+Bütün Sayılar"sunshine" → "SUNSHINE"<code>u</code> (tüm)
+Sonunda bir sayısal ekleyin."sunshine" → "sunshine1"<code>$1</code> (appends "1")
+Yıl Ekle"sunshine" → "sunshine2024"<code>$2 $0 $2 $4</code>
+→3"sunshine" → "suns3ine"<code>s e 3</code> (Profesyonel e Tarafından 3)
+Bir →@"password" → "p@ssword"<code>s a @</code>
+Ters kelime"sunshine" → "enihsnus"<code>r</code> (reverses)
+Çift kelime"sun" → "sunsun"<code>d</code> (duplicate)
+Add ! final"sunshine" → "sunshine!"<code>$!</code>
+Birden çok"password" → "P@sw0rd1"<code>c s a @ s o 0 $1</code>
+<p>Bu dönüşümler <strong>Yaratıcı görünüyor gibi görünüyor</strong> Kullanıcıya. <strong>Tam olarak saldırganın çalıştığı ilk olanlar</strong> Güvenlik politikaları tarafından uygulanan kısıtlamalara karşılık gelirler.</p>
+<h3>3.2 Verimli azaltılan uzay konsepti</h3>
+<p>harflerle 10character şifre + dijital+symbols, 94.10, 5,4 × 10.19 kombinasyonlarını makul bir zamanda seyahat etmek için çok büyük.</p>
+<p>Ancak bu şifre "Password1!" ise - "password"nin önemsiz bir dönüşümü - bu arasında <strong>500 ilk aday</strong> Saldırgan 5.4 × 10.19 kombinasyonlarını seyahat etmiyor: 500 seyahat ediyor.</p>
+<p>Bu, hibrit saldırının temel azaltımıdır: <strong>İnsan seçimlerinin gerçek alanı astronomik olarak mümkün karakterlerin teorik alanından daha küçük</strong>.</p>
+<h3>3.3 Dönüşüm Yasası</h3>
+<p>Tıpkı ham şifreler bir güç kanununu takip ediyor (Zipf), insanların da çok yoğun bir dağıtım uyguladığı dönüşümler. Ma ve al. (2014) Amply gösterdi:</p>
+<li>- dönüşümlerin% 5'i ("Sonunda 1'i ekleyin", "İlk mektubu ele alalım") gerçek vakaların% 50'sini kapsıyor</li>
+<li>- dönüşümlerin% 20'si kapak - vakaların% 85'i</li>
+<li>Geri kalan dönüşümlerin %80'i sadece vakaların% 15'ini kapsıyor</li>
+<p>Bu konsantrasyon, 64 iyi seçilmiş kuralın (en iyi64) bir kısmını 79-85% kapsamasına olanak sağlar, 64 rastgele kuralın sadece% 10-15'e ulaşması.</p>
+<h3>3.4 Temel kelimenin popülerliği ile etkileşim</h3>
+<p>Daha yaygın olan temel kelime, elde edilen şifre daha önceki saldırganın öncelik listesindedir. Saldırıcı adaylarını olasılık azaltmadaki emirler:</p>
+<pre><code class="language-plaintext">Candidats générés par l'attaquant (ordre de test) :
+<li>şifre (gross, en yaygın kelime)</li>
+<li>Şifre (ilk olarak kısaltılır)</li>
+<li>şifre1 (1)</li>
+<li>PASSWORD (tüm)</li>
+<li>şifre! (!)</li>
+<li>p@ssword (bir →@)</li>
+<li>passw0rd (substitute o→0)</li>
+<li>Password1 (c + 1)</li>
+<li>P@ssword (c + bir @)</li>
+<li>şifre123 (12$3)</li>
+...
+<li>p@ssW0rd! (kombinasyon kompleksi)</li></code></pre>
+<p>"password" en yaygın kelimedir → türevleri ilk olarak test edilir. "papillon" daha az yaygındır → türevleri çok daha sonra test edilir. Bu öncelik, Time2Crack'deki üç ayrı anahtar alanı açıklayan merkezi mekanizmadır.</p>
+<hr>
+<h2>4 Modern bir hibrit saldırının mimarı</h2>
+<h3>4.1 Genel boru hattı</h3>
+<pre><code class="language-plaintext">Phase 1 : Sélection de la wordlist
+    ├── Passwords fuités triés par fréquence (RockYou, HIBP, Collections)
+    ├── Dictionnaire linguistique (fr.txt, en.txt, de.txt...)
+    ├── Wordlists thématiques (prénoms, villes, marques, séries TV)
+    └── Wordlists contextuelles (domaine cible, noms d'employés, termes métier)
+<p>Aşama 2: Kuralların Seçimi
+- En iyi64.rule (balanced reference, 64 kurallar)
+OneRuleToRuleThemAll.rule (52,000 kurallar, ML-mill)
+D3ad0ne.rule (34.000 kural, Ampi)
+- JtR kuralları (genelleştirilmiş.rule, spesifik.rule, ekstra.rule)
+- Özel kurallar (göçme alanına alındı)</p>
+<p>Aşama 3: genişleme (wordlist × kurallar)
+Her kelime için kelime listesi:
+Her kural için kurallarda r:
+, başvuru = uygulama (r, w)
+Promosyon │ Eğer aday
+Promosyon  queue kuyruk<em>Bunun üzerine</em>Adaylar.push(candidate)
+-Order: (w1, kural1), (w1, kural2)... (w2, kural1)...
+veya: (w1, kural1), (w2, kural1).</p>
+<p>Aşama 4: Haching ve Karşılaştırma (GPU)
+- ~ 10M adaylarının GPU'ya gönderilmesi
+- Varhs'ın Paralel Hesaplaması (CID, 168 GH / MD5)
+- Hedefle Karşılaştırma (es)
+Eğer maç: FINDED - log(candidate, hash, kural)</p>
+<p>Aşama 5: Raporlama
+- Cracked adayı + kuralı listede + rütbe kullandı</p></code></pre>
+<h3>4.2 Hashcat işlem modları</h3>
+<p>Hashcat iki farklı şekilde hibridi uygular:</p>
+<strong>Mode -a 0 (wordlist + kurallar)</strong> : kelime listesinin her kelimesi için, tüm kuralları uygulayın. Bu klasik hibrit mod.
+<pre><code class="language-bash">hashcat -a 0 -m 0 hashes.txt rockyou.txt -r best64.rule</code></pre>
+<strong>Mode -a 6 (wordlist + maske)</strong> : Bir pozisyon maskesi ile bir kelime listesi birleştirir. Tüm kombinasyonlar tüm kombinasyonlar <code>mot + suffixe<em>Maskeli maskeler</em></code>.
+<pre><code class="language-bash">hashcat -a 6 -m 0 hashes.txt wordlist.txt ?d?d?d?d
+<h1 style="display:none">Test "sunshine0000", "sunshine0001", ..., "sunshine999999"</h1></code></pre>
+<strong>Mode -a 7 (mask + kelime listesi)</strong> : inverse – maskelenmiş ön ek + kelime.
+<pre><code class="language-bash">hashcat -a 7 -m 0 hashes.txt ?d?d wordlist.txt
+<h1 style="display:none">Test "00sunshine", "01sunshine", ..., "99sunshine"</h1></code></pre>
+<p>Time2Crack çoğunlukla modu modeller <code>-a 0</code> (Değişim kuralları), gerçek hibrit saldırıların büyük çoğunluğunu belgeledi.</p>
+<h3>4.3 Adayların siparişi ve stratejiye öncelik verme stratejisi</h3>
+<p>Hangi adayların test edildiği düzen kritik.</p>
+<strong>Strateji kelimesi-ilk</strong> (default hashcat): Tüm kurallar W2'ye geçiş yapmadan önce W1'e uygulanır.
+<pre><code class="language-plaintext">(W1, R1), (W1, R2), ..., (W1, Rn), (W2, R1), (W2, R2)...</code></pre>
+Avantaj: W1 çok büyükse (e.g. "password") hızla varyantlarını keşfedersiniz.
+<strong>Kural-ilk strateji</strong> : Tüm kelime listeleri R2'ye gitmeden önce R1 için çalışır.
+<pre><code class="language-plaintext">(W1, R1), (W2, R1), ..., (Wm, R1), (W1, R2), (W2, R2)...</code></pre>
+Avantaj: En etkili kural (<code>: → mot brut</code>) ilk olarak tüm kelimeler üzerinde uygulanır. Çoğu zaman farklı korpus için daha etkilidir.
+<p>Pratikte, hashcat, birinci kelimeyi varsayılan olarak kullanır, ancak deneyimli operatörler hedef profiline göre seçer.</p>
+<hr>
+<h2>5 mutasyon kuralları kuralları kuralları kuralları</h2>
+<h3>5.1 Cümle kuralları</h3>
+<p>Her karakterin aday dizesinde bir operasyon temsil ettiği minimum dilde ifade edilir:</p>
+<strong>Vaka değiştiricileri</strong> :
+<li><code>:</code> - Kimlik (gross kelimesi, hiçbir dönüşüm)</li>
+<li><code>l</code> - tüm ("PASSWORD" → "password")</li>
+<li><code>u</code> - Tüm ("password" → "PASSWORD")</li>
+<li><code>c</code> - İlk olarak, daha düşük geri kalanı ("PASSWORD" → "Password")</li>
+<li><code>C</code> - İlk olarak, üst kat geri kalanı ("Password" → "pASSWORD")</li>
+<li><code>t</code> - Tüm karakterlerin kutusu ("Password" → "pASSWORD")</li>
+<li><code>TN</code> - Karakterden N pozisyonuna çıkmak için kutu</li>
+<strong>Yoktur ve tersine çevirir</strong> :
+<li><code>r</code> - Ters ("password" → "drowsap")</li>
+<li><code>d</code> - Duplicate ("password" → "passwordpassword")</li>
+<li><code>f</code> - Reflect (word + ters) ("sun" → "sunnos")</li>
+<li><code>{</code> - Rotate sol ("password" → "asswordp")</li>
+<li><code>}</code> - Doğru ("password" → "dpasswor")</li>
+<li><code>[</code> - İlk karakterin (password) → "assword")</li>
+<li><code>]</code> - Son karakterin kaldırılması ("password" → "passwor")</li>
+<strong>Karakter ekleri</strong> :
+<li><code>$X</code> - Append character X ("password" + <code>$1</code> → "password1")</li>
+<li><code>^X</code> - Prepend karakteri X ("password" + <code>^1</code> → "1password"</li>
+<li><code>iNX</code> - Karakter X pozisyonda N</li>
+<strong>Kurumlar</strong> :
+<li><code>sXY</code> Tüm X'i Y ("password" ile değiştirin <code>s a @</code> → "p@ssword"</li>
+<li><code>SNX</code> - X tarafından N pozisyonundaki karakteri değiştirin</li>
+<strong>Truncations</strong> :
+<li><code>'N</code> - Truncate pozisyonda N (password + <code>'4</code> → "pass"</li>
+<li><code>DN</code> - pozisyonda Delete karakteri N</li>
+<strong>Koşullu</strong> :
+<li><code><n< code=""> Kuralı sadece uzunluk &lt; N</n<></code></li>
+<li><code>&gt;N</code> Kuralı sadece uzunluk &gt; N</li>
+<li><code>=N</code> Kuralı sadece uzunluğu = N</li>
+<h3>5.2. Kompozit kurallar</h3>
+<p>Kurallar karmaşık dönüşümler oluşturmak için tek bir çizgide zincirlenebilir:</p>
+<pre><code class="language-plaintext">c $1          → "Password1" (capitalize + append 1)
+c $! $1       → "Password!1" (capitalize + append ! + 1)
+s a @ s e 3   → "p@ssw3rd" (substitute a→@ et e→3)
+r $1          → "1drowssap" (reverse + append 1)
+u $2 $0 $2 $3 → "PASSWORD2023" (uppercase + append year)</code></pre>
+<p>Güç kompozisyonda: 64 basit kurallar kombinasyon tarafından binlerce farklı dönüşüm yaratır.</p>
+<h3>5.3 Main Kuralları</h3>
+<strong>En iyi64.rule</strong> (Löffilament, 2013) - 64 kural Rock'ta rasyon oranını en üst düzeye çıkarmak için ampirik olarak seçildi.
+<strong>OneRuleToRuleThemAll</strong> (Not soSecure, 2019) - Kırılmış şifre korpusu üzerinde otomatik öğrenme tarafından üretilen 52,218 kural. Crack oranı, modern korpusta% 64'den daha büyük, bir hesaplama zamanında -800 × daha uzun.
+<strong>d3ad0ne.rule</strong> - 34,096 Topluluk kuralları, en iyi64 ( aksan, genişletilmiş karakterler, İngilizce olmayan desenler) ile kaplı olmayan desenlere odaklanır.
+<strong>Canlı.rule</strong> - 99 000+ kural, en yorucu. Diğerleri başarısız olduğunda uzun vadeli çatlaklar için kullanılır.
+<strong>Generalized2.rule (JtR)</strong> - zaten kırılmış şifrelerin istatistiksel analizi tarafından otomatik olarak üretilmiştir. Yeni sızıntılar meydana gelir.
+<hr>
+<h2>6. En İyi64 kurallar: referans oyunu</h2>
+<p>En iyi64, akademik literatür ve endüstride 64 standart referans kuralıdır. İşte en önemli kurallar ve onların ampirik gerekçesi:</p>
+<h3>6.1 En etkili 20 kural ( performans düzeni)</h3>
+Rank Rank Rank Rank Rank RankKural Kural KuralıDönüşüm Dönüşüm% % % 2 parolayı kapladı (Mayıs 2014)
+- ►- ►-[12]
+1 1 1<code>:</code>Gross Word~18%
+2 2<code>c</code>İlk önce Capitalize%11
+3 3<code>u</code>Her şey~6%
+4 4 4<code>$1</code>Append "1"-5%
+5 5<code>l</code>Aşağıya her şey%4%
+6 6<code>$!</code>"!"~3%
+7 7 7<code>s a @</code>A→@5.8
+8 8<code>c $1</code>Capitalize + "1"-%2.5
+9 9<code>$2</code>Append "2"-%2.1%
+10 10<code>r</code>Ters-%1.9%
+11 11 11<code>$!</code> + + + + <code>c</code>Capitalize + "!"~1.7%
+12<code>s o 0</code>→0~1.6%
+13 13<code>d</code>Duplicate-%1.4%
+14 14<code>s e 3</code>→3~1.3%
+15 15<code>$1 $2 $3</code>Append "123"~1.2%
+16<code>c $1 $2 $3</code>Capitalize + "123"~1.1%
+17 17 17<code>$0</code>Append "0"~1.0%
+18<code>^1</code>Prep "1"-0.9%
+19 19<code>s i 1</code>I→1-%0.8%
+20 20<code>c $! $1</code>Capitalize + "!1"~0.7%
+<strong>Cumulation kuralları 1-10</strong> :~55% of dict-based passwords
+<strong>Cumulation kuralları 1-20</strong> : - dict tabanlı şifrelerin%68'i
+<strong>Cumulation kuralları 1-64</strong> : dict tabanlı şifrelerin%79'u
+<h3>6.2 Bu kurallar neden bu kadar etkili?</h3>
+<p>Her üst-10 kuralı, ortak bir güvenlik politikası kısıtlamalarına karşılık gelir:
+</p><li>"Shall'ın bir sermaye başkenti var" → Kullanıcılar ilk mektubunu başkentleştirmiştir (<code>c</code>)</li>
+<li>“Bir numaraya sahip olmak” → kullanıcıların sonunda "1" ekleyin (<code>$1</code>)</li>
+<li>"Shall'ın bir sembolü var" → kullanıcı ekliyor "!"<code>$!</code>)</li>
+<li>"Kotun mektupları ve sayıları var" <code>c $1</code> veya <code>c $1 $2 $3</code></li><p></p>
+<p>Şifre politikaları, kullanıcıların öngörülebilir dönüşümleri uygularlarsa gerçekten güvenliği artırmaz - sadece en iyi64'ün ikinci veya üçüncü kuralına şifreler hareket ederler.</p>
+<hr>
+<h2>7. Dönüşümlerin Vergikonomisini Tamamlayın</h2>
+<h3>7.1 Kategori 1: Vaka dönüşümleri</h3>
+<p>Çoğu yaygın. Bir sermaye sermayesine sahip olmak yükümlülüğünü ortaya çıkarın:</p>
+<li>İlk mektubu Sermayelendirme: "sunshine" → "Sunshine" (İngilizce).<strong>Kelimenin ardından en yaygın kural</strong>)</li>
+<li>Tüm üstlük: "sunshine" → "SUNSHINE"</li>
+<li>Kaçmak için: "sunshine" → "UnShInE"</li>
+<li>Son mektup üstlüğü: "sunshine" → "sunshine"</li>
+<li>CamelCase: "sunshinE" (yaklaşık <code>c</code> Değişiklikler)</li>
+<strong>Prevalence</strong> Klein (1990), "kürelerle giriş" kelimesinin% 41'inin sadece başkentlerdeki ilk mektupla kelimeden oluştuğunu belirtiyor.
+<h3>7.2 Kategori 2: Dijital Suf ekleri ve ekleri</h3>
+<p>Bir rakama sahip olma zorunluluğunu ortaya çıkarın:</p>
+<li>Tek sayısal: kelime+"0" kelimesi+"9"</li>
+<li>İki sayısal: kelime+"00" kelime +"99" (100 kombinasyon)</li>
+<li>Append yıl: kelime+"1990" kelimesi+"2024" (35 sık kombinasyon)</li>
+<li>"123" veya "1234" (çok yaygındır)</li>
+<li>Prepend single digit: "1"+mot à "9"+mot</li>
+<li>Prepend yıl: "2024"+word</li>
+<strong>Prevalence</strong> Veras et al. (2014), "mandatory" şifrelerinin%73'ünün ek olarak rakam ekler.Sadece% 12 ek olarak.
+<h3>7.3 Kategori 3: Leet substitutions</h3>
+<p>Benzer sayılar veya sembollerle mektupların sistematik değiştirilmesi:</p>
+SubstitutionEmpirical frekansı
+[12]- !!!
+→ @ @@ 23% of password with @
+→ 3Şifrelerin %31'i 3 ile
+I → 1şifrelerin% 19'u 1 ile
+→ 0parolaların% 27'si 0 ile
+→ $Şifrelerin% 14'ü $ ile
+→ 1% 8%
+→ 7% 6%
+→ 9% 4%
+<p>Kombinasyonlar ("P@ssw0rd") karmaşık görünüyor ancak birkaç kuralda üretilir: <code>c s a @ s o 0</code>Onlar arasındalar <strong>500 ilk aday</strong> "password" üzerine.</p>
+<h3>7.4 Kategori 4: Sembolik Suf ekleri</h3>
+<p>Özel bir karaktere sahip olma yükümlülüğü:</p>
+<li>Append "!": en sık eklenen sembolü (~% 35 sembolik eklerin% 35)</li>
+<li>Append "?": ~8%</li>
+<li>Append "#": ~6%</li>
+<li>Append "@": ~5%</li>
+<li>Append "": -%4%</li>
+<li>Append "!!": -% 3%</li>
+<li>Prepends "!": daha az sık (~% 10 vakaların% 35'i ek için)</li>
+<strong>Kombinaison</strong> Kelime + "1!" o kadar yaygındır ki en iyi64 tarafından sistematik olarak üretilir. "sunshine1!", "sunshine" üzerinde üretilen ilk 200 aday arasında.
+<h3>7.5 Kategori 5: Yapısal dönüşümler</h3>
+<p>Bazı profiller için daha az sık ama kullanışlı:</p>
+<li>Invers: "sun" → "naked" (bazı gruplar için şu anda)</li>
+<li>Duplication: "sun" → "sunsun" (16'ya sınırlanmış 8 tankla sınırlı sistemler için anahtar kelimeler)</li>
+<li>Rotation: "password" → "asswordp"</li>
+<li>Truncation + Ek: "passw" + "1"</li>
+<h3>7.6 Kategori 6: Kombinasyonlar (önemli seviye)</h3>
+<p>Kompleks kurallar çeşitli işlemleri birleştirir:</p>
+<pre><code class="language-plaintext">c $1 s a @        → "P@ssword1" (capitalize + append 1 + substitute a→@)
+u $! $1 $2 $3     → "SUNSHINE!123" (uppercase + append !123)
+r c $1            → "Drowssap1" (reverse + capitalize + append 1)
+s e 3 s a @ c $!  → "P@ssw3rd!" (multiple substitutions + capitalize + !)</code></pre>
+<p>Bu dönüşümler çok karmaşık görünüyor, ancak iyi bir kural seti tarafından tespit edilebilir kalır. OneRuleToRuleThemAll bunlardan binlerce içerir.</p>
+<hr>
+<h2>8. Frekans Önceliği: Etkililiğin Kalbi</h2>
+<h3>8.1. Temel kelimenin frekansı önceliği belirler</h3>
+<p>Akıllı bir saldırgan tüm kelimelere eşit olarak kuralları uygulamaz.O öncelikler:</p>
+<li><strong>Çoğu yaygın kelime</strong> (top-100 RockYou/HIBP) × tüm kurallar</li>
+<li><strong>Kelimeler orta derecede yaygındır</strong> (top-10k) × en etkili kurallar</li>
+<li><strong>Daha az sık kelimeler</strong> (tüm sözlük) × ilk birkaç kural</li>
+<p>Bu strateji, ilk stratejiyle birlikte frekansı azaltarak kelime listesinin sıralaması ile uygulanıyor. "Password1" (belirli kelime 1) kelimesi milisanste kırılırken, "Soleil1" kelimesinden birkaç saniye alabilir.</p>
+<h3>8.2 Medya alanı arama alanında</h3>
+<p>Anahtar ölçü, <strong>Hedef şifre bulmadan önce test edilen medyan sayıda adayı</strong>. Ma et al. (2014) ampirik ölçümler sağlar:</p>
+ÜçüncüÖrnek Örnek Örnek Örnek Örnek Örnek ÖrnekMedian başvurularını bulmadan önce
+- ►►- !!!
+TOP100"password1", "P@ssword"~450-500
+Common dict (top-10k)"Sunshine1", "sunshine!"~5 000-15 000
+Daha az yaygın"Paillon2024"~50 000-200,000
+Sözlüğü olmadan"Xk7 #mP9q"N/A (inapplicable hybrid)
+<p>Bu ölçümler Time2Crack sabitlerinin doğrudan temelidir:
+</p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
+const HYBRID<em>KEYSPACE</em>DICT = 8<em>000; // Ma ve al. 2014 – medyan şu anki diktatör
+Sınırlı</em>KEYSPACE<em>FULL = 128e6; // Gosney 2012 - en iyi64 × 2M yorucu kelimeler</em></code></pre><p></p>
+<h3>Hibrit için gerekli 83 Koşullar uygulanabilir</h3>
+<p>Hibrit saldırı parolanın olması gerekir <strong>Bir sözlük kelimesinden yapısal olarak alıntılanabilir</strong>Time2Crack bu durumu bu durumu algılar <code>hybridVuln</code> :</p>
+<pre><code class="language-javascript">const hybridVuln = dictWord || (common &amp;&amp; /[a-z]/i.test(pw));</code></pre>
+<li><code>dictWord = true</code> : Şifre ya da bir dil kelime listesinden elde edilir</li>
+<li><code>common &amp;&amp; lettre</code> : Şifre COMMON (HIBP üst-400) ve harfler içerir - bu yüzden neredeyse kesinlikle bir kelimeden türlenmiş</li>
+<p>Eğer eğer <code>dictWord</code> Ne de ne de <code>hybridVuln</code> Gerçek - şifre tespit edilemez bir sözlük kökü içeriyor - hibrit saldırı geri dönüşleri <code>null</code> ( uygulanabilir değil) “xK9#mQ7@” gibi saf rastgele bir şifre karma için savunmasız değildir.</p>
+<hr>
+<h2>9. Time2Crack'de uygulama: <code>addHybridAttacks()</code></h2>
+<h3>9.1 Tamamlanmamış bir kod</h3>
+<pre><code class="language-javascript">function addHybridAttacks(rows, hybridVuln, weak, common, dictWord) {
+  if (hybridVuln || weak) {
+    // Sélection du keyspace selon la popularité du mot de base :
+    // common → mot dans HIBP top-400 → position ~500 dans la liste de l'attaquant
+    // dictWord → mot dans la wordlist → position ~8000
+    // sinon (hybridVuln sans dictWord ni common) → scan exhaustif ~128M
+    const hybridKS = common ? HYBRIDKEYSPACE<em>COMMON
+dictWord? HYBRID</em>KEYSPACE<em>DICT
+: HYBRID</em>KEYSPACE<em>FULL;
+<p>(En büyük bir ALGOS) için
+satırlar.push
+Atk: t("aHybrid")
+hash: a.name,
+oran: a.rate,
+// bütçeTime: anahtar alan tahminlerin sayısı - 2 bölüm tarafından bölünme
+// ( BrutTime gibi, burada adaylar olasılık tarafından sipariş edilir)
+Kuru: zayıf mı? zayıfGuesTime(a.rate): bütçeTime(hybridKS, a.rate),
+Not: zayıf? t("nWeakPassword"): t("nDictMut")
+Kedi: "hybrid",
+=)
+}
+Diğer {
+Form sözlüğü olmadan // Password → hibrid inapplicable
+satırlar.push
+Atk: t("aHybrid")
+hash: "(all)",
+Hız: 0,
+Kuru: null, // N / A masada
+Not: t(nStructUnrecog),
+Kedi: "hybrid",
+=)
+}
+}</p></em></code></pre>
+<h3>9.2 <code>budgetTime</code> vs vs <code>bruteTime</code></h3>
+<p>İki işlev arasındaki ayrım temeldir:</p>
+<pre><code class="language-javascript">// bruteTime : l'attaquant ne sait pas où est le mot de passe dans l'espace.
+// Il teste en moyenne la moitié avant de le trouver. → keyspace/2
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls);
+}
+<p>// bütçe: Saldırıcı adayları olasılık sıralamasında test eder.
+// Keyspace, bulmadan önce beklenen adayların sayısı (median pozisyonu).
+// 2 ile bölünme - medyan zaten Ma 2014 sabitlerine dahil edilmiştir.
+bütçe fonksiyonuTime(gues, rate) {
+s. = Math.log (guesses) - Math.log(rate);
+Math.exp(ls);
+}</p></code></pre>
+<p>Hibrit için, <code>budgetTime</code> Doğru çünkü 500/8000 /128M adaylarının ampirik tahminleri <strong>median pozisyonu</strong>Ancak seyahat etmek için toplam yer değil.</p>
+<h3>9.3 İlişki ile <code>isDictWord()</code></h3>
+<p>Analiz <code>dictWord</code> Hangi koşullar Hibrit anahtar alanı seçimi tarafından üretilir <code>isDictWord()</code> :</p>
+<pre><code class="language-javascript">function isDictWord(pw) {
+  if (!DICTWORDS || !DICT<em>(WORDS.size) sahte geri döner;
+l = pw.normalize("NFC")toLowerCase();
+<p>// Doğrudan test: Sözde olduğu gibi şifre mi?
+Eğer (DICT)</p></em>WORDS.has(l)) return true;
+<p>// Leeated testi: "s0le1l" → dico'da "sun"?
+Kont dl = deLeet(pw);
+Eğer (dl!)<em>WORDS.has (dl) gerçek geri döndü;</em></p>
+<p>// Test substring: "sunshine123" dico'da "sunshine" içeriyor mu?
+(DICTWORDS) için
+(l. dahil (w) &amp;&amp; w.long &gt;= 4) gerçek geri döner;
+}</p>
+<p>Sahte geri dönüş;
+}</p></code></pre>
+<p>Bu algılama sadece hibridin uygulanabilir olup olmadığını değil, aynı zamanda da belirler. <strong>Hangi anahtarspace</strong> (common vs dict) zamanı hesaplamak için kullanılır.</p>
+<hr>
+<h2>10. Üç karma anahtar alanı ve onların gerekçeleri</h2>
+<h3>10.1 HYBRID<em>KEYSPACE</em>COMMON = 500</h3>
+<strong>Arka plan arka plan arka plan</strong> Şifre COMMON'da - zor kodlanmış liste HIBP üst-~400. Bunlar dünyanın en yaygın şifrelerinden bazıları ("password", "letmein", "sunshine", "iloveyou".
+<strong>Justification Justification</strong> Ma et al. (2014) Amply, bir hibrit listedeki en iyi 1000 şifrenin en iyi konumunun - 450 adayı olduğunu ölçtü.
+<strong>Yorum</strong> : Bir saldırgan, parolayı bulmadan önce ortalama 500 adayın frekans testlerine en iyi 64 ila bir kelime listesine başvurmaktadır.In 2,000 GH /s (MD5, 12× RTX 4090), 500 aday = <strong>0.25 picosans</strong>Pratik olarak anında.
+<strong>Örnek Örnek Örnek Örnek Örnek Örnek Örnek</strong> "Sunshine1" → "sunshine" COMMON → HYBRID<em>KEYSPACE</em>COMMON = 500 <code>budgetTime(500, 2027e9)</code> 0.25 nanosaniye.
+<h3>10.2 HYBRID<em>KEYSPACE</em>DICT = 8,000</h3>
+<strong>Arka plan arka plan arka plan</strong> Şifre dil kelime listesinden gelen bir kelimeden elde edilir, ancak COMMON'dan değil. Bunlar ortak kelime kelimeler (“sun”, "tain", "paillon"...) dönüşümlerle yazılır.
+<strong>Justification Justification</strong> Ma et al. (2014), RockYou'daki kelimenin popülaritesine bağlı olarak 2.000 ila 15,000 arasında bir arabulucu pozisyonu ölçmek. Bu anahtar alan, saldırganın kelimeyi ve daha yaygın adaylarını test ettiğini yansıtıyor.
+<strong>Yorum</strong> : 2.000 GH/s (MD5) 8,000 adayı = <strong>4 nanosaniye</strong>. Her zaman hızlı hashs için yakın. bcrypt (69 kH/s): 8,000 / 69 000 <strong>0.12 saniye</strong>.
+<strong>Örnek Örnek Örnek Örnek Örnek Örnek Örnek</strong> : "Soleil2024" → "sun" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8,000 → MD5'te birkaç nanosaniye, bcrypt üzerinde 0.12.
+<h3>10.3 HYBRID<em>KEYSPACE</em>FULL = 128,000,000</h3>
+<strong>Arka plan arka plan arka plan</strong> : <code>hybridVuln</code> Gerçek (password'in bir sözlük yapısı vardır) ama ne de <code>common</code> Ne de ne de <code>dictWord</code> Saldırgan tüm kelime listesini tüm kurallarla göz önünde bulundurmalıdır.
+<strong>Justification Justification</strong> Gosney (Passwordscon 2012) 3.5M kelime listesi × en iyi64 (64 kurallar) = 224M adayları toplam olarak 2M kelime yapar ve kısmi en iyi64 daha geniş kurallara tırmanmadan önce durur.
+<strong>Formula Formula Formula Formula</strong> : <code>2<em>000 000 000 000</em>000 mots × 64 règles = 128<em>000 000 000 000</em>000 candidats</code>
+<strong>Yorum</strong> : 2000 GH/s (MD5) <strong>64 mikrosaniye</strong>bcrypt (69 kH/s): - 31 dakika.
+<hr>
+<h2>11. Yüksek sadakat kalibrasyonu</h2>
+<h3>11.1 Yüksek sadakat modundaki rolü</h3>
+<p>Yüksek sadakat modu (HF) Time2Crack'de etkinleştirildiği zaman, doğruyu düzeltme için hesaplanmış zamanlarda ek bir multiplier uygulanır. hibrid saldırı için, bu multiplier temel anahtar uzaylar tarafından yakalanmayan hesap faktörlerine girer.</p>
+<h3>hibridler için</h3>
+<p>İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <code>applyHighFidelityCalibration()</code> :</p>
+<pre><code class="language-javascript">case "hybrid":
+  // Mots très courants : crackés encore plus tôt que la médiane Ma 2014
+  // car les attaquants modernes trient word-first + règle-first simultanément.
+  // Réduction de 30% sur les temps déjà courts.
+  m <em>= context.common? 0.7
+: context.dictWord? 0.8
+- 1.0;
+Bölüm;</em></code></pre>
+<strong>Justification Justification</strong> :
+<li>For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For <code>common</code> : Modern araçlar (hashcat with with with <code>--markov-threshold</code>) Ampirik etkinliği ile kuralları önceden oluşturun. En iyi adaylar daha önce gelir.% 30'u azaltır.</li>
+<li>For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For <code>dictWord</code> : Daha az etki çünkü kelime listesindeki pozisyon daha az yoğunlaşmıştır.% 20'nin azaltılması.</li>
+<li>For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For For <code>hybridVuln</code> Sadece (FULL anahtar alanı): hiçbir azalma - tam anahtar alanı zaten muhafazakar bir tahmindir.</li>
+<h3>11.3 monoton koruma ile etkileşim</h3>
+<p>monoton koruma, özel bir saldırı iddialarının olması için garanti eder <strong>Daha hızlı daha hızlı</strong> Bu, şifre alfabetik substring üzerinde ham kuvvet:</p>
+<pre><code class="language-javascript">// Pour chaque row non-brute :
+const floorAlpha = bruteTime(Math.pow(26, alphaOnly.length), algo.rate);
+if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
+<p>Kısa kelimeler için (e.g., "cat" = 3 mektup, kat = 26.3/rate</p>
+<hr>
+<h2>12. Türlü saldırılarla İlişki</h2>
+<h3>12.1 Hybrid vs. Pure Dictionary</h3>
+KriterleriSaf SözlükHybrid Hybrid Hybrid Hybrid
+►-- --►
+Adaylar test edildiDoğru Liste KelimelerKelimeler + tüm çeşitleri
+Kapak (RockYou)~18%~79-85% (en iyi64)
+Keyspace (200k kelime)200 000 000200 000 × 64 = 12.8M
+ApplicabilityŞifre = tam kelimeBir kelimeden elde edilen şifre
+Vulnerable örnek"sunshine" (exact)"Sunshine1!", "sunsh1ne"
+Dayanıklı örnek"Sunshine1""xK9 #mQ7@" (no kök)
+<h3>12.2 Hybrid vs Rule-Based</h3>
+<p>Time2Crack'deki kural tabanlı saldırı kavramsal olarak benzer ama çok daha geniş bir kurallar kümesi ile:</p>
+<pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000; // vs 128M tam hibrit</em></code></pre>
+<p>Fark: En iyi64 model hibrit (64 kurallar, ortak insan dönüşümüne odaklanır). kural tabanlı saldırı modelleri d3ad0ne (34k kurallar) veya OneRuleToRuleThemAll (52k kurallar), en iyi64 başarısız olduğunda kullanılır.</p>
+<h3>12.3 Hybrid vs PCFG</h3>
+<p>PCFG (Probabilistic Context-Free Grammar, Weir 2009) Adayları oluşturmak için şifrenin grammatik yapısını modeller.</p>
+KriterleriHybrid Hybrid Hybrid HybridPCFGGG
+►►- ►
+Yaklaşım Yaklaşım YaklaşımTemel kelime + dönüşüm kurallarıGlobal grammatical yapı
+Kuvvet GücüMevcut kelimeler mutatedatedStructures type "word+Digits"
+Örnek Örnek Örnek Örnek Örnek Örnek Örnek"sunshine" → "Sunshine1""Caps+lower+digit" yapısı
+ComplementarityTetikleyiciler <code>dictWord</code>Tanımlanan yapıdaki Teprasyonlar
+Keyspace (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> Dinamik olarak hesaplandı
+<p>PCFG, kök sözlüğü olmadan şifrelere saldırabilir, eğer onların <strong>Yapı yapısı</strong> yaygındır (ex: "Thelonious8" → dico'nun bir anlamı değil, Capitalize+lower+digit çok öngörülebilir).</p>
+<h3>12.4 Hybrid vs Morphological (morph)</h3>
+<p>morfolojik saldırı testleri dilsel varyantlar (saçlar, varyasyonlar) Zengin morfoloji ile dillerin genelleştirilmesi:</p>
+<li>Hybrid: "sun" → "Sun1", "s0leil", "sun!"</li>
+<li>Morphological: "sun" → "sun", "sun", "solar", "sun"</li>
+<p>Hibrit sözcüğün yüzeyinde çalışır (karacter dönüşümleri), morfolojik lexical yapısı üzerinde çalışır (derivation, bükme), ve tamamlayıcıdırlar.</p>
+<hr>
+<h2>13. Benchmarks by hash algoritma</h2>
+<h3>Üç karma anahtar alanı için 13.1 Zamanı (12× RTX 4090)</h3>
+AlgorithmPuan (H/s)(500)DICT (8k)FULL (128M)
+- !!!- !!!---- ►- !!!---- ►
+MD52 027 GH /s0.25 ps3.9 ns63 μs
+SHA-1610 GH /s0.82 ps13 ns210 μs
+SHA-256272 GH /s1.84 ps29 ns470
+NTLM3,462 GH /s0,14 ps2.3 ns37 μs
+bcrypt (cost 10)69 kH /s7.2 ms0.1231 min
+Argon2id800 H /s0.625 s10 s44 saat 44
+<strong>Okuma</strong> MD5 ve NTLM için, FULL anahtar alanı (128M adayları) birkaç düzine mikrosaniyede kırılır.
+<strong>Argon2id</strong> Ortak kelimeler için bile önemli ölçüde direnen tek algoritma: bir COMMON kelimesi için 0.625 saniye, bir dictWord için 10 saniye. Bu kez mutlak değerde kısa kalır, ancak x10.12 vs MD5'in yavaşlamasını temsil eder - büyük ölçekli ekonomik saldırılar yapılabilir.
+<h3>Saldırı profilinin 13.2 Etkisi</h3>
+<p>Time2Crack iki profil sunar (Experienced 12 GPU, Profesyonel 100 GPU). Hibrit için, profil farkı doğrudan orantılıdır:</p>
+Profil ProfiliGPUsMultiplierFULL bcrypt
+--- ►- ►----- ►
+Deneyimlendi12× RTX 40901×31 min
+Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel~100 GPU~8×~4 min
+<p>MD5 için, SHA-1, NTLM: profil mikrosaniyelerden nanosaniyelere zaman değiştirir – herhangi bir pratik etki olmadan, her ikisi de anında olur.</p>
+<hr>
+<h2>14. Hibrit çatlakların beton örnekleri</h2>
+<h3>14.1 Örnek 1: "Password1" (COMMON)</h3>
+<strong>Analiz Analizi</strong> :
+<li><code>isCommon("Password1")</code> → false (tam HIBP'de değil)</li>
+<li><code>isDictWord("Password1")</code> Daha düşük durumda DICTWORDS'de gerçek ("password")</li>
+<li><code>COMMON.has("password")</code> → gerçek → <code>common = true</code></li>
+<li>Sonuç: HYBRID<em>KEYSPACE</em>COMMON = 500</li>
+<strong>MD5 zamanı</strong> : 500 / 2,027e12 <strong>0.25 picosans</strong> (snapshot)
+<strong>Zaman bcrypt 10 maliyeti</strong> : 500 / 69 000 <strong>7.2 milisaniye</strong>
+<strong>Kuralları bulmadan önce test edildi</strong> : <code>:</code> (gross kelime "password" → hayır), <code>c</code> ("Password" → hayır), <code>c $1</code> ("Password1" → <strong>FIND</strong>satır -8)
+<h3>14.2 Örnek 2: "Sun2024" (DICT)</h3>
+<strong>Analiz Analizi</strong> :
+<li><code>isCommon("Soleil2024")</code> → false</li>
+<li><code>isDictWord("Soleil2024")</code> → true ("sun" in fr.txt)</li>
+<li><code>COMMON.has("soleil")</code> → false → <code>common = false</code>, <code>dictWord = true</code></li>
+<li>Sonuç: HYBRID<em>KEYSPACE</em>DICT = 8,000</li>
+<strong>MD5 zamanı</strong> : 8 000 / 2.027e12 <strong>3.9 nanosaniye</strong>
+<strong>Zaman bcrypt 10 maliyeti</strong> : 8 000 / 69 000 <strong>0.12 saniye</strong>
+<strong>Test kuralları</strong> : saldırgan, frekans tarafından sıralanan kelime listelerinde “sun” gelir, sonra geçerlidir. <code>c $2 $0 $2 $4</code> ("Sun2024") kendi kurallarının sırasında -3.
+<h3>14.3 Örnek 3: "p@pillon!" (geçerler ile DICT)</h3>
+<strong>Analiz Analizi</strong> :
+<li><code>isDictWord("p@pillon!")</code> : De-leetification → "paillon" → in fr.txt → <code>dictWord = true</code></li>
+<li>Sonuç: HYBRID<em>KEYSPACE</em>DICT = 8,000</li>
+<strong>Test kuralları</strong> : "paillon" ~15,000 sözlük f. Kuralı <code>s a @ $!</code> → "p@pillon!" satırda - 12. Genel pozisyon: ~180.000. Her zaman HÜŞÜN'de iyi<em>KEYSPACE</em>DICT.
+<h3>14.4 Örnek 4: "xK9 #mQ7@".</h3>
+<strong>Analiz Analizi</strong> :
+<li><code>isDictWord("xK9#mQ7@")</code> → false (no kök sözlüğü)</li>
+<li><code>isCommon("xK9#mQ7@")</code> → false</li>
+<li><code>hybridVuln = false</code></li>
+<li>Outcome: <code>sec = null</code> → <strong>Hibrit geçerli değil</strong></li>
+<p>Bu şifre karma saldırı ile kırılamaz. Kelime kökü yoktur. Saldırgan saf brute kuvveti, PCFG veya istatistiksel saldırıları kullanmalıdır (Markov, Neural).</p>
+<h3>14.5 Örnek 5: "LinkedInB3st!"</h3>
+<strong>Analiz Analizi</strong> :
+<li><code>isDictWord("LinkedInB3st!")</code> : "linkedin" → kelime listesi.txt + <code>deLeet("b3st")</code> → "en iyi" → <code>dictWord = true</code></li>
+<li>Sonuç: HYBRID<em>KEYSPACE</em>DICT = 8,000</li>
+<p>İlginç bir durum: şifre iki kök içerir ("linkedin" ve "en iyi" de-leetification) Hybrid saldırı uygulanabilir çünkü en azından bir kök tespit edilir. Uygulamada, bir düktör saldırısı (iki kelime yapıştırılır) burada daha etkili olacaktır.</p>
+<hr>
+<h2>15. Hybrid Attack Limits</h2>
+<h3>15.1 Intrinsic limitleri</h3>
+<strong>Kelimelistinin kalitesine bağlı olarak</strong> Temel kelime listede değilse, karma çok özel bir terime dayanan bir şifre (neologism, belirsiz teknik terim, nadir bir dil kelimesi) tüm yaygın kelime listelerinden yoksun olup olmadığına karşı direnebilir.
+<strong>Tamamen dönüşümlerin kapsamı</strong> : OneRuleToRuleThemAll with 52k kuralları hayal edilebilir dönüşümlerin% 100'ini kapsamaz. Bazı çok nadir dönüşümler (base64 kısmi kodlamalar, icat desenler) kurallardan kaçır.
+<strong>Combinatory Blast with Long Wordlists</strong> 2.000 GH /s (MD5), ~250 saniye alır - ancak bcrypt (69 kH /s), ~230,000 yıl. Hibrit ölçeklenebilirliği, kelime listesinin uzunluğu ve hash algoritmasının yavaşlığı ile sınırlandırılır.
+<h3>15.2 What Time2Crack does not catch</h3>
+<strong>Context Wordlists</strong> Belirli bir şirketin hedeflediği bir saldırgan, şirketin adı ile bir kelime listesi inşa edecek, ürünler, çalışan isimleri, iş koşulları. "Renault2024!", Renault'yu hedef alan bir saldırgan tarafından anında kırılacaktı - ancak Time2Crack bu bağlamda model yapmaz (bu "Targeted OSINT" saldırısının rolüdür).
+<strong>Multi-pass kompozit kuralları</strong> Bazı şifreler en iyi64'e karşı direnir, ancak iki yönlü kurallara (bir kural olarak, o zaman sonuca başka bir kural uygular). Time2Crack modeli sadece bir kural geçer.
+<strong>Rehber Etkileri ve Memorization</strong> : hashcat zaten tekrarları önlemek için test edilen adayların bir masasını koruyor, bu da pratikte hızlanıyor. Time2Crack (conservative).
+<h3>15.3 Hibrit'in aşırı derecede tükendiği durumlarda</h3>
+<p>Time2Crack iki durumda enestimate hibrit hızı olabilir:</p>
+<li><strong>Uzun şifreler</strong> Bir kelime sözlüğüne dayanan 20character şifresi ("incomprehensibleities1!") bir sözlük olarak tespit edilir, ancak hibrit araçlar genellikle filtre adayları çok uzundur. Gerçek anahtar alanı belki 10 × daha büyük.</li>
+<li><strong>Zengin morfoloji ile Diller</strong> Türk, Finlandiya, Macar'ın daha karmaşık kelime listeleri var. "Apol2024", Türk kelime listesi tüm morfolojik formları içermezse radarlar altında geçebilir.</li>
+<hr>
+<h2>16. Etkili Savunmalar</h2>
+<h3>16.1 Hibritleşmeye Karşı Olanlar</h3>
+<p>Hibrit saldırı başarısız olur if if if <strong>Şifre mevcut herhangi bir sözlük kelimesinden kaynaklanmaz</strong>Etkili stratejiler:</p>
+<strong>Rastgele şifreler</strong> "xK9 #mQ7@vP2!" hiçbir sözcük kökü yoktur. Hiçbir hibrit kural bunu üretebilir. Direniş: maksimum.
+<strong>Şifre jeneratörü</strong> : Şifre yöneticileri (Bitwarden, 1Password, KeePass) rastgele dizeler üretir. Hiçbir sözcü → hibrid inapplicable.
+<strong>Gerçekten rastgele kelimeler</strong> : "tabouret-marmot-ginger-flash" - dört rastgele kelime. Klasik modda Hibrit saldırı 4 kelime kombinasyonu yaratmaz (bu, moderatörün rolüdür). Passphrase standart karmaya karşıdır.
+<h3>16.2 Hibrit Direniş Nedir</h3>
+<p>En yaygın "güçlendirme" stratejileri direnmiyor:</p>
+Strateji StratejisiÖrnek Örnek Örnek Örnek Örnek Örnek ÖrnekDireniş
+- !!!►--- !!!
+İlk mektubu SermayelendirmekSunshineKural Kural Kuralı <code>c</code>2.
+Bir sayısal ekle"sunshine1"Kural Kural Kuralı <code>$1</code>4.
+Ekle sembolü ekle"Sunshine!"Kural Kural Kuralı <code>$!</code>6.
+→3"suns3ine"Kural Kural Kuralı <code>s e 3</code>, üst-20
+Her şeyi birleştirin"Suns3ine!"Kompozit bir kural, üst-100
+Nadir bir kelime seçin"Papil123"
+Çift kelime"sunsun"Kural Kural Kuralı <code>d</code>, üst-30
+Ters"enihsnus"Kural Kural Kuralı <code>r</code>, üst-15
+<strong>Sonuç Sonuç Sonuç</strong> “Bir kelime + değişikliğine dayanan herhangi bir strateji, karmaya karşı savunmasızdır. istisna, herhangi bir kuralla kaplı olmadığı kadar karmaşık ve nadir bir değişikliktir - ancak kullanıcı bu karmaşık dönüşümü hatırlamalıdırsa, genellikle öngörülebilir bir şey seçmek zorundadır.
+<h3>16.3. Direnç algoritmaları</h3>
+<p>Bir şifre yapısal hibrite karşı savunmasız olsa bile, hash algoritması saldırıyı ekonomik olarak dayanılmaz hale getirebilir:</p>
+AlgorithmDICT için zaman (8k tahminler)Uygulama saldırısı
+- !!!---- !!!--- *
+MD5 / NTLM&lt; 1 nanosaniyeAnında
+SHA-256~30 nanosaniyeAnında
+bcrypt maliyeti 10~0.12 saniyeTrivial
+bcrypt maliyeti 14~32 saniyeFeasible
+Argon2id (default)~ 10 saniyeFeasible
+Argon2id (güçlü paramet)~100 saniyeYavaş ama mümkün
+<strong>Argon2id</strong> Yüksek parametrelerle (t=4, m=65536), karmayı gerçekten pahalı kılan tek algoritmadır, hatta zayıf şifrelerde bile.
+<h3>16.4 Pratik Tavsiye</h3>
+<li><strong>Bir şifre yöneticisi kullanın</strong> : saf rastgele üretir, uygulanabilir hibrit</li>
+<li><strong>Gerekirse gerekli</strong> Egzersiz kelimeleri aslında rastgele geçiş (EFF’den)</li>
+<li><strong>Hiçbir zaman "gizli" alt kurum tarafından bir kelime</strong> : Hibrit otomatik olarak onları üretir</li>
+<li><strong>bcrypt maliyeti ≥ 12 veya Argon2id</strong> sunucu tarafı: tek gerçek daha yavaş</li>
+<li><strong>Enable MFA</strong> : Operasyonel etki olmadan çevrimdışı çatlak teorik yapar</li>
+<hr>
+<h2>17. Referanslar</h2>
+<h3>Akademik Yayınlar</h3>
+<strong>Klein, D.V. (1990)</strong>
+“Kıtmacıyı Keşfetmek”: A Survey of, and improves to, Password Security<em>
+ABD Güvenlik Atölyesi'nin Bildirileri, 1990.
+- İlk ampirik çalışma, mutasyon kurallarının dağınık kapsama üzerindeki etkisini ölçmek. Şifrelerin% 56'sinin sözlük + basit dönüşümlerle kırılabilir olduğu notlar.
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009)</strong>
+</em>Şifre İzleme Probabilistic Context-Free Grammars<em>
+IEEE Güvenlik ve Gizlilik Sempozyumu (S&amp;P), 2009
+- PCFG modelini kurdu ve bok kurallarının RockYou'de gözlemlenen insan dönüşümlerinin% 78'ini kapladığı şekilde geçerlidir.
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014)</strong>
+</em>A Study of Probabilistic Password Models<em>
+IEEE Güvenlik ve Gizlilik Sempozyumu (S&amp;P), 2014.
+– – <strong>Doğrudan referans çalışması</strong> Time2Crack: Medya pozisyonlarının ampirik ölçümü (500 for top-100, 2000-15000 for current dict) 10M gerçek şifreleri olasılıkla sipariş edilen bir hibrit tarama.
+<strong>Durmuth, M., Chaabane, A., Perito, D., ve Castelluccia, C. (2015)</strong>
+</em>Gizlilik toplantıları Güvenlik: Şifre İzleme için Kişisel Bilgiler<em>
+RICS 2015
+- Kurallar JtR vs Hashcat vs PCFG. Concludes that best64, RockYou'de% 12 oranında PCFG'yi aşıyor.
+<strong>Veras, R., Collins, C., &amp; Thorpe, J. (2014)</strong>
+</em>Şifrelerin Semantik Desenleri ve Güvenlik Etkileri<em>
+NDSS 2014.
+- semantik desenlerin dil analizi.
+<strong>Ur, B., Bees, J., Segreti, S. M., Bauer, L., Christin, N., &amp; Cranor, L. F. (2015)</strong>
+</em>Kullanıcıların Şifre Güvenliği Eş Gerçekliği Algısı mı?<em>
+ACM CHI 2015
+- Kullanıcıların, dilsiz şifrelerin gücünü sistematik bir şekilde sorgulayan şeytanlar. "P@ssw0rd" öznel bir "güçlü" puan alır, ancak &lt; 1'de çatlanır.
+<strong>Wheeler, D.L. (2016)</strong>
+</em>zxcvbn: Low-Budget Password Güçlü Tahmin<em>
+25. USENIX Güvenlik Sempozyumu, 2016.
+- Kuvvet tahminleri kütüphane mutasyon kuralı algılamasını bütünleştirir. Tespit heuristics uygulaması için referans.
+<h3>Endüstriyel konferanslar ve sunumlar</h3>
+<strong>Gosney, J (2012)</strong>
+</em>8x Nvidia GTX 580 Cluster Hashcat Benchmarks / LinkedIn çatlaklar seansı<em>
+Şifrelercon 2012, Oslo.
+- LinkedIn çatlakları belgeleyin: en iyi64 + kelime listesi 3.5M = 224M adayları, 6 gün içinde 90 çatlaklar.<em>KEYSPACE</em>FULL = 128M.
+<strong>Löf ring, K. (2013)</strong>
+</em>En iyi64.rule - 64 hashcat kurallarının Empirical seçimi<em>
+İç, GitHub'da yayınlandı.
+- Kaya'da seçilmiş 64 kuralın seti, çatlakları en üst seviyeye çıkarmak için. Endüstri referans standardı.
+<strong>Steube, J. (2016-günüm)</strong>
+</em>Hashcat Advanced Password Recovery<em>
+https://hashcat.net/hashcat/
+- Resmi mod belgeleri -a 0, -a 6, -a 7. kuralların Syntax. Resmi GPU kriterleri 12× RTX 4090.
+<strong>değil mi?</strong>
+</em>OneRuleToRuleThemAll – ML-rated hashcat kuralı set<em>
+https://git.hub.com/Not soSecure/password<em>çatmak</em>kurallar
+- Kırklanmış şifreler üzerine otomatik öğrenme ile üretilen 52 218 kural.
+<h3>Referans araçları</h3>
+<strong>John the Ripper</strong> (Solar Designer, 1996-günüm)
+https://www.openwall.com/john/
+- Kelimelist+rules hibrit. JtR sözlüğü her zaman Hashcat ile paralel olarak kullanılır.
+<strong>Hashcat</strong> (Steube, 2009-günüm)
+https://hashcat.net/hashcat/
+Referans GPU uygulaması. Modes -a 0/6/7 for hybrid. best64 bütünleşik.
+<strong>RockYou wordlist</strong> (2009)
+14.3M açık şifreler. Tüm hibrit kural setleri için standart kalibrasyon.
+<strong>SecLists</strong> (Daniel Miessler, 2012-günüm)
+httpsgit http://hub.com/danielmiessler/SecLists
+- Dil, alan, tema. Ana zaman2Crack dil kelime listeleri kaynağı.
+<h3>Web kaynakları Time2Crack uygulamasında atıfta bulundu</h3>
+<strong>Stok3nman (Hashcat kriterleri/rules).</strong>
+https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb4222fd
+- İlgili kaynak <code>descHybrid</code> (app.js) uygulanan mutasyon kurallarının büyüklüğü için.
+<strong>IEEE Xplore (hybrid referansı).</strong>
+https://iee blastre.ieee.org/document/6956583
+- İlgili kaynak <code>descHybrid</code> (app.js) çamurlu şifrelerin ampirik etkinliği ile ilgili.
+<hr>
+</em>Time2Crack projesinin bir parçası olarak üretilen Doküman - 2026<em>
+</em>Ayrıca bakınız: BRUTEFORCE<em>ATTACK</em>CHLAINED.md, MARKOV<em>ATTACK</em>EXP<em>ATTACK</em>EXP
+
+  </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

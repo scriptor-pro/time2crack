@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Kombinatör — Saldırı yöntemleri — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Daha büyük bir aday kümesi oluşturmak için iki kelime listesini birleştirin. Birden çok kelimeden oluşan parolalarda kullanışlıdır."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Kombinatör — Saldırı yöntemleri — Time2Crack"><meta property="og:description" content="Daha büyük bir aday kümesi oluşturmak için iki kelime listesini birleştirin. Birden çok kelimeden oluşan parolalarda kullanışlıdır."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/tr/methode/combinator.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="tr_TR"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Kombinatör — Saldırı yöntemleri — Time2Crack"><meta name="twitter:description" content="Daha büyük bir aday kümesi oluşturmak için iki kelime listesini birleştirin. Birden çok kelimeden oluşan parolalarda kullanışlıdır."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="combinator.html"><link rel="alternate" hreflang="fr" href="../../fr/methode/combinator.html"><link rel="alternate" hreflang="en" href="../../en/methode/combinator.html"><link rel="alternate" hreflang="es" href="../../es/methode/combinator.html"><link rel="alternate" hreflang="pt" href="../../pt/methode/combinator.html"><link rel="alternate" hreflang="de" href="../../de/methode/combinator.html"><link rel="alternate" hreflang="it" href="../../it/methode/combinator.html"><link rel="alternate" hreflang="tr" href="combinator.html"><link rel="alternate" hreflang="pl" href="../../pl/methode/combinator.html"><link rel="alternate" hreflang="nl" href="../../nl/methode/combinator.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">Combinator Saldırı - Kapsamlı Operasyon</h1>
+<blockquote>
+Project reference document Time2Crack
+</blockquote>
+<blockquote>Recipients: geliştiricileri, güvenlik araştırmacıları, gelişmiş kullanıcılar</blockquote>
+<hr>
+<h2>İçerikler</h2>
+<li><a href="combinator.html#1-vue-densemble">Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış</a></li>
+<li><a href="combinator.html#2-contexte-historique-et-académique">Tarihsel ve akademik arka plan</a></li>
+<li><a href="combinator.html#3-fondements--concaténation-de-tokens-probables">Vakıflar: olası jetonların toplanması</a></li>
+<li><a href="combinator.html#4-architecture-dune-attaque-combinator-moderne">Modern bir düktör saldırısının mimarisi</a></li>
+<li><a href="combinator.html#5-combinator-vs-passphrase-robuste">Combinator vs passphrase sağlam</a></li>
+<li><a href="combinator.html#6-implémentation-dans-time2crack--addcombinatorattacks">Time2Crack'de Uygulama: <code>addCombinatorAttacks()</code></a></li>
+<li><a href="combinator.html#7-keyspace-combinator-dans-time2crack">Keyspace Combinator in Time2Crack</a></li>
+<li><a href="combinator.html#8-calibration-et-priorisation">Kalibrasyon ve önceliklendirme</a></li>
+<li><a href="combinator.html#9-benchmarks-et-ordres-de-grandeur">Benchmarks ve büyüklüğün emirleri</a></li>
+<li><a href="combinator.html#10-exemples-concrets">Beton örnekleri</a></li>
+<li><a href="combinator.html#11-limites-de-lattaque-combinator">Combinator Attack Limits</a></li>
+<li><a href="combinator.html#12-défenses-efficaces">Etkili savunmalar</a></li>
+<li><a href="combinator.html#13-références-bibliographiques">Referanslar Referanslar</a></li>
+<hr>
+<h2>1. Genel bakış</h2>
+<p>Kombinatör sözlük girişlerinin bileşik adaylar üretmesine yönelik saldırıya uğradı (<code>mot1+mot2</code>Bazen varyantlarla). Özellikle ortak kelimelerin kısa geçişlerini hedefler.</p>
+<h2>2. Tarihsel ve akademik arka plan</h2>
+<p>sızıntılardan gelen kelimeler, kısa insan geçişlerinin çoğunun ortak kelimelere güvendiğini göstermiştir. Combinator motorları hashcat kampanyalarının standart tuğlaları haline geldi.</p>
+<h2>3. Vakıflar: olası jetonların toplanması</h2>
+<p>A ve B iki kelime seti ise nominal alandır. <code>|A| * |B|</code>Kazanan olasılıksal yoğunluktan gelir: sık sık insan kombinasyonları erken test edilir.</p>
+<h2>4 Modern bir düktör saldırısının mimarisi</h2>
+<pre><code class="language-text">1) Sélection de listes (mots courants, prénoms, contexte)
+2) Tri par fréquence
+3) Concaténation ordonnée (A+B, parfois B+A)
+4) Ajout optionnel de règles simples
+5) Test hash GPU</code></pre>
+<h2>5. Combinator vs. sağlam passphrase</h2>
+<p>İki yaygın concatenated words savunmasız kalır.</p>
+<p>Güçlü bir geçiş, birkaç nadir ve önemsiz kelimeleri birleştirir, ideal olarak rastgele üretilir.</p>
+<h2>6. Time2Crack'de Uygulama: <code>addCombinatorAttacks()</code></h2>
+<p>Aktivasyon ne zaman:</p>
+<ul>
+<li><code>looksPassphrase</code>,</li>
+</ul>
+<li>veya <code>common</code>,</li>
+<li>veya <code>weak</code>.</li>
+<p>Kategori: <code>cat: "combi"</code>not: <code>nPassphrase</code> veya <code>nNotPassphrase</code>.</p>
+<h2>7. Zaman2Crack'de Keyspace Combinator</h2>
+<p>Model kullanır <code>COMBI_KEYSPACE</code> ve <code>budgetTime(...)</code>Bazı yaygın durumlar için belirli bir şube ile.</p>
+<h2>8. Kalibrasyon ve önceliklendirme</h2>
+<p>Yüksek sadakatte, Combinator kategorisi, geçiş yapı tespit edildiğinde desteklenmiştir.</p>
+<h2>9. Benchmarks ve büyüklüğün emirleri</h2>
+<p>Hızlı, sık sık kombinasyonlar çok hızlı test edilebilir.</p>
+<p>Yavaş KDF'de her girişimin maliyeti saldırıyı yavaşlatır, ancak yapısal kırılganlığı ortadan kaldırmaz.</p>
+<h2>10. Pratik örnekler</h2>
+<li><code>bluesky</code> : Combinator sunumu.</li>
+<li><code>horsebattery</code> : Çok sık kelimeler.</li>
+<li><code>fjord-nectar-lotus-amber</code> : açıkça daha dayanıklı.</li>
+<h2>Combinator Saldırısının 11. Sınırları</h2>
+<li>Un-lexical sırları üzerinde düşük performans,</li>
+<li>Orijinal sözlüklere bağımlılık,</li>
+<li>Uzun ve nadir geçişlerde azalma sağlar.</li>
+<h2>12. Etkili Savunmalar</h2>
+<li>Nadir kelimelerin uzun pasajları.</li>
+<li>Yönetici aracılığıyla rastgele nesil.</li>
+<li>Modern KDF + MFA.</li>
+<h2>13. Referanslar</h2>
+<li>Hashcat Wiki. http://hashcat.net/wiki/</li>
+<li>Weir et al. (2009). IEEE S&amp;P.</li>
+<li>Son literatürde geçiş ve olasılıksal modeller (Time2Crack docs bakınız).</li>
+</main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

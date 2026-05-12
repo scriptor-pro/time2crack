@@ -1,0 +1,459 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hoe Time2Crack de tijd berekent — Time2Crack</title><link rel="preload" href="../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="../style.min.css" rel="stylesheet"></noscript><meta name="description" content="Begrijp hoe Time2Crack cracktijd schat met aanvalmodellen, gekalibreerde GPU-snelheden en een lokale rekenengine."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Hoe Time2Crack de tijd berekent — Time2Crack"><meta property="og:description" content="Begrijp hoe Time2Crack cracktijd schat met aanvalmodellen, gekalibreerde GPU-snelheden en een lokale rekenengine."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/nl/how-time2crack-works.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="nl_NL"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Hoe Time2Crack de tijd berekent — Time2Crack"><meta name="twitter:description" content="Begrijp hoe Time2Crack cracktijd schat met aanvalmodellen, gekalibreerde GPU-snelheden en een lokale rekenengine."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="how-time2crack-works.html"><link rel="alternate" hreflang="fr" href="../fr/how-time2crack-works.html"><link rel="alternate" hreflang="en" href="../en/how-time2crack-works.html"><link rel="alternate" hreflang="es" href="../es/how-time2crack-works.html"><link rel="alternate" hreflang="pt" href="../pt/how-time2crack-works.html"><link rel="alternate" hreflang="de" href="../de/how-time2crack-works.html"><link rel="alternate" hreflang="it" href="../it/how-time2crack-works.html"><link rel="alternate" hreflang="tr" href="../tr/how-time2crack-works.html"><link rel="alternate" hreflang="pl" href="../pl/how-time2crack-works.html"><link rel="alternate" hreflang="nl" href="how-time2crack-works.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><main class="doc-page">
+<div class="doc-header">
+<h1>Hoe Time2Crack de kraaktijd berekent</h1>
+<p class="subtitle">Volledige gids voor wetenschappelijke en technische operaties</p>
+</div>
+<nav aria-label="Inhoud" class="toc">
+<h2>Inhoud</h2>
+<ol>
+<li><a href="how-time2crack-works.html#overview">Overzicht</a></li>
+<li><a href="how-time2crack-works.html#flux">Voornaamste berekeningsstroom</a></li>
+<li><a href="how-time2crack-works.html#step1">Stap 1: Wachtwoordanalyse</a></li>
+<li><a href="how-time2crack-works.html#step2">Stap 2: Rangschatting</a></li>
+<li><a href="how-time2crack-works.html#step3">Stap 3: Conversie naar tijd</a></li>
+<li><a href="how-time2crack-works.html#attacks">De 7 uitgevoerde aanvallen</a></li>
+<li><a href="how-time2crack-works.html#algorithms">De 6 hash algoritmen</a></li>
+<li><a href="how-time2crack-works.html#profiles">Aanvalsprofielen</a></li>
+<li><a href="how-time2crack-works.html#example">Concrete voorbeelden</a></li>
+<li><a href="how-time2crack-works.html#faq">Veelgestelde vragen</a></li>
+</ol>
+</nav>
+ Overzicht 
+<section class="doc-section" id="overview">
+<h2>Overzicht</h2>
+<p>Time2Crack beantwoordt een eenvoudige vraag: <strong>Hoe lang duurt het om dit wachtwoord te kraken?</strong></p>
+<p>Het antwoord omvat drie stappen:</p>
+<div class="diagram">
+PASS MOT (bv. "P@ssw0rd!")
+▼
+STAP 1: Analyse (patroondetectie, entropie)
+▼
+STAP 2: Geschat aantal pogingen (bereik)
+▼
+STAP 3: Tijdconversie (gebaseerd op GPU snelheid)
+▼
+Als gevolg daarvan (bv. "2 dagen op GPU NTLM")
+      </div>
+<p><strong>Kritisch punt</strong> : Time2Crack-tests <strong>Niet echt.</strong> Het wachtwoord. <strong>wiskundig</strong> hoeveel pogingen nodig zouden zijn met verschillende aanvallen.</p>
+<div class="insight-box">
+        De belangrijkste innovatie is de strikte scheiding tussen <strong>Rang</strong> (aantal pogingen) en <strong>Tijd</strong> Dit maakt het mogelijk om aanvalsalgoritmen of GPU snelheden onafhankelijk te wijzigen.
+      </div>
+</section>
+ Berekeningsstroom 
+<section class="doc-section" id="flux">
+<h2>Voornaamste berekeningsstroom</h2>
+<div class="diagram">
+calcCrackTime(wachtwoord, opties) [core/calc.js]
+Promotie
+- analysePatterns(wachtwoord)
+│
+Promotie
+Ü--schattingRank(wachtwoord, context)
+│ Ã - rankBrute() → tanklengte
+│ ç - rangDictionary() → woordenboek + HIPP
+│ ç - rangHybrid() → woordenboek + mutaties
+│ Ã - rangMask() → voorspelbare structuren
+│ Ü - RankMarkov() → probabilistisch model
+│ ç - rangPCFG() → grammatica
+Promotie
+│
+Promotie
+- RangToAllSeconds(rank)
+- Converteert pogingen → seconden (GPU snelheid)
+- Return: { md5, sha1, sha256, ntlm, bcrypt, argon2 }
+      </div>
+<h3>Twee lagen architectuur</h3>
+<p>Time2Crack's belangrijkste innovatie is <strong>strikte scheiding</strong> tussen:</p>
+<div class="feature-list">
+<div class="feature-item">
+<strong><span class="emoji-marker">1</span>Laag 1 (rang)</strong>
+<p>"Hoeveel pogingen?" hebben geen idee van GPU tijd of snelheid. Modules: <code>core/rank/*.js</code></p>
+</div>
+<div class="feature-item">
+<strong><span class="emoji-marker">2</span>Laag 2 (tijd)</strong>
+<p>"Hoe lang?" Omzetten pogingen in seconden. Module: <code>core/time.js</code></p>
+</div>
+</div>
+<p><strong>Voordeel</strong> : Het veranderen van het algoritme van een aanval heeft nooit invloed op de logica van de tijd.</p>
+</section>
+ Stap 1 
+<section class="doc-section" id="step1">
+<h2>Stap 1: Wachtwoordanalyse</h2>
+<h3>Wat analyseren we?</h3>
+<p>Voordat de cracktijd wordt berekend, ontleedt Time2Crack het wachtwoord om te detecteren:</p>
+<div class="code-block">
+<pre>analyzePatterns(password) retourne {
+  // CHARSET &amp; ENTROPIE
+  charset: { hasLower, hasUpper, hasDigit, hasSymbol },
+  entropy: 52.3,  // bits
+
+  // DÉTECTIONS
+  patterns: {
+    dictionaryWord: true,      // mot dans dictionnaire
+    commonPassword: false,     // dans HIBP
+    keyboardPattern: false,    // qwerty, asdfgh
+    sequencePattern: false,    // abc, 123
+    datePattern: false,        // 2024, 12/25
+    repeatingPattern: false,   // aaaa, 1111
+    maskLike: true,            // structure prévisible
+    looksPassphrase: true,     // plusieurs mots
+  }
+}</pre>
+</div>
+<h3>De 8 soorten detecties</h3>
+<h4><span class="emoji-marker">1</span> Woordenboekwoord</h4>
+<p>Test het wachtwoord tegen 50k-200k gewone woorden en hun varianten (eenvoudige mutaties).</p>
+<h4><span class="emoji-marker">2</span> Gemeenschappelijk wachtwoord (HIBP)</h4>
+<p>Test tegen de 1000 meest ontsnapte wachtwoorden met behulp van de <strong>k-anonimiteit</strong> (slechts 5 eerste SHA-1 tekens verzonden).</p>
+<p><small><a href="hibp.html">Controleer of uw wachtwoord is gehackt →</a></small></p>
+<h4><span class="emoji-marker">3</span> Toetsenbordpatroon</h4>
+<p>Detecteren: <code>qwerty</code>, <code>asdfgh</code>, <code>qazwsx</code>, enz.</p>
+<h4><span class="emoji-marker">4</span> Volgnummer</h4>
+<p>Detecteren: <code>abc</code>, <code>123</code>, <code>xyz</code>, enz.</p>
+<h4><span class="emoji-marker">5</span> Datum</h4>
+<p>Detecteren: <code>2024</code>, <code>12/25</code>, <code>25-12-2024</code>, enz.</p>
+<h4><span class="emoji-marker">6</span> Herhaal</h4>
+<p>Detecteren: <code>aaaa</code>, <code>1111</code>, <code>!!!</code>, enz.</p>
+<h4><span class="emoji-marker">7</span> Gestructureerd</h4>
+<p>Detecteert te verwachten structuren: <code>Name2024!</code>, <code>Passw0rd!</code></p>
+<h4><span class="emoji-marker">8</span> Uitdrukking</h4>
+<p>Detecteert verschillende samengevoegde woorden: <code>correcthorsebatterystaple</code> → <code>[correct] + [horse] + [battery] + [staple]</code></p>
+</section>
+ Stap 2 
+<section class="doc-section" id="step2">
+<h2>Stap 2: Rangschatting (aantal pogingen)</h2>
+<h3>Basisconcept</h3>
+<p>De <strong>rij</strong> is: <strong>"Hoeveel wachtwoorden moet een aanval testen voordat je het vindt?"</strong></p>
+<div class="example-box">
+<h4>Voorbeeld</h4>
+<ul>
+<li><strong>Brutosterkte</strong> voor <code>abc</code> : 263 = 17,576 pogingen</li>
+<li><strong>Woordenboek</strong> voor <code>password</code> : ~1 poging</li>
+<li><strong>PCFG</strong> voor <code>Password123</code> : ~1011 pogingen</li>
+</ul>
+</div>
+<h3>Hoe kies je de winnende aanval?</h3>
+<p>Time2Crack lanceert de <strong>7 parallelle aanvallen</strong> en neemt het beste resultaat:</p>
+<div class="code-block">
+<pre>const results = {
+  brute:      { rank: 1e30 },
+  dictionary: { rank: 1e6 },      // GAGNANT
+  hybrid:     { rank: 1e7 },
+  mask:       { rank: 1e8 },
+  markov:     { rank: 1e9 },
+  pcfg:       { rank: 1e11 },
+  combinator: { rank: 1e12 },
+};
+
+const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
+// → 1e6 (Dictionary attack est la plus rapide)
+      </pre>
+</div>
+</section>
+ Stap 3 
+<section class="doc-section" id="step3">
+<h2>Stap 3: Conversie naar tijd</h2>
+<h3>Het concept</h3>
+<p>Nu we weten dat we moeten <code>rang</code> pogingen, we converteren naar <strong>seconden</strong> :</p>
+<div class="code-block">
+<pre>Formule : temps (secondes) = log₁₀(rang) / log₁₀(taux_hachage)</pre>
+</div>
+<h3>Hashing snelheden (GPU)</h3>
+<p>Time2Crack-toepassingen <strong>echte snelheden Hashcat</strong> voor 12× RTX 4090:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Algoritme</th>
+<th>Snelheid</th>
+<th>Salificatie</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MD5</strong></td>
+<td>2,03 TH/s</td>
+<td>Nee</td>
+</tr>
+<tr>
+<td><strong>SHA-1</strong></td>
+<td>610 GH/s</td>
+<td>Nee</td>
+</tr>
+<tr>
+<td><strong>SHA-256</strong></td>
+<td>272 GH/s</td>
+<td>Nee</td>
+</tr>
+<tr>
+<td><strong>NTLM</strong></td>
+<td>3,46 TH/s</td>
+<td>Nee</td>
+</tr>
+<tr>
+<td><strong>bcrypt</strong></td>
+<td>2,2 MH/s</td>
+<td>Ja.</td>
+</tr>
+<tr>
+<td><strong>Argon2id</strong></td>
+<td>800 H/s</td>
+<td>Ja.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Voorbeeld van conversie</h3>
+<div class="example-box">
+<h4>Wachtwoord: "wachtwoord" (rang: 1 miljoen = 106)</h4>
+<h4>Voor MD5 (2 biljoen/sec):</h4>
+<p><code>Temps = 10⁶ / (2×10¹²) = 0.5 microsecondes</code></p>
+<h4>Voor SHA-256 (272 GH/s):</h4>
+<p><code>Temps = 10⁶ / (2.72×10¹¹) = 3.7 microsecondes</code></p>
+<h4>Voor bcrypt (2,2 MH/s):</h4>
+<p><code>Temps = 10⁶ / (2.2×10⁶) = 0.45 secondes</code></p>
+<h4>Voor Argon2id (800 H/s):</h4>
+<p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
+</div>
+</section>
+ De 7 aanvallen 
+<section class="doc-section" id="attacks">
+<h2>De 7 uitgevoerde aanvallen</h2>
+<h3><span class="emoji-marker">1</span> Brutokracht</h3>
+<p><strong>Onderwerp</strong> : Test alle mogelijke combinaties</p>
+<div class="code-block"><pre>Formule : rang = charset_size ^ length</pre></div>
+<p><strong>Voorbeeld</strong> : <code>abc</code> → 263 = 17,576 pogingen</p>
+<p><strong>Zeer effectief voor</strong> : korte en willekeurige wachtwoorden</p>
+<p><small><a href="methode/bruteforce.html">Meer informatie over Brute Force →</a></small></p>
+<h3><span class="emoji-marker">2</span> Woordenboekaanval</h3>
+<p><strong>Onderwerp</strong> : Test elk woord in het woordenboek</p>
+<div class="code-block"><pre>Formule : rang = taille_dictionnaire</pre></div>
+<p><strong>Zeer effectief voor</strong> Menselijke woorden</p>
+<p><small><a href="methode/dictionary.html">Meer informatie over woordenboekaanval →</a></small></p>
+<h3><span class="emoji-marker">3</span> Hybride aanval</h3>
+<p><strong>Onderwerp</strong> : Woordenboek Word + eenvoudige mutaties</p>
+<div class="code-block"><pre>Formule : rang = taille_dictionnaire × nombre_mutations (~1000)</pre></div>
+<p><strong>Zeer effectief voor</strong> : woordenboek woorden + kleine wijzigingen</p>
+<p><small><a href="methode/hybrid.html">Meer informatie over Hybrid Attack →</a></small></p>
+<h3><span class="emoji-marker">4</span> Maskeraanval</h3>
+<p><strong>Onderwerp</strong> : Test voorspelbare structuren</p>
+<p><strong>Zeer effectief voor</strong> : menselijke structuren (<code>Name2024</code>, <code>Password!</code>)</p>
+<p><small><a href="methode/mask.html">Meer informatie over Maskeraanval →</a></small></p>
+<h3><span class="emoji-marker">5</span> Model Markov</h3>
+<p><strong>Onderwerp</strong> : Statistische benadering gebaseerd op n-gramfrequenties</p>
+<p><strong>Zeer effectief voor</strong> Menselijke woorden verminderde ruimte met ~99%</p>
+<p><small><a href="methode/markov.html">Meer informatie over Markov Model →</a></small></p>
+<h3><span class="emoji-marker">6</span> PCFG</h3>
+<p><strong>Onderwerp</strong> : Grammatisch model dat structuren leert</p>
+<div class="example-box">
+<h4>Echt voorbeeld</h4>
+<p><code>Password123</code> :</p>
+<ul>
+<li>Bruto sterkte: 9411 = 475 biljoen pogingen</li>
+<li>PCFG: ~100 biljoen pogingen (4.700× sneller!)</li>
+</ul>
+</div>
+<p><small><a href="methode/pcfg.html">Meer informatie over PCFG →</a></small></p>
+<h3><span class="emoji-marker">7</span> Combineraanval</h3>
+<p><strong>Onderwerp</strong> : Samenvoeging van 2+ woordenboek woorden</p>
+<p><strong>Zeer effectief voor</strong> : wachtwoordzinnen (4+ woorden)</p>
+<p><small><a href="methode/combinator.html">Meer informatie over Combiner Attack →</a></small></p>
+</section>
+ Algoritmen 
+<section class="doc-section" id="algorithms">
+<h2>De 6 hash algoritmen</h2>
+<h3>Waarom zes?</h3>
+<p>Verschillende algoritmen bieden verschillende niveaus van beveiliging. Time2Crack toont crack tijden voor de 6 om de impact van de algoritme keuze te tonen.</p>
+<h4><span class="emoji-marker"></span> MD5 (GEDEPRECTEERD)</h4>
+<ul>
+<li><strong>Snelheid</strong> : 2 TH/s (zeer snel)</li>
+<li><strong>Salificatie</strong> Nee</li>
+<li><strong>Status</strong> - Niet gebruiken</li>
+</ul>
+<h4><span class="emoji-marker"></span> SHA-1 (GEDEPRECTEERD)</h4>
+<ul>
+<li><strong>Snelheid</strong> : 610 GH/s</li>
+<li><strong>Salificatie</strong> Nee</li>
+<li><strong>Status</strong> - Botsingen gevonden (2017)</li>
+</ul>
+<h4><span class="emoji-marker"></span> SHA-256 (aanvaardbaar)</h4>
+<ul>
+<li><strong>Snelheid</strong> : 272 GH/s</li>
+<li><strong>Salificatie</strong> : Algemeen ja</li>
+<li><strong>Status</strong> - Aanvaardbaar indien met SALT + iteratie</li>
+</ul>
+<h4><span class="emoji-marker"></span> NTLM (LEGACY)</h4>
+<ul>
+<li><strong>Snelheid</strong> : 3,46 TH/s</li>
+<li><strong>Status</strong> - Gebruikt in Windows nalatenschap</li>
+</ul>
+<h4><span class="emoji-marker"></span> bcrypt (GENOMEN)</h4>
+<ul>
+<li><strong>Snelheid</strong> 2.2 MH/s (opzettelijk langzaam)</li>
+<li><strong>Salificatie</strong> : JA</li>
+<li><strong>Status</strong> * Uitstekend voor productie</li>
+</ul>
+<h4><span class="emoji-marker"></span> Argon2id (beter)</h4>
+<ul>
+<li><strong>Snelheid</strong> 800 H/s (zeer langzaam = zeer veilig)</li>
+<li><strong>Type</strong> : Hybrid (tijd + geheugen)</li>
+<li><strong>Status</strong> Beste moderne keuze (NIST 2021)</li>
+</ul>
+<div class="insight-box">
+        Moderne algoritmen zijn <strong>opzettelijk langzaam</strong>Het is een functie, geen bug! MD5 is snel (slecht), bcrypt is traag (uitstekend), Argon2id is nog langzamer (beste).
+      </div>
+</section>
+ Profielen 
+<section class="doc-section" id="profiles">
+<h2>Aanvalsprofielen</h2>
+<h3>Onderwerp</h3>
+<p>Verschillende aanvallers hebben verschillende bronnen. Time2Crack modellen 4 profielen:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Profiel</th>
+<th>GPU's</th>
+<th>NTLM</th>
+<th>Gebruik</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Amateur</strong></td>
+<td>1</td>
+<td>288 GH/s</td>
+<td>Hobbyisten</td>
+</tr>
+<tr>
+<td><strong>Ervaren</strong></td>
+<td>12</td>
+<td>3,46 TH/s</td>
+<td>Ernstige crackers</td>
+</tr>
+<tr>
+<td><strong>Professioneel</strong></td>
+<td>100</td>
+<td>28,8 TH/s</td>
+<td>Bedrijven, AWS clusters</td>
+</tr>
+<tr>
+<td><strong>Staat</strong></td>
+<td>~10k</td>
+<td>2,88 PH/s</td>
+<td>Regeringen</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>Concrete impact</h3>
+<div class="example-box">
+<h4>Wachtwoord: "P@ssw0rd" (10 tanks, rij: 1 biljoen)</h4>
+<ul>
+<li><strong>Amateur</strong> 44 seconden</li>
+<li><strong>Ervaren</strong> 3,7 seconden</li>
+<li><strong>Professioneel</strong> : 0,43 seconden</li>
+<li><strong>Staat</strong> 4,4 milliseconden</li>
+</ul>
+</div>
+<p><strong>Onderwijs</strong> : Zelfs een "sterk" wachtwoord kan worden gekraakt in milliseconden door een natie-staat!</p>
+</section>
+ Voorbeeld 
+<section class="doc-section" id="example">
+<h2>Concrete voorbeeld: Tr0ub4dor&amp;3</h2>
+<p>Het is het filmwachtwoord. <strong>"Correct Horse Battery Nieten"</strong> Eens kijken wat Time2Crack doet:</p>
+<h3>Stap 1: Analyse</h3>
+<div class="code-block">
+<pre>• length : 11 caractères
+• charset : 94 caractères
+• entropy : ~64 bits
+• dictionaryWord : FALSE
+• commonPassword : FALSE
+• maskLike : TRUE
+• looksPassphrase : FALSE</pre>
+</div>
+<h3>Stap 2: Rangschatting</h3>
+<div class="code-block">
+<pre>Brute Force  : 94^11 ≈ 475 trillion
+Dictionary   : ∞ (pas dans dictionnaire)
+Mask         : ≈ 1.4 trillion
+Markov       : ≈ 10 trillion
+PCFG         : ≈ 50 billion (GAGNANT)
+Combinator   : ∞</pre>
+</div>
+<h3>Stap 3: Conversie naar tijd</h3>
+<div class="example-box">
+<h4>Resultaten voor 50 miljard pogingen</h4>
+<ul>
+<li><strong>MD5</strong> : 0,025 seconden</li>
+<li><strong>SHA-256</strong> 0,18 seconden</li>
+<li><strong>bcrypt</strong> 6,3 uur</li>
+<li><strong>Argon2id</strong> 2 jaar</li>
+</ul>
+</div>
+<h3>Conclusie</h3>
+<ul>
+<li>• Veilig tegen bcrypt/Argon2id (uren → jaren)</li>
+<li></li>
+<li></li>
+</ul>
+</section>
+ Veelgestelde vragen 
+<section class="doc-section" id="faq">
+<h2>Veelgestelde vragen</h2>
+<h3>V: Test Time2Crack het wachtwoord eigenlijk?</h3>
+<p><strong>Nee</strong>. Time2Crack verstuurt niet <strong>Nooit</strong> uw wachtwoord naar een server.</p>
+<ul>
+<li>Alle berekeningen zijn uitgevoerd <strong>Lokale</strong> in de browser</li>
+<li>Alleen netwerkgesprek: HIPB controleert met k-anonimiteit</li>
+<li>Geen volledige wachtwoordoverdracht</li>
+</ul>
+<p><small><a href="privacy.html">Meer informatie over ons privacybeleid →</a></small></p>
+<h3>V: Waar komen GPU snelheidsnummers vandaan?</h3>
+<p><strong>Officiële benchmarks voor Hashcat</strong> (v6.2.6) betreffende RTX 4090:</p>
+<ul>
+<li>Laboratoriummetingen</li>
+<li>Openbaar domein</li>
+<li>Uitlijning met bijenkorven 2025</li>
+</ul>
+<h3>V: Waarom is Argon2id zo traag?</h3>
+<p><strong>Het is opzettelijk.</strong>. Argon2id is ontworpen om langzaam te zijn, geheugen-hard, en moeilijk te paralleliseren. Dit dwingt aanvallers om veel middelen te gebruiken.</p>
+<h3>V: Kunnen we een 100% "veilig" wachtwoord verbeteren?</h3>
+<p><strong>Nee</strong>Zelfs het beste wachtwoord kan worden gestolen of geraden. <strong>Defensieve strategie</strong> :</p>
+<ul>
+<li>Goed wachtwoord (15+ willekeurige tekens)</li>
+<li>Multifactorauthenticatie</li>
+<li>Wachtwoordbeheer</li>
+<li>Controle van inbreuken (Heb ik geklaagd)</li>
+</ul>
+<h3>V: Hoe kan ik mijn wachtwoord verbeteren?</h3>
+<p><strong>Eenvoudige regels</strong> :</p>
+<ul>
+<li><strong>Lengte</strong> : 15+ karakters (groter dan complexiteit)</li>
+<li><strong>Willekeurig</strong> : Wachtwoordbeheer gebruiken</li>
+<li><strong>Uniek</strong> : Ander wachtwoord per site</li>
+<li><strong>MVO</strong> : 2FA-authenticatie inschakelen indien mogelijk</li>
+</ul>
+</section>
+ Conclusie 
+<section class="doc-section">
+<h2>Conclusie</h2>
+<p><strong>Time2Crack werkt in 3 onveranderlijke stappen</strong> :</p>
+<div class="code-block">
+<pre>1. ANALYSE       → Détecte patterns (dictionnaire, keyboard, etc.)
+2. RANG          → Estime tentatives nécessaires (7 attaques)
+3. TEMPS         → Convertit tentatives en secondes (GPU speeds)</pre>
+</div>
+<p><strong>Kerninnovatie</strong> : Rigoreuze scheiding tussen rij (aanval) en tijd (GPU), waardoor:</p>
+<ul>
+<li>Eenvoudige update van GPU snelheden</li>
+<li>Eenvoudige toevoeging van nieuwe aanvallen</li>
+<li>Modulaire en testbare architectuur</li>
+</ul>
+<p><strong>Resultaat</strong> : Raming <strong>precies</strong>, <strong>Offline</strong>, <strong>meertalig</strong> Tijd om een wachtwoord te kraken.</p>
+<a class="back-to-top" href="how-time2crack-works.html#top">↑ Terug naar boven</a>
+</section>
+</main><footer id="site-footer">
+<small class="commit-info">Laatste: <span id="commit-date">2026-04-25 11:52:15</span> • <span id="commit-message">functie(automatisering): implementatie fu ...</span></small>
+</footer><script src="../includes.js"></script></body></html>

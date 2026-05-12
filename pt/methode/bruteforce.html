@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Força bruta — Métodos de ataque — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Teste sistematicamente todas as combinações possíveis. É o ataque mais exaustivo e uma boa referência."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Força bruta — Métodos de ataque — Time2Crack"><meta property="og:description" content="Teste sistematicamente todas as combinações possíveis. É o ataque mais exaustivo e uma boa referência."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/pt/methode/bruteforce.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="pt_PT"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Força bruta — Métodos de ataque — Time2Crack"><meta name="twitter:description" content="Teste sistematicamente todas as combinações possíveis. É o ataque mais exaustivo e uma boa referência."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="bruteforce.html"><link rel="alternate" hreflang="fr" href="../../fr/methode/bruteforce.html"><link rel="alternate" hreflang="en" href="../../en/methode/bruteforce.html"><link rel="alternate" hreflang="es" href="../../es/methode/bruteforce.html"><link rel="alternate" hreflang="pt" href="bruteforce.html"><link rel="alternate" hreflang="de" href="../../de/methode/bruteforce.html"><link rel="alternate" hreflang="it" href="../../it/methode/bruteforce.html"><link rel="alternate" hreflang="tr" href="../../tr/methode/bruteforce.html"><link rel="alternate" hreflang="pl" href="../../pl/methode/bruteforce.html"><link rel="alternate" hreflang="nl" href="../../nl/methode/bruteforce.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">O ataque à força bruta — operação abrangente</h1>
+<blockquote>
+Documento de referência do projeto Time2Crack
+</blockquote>
+<blockquote>Destinatários: desenvolvedores, pesquisadores de segurança, usuários avançados</blockquote>
+<hr>
+<h2>Índice</h2>
+<li><a href="bruteforce.html#1-vue-densemble">Visão geral</a></li>
+<li><a href="bruteforce.html#2-contexte-historique-et-académique">Formação histórica e académica</a></li>
+<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Matemática: Espaço de teclas e entropia</a></li>
+<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Arquitetura de um ataque brutal força moderna</a></li>
+<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Velocidades de cálculo por algoritmo de hash</a></li>
+<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Detecção de tanques em Time2Crack</a></li>
+<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Cálculo do tempo de fissuração: rawTime()</a></li>
+<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Redução de data detectada: detectDateAndReduce()</a></li>
+<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Proteção de monotonicidade: piso de outros ataques</a></li>
+<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">Calibração da IC e o papel da força bruta</a></li>
+<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Comparação com outros ataques</a></li>
+<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Limitações teóricas e práticas</a></li>
+<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">Que força bruta não diz</a></li>
+<li><a href="bruteforce.html#14-défenses-efficaces">Defesas eficazes</a></li>
+<li><a href="bruteforce.html#15-références-bibliographiques">Referências</a></li>
+<hr>
+<h2>Resumo</h2>
+<p>Força bruta é o ataque mais fundamental na quebra de senha: consiste em testes <strong>sistematicamente todas as combinações possíveis</strong> Nenhuma inteligência, nenhuma heurística — apenas o poder de computação bruto contra o tamanho do espaço para viajar.</p>
+<p>No Time2Crack, força bruta desempenha um duplo papel:</p>
+<li><strong>Ataque modelado</strong> Representa o tempo teórico máximo que um atacante colocaria, assumindo nenhuma outra vulnerabilidade explorável.</li>
+<li><strong>Piso (guarda de monotonicidade)</strong> : serve como um terminal inferior para todos os outros ataques — nenhum ataque especializado pode legitimamente exibir um tempo menor do que aquele que tomaria força bruta na sub-cadeia alfabética da senha.</li>
+<strong>Na prática</strong>, força bruta é quase nunca o ataque mais rápido em uma senha humana real — PCFG, Markov ou ataque híbrido será mais eficaz. Mas para uma senha verdadeiramente aleatória e longa, representa a realidade: o atacante não tem escolha a não ser navegar o espaço exaustivamente.
+<hr>
+<h2>2. Antecedentes históricos e acadêmicos</h2>
+<h3>2.1 Origens</h3>
+<p>A força bruta precede o computador: o princípio de testar todas as combinações possíveis é usado desde as primeiras máquinas de criptografia mecânica (Enigma durante a Segunda Guerra Mundial). A bomba de Alan Turing foi, em sentido amplo, um dispositivo de força bruta forçado por uma hipótese de berços.</p>
+<p>Com o advento dos computadores, a força de senha unix foi formalizada da década de 1970 à década de 1980:</p>
+<table>
+<tbody><tr><td>Ano</td><td>Evento</td></tr>
+<tr><td>--------</td><td>--------------</td></tr>
+<tr><td>1979</td><td>Morris &amp; Thompson: Primeiro artigo acadêmico sobre segurança de senha Unix, com análise de força bruta em /etc/passwd</td></tr>
+<tr><td>1988</td><td>Morris Worm: primeira façanha de massa usando, entre outras coisas, um dicionário e quebra de senha de força bruta</td></tr>
+<tr><td>1993</td><td>Crack 5.0 (Alec Muffett): primeira ferramenta pública de cracking por força bruta no Unix</td></tr>
+<tr><td>2004</td><td>Ophcrack : tabelas de sulco + força bruta no LM / NTLM hashes Windows</td></tr>
+<tr><td>2007</td><td>Craqueamento acelerado por GPU (Elcomsoft): primeira utilização pública da GPU para acelerar a força bruta</td></tr>
+<tr><td>2012</td><td>Hashcat código aberto: ferramenta de referência, operação GPU máxima</td></tr>
+<tr><td>2016</td><td>Sistemas de Colmeia: A publicação anual de tabelas "força bruta por GPU" torna-se referência industrial</td></tr>
+</tbody></table>
+<h3>2.2 Benchmarks</h3>
+<p>A revolução da GPU alterou a ordem de magnitude da força bruta. Na CPU, um atacante da década de 1990 testou cerca de 10.000 senhas MD5/s. <strong>168,9 mil milhões por segundo</strong> — uma aceleração de 16 milhões de vezes em 30 anos.</p>
+<strong>Principais fontes académicas</strong> :
+<ul>
+<li><strong>Gosney, J (2012)</strong> : primeira referência pública multi-GPU em LM/NTLM, mostrando 180 GH/s com 8 GPU</li>
+<li><strong>Sistemas de colmeia (2025)</strong> : tabelas anuais calibradas em 12× RTX 4090, citado por Forbes, CNBC, BBC</li>
+<li><strong>Sprengers, M. (2011)</strong> : tese da Universidade de Radboud sobre cracking GPU, formalização matemática</li>
+</ul>
+<hr>
+<h2>3. Bases matemáticas: keyspace e entropia</h2>
+<h3>3.1 Espaço de teclas</h3>
+<p>Keyspace (keyspace) é o número total de senhas possíveis para um determinado comprimento e tanque:</p>
+<pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
+<p>Exemplos:</p>
+<table>
+<tbody><tr><td>Codificação</td><td>Tamanho</td><td>Comprimento</td><td>Espaço de teclas</td><td>Classificação</td></tr>
+<tr><td>-----------</td><td>---------</td><td>-------------</td><td>-------------</td><td>-------------</td></tr>
+<tr><td>Números únicos</td><td>10</td><td>8</td><td>108 = 100.000.000</td><td>~108</td></tr>
+<tr><td>Minúsculos sozinhos</td><td>26</td><td>8</td><td>268 milhões</td><td>~2 × 1011</td></tr>
+<tr><td>Alfanumérico</td><td>62</td><td>8</td><td>628 milhões</td><td>~2 × 1014</td></tr>
+<tr><td>ASCII completo</td><td>95</td><td>8</td><td>958 mil milhões</td><td>~6 × 1015</td></tr>
+<tr><td>ASCII completo</td><td>95</td><td>12</td><td>9512 - 5,4 × 1023</td><td>~5 × 1023</td></tr>
+<tr><td>ASCII completo</td><td>95</td><td>16</td><td>9516 - 4,4 × 1031</td><td>~4 × 1031</td></tr>
+</tbody></table>
+<h3>3.2 Entropia binária</h3>
+<p>Entropia (medida em bits) é a formulação logarítmica do espaço-chave:</p>
+<pre><code class="language-plaintext">entropie = length × log₂(charset_size)</code></pre>
+<p>No tempo2Crack (função <code>entropy()</code>) :</p>
+<pre><code class="language-javascript">function entropy(pw) {
+  return pw.length * Math.log2(getCharset(pw).size);
+}</code></pre>
+<p>A relação entre entropia e espaço-chave:</p>
+<pre><code class="language-plaintext">keyspace = 2^entropie
+entropie = log₂(keyspace)</code></pre>
+<strong>Exemplos concretos</strong> :
+<table>
+<tbody><tr><td>Senha</td><td>Codificação</td><td>Comprimento</td><td>Entropia</td><td>Espaço de teclas</td></tr>
+<tr><td>---------------</td><td>-----------</td><td>-------------</td><td>-------------</td><td>-------------</td></tr>
+<tr><td>"12345678"</td><td>10 (dígitos)</td><td>8</td><td>26.6 bits</td><td>108</td></tr>
+<tr><td>"senha"</td><td>26 (inferior)</td><td>8</td><td>37.6 bits</td><td>268</td></tr>
+<tr><td>Senha1</td><td>62 (alfano)</td><td>9</td><td>53.6 bits</td><td>629</td></tr>
+<tr><td>"P@ssw0rd!"</td><td>95 (total ASCII)</td><td>9</td><td>59,3 bits</td><td>959</td></tr>
+<tr><td>xQz7@ mK9# 2pL</td><td>95 (total ASCII)</td><td>12</td><td>79 bits</td><td>9512</td></tr>
+</tbody></table>
+<h3>3. 3 Esperança Matemática: Espaço de Chaves / 2</h3>
+<p>A força bruta nem sempre é testada <code>keyspace</code> Combinações inteiras — em média, ela encontra a senha no meio do caminho, já que o alvo é distribuído equiprobavelmente no espaço.<strong>expectativa matemática</strong> O número de tentativas é, portanto:</p>
+<pre><code class="language-plaintext">tentatives_attendues = keyspace / 2</code></pre>
+<p>Isto é exatamente o que modelos <code>bruteTime()</code> No Tempo2Crack:</p>
+<pre><code class="language-javascript">// "For brute force: expected value is keyspace/2 (uniform random search)"
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls); // = (keyspace / 2) / rate
+}</code></pre>
+<p>Esta divisão por 2 é correta sob a suposição de que o atacante viaja o espaço linearmente (não repetitivo). <code>keyspace/2</code> Tentativas.</p>
+<hr>
+<h2>14. Defesas eficazes</h2>
+<h3>14.1 Lado do usuário: comprimento e aleatoriedade</h3>
+<p>A força bruta é derrotada por dois fatores combinados:</p>
+<strong>Comprimento</strong> : cada caractere adicional multiplica o espaço de chaves por <code>charset_size</code>De 8 a 12 caracteres (charset 95) multiplica o espaço de teclas por <strong>954 - 81 milhões</strong>.
+<br>
+<strong>Verdadeiro aleatório</strong> : um gerador criptograficamente seguro (CSPRNG) produz senhas que não se beneficiam de qualquer redução probabilística. Markov, PCFG e Neural não têm vantagem sobre uma senha realmente aleatória.
+<br>
+<strong>Recomendação prática</strong> :
+<ul>
+<li>Password Manager + Geração aleatória ≥ 16 caracteres com flutuação completa = fora do alcance de qualquer força bruta em um horizonte de vida humana</li>
+</ul>
+<h3>14.2 Lado do servidor: algoritmos resistentes</h3>
+<p>A escolha do algoritmo de hash multiplica ou divide o tempo de força bruto por fatores até <strong>vários milhões</strong> :</p>
+<table>
+<tbody><tr><td>Recomendação</td><td>Algoritmo</td><td>Justificação</td></tr>
+<tr><td>----------------</td><td>--------------</td><td>---------</td></tr>
+<tr><td>Recomendado</td><td>Argon2id</td><td>Difícil de memória, resistente a GPU</td></tr>
+<tr><td>Recomendado</td><td>bcrypt (custo ≥ 12)</td><td>Intencionalmente lento, salgado</td></tr>
+<tr><td>Aceitável</td><td>scrypt</td><td>Memória dura mas menos padronizada</td></tr>
+<tr><td>Inadequado</td><td>SHA-256 salgado</td><td>Muito rápido mesmo com sal</td></tr>
+<tr><td>Perigoso</td><td>MD5, SHA-1, NTLM</td><td>Não salgado, extremamente rápido</td></tr>
+</tbody></table>
+<hr>
+<h2>15. Referências bibliográficas</h2>
+<h3>Acadêmicos</h3>
+<strong>Morris, R., &amp; Thompson, K. (1979).</strong>
+Segurança da senha: Um histórico de casos.
+<em>Comunicação da ACM, 22(11), 594-597.</em>
+→ Artigo fundador sobre segurança de senha Unix
+<br>
+<strong>Sprengers, M. (2011).</strong>
+Rastreamento de senha baseado em GPU (teses do mestre).
+<em>Universidade de Radboud Nijmegen.</em>
+→ Formalização matemática do cracking GPU, benchmarks em GPU única
+<br>
+<strong>Wheeler, D.L. (2016).</strong>
+zxcvbn: Estimativa de Força de Senha de Baixo Orçamento.
+<em>25o Simpósio de Segurança USENIX.</em>
+→ Dados sobre espaço de chaves eficaz (Tabela 2: -30% para senhas estruturadas)
+<br>
+<strong>Dürmuth, M. et al. (2015).</strong>
+Ordenado Markov ENumerator. <em>ESORICS 2015.</em>
+→ Referência comparativa para terminais probabilísticos vs força bruta
+<h3>Indústria</h3>
+<strong>Sistemas Colmeias. (2025).</strong>
+<em>Tabela de senha de sistemas Hive 2025.</em>
+https://www.hivesystems.io/password-table
+→ benchmarks anuais em 12× RTX 4090, referência padrão
+<br>
+<strong>Gosney, J (2012).</strong>
+<em>8x Nvidia GTX 1080 Hashcat referência.</em> GitHub Gist.
+→ Primeira referência pública multi-GPU, referência histórica
+<br>
+<strong>Hashcat. (2024).</strong>
+<em>Pontos de referência oficiais do Hashcat v6.2.6.</em>
+https://hashcat.net/hashcat/
+→ Velocidades oficiais por algoritmo, fonte de constantes Time2Crack
+<br>
+<strong>NIST SP 800-63B. (2017, atualizado em 2024).</strong>
+<em>Diretrizes de Identidade Digital: Autenticação e Gestão do Ciclo de Vida.</em>
+→ Recomendações oficiais sobre comprimento de senha e complexidade
+<br>
+<strong>OWASP. (2024).</strong>
+<em>Password Storage Cheat Sheet.</em>
+https://cheatssheetseries.owasp.org/cheatssheets/Passsword Storage Cheat Sheet.html
+→ Recomendações sobre bcrypt (custo ≥ 12), Argon2id como padrões modernos
+<hr>
+<em>Documento gerado para o projeto Time2Crack — última atualização : 2026-04-18</em>
+<em>Baseado na implementação em app.js, funções RAWTime(), getCharset() e monotonicidade guard</em>
+</main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

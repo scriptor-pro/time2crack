@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PCFG — Métodos de ataque — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Construye candidatos con patrones gramaticales probabilísticos aprendidos de la estructura de contraseñas."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="PCFG — Métodos de ataque — Time2Crack"><meta property="og:description" content="Construye candidatos con patrones gramaticales probabilísticos aprendidos de la estructura de contraseñas."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/es/methode/pcfg.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="es_ES"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="PCFG — Métodos de ataque — Time2Crack"><meta name="twitter:description" content="Construye candidatos con patrones gramaticales probabilísticos aprendidos de la estructura de contraseñas."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="pcfg.html"><link rel="alternate" hreflang="fr" href="../../fr/methode/pcfg.html"><link rel="alternate" hreflang="en" href="../../en/methode/pcfg.html"><link rel="alternate" hreflang="es" href="pcfg.html"><link rel="alternate" hreflang="pt" href="../../pt/methode/pcfg.html"><link rel="alternate" hreflang="de" href="../../de/methode/pcfg.html"><link rel="alternate" hreflang="it" href="../../it/methode/pcfg.html"><link rel="alternate" hreflang="tr" href="../../tr/methode/pcfg.html"><link rel="alternate" hreflang="pl" href="../../pl/methode/pcfg.html"><link rel="alternate" hreflang="nl" href="../../nl/methode/pcfg.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">Ataque PCFG — Operación Integral</h1>
+<blockquote>
+Documento de referencia del proyecto Time2Crack
+</blockquote>
+<blockquote>Recipientes: desarrolladores, investigadores de seguridad, usuarios avanzados</blockquote>
+<hr>
+<h2>Índice</h2>
+<li><a href="pcfg.html#1-vue-densemble">Sinopsis</a></li>
+<li><a href="pcfg.html#2-contexte-historique-et-académique">Antecedentes históricos y académicos</a></li>
+<li><a href="pcfg.html#3-fondements--grammaire-structurelle-des-mots-de-passe">Fundaciones: gramática estructural de contraseñas</a></li>
+<li><a href="pcfg.html#4-apprentissage-du-modèle-pcfg">Aprender el modelo PCFG</a></li>
+<li><a href="pcfg.html#5-génération-ordonnée-des-candidats">Generación ordenada de candidatos</a></li>
+<li><a href="pcfg.html#6-pourquoi-pcfg-casse-des-secrets-à-entropie-apparente-élevée">Por qué PCFG rompe secretos con alta aparente entropía</a></li>
+<li><a href="pcfg.html#7-implémentation-dans-time2crack--addpcfgattacks">Ejecución en Time2Crack: <code>addPCFGAttacks()</code></a></li>
+<li><a href="pcfg.html#8-fonction-pcfgkeyspace-et-hypothèses">Función <code>pcfgKeyspace()</code> y hipótesis</a></li>
+<li><a href="pcfg.html#9-gestion-numérique--soft-cap-remplacement-du-cap-dur">Gestión digital: gorra suave (sustitución de tapa dura)</a></li>
+<li><a href="pcfg.html#10-calibration-haute-fidélité">Calibración de alta fidelidad</a></li>
+<li><a href="pcfg.html#11-benchmarks-et-ordres-de-grandeur">Criterios y órdenes de magnitud</a></li>
+<li><a href="pcfg.html#12-exemples-concrets">Ejemplos concretos</a></li>
+<li><a href="pcfg.html#13-limites-de-lattaque-pcfg">Límites de ataque PCFG</a></li>
+<li><a href="pcfg.html#14-défenses-efficaces">Defensas eficaces</a></li>
+<li><a href="pcfg.html#15-références-bibliographiques">Referencias</a></li>
+<hr>
+<h2>1. Sinopsis</h2>
+<p>PCFG (Probabilistic Context-Free Grammar) modela la estructura de contraseña en segmentos tipodos (cartas, números, símbolos), y genera los candidatos más probables en prioridad.</p>
+<h2>2. Antecedentes históricos y académicos</h2>
+<p>The work of Weir et al. (2009) established PCFG as a major probabilistic cracking method, often superior to merely Dictionary approaches with equal budget on human corpus.</p>
+<h2>3. Fundaciones: gramática estructural de contraseñas</h2>
+<p>Ejemplo:</p>
+<ul>
+<li><code>Password123!</code> - No. <code>L8 D3 S1</code></li>
+</ul>
+<p>El modelo aprende que algunos patrones (<code>L8D2</code>, <code>L6D4</code>) son comunes, otros raros.</p>
+<h2>4. Aprender el modelo PCFG</h2>
+<li>contraseñas de segmento en clases.</li>
+<li>Estimar la probabilidad de esqueletos.</li>
+<li>Estimar la probabilidad de fichas en cada ranura.</li>
+<h2>5. Generación ordenada de candidatos</h2>
+<p>PCFG produce por primera vez altas previsiones de probabilidad. Esta priorización es la principal fuente de su eficacia.</p>
+<h2>6. Por qué PCFG rompe secretos con alta entropía aparente</h2>
+<p>Una cadena puede parecer fuerte en la entropía cruda mientras que es muy predecible estructuralmente (palabra + dígitos + símbolo). PCFG explota esta previsibilidad.</p>
+<h2>7. Aplicación en Time2Crack: <code>addPCFGAttacks()</code></h2>
+<p>Time2Crack calcula un presupuesto vía <code>pcfgKeyspace(pw)</code> entonces convertidos a tiempo con <code>budgetTime(...)</code>.</p>
+<p>Categoría: <code>cat: "pcfg"</code>, nota: <code>nPCFGDetected</code>.</p>
+<h2>8. Función <code>pcfgKeyspace()</code> y hipótesis</h2>
+<p>El modelo interno aproxima las dimensiones lexicales, numéricas y simbólicas, y luego limita el espacio clave para seguir siendo realista en uso interactivo.</p>
+<p>Principales componentes:</p>
+<li>componente de la carta<code>wordGuesses</code>),</li>
+<li>Componente de números (<code>10^digitLen</code>),</li>
+<li>componente del símbolo<code>32^symbolCount</code>),</li>
+<li>factor de variación estructural.</li>
+<p>El presupuesto PCFG se convierte a tiempo a través de <code>budgetTime(pcfgGuesses, rate)</code>.</p>
+<h2>9. Gestión digital: tapa blanda (sustitución de tapa dura)</h2>
+<p>Time2Crack ahora usa un <strong>gorro suave</strong> para evitar bandejas artificiales causadas por una sola partida dura.</p>
+<h3>9.1 Enfoque anterior (copia impresa)</h3>
+<p>Uno <code>Math.min(..., cap)</code> aplasta todos los valores por encima de la partida en la misma constante. Esto elimina la jerarquía entre casos "difíciles" y "muy difíciles".</p>
+<h3>9.2 Nuevo enfoque (curso blando)</h3>
+<p>El modelo aplica compresión continua:</p>
+<li>linear debajo de un punto codo (<code>knee</code>),</li>
+<li>compresión progresiva arriba,</li>
+<li>asintoto a un máximo numérico<code>max</code>).</li>
+<p>Fórmula utilizada:</p>
+<code>soft = knee + (max - knee) * (1 - exp(-(raw - knee)/(max - knee)))</code> para <code>raw &gt; knee</code>.
+<p>De lo contrario <code>soft = raw</code>.</p>
+<h3>9.3 Parámetros actuales (<code>app.js</code>)</h3>
+<li><code>PCFG<em>SOFTCAP</em>KNEE = 1e14</code></li>
+<li><code>PCFG<em>MAX</em>GUESSES = 1e18</code></li>
+<p>Efecto: La estabilidad digital preservada sin rotura abrupta o pérdida total de diferenciación.</p>
+<h2>10. Calibración de alta fidelidad</h2>
+<p>Con PCFG v2, las señales estructurales ya están integradas en la estimación de rango (<code>pcfgKeyspace</code>Por lo tanto, el ajuste HF es neutral para evitar la doble contabilización.</p>
+<h2>11. Parámetros y órdenes de magnitud</h2>
+<p>En precipitación rápida, las estructuras actuales caen muy rápidamente.</p>
+<p>En la lenta KDF, la orden PCFG sigue siendo ventajosa pero el costo por intento sigue siendo decisivo.</p>
+<h2>12. Ejemplos prácticos</h2>
+<li><code>Password123</code> : blanco ideal PCFG.</li>
+<li><code>xQ7$vP2!mL9@</code> : compatibilidad PCFG baja.</li>
+<h2>13. Límites del ataque PCFG</h2>
+<li>adicción al cuerpo de formación,</li>
+<li>bajo rendimiento en el azar real,</li>
+<li>complejidad de la calibración lingüística multidominio,</li>
+<li>el v1 del modelo sigue siendo una aproximación de PCFG (no una gramática en línea).</li>
+<h2>14. Defensas eficaces</h2>
+<li>Evite las estructuras habituales (<code>Word+Digits+Symbol</code>).</li>
+<li>Usa secretos generados aleatoriamente.</li>
+<li>Solid KDF + MFA.</li>
+<h2>15. Referencias bibliográficas</h2>
+<li>Weir et al. (2009).</li>
+<li>Ma et al. (2014).</li>
+<li>Wheeler, D. (2016). Seguridad USENIX.</li>
+</main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

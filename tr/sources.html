@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Bilimsel kaynaklar — Time2Crack</title><link rel="preload" href="../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="../style.min.css" rel="stylesheet"></noscript><meta name="description" content="Time2Crack’i doğrulayan bilimsel referansları ve benchmarkları inceleyin; kriptografiden şifre gücü tahminine kadar."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Bilimsel kaynaklar — Time2Crack"><meta property="og:description" content="Time2Crack’i doğrulayan bilimsel referansları ve benchmarkları inceleyin; kriptografiden şifre gücü tahminine kadar."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/tr/sources.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="tr_TR"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Bilimsel kaynaklar — Time2Crack"><meta name="twitter:description" content="Time2Crack’i doğrulayan bilimsel referansları ve benchmarkları inceleyin; kriptografiden şifre gücü tahminine kadar."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="sources.html"><link rel="alternate" hreflang="fr" href="../fr/sources.html"><link rel="alternate" hreflang="en" href="../en/sources.html"><link rel="alternate" hreflang="es" href="../es/sources.html"><link rel="alternate" hreflang="pt" href="../pt/sources.html"><link rel="alternate" hreflang="de" href="../de/sources.html"><link rel="alternate" hreflang="it" href="../it/sources.html"><link rel="alternate" hreflang="tr" href="sources.html"><link rel="alternate" hreflang="pl" href="../pl/sources.html"><link rel="alternate" hreflang="nl" href="../nl/sources.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><main>
+<div class="sources-container">
+<h2 style="margin-bottom: 1rem;">Bilimsel kaynaklar</h2>
+<p style="color: #666; margin-bottom: 2rem;">
+        Time2Crack kriptografi, bilgisayar güvenliği ve şifre kuvveti tahminlerinde akademik araştırmalara dayanmaktadır.
+Bu sayfa, algoritmalarımızı, değerlendirme yöntemlerimizi ve kalibrasyonlarımızı doğrulayan bilimsel kaynakları listeler.
+      </p>
+ İçerik tablosu 
+<div class="sources-toc">
+<h3>Hızlı navigasyon</h3>
+<ul>
+<li><a href="sources.html#section-password-strength">Şifre gücü</a></li>
+<li><a href="sources.html#section-evaluation-metrics">Değerlendirme yöntemleri</a></li>
+<li><a href="sources.html#section-attack-models">Saldırı modelleri</a></li>
+<li><a href="sources.html#section-markov-pcfg">Markov ve PCFG</a></li>
+<li><a href="sources.html#section-calibration">Kalibrasyon ve dataset</a></li>
+<li><a href="sources.html#section-hash-rates">Hash hızları</a></li>
+</ul>
+</div>
+ Bölüm 1: Şifre Gücü Tahmini 
+<div class="section-sources" id="section-password-strength">
+<h2>Şifre gücü</h2>
+<div class="reference">
+<span class="reference-authors">Wheeler, D.L.</span> (2016).
+          <span class="reference-title">zxcvbn: Low-Budget Password Strength tahmin.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">25. ABD Güvenlik Sempozyumu Bildirileri</span> 157-173.
+USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/conference/usenixsecurity16/sec16_paper_wheeler.pdf" target="_blank">https://www.usenix.org/system/files/conference/usenixsecurity16/sec16 kağıt tekerleği.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Şifre kuvvetinin gerçekçi tahminleri için metodolojiyi keşfedin.
+Wheeler (2016) entropi bazlı metrenin (NIST, OWASP) enestimate güvenliği önemli ölçüde fazla olduğunu belirtiyor.
+Time2Crack bu yaklaşımı takip eder: Bilinen en iyi saldırının maliyetini tahmin edin, teorik entropi değil.
+        </div>
+<div class="reference">
+<span class="reference-authors">Pasquini, D., Sürekli olarak, A., Durmuth, M., &amp; Buscher, M.</span> (2021).
+          <span class="reference-title">Bias'ı Ağaç tabanlı modeller için Real-World Password Strength'u modellemek.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">30. USENIX Güvenlik Sempozyumu</span> 3007-3024).
+USENIX Association.
+          <span class="reference-url"><a href="https://arxiv.org/pdf/2105.14170.pdf" target="_blank">https://arxiv.org/pdf/2105.14170.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Şifre güç modellerinde önyargıların eleştirel analizi.
+Veri kümesi önyargı sonuçları gösterir. Time2Crack rockyou2021 (32.6M ağırlıked password) kullanır.
+Bu önyargıyı en aza indirmek için.
+        </div>
+</div>
+ Bölüm 2: Metriks Değerlendirme 
+<div class="section-sources" id="section-evaluation-metrics">
+<h2>Değerlendirme yöntemleri</h2>
+<div class="reference">
+<span class="reference-authors">Wang, D., &amp; Ding, S.</span> (2023).
+          <span class="reference-title">No Single Silver Bullet: Parola Güçlü Ölçümlerin doğruluğunu ölçmek.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">32. USENIX Güvenlik Sempozyumu</span> 2575-2592).
+USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/sec23fall-prepub-291_wang-ding.pdf" target="_blank">https://www.usenix.org/system/files/sec23fall-prepub-291 wang-ding.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Büyük karşılaştırmalı çalışma (USENIX 2023) 14 gerçek veri kümesinden 12 şifre gücü metre uzakta.
+Bunu belirleyin:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li><strong>Ağırlıklı Spearman korelasyonu  </strong> Doğruyu değerlendirmek için standart metriktir</li>
+<li>Bilimsel hedef: <strong>&gt; 0.85</strong> İyi kalibrasyon için</li>
+<li>Hiçbir metre uzlaşma olmadan var (zxcvbn: ρ=0.76, Hive Systems: ρ=0.68)</li>
+</ul>
+          Time2Crack genel olarak . &gt; 0.80 hedefliyor.
+        </div>
+<div class="reference">
+<span class="reference-authors">Golla, M., &amp; Dürmuth, M.</span> (2018).
+          <span class="reference-title">Şifre Güçlü Ölçümler konusunda.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">Bilgisayar ve İletişim Güvenliği Konferansı'nın 25. ACM Bildirileri</span> (pp. 1567-1580).
+ACM.
+          <span class="reference-url"><a href="https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf" target="_blank">https://maximiliangolla.com/files/2018/papers/ccsf285-finalv3.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Parola gücü metre (2018) için sistemsel değerlendirme çerçevesi.
+Tavsiye: Spearman korelasyon + Kullback-Leibler çevrimdışı saldırılar için farklılaşıyor.
+Time2Crack bu iki metrikleri içerir.
+        </div>
+<div class="reference">
+<span class="reference-authors">Castelluccia, C., Durmuth, M., &amp; Perito, D.</span> (2017).
+          <span class="reference-title">Markov modellerinden gelen Adaptif Şifre-Strengthometreler.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">NDSS Sempozyumu Bildirileri</span>.
+Internet Society.
+          <span class="reference-url"><a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/06_3.pdf" target="_blank">https://www.nds-symposium.org/wp-content/uploads/2017/09/06 3.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Açıklamalar metric <strong>α-Gueswork (Gα)</strong> :
+Şifre oranı G girişimleri ile kırıldı.
+Modelin pratik güvenliğini değerlendirin.
+        </div>
+</div>
+ Bölüm 3: Saldırı Modelleri 
+<div class="section-sources" id="section-attack-models">
+<h2>Saldırı modelleri</h2>
+<div class="reference">
+<span class="reference-authors">Ma, J., Yang, W., Luo, M., &amp; Li, N.</span> (2014).
+          <span class="reference-title">Probabilistic Password Modelleri Çalışması.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">Güvenlik ve Gizlilik Üzerine 35. IEEE Sempozyumu Bildirileri</span> (pp. 689-704).
+IEEE.
+          <span class="reference-url"><a href="https://www.ieee-security.org/TC/SP2014/papers/A%20Study%20of%20Probabilistic%20Password%20Models.pdf" target="_blank">https://www.ieee-security.org/TC/SP2014/papers/A%20Study%20of%20Probabilistic%20Password%20Models.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Olasılıksal modeller (Markov, PCFG, sinir).
+Kelimelerin kombinasyonu ile saldırıların naif formüller tarafından hafife alındığını belirler
+(multiplication = yanlış bağımsızlık hipotezi).
+Time2Crack bunu rockyou Ampibration ile doğrular.
+        </div>
+<div class="reference">
+<span class="reference-authors">Dürmuth, M., Brostoff, S., &amp; Oprea, A.</span> (2015).
+          <span class="reference-title">Web Uygulamalarının Zorlanması Kurallarına rağmen başarısı.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">22. NDSS Sempozyumu</span>.
+Internet Society.
+          <span class="reference-url"><a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss2015_09-4_durhmuth_paper.pdf" target="_blank">https://www.nds-symposium.org/wp-content/uploads/2017/09/nds2015 09-4 durhmuth kağıt.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Ur, B., Alfayez, P. G., Bhamasamy, S. M. &amp; ... Cranor, L. F.</span> (2015).
+          <span class="reference-title">Bir Data-Driven Şifre Cihazının Tasarımı ve Değerlendirilmesi.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">ACM SIGCHI Bilişim Sistemlerinde İnsan Faktörleri Konferansı</span> (pp. 3775-3786).
+ACM.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-ur.pdf" target="_blank">https://www.usenix.org/system/files/conference/usenixsecurity15/sec15-paper-ur.pdf</a></span>
+</div>
+</div>
+ Bölüm 4: Markov ve PCFG 
+<div class="section-sources" id="section-markov-pcfg">
+<h2>Markov ve PCFG modelleri</h2>
+<div class="reference">
+<span class="reference-authors">Weir, M., Aggarwal, S., Collins, M., ve Stern, H.</span> (2009).
+          <span class="reference-title">Büyük Açılan Şifrelerin Oluşturulmasıyla Şifre Oluşturun.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">Bilgisayar ve İletişim Güvenliği Konferansı'nın 17. ACM Bildirileri</span> 162-175.
+ACM.
+          <span class="reference-url"><a href="https://www.researchgate.net/publication/221614956" target="_blank">https://www.search.net/publication/221614956</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> PCFG metodolojisi (Probabilistic Context-Free Grammar).
+kuruldu:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li>Yapı bozulması (L=letter, D=digit, S=symbol)</li>
+<li>Skeleton gerçek yapıları yakalamak için 20-50 eşi</li>
+<li>Gerçek veri kümeleri üzerinde doğrulama (LinkedIn, Yahoo, RockYou)</li>
+</ul>
+          Time2Crack SKELETON THRESHOLD=100 (30-50'ye kadar azalmayı planlıyor).
+        </div>
+<div class="reference">
+<span class="reference-authors">Dürmuth, M., Freeman, D., &amp; Yazan, B.</span> (2014).
+          <span class="reference-title">Şifre Neural Networks ile tahmin edin.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">25. ABD Güvenlik Sempozyumu Bildirileri</span>.
+USENIX Association.
+          <span class="reference-url"><a href="https://courses.csail.mit.edu/6.857/2017/project/13.pdf" target="_blank">https://courses.csail.mit.edu/6.857/2017/project/13.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Houshmand, S., ve Aggarwal, S.</span> (2015).
+          <span class="reference-title">Sonraki Gen PCFG Password Cracking.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">IEEE Transactions on Information Forensics and Security</span>10(8), 1776-91.
+IEEE.
+          <span class="reference-url"><a href="https://ieeexplore.ieee.org/document/7098389" target="_blank">https://iee blastre.ieee.org/document/7098389</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Sonraki -Gen PCFG performans iyileştirme ve doğruluk ile genişleme.
+PCFG'ye milyonlarca şifre üzerinde geçerli bir yaklaşım.
+        </div>
+<div class="reference">
+<span class="reference-authors">Narayanan, A., &amp; Shmatikov, V.</span> (2005).
+          <span class="reference-title">Fast Dictionary Attacks on Passwords using Time-Space Tradeoff.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">Bilgisayar ve İletişim Güvenliği Konferansı'nın 12. ACM Kararı</span> (pp. 364-372).
+ACM.
+          <span class="reference-url"><a href="https://www.usenix.org/legacy/event/sec05/tech/full_papers/narayanan/narayanan.pdf" target="_blank">https://www.usenix.org/legacy/event/sec05/tech/full paper/narayanan/narayanan.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Sözel ve oluk tabloları ile saldırıların temelleri.
+Bu sözlük + mutasyonlar uygulamadaki şifrelerin% 95'ini kapsar.
+        </div>
+</div>
+ Bölüm 5: Kalibrasyon ve Datasets 
+<div class="section-sources" id="section-calibration">
+<h2>Kalibrasyon ve dataset</h2>
+<div class="reference">
+<span class="reference-authors">Zhang, Y., Monrose, F., &amp; Reiter, M. K.</span> (2010).
+          <span class="reference-title">Modern Şifrenin Güvenliği: Algoritma Çerçeve ve Empirical Study.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">Bilgisayar ve İletişim Güvenliği Konferansı'nın 17. ACM Bildirileri</span> (pp. 176-186).
+ACM.
+          <span class="reference-url"><a href="https://users.cs.jmu.edu/reiter/papers/10ccs.pdf" target="_blank">https://users.cs.jmu.edu/reiter/papers/10ccs.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Ulusal Standartlar ve Teknoloji Enstitüsü (NIST)</span> (2024).
+          <span class="reference-title">SP 800-132: Şifre bazlı Anahtar Türleme Fonksiyonu (PBKDF2).</span>
+          ABD Ticaret Bakanlığı
+          <span class="reference-url"><a href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf" target="_blank">https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nists özel kamulaştırma800-132.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Ulusal Standartlar ve Teknoloji Enstitüsü (NIST)</span> (2024).
+          <span class="reference-title">SP 800-63-3: Dijital Kimlik Kılavuzları - Doğrulama ve Yaşam döngüsü Yönetimi.</span>
+          ABD Ticaret Bakanlığı
+          <span class="reference-url"><a href="https://pages.nist.gov/800-63-3/sp800-63b.html" target="_blank">https://pages.nist.gov/800-63-3/sp800-63b.html</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Şifre seçme ve hash algoritmaları için NIST önerileri.
+kuruldu:
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+<li>bcrypt, scrypt, PBKDF2, Argon2 kabul edilebilir algoritmaları</li>
+<li>MD5, SHA-1 unsalted kabul edilemez (haw masaları)</li>
+<li>100k+ sözlükleri saldırılar için önerilen kelimeler</li>
+</ul>
+</div>
+<div class="reference">
+<span class="reference-authors">Hive Systems</span> (2025).
+          <span class="reference-title">Hive Systems Password Table 2025.</span>
+<span class="reference-url"><a href="https://www.hivesystems.io/password-table" target="_blank">https://www.hivesystems.io/password-table</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> 12× RTX 4090 GPU ile endüstriyel karşılaştırma referansı.
+Time2Crack bu profili temel olarak kullanır (12 GPU kümesi).
+        </div>
+<div class="reference">
+<span class="reference-authors">Sprengers, Bay.</span> (2011).
+          <span class="reference-title">GPU tabanlı Şifre Cracking</span> (Master's Thesis)
+Radboud University Nijmegen.
+          <span class="reference-url"><a href="https://www.ru.nl/" target="_blank">https://www.ru.nl/</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> GPU hız çalışması, çatlaklar için. kümeler kıyaslamalar
+MD5 için SHA-1, NTLM, modern GPU ile şifre.
+        </div>
+</div>
+ Bölüm 6: Hash Fiyatları 
+<div class="section-sources" id="section-hash-rates">
+<h2>Hash hızları ve karşılaştırmaları</h2>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2025).
+          <span class="reference-title">Hashcat - Gelişmiş Şifre Kurtarma (Official Benchmarks v6.2.6).</span>
+<span class="reference-url"><a href="https://hashcat.net/hashcat/" target="_blank">https://hashcat.net/hashcat/</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Resmi Hashcat Benchmarks on RTX 4090 for all hash algoritmaları için.
+Time2Crack bu sayıları tek GPU hızları olarak kullanıyor ve deneyimli profil için 12 tarafından çok fazla harcıyor.
+        </div>
+<div class="reference">
+<span class="reference-authors">Gosney, J.</span> (2016).
+          <span class="reference-title">8x Nvidia GTX 1080 Hashcat Benchmarks.</span>
+          GitHub Gist.
+          <span class="reference-url"><a href="https://gist.github.com/epixoip/" target="_blank">https://gist.github.com/epixoip /</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> İlk sistem 330 GH/s NTLM (8 GPU kümesi).
+Endüstri tarafından çok-GPU referansı olarak geçerlidir.
+        </div>
+<div class="reference">
+<span class="reference-authors">Amazon Web Services</span> (2024).
+          <span class="reference-title">Amazon EC2 P4d Proceedings - GPU Computing.</span>
+<span class="reference-url"><a href="https://aws.amazon.com/ec2/instance-types/p4/" target="_blank">https://aws.amazon.com/ec2/e example-types/p4/</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Ticari GPU altyapısı mevcuttur (100-1000 GPU kümeleri).
+Time2Crack profesyonel profilleme için kullanır (~100 GPU).
+        </div>
+</div>
+ Ek Referanslar 
+<div class="section-sources">
+<h2>Ek referanslar</h2>
+<div class="reference">
+<span class="reference-authors">Oechsle, D., Bauer, L., Grupe, J., &amp; ... Durmuth, M.</span> (2021).
+          <span class="reference-title">Empirical Password Dataset'in Rigorous istatistik analizine doğru.</span>
+<span class="reference-source">arXiv preprint</span> arXiv:2105.14170.
+          <span class="reference-url"><a href="https://arxiv.org/abs/2105.14170" target="_blank">https://arxiv.org/abs/2105.14170</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Klebanov, S. ve Malone, D.</span> (2012).
+          <span class="reference-title">Şifre seçimlerinin dağılımını araştırmak.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">21. Uluslararası Dünya Wide Web Konferansı Bildirileri</span> (pp. 569-578).
+ACM.
+          <span class="reference-url"><a href="https://www.maths.tcd.ie/~dwmalone/p/www2012.pdf" target="_blank">https://www.faces.tcd.ie/~dwmalone/p/www2012.pdf</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Castelluccia, C., Durmuth, M., &amp; Perito, D.</span> (2015).
+          <span class="reference-title">Şifre Neural Language Modeling aracılığıyla tahmin edin.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">IEEE Transactions on Information Forensics and Security</span>10/6), 1285-1296.
+IEEE.
+          <span class="reference-url"><a href="https://link.springer.com/chapter/10.1007/978-3-030-30619-9_7" target="_blank">https://link.springer.com/chapter/10.1007/978-3-030-30619-9 7</a></span>
+</div>
+<div class="reference">
+<span class="reference-authors">Asgharpour, F., Bardas, A. G., ve Liu, D.</span> (2017).
+          <span class="reference-title">Analiz Yöntemlerini karşılaştırmak ve birleştirmek.</span>
+          İçinde In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In In <span class="reference-source">COLING</span> 1637-1648).
+ACL.
+        </div>
+</div>
+<div class="back-to-top">
+<p><strong>Güncelleme:</strong> 17 Nisan 2026</p>
+<p><a href="index.html">← Back to tool</a></p>
+</div>
+</div>
+</main><footer id="site-footer"></footer><script src="../includes.js"></script></body></html>

@@ -1,0 +1,42 @@
+# Time2Crack - Password Cracking Time Estimator
+# robots.txt for https://time2crack.eu
+
+User-agent: *
+Allow: /
+Allow: /de/
+Allow: /en/
+Allow: /es/
+Allow: /fr/
+Allow: /it/
+Allow: /nl/
+Allow: /pl/
+Allow: /pt/
+Allow: /tr/
+Allow: /methode/
+
+# Disallow data directories (not intended for public indexing)
+Disallow: /data/
+Disallow: /core/
+Disallow: /includes/
+
+# Disallow specific files that shouldn't be indexed
+Disallow: /*.dev.html
+Disallow: /*prototype*.html
+Disallow: /*proto-*.html
+
+# Slow down aggressive crawlers
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: DotBot
+Crawl-delay: 10
+
+# Primary sitemap
+Sitemap: https://time2crack.eu/sitemap.xml
+
+# Preferred domain
+# Note: Redirect time2crack.com traffic to time2crack.eu at the HTTP/HTTPS level
+

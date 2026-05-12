@@ -365,11 +365,11 @@
       <div class="hero__grid">
         <figure class="hero__media">
           <picture>
-            <source media="(min-width: 1100px)" srcset="${assetPrefix}hero/time2crack-password-desktop.png">
-            <source media="(min-width: 700px)" srcset="${assetPrefix}hero/time2crack-password-tablet.png">
+            <source media="(min-width: 1100px)" srcset="${assetPrefix}hero/time2crack-password-desktop.webp">
+            <source media="(min-width: 700px)" srcset="${assetPrefix}hero/time2crack-password-tablet.webp">
             <img
               class="hero__image"
-              src="${assetPrefix}hero/time2crack-password-mobile.png"
+              src="${assetPrefix}hero/time2crack-password-mobile.webp"
               alt="Password resistance illustration"
               loading="eager"
               fetchpriority="high"

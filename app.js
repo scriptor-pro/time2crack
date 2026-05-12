@@ -2016,14 +2016,109 @@
     },
   };
 
+  function mergeNumericMaps(baseMap, extraMap) {
+    const out = Object.assign({}, baseMap || {});
+    for (const [key, value] of Object.entries(extraMap || {})) {
+      if (!isFinite(value) || value <= 0) continue;
+      if (!isFinite(out[key]) || out[key] <= 0 || value < out[key]) {
+        out[key] = value;
+      }
+    }
+    return out;
+  }
+
+  function corpusStatsToPcfgCalibration(stats) {
+    if (!stats || typeof stats !== "object") return null;
+    const total = Number(stats.total_passwords || 0);
+    if (!isFinite(total) || total <= 0) return null;
+
+    const skeletonRanks = {};
+    for (const [key, count] of Object.entries(stats.skeletons || {})) {
+      if (!isFinite(count) || count <= 0) continue;
+      skeletonRanks[key] = Math.max(1, Math.round(total / count));
+    }
+
+    const shapeCounts = {};
+    for (const [skeletonKey, count] of Object.entries(stats.skeletons || {})) {
+      if (!isFinite(count) || count <= 0) continue;
+      const shapeKey = skeletonKey.replace(/\d+\+?/g, "").replace(/\d+/g, "");
+      shapeCounts[shapeKey] = (shapeCounts[shapeKey] || 0) + count;
+    }
+
+    const shapeRanks = {};
+    for (const [key, count] of Object.entries(shapeCounts)) {
+      if (!isFinite(count) || count <= 0) continue;
+      shapeRanks[key] = Math.max(1, Math.round(total / count));
+    }
+
+    const tokenRanks = { L: {}, D: {}, S: {} };
+    for (const cls of ["L", "D", "S"]) {
+      const buckets = (stats.segments && stats.segments[cls]) || {};
+      for (const [bucket, entry] of Object.entries(buckets)) {
+        const count = entry && typeof entry === "object" ? Number(entry.count || 0) : Number(entry || 0);
+        if (!isFinite(count) || count <= 0) continue;
+        tokenRanks[cls][bucket] = Math.max(1, Math.round(total / count));
+      }
+    }
+
+    return {
+      version: 1,
+      global: {
+        skeletonRanks,
+        shapeRanks,
+        tokenRanks,
+      },
+    };
+  }
+
+  function mergePcfgCalibration(base, extra) {
+    if (!extra) return base;
+    if (!base) return extra;
+
+    const gBase = base.global || {};
+    const gExtra = extra.global || {};
+
+    return {
+      ...base,
+      global: {
+        ...gBase,
+        defaultRank: gBase.defaultRank || gExtra.defaultRank || 50000,
+        skeletonRanks: mergeNumericMaps(gBase.skeletonRanks, gExtra.skeletonRanks),
+        shapeRanks: mergeNumericMaps(gBase.shapeRanks, gExtra.shapeRanks),
+        tokenRanks: {
+          L: mergeNumericMaps((gBase.tokenRanks || {}).L, (gExtra.tokenRanks || {}).L),
+          D: mergeNumericMaps((gBase.tokenRanks || {}).D, (gExtra.tokenRanks || {}).D),
+          S: mergeNumericMaps((gBase.tokenRanks || {}).S, (gExtra.tokenRanks || {}).S),
+        },
+        orderMultipliers: Object.assign({}, gBase.orderMultipliers || {}, gExtra.orderMultipliers || {}),
+        shapeMultipliers: Object.assign({}, gBase.shapeMultipliers || {}, gExtra.shapeMultipliers || {}),
+        classFallback: Object.assign({ L: 32, D: 10, S: 22 }, gBase.classFallback || {}, gExtra.classFallback || {}),
+      },
+      langs: base.langs || {},
+    };
+  }
+
   async function loadPcfgCalibration() {
     if (PCFG_CALIBRATION || PCFG_CALIB_LOADING) return;
     PCFG_CALIB_LOADING = true;
     try {
-      const res = await fetch("data/pcfg-calibration.json");
-      if (!res.ok) throw new Error(res.status);
-      const json = await res.json();
-      if (json && typeof json === "object") PCFG_CALIBRATION = json;
+      const [baseRes, corpusRes] = await Promise.all([
+        fetch("data/pcfg-calibration.json"),
+        fetch("data/corpus/common-zxcvbn-pcfg.json"),
+      ]);
+
+      let baseJson = null;
+      let corpusJson = null;
+
+      if (baseRes.ok) baseJson = await baseRes.json();
+      if (corpusRes.ok) corpusJson = await corpusRes.json();
+
+      const corpusCal = corpusStatsToPcfgCalibration(corpusJson);
+      if (baseJson && typeof baseJson === "object") {
+        PCFG_CALIBRATION = mergePcfgCalibration(baseJson, corpusCal);
+      } else if (corpusCal) {
+        PCFG_CALIBRATION = corpusCal;
+      }
     } catch {
       PCFG_CALIBRATION = null;
     } finally {

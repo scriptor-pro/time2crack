@@ -294,7 +294,7 @@
       skip: "Aller au contenu principal",
       subtitle:
         "Et si un pirate s'en prenait à votre mot de passe\u00a0? Tapez-le pour voir combien de temps il résisterait. Tout est calculé sur votre appareil\u00a0— rien ne quitte votre navigateur.",
-      inputLabel: "Testez votre mot de passe",
+      inputLabel: "Tester la solidité d'un mot de passe ici :",
       placeholder: "Votre mot de passe…",
       show: "Afficher",
       hide: "Masquer",

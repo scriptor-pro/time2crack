@@ -16,10 +16,11 @@ window.RESOURCE_BASE = '/';
 
     <div class="input-section">
       <div class="input-group">
-        <label for="pw-input" id="main-title">Testez la force de votre mot de passe</label>
+        <label for="pw-input" id="main-title" data-i18n="inputLabel">Test your password</label>
         <input id="pw-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ex: Password2024!" aria-describedby="status">
         <p class="input-hint" id="main-hint">Analyse locale, sécurisée, gratuite • Aucun mot de passe n'est transmis</p>
         <p class="input-hint"><small><a href="how-time2crack-works.html" id="how-it-works-link">How it works? →</a></small></p>
+        <p id="hibp-badge" data-state="hidden" role="status" aria-live="polite"></p>
       </div>
     </div>
 
@@ -35,11 +36,26 @@ window.RESOURCE_BASE = '/';
 
     <p id="status" aria-live="polite"></p>
 
-    <div id="results" hidden="">
+    <div id="results">
 
       <h2>Temps de crack estimé</h2>
 
-      <p id="hibp-badge" data-state="hidden" role="status" aria-live="polite"></p>
+      <div class="best-attack-card">
+        <div class="best-attack-card-header">
+          <span class="best-attack-card-badge-icon">✓</span>
+          <span class="best-attack-card-badge-text">Estimé</span>
+        </div>
+        <div class="best-attack-card-content">
+          <div class="best-attack-card-icon" id="best-attack-icon">🔐</div>
+          <div class="best-attack-card-label">Test your password strength</div>
+          <div class="best-attack-card-time" id="best-attack-time">15 days</div>
+          <div class="best-attack-card-attack">
+            <span id="best-attack-name">Brute Force</span>
+            <span class="best-attack-card-divider">•</span>
+            <span id="best-attack-gpus">12 GPU</span>
+          </div>
+        </div>
+      </div>
 
       <div class="profile-selector" role="group" aria-label="Profil d'attaquant">
         <span class="profile-selector__label">Profil d'attaquant</span>
@@ -60,23 +76,6 @@ window.RESOURCE_BASE = '/';
             <span class="profile-btn__name">État</span>
             <span class="profile-btn__gpu">~10k GPU</span>
           </button>
-        </div>
-      </div>
-
-      <div class="best-attack-card">
-        <div class="best-attack-card-header">
-          <span class="best-attack-card-badge-icon">✓</span>
-          <span class="best-attack-card-badge-text">Estimé</span>
-        </div>
-        <div class="best-attack-card-content">
-          <div class="best-attack-card-icon" id="best-attack-icon">🔐</div>
-          <div class="best-attack-card-label">Test your password strength</div>
-          <div class="best-attack-card-time" id="best-attack-time">15 days</div>
-          <div class="best-attack-card-attack">
-            <span id="best-attack-name">Brute Force</span>
-            <span class="best-attack-card-divider">•</span>
-            <span id="best-attack-gpus">12 GPU</span>
-          </div>
         </div>
       </div>
 

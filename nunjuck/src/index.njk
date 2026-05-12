@@ -18,13 +18,29 @@ window.RESOURCE_BASE = '/';
   }
 })();
 </script>
-<section class="hero">
-<h1>Test Your Password Strength</h1>
-<p class="hero__subtitle">Scientific password crack time estimation — 7 attack models, local analysis</p>
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__grid">
+    <figure class="hero__media">
+      <picture>
+        <source media="(min-width: 1100px)" srcset="/hero/time2crack-password-desktop.png">
+        <source media="(min-width: 700px)" srcset="/hero/time2crack-password-tablet.png">
+        <img
+          class="hero__image"
+          src="/hero/time2crack-password-mobile.png"
+          alt="Password resistance illustration"
+          loading="eager"
+          fetchpriority="high"
+        >
+      </picture>
+    </figure>
+    <div class="hero__content">
+      <h1 class="hero__title" id="hero-title" data-i18n="inputLabel">Si ton mot de passe est attaqué par un pirate, combien de temps va-t-il résister ?</h1>
+    </div>
+  </div>
 </section>
 <section class="input-section">
 <div class="input-group">
-<label for="pw-input">Enter a password to test:</label>
+<label for="pw-input" data-i18n="inputLabel">Test your password</label>
 <input type="password" id="pw-input" placeholder="Your password (never sent anywhere)" autocomplete="off">
 <button id="hibp-check-btn" class="hibp-btn">Is this password known to hackers?</button>
 </div>

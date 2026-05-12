@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Force brute — Méthodes d’attaque — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Testez toutes les combinaisons possibles de façon systématique. L'attaque la plus exhaustive et une bonne référence."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Force brute — Méthodes d’attaque — Time2Crack"><meta property="og:description" content="Testez toutes les combinaisons possibles de façon systématique. L'attaque la plus exhaustive et une bonne référence."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/fr/methode/bruteforce.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Force brute — Méthodes d’attaque — Time2Crack"><meta name="twitter:description" content="Testez toutes les combinaisons possibles de façon systématique. L'attaque la plus exhaustive et une bonne référence."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="bruteforce.html"><link rel="alternate" hreflang="fr" href="bruteforce.html"><link rel="alternate" hreflang="en" href="../../en/methode/bruteforce.html"><link rel="alternate" hreflang="es" href="../../es/methode/bruteforce.html"><link rel="alternate" hreflang="pt" href="../../pt/methode/bruteforce.html"><link rel="alternate" hreflang="de" href="../../de/methode/bruteforce.html"><link rel="alternate" hreflang="it" href="../../it/methode/bruteforce.html"><link rel="alternate" hreflang="tr" href="../../tr/methode/bruteforce.html"><link rel="alternate" hreflang="pl" href="../../pl/methode/bruteforce.html"><link rel="alternate" hreflang="nl" href="../../nl/methode/bruteforce.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">L'attaque Force Brute — Fonctionnement exhaustif</h1>
+<blockquote>
+Document de référence pour le projet Time2Crack
+</blockquote>
+<blockquote>Destinataires : développeurs, chercheurs en sécurité, utilisateurs avancés</blockquote>
+<hr>
+<h2>Table des matières</h2>
+<li><a href="bruteforce.html#1-vue-densemble">Vue d'ensemble</a></li>
+<li><a href="bruteforce.html#2-contexte-historique-et-académique">Contexte historique et académique</a></li>
+<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Fondements mathématiques : keyspace et entropie</a></li>
+<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Architecture d'une attaque brute force moderne</a></li>
+<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Vitesses de calcul par algorithme de hachage</a></li>
+<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Détection du charset dans Time2Crack</a></li>
+<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Calcul du temps de cracking : bruteTime()</a></li>
+<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Réduction par date détectée : detectDateAndReduce()</a></li>
+<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Le monotonicity guard : plancher des autres attaques</a></li>
+<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">Calibration HF et rôle de la force brute</a></li>
+<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Comparaison avec les autres attaques</a></li>
+<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Limites théoriques et pratiques</a></li>
+<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">Ce que la force brute ne dit pas</a></li>
+<li><a href="bruteforce.html#14-défenses-efficaces">Défenses efficaces</a></li>
+<li><a href="bruteforce.html#15-références-bibliographiques">Références bibliographiques</a></li>
+<hr>
+<h2>1. Vue d'ensemble</h2>
+<p>La force brute est l'attaque la plus fondamentale en cracking de mots de passe : elle consiste à tester <strong>systématiquement toutes les combinaisons possibles</strong> de caractères, dans l'ordre, jusqu'à trouver la bonne. Aucune intelligence, aucune heuristique — uniquement la puissance de calcul brute contre la taille de l'espace à parcourir.</p>
+<p>Dans Time2Crack, la force brute joue un double rôle :</p>
+<li><strong>Attaque modélisée</strong> : elle représente le temps théorique maximal qu'un attaquant mettrait, en supposant aucune autre vulnérabilité exploitable.</li>
+<li><strong>Plancher (monotonicity guard)</strong> : elle sert de borne inférieure pour toutes les autres attaques — aucune attaque spécialisée ne peut légitimement afficher un temps inférieur à celui que prendrait la force brute sur la sous-chaîne alphabétique du mot de passe.</li>
+<strong>En pratique</strong>, la force brute n'est presque jamais l'attaque la plus rapide sur un mot de passe humain réel — PCFG, Markov ou l'attaque hybride seront plus efficaces. Mais pour un mot de passe véritablement aléatoire et long, elle représente la réalité : l'attaquant n'a d'autre choix que de parcourir l'espace exhaustivement.
+<hr>
+<h2>2. Contexte historique et académique</h2>
+<h3>2.1 Origines</h3>
+<p>La force brute précède l'informatique : le principe de tester toutes les combinaisons possibles est utilisé depuis les premières machines de chiffrement mécaniques (Enigma pendant la Seconde Guerre mondiale). La bombe d'Alan Turing était, dans un sens large, un dispositif de force brute contrainte par une hypothèse de cribs.</p>
+<p>Avec l'avènement des ordinateurs, la force brute sur mots de passe Unix a été formalisée dès les années 1970–1980 :</p>
+<table>
+<tbody><tr><td>Année</td><td>Événement</td></tr>
+<tr><td>-------</td><td>-----------</td></tr>
+<tr><td>1979</td><td>Morris &amp; Thompson : premier article académique sur la sécurité des mots de passe Unix, avec analyse de force brute sur /etc/passwd</td></tr>
+<tr><td>1988</td><td>Worm de Morris : premier exploit de masse utilisant entre autres un crack de mots de passe par dictionnaire et force brute</td></tr>
+<tr><td>1993</td><td>Crack 5.0 (Alec Muffett) : premier outil public de cracking par force brute sur Unix</td></tr>
+<tr><td>2004</td><td>Ophcrack : tables rainbow + force brute sur LM/NTLM hashes Windows</td></tr>
+<tr><td>2007</td><td>GPU-accelerated cracking (Elcomsoft) : premier usage public du GPU pour accélérer la force brute</td></tr>
+<tr><td>2012</td><td>Hashcat open source : outil de référence, exploitation maximale des GPU</td></tr>
+<tr><td>2016</td><td>Hive Systems : publication annuelle des tableaux "force brute par GPU" devenus référence industrielle</td></tr>
+</tbody></table>
+<h3>2.2 Benchmarks de référence</h3>
+<p>La révolution GPU a changé l'ordre de grandeur de la force brute. Sur CPU, un attaquant des années 1990 testait ~10 000 mots de passe MD5/seconde. Un RTX 4090 en 2024 en teste <strong>168,9 milliards par seconde</strong> — soit une accélération de 16 millions de fois en 30 ans.</p>
+<strong>Sources académiques clés</strong> :
+<ul>
+<li><strong>Gosney, J. (2012)</strong> : premier benchmark public multi-GPU sur LM/NTLM, démontrant 180 GH/s avec 8 GPU</li>
+<li><strong>Hive Systems (2025)</strong> : tableaux annuels calibrés sur 12× RTX 4090, cités par Forbes, CNBC, BBC</li>
+<li><strong>Sprengers, M. (2011)</strong> : thèse de Radboud University sur le cracking GPU, formalisation mathématique</li>
+</ul>
+<hr>
+<h2>3. Fondements mathématiques : keyspace et entropie</h2>
+<h3>3.1 Le keyspace</h3>
+<p>Le keyspace (espace de clés) est le nombre total de mots de passe possibles pour une longueur et un charset donnés :</p>
+<pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
+<p>Exemples :</p>
+<table>
+<tbody><tr><td>Charset</td><td>Taille</td><td>Longueur</td><td>Keyspace</td><td>Notation</td></tr>
+<tr><td>---------</td><td>--------</td><td>----------</td><td>----------</td><td>----------</td></tr>
+<tr><td>Chiffres seuls</td><td>10</td><td>8</td><td>10⁸ = 100 000 000</td><td>~10⁸</td></tr>
+<tr><td>Minuscules seules</td><td>26</td><td>8</td><td>26⁸ ≈ 208 milliards</td><td>~2 × 10¹¹</td></tr>
+<tr><td>Alphanumérique</td><td>62</td><td>8</td><td>62⁸ ≈ 218 000 milliards</td><td>~2 × 10¹⁴</td></tr>
+<tr><td>ASCII complet</td><td>95</td><td>8</td><td>95⁸ ≈ 6 634 milliards de milliards</td><td>~6 × 10¹⁵</td></tr>
+<tr><td>ASCII complet</td><td>95</td><td>12</td><td>95¹² ≈ 5,4 × 10²³</td><td>~5 × 10²³</td></tr>
+<tr><td>ASCII complet</td><td>95</td><td>16</td><td>95¹⁶ ≈ 4,4 × 10³¹</td><td>~4 × 10³¹</td></tr>
+</tbody></table>
+<h3>3.2 L'entropie binaire</h3>
+<p>L'entropie (mesurée en bits) est la formulation logarithmique du keyspace :</p>
+<pre><code class="language-plaintext">entropie = length × log₂(charset_size)</code></pre>
+<p>Dans Time2Crack (fonction <code>entropy()</code>) :</p>
+<pre><code class="language-javascript">function entropy(pw) {
+  return pw.length * Math.log2(getCharset(pw).size);
+}</code></pre>
+<p>La relation entre entropie et keyspace :</p>
+<pre><code class="language-plaintext">keyspace = 2^entropie
+entropie = log₂(keyspace)</code></pre>
+<strong>Exemples concrets</strong> :
+<table>
+<tbody><tr><td>Mot de passe</td><td>Charset</td><td>Longueur</td><td>Entropie</td><td>Keyspace</td></tr>
+<tr><td>-------------</td><td>---------</td><td>----------</td><td>----------</td><td>----------</td></tr>
+<tr><td>"12345678"</td><td>10 (digits)</td><td>8</td><td>26,6 bits</td><td>10⁸</td></tr>
+<tr><td>"password"</td><td>26 (lower)</td><td>8</td><td>37,6 bits</td><td>26⁸</td></tr>
+<tr><td>"Password1"</td><td>62 (alphanum)</td><td>9</td><td>53,6 bits</td><td>62⁹</td></tr>
+<tr><td>"P@ssw0rd!"</td><td>95 (full ASCII)</td><td>9</td><td>59,3 bits</td><td>95⁹</td></tr>
+<tr><td>"xQz7@mK9#2pL"</td><td>95 (full ASCII)</td><td>12</td><td>79 bits</td><td>95¹²</td></tr>
+</tbody></table>
+<h3>3.3 L'espérance mathématique : keyspace / 2</h3>
+<p>Une force brute ne teste pas toujours les <code>keyspace</code> combinaisons en entier — en moyenne, elle trouve le mot de passe à mi-chemin, car la cible est équiprobablement répartie dans l'espace. L'<strong>espérance mathématique</strong> du nombre de tentatives est donc :</p>
+<pre><code class="language-plaintext">tentatives_attendues = keyspace / 2</code></pre>
+<p>C'est exactement ce que modélise <code>bruteTime()</code> dans Time2Crack :</p>
+<pre><code class="language-javascript">// "For brute force: expected value is keyspace/2 (uniform random search)"
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls); // = (keyspace / 2) / rate
+}</code></pre>
+<p>Cette division par 2 est correcte sous l'hypothèse que l'attaquant parcourt l'espace de façon linéaire (non-répétitive). Elle implique qu'un attaquant a 50% de chances de trouver le mot de passe en moins de <code>keyspace/2</code> tentatives.</p>
+<hr>
+<h2>14. Défenses efficaces</h2>
+<h3>14.1 Côté utilisateur : la longueur et l'aléatoire</h3>
+<p>La force brute est vaincu par deux facteurs combinés :</p>
+<strong>Longueur</strong> : chaque caractère supplémentaire multiplie le keyspace par <code>charset_size</code>. Passer de 8 à 12 caractères (charset 95) multiplie le keyspace par <strong>95⁴ ≈ 81 millions</strong>.
+<br>
+<strong>Aléatoire vrai</strong> : un générateur cryptographiquement sûr (CSPRNG) produit des mots de passe qui ne bénéficient d'aucune réduction probabiliste. Markov, PCFG et Neural n'ont aucun avantage sur un mot de passe réellement aléatoire.
+<br>
+<strong>Recommandation pratique</strong> :
+<ul>
+<li>Gestionnaire de mots de passe + génération aléatoire ≥ 16 caractères avec charset complet = hors de portée de toute force brute dans un horizon de vie humaine</li>
+</ul>
+<h3>14.2 Côté serveur : algorithmes résistants</h3>
+<p>Le choix de l'algorithme de hachage multiplie ou divise le temps de force brute par des facteurs allant jusqu'à <strong>plusieurs millions</strong> :</p>
+<table>
+<tbody><tr><td>Recommandation</td><td>Algorithme</td><td>Raison</td></tr>
+<tr><td>---------------</td><td>------------</td><td>--------</td></tr>
+<tr><td>✅ Recommandé</td><td>Argon2id</td><td>Memory-hard, résistant aux GPU</td></tr>
+<tr><td>✅ Recommandé</td><td>bcrypt (cost ≥ 12)</td><td>Intentionnellement lent, salé</td></tr>
+<tr><td>⚠️ Acceptable</td><td>scrypt</td><td>Memory-hard mais moins standardisé</td></tr>
+<tr><td>❌ Insuffisant</td><td>SHA-256 salé</td><td>Trop rapide même avec sel</td></tr>
+<tr><td>❌ Dangereux</td><td>MD5, SHA-1, NTLM</td><td>Non salés, extrêmement rapides</td></tr>
+</tbody></table>
+<hr>
+<h2>15. Références bibliographiques</h2>
+<h3>Académiques</h3>
+<strong>Morris, R., &amp; Thompson, K. (1979).</strong>
+Password security: A case history.
+<em>Communications of the ACM, 22(11), 594–597.</em>
+→ Article fondateur sur la sécurité des mots de passe Unix
+<br>
+<strong>Sprengers, M. (2011).</strong>
+GPU-based password cracking (Master's thesis).
+<em>Radboud University Nijmegen.</em>
+→ Formalisation mathématique du cracking GPU, benchmarks sur single GPU
+<br>
+<strong>Wheeler, D. L. (2016).</strong>
+zxcvbn: Low-Budget Password Strength Estimation.
+<em>25th USENIX Security Symposium.</em>
+→ Données sur keyspace effectif (Table 2 : -30% pour mots de passe structurés)
+<br>
+<strong>Dürmuth, M. et al. (2015).</strong>
+OMEN: Ordered Markov ENumerator. <em>ESORICS 2015.</em>
+→ Référence comparative pour les bornes probabilistes vs force brute
+<h3>Industrie</h3>
+<strong>Hive Systems. (2025).</strong>
+<em>2025 Hive Systems Password Table.</em>
+https://www.hivesystems.io/password-table
+→ Benchmarks annuels sur 12× RTX 4090, référence standard
+<br>
+<strong>Gosney, J. (2012).</strong>
+<em>8x Nvidia GTX 1080 Hashcat benchmarks.</em> GitHub Gist.
+→ Premier benchmark public multi-GPU, référence historique
+<br>
+<strong>Hashcat. (2024).</strong>
+<em>Official Hashcat benchmarks v6.2.6.</em>
+https://hashcat.net/hashcat/
+→ Vitesses officielles par algorithme, source des constantes de Time2Crack
+<br>
+<strong>NIST SP 800-63B. (2017, updated 2024).</strong>
+<em>Digital Identity Guidelines: Authentication and Lifecycle Management.</em>
+→ Recommandations officielles sur la longueur et la complexité des mots de passe
+<br>
+<strong>OWASP. (2024).</strong>
+<em>Password Storage Cheat Sheet.</em>
+https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+→ Recommandations sur bcrypt (cost ≥ 12), Argon2id comme standards modernes
+<hr>
+<em>Document généré pour le projet Time2Crack — dernière mise à jour : 2026-04-18</em>
+<em>Basé sur l'implémentation dans app.js, functions bruteTime(), getCharset(), et le monotonicity guard</em>
+</main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Markov — Aanvalsmethoden — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Genereer kandidaten uit overgangskansen die zijn geleerd van echte wachtwoorden. Goede balans tussen dekking en snelheid."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Markov — Aanvalsmethoden — Time2Crack"><meta property="og:description" content="Genereer kandidaten uit overgangskansen die zijn geleerd van echte wachtwoorden. Goede balans tussen dekking en snelheid."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/nl/methode/markov.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="nl_NL"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Markov — Aanvalsmethoden — Time2Crack"><meta name="twitter:description" content="Genereer kandidaten uit overgangskansen die zijn geleerd van echte wachtwoorden. Goede balans tussen dekking en snelheid."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="markov.html"><link rel="alternate" hreflang="fr" href="../../fr/methode/markov.html"><link rel="alternate" hreflang="en" href="../../en/methode/markov.html"><link rel="alternate" hreflang="es" href="../../es/methode/markov.html"><link rel="alternate" hreflang="pt" href="../../pt/methode/markov.html"><link rel="alternate" hreflang="de" href="../../de/methode/markov.html"><link rel="alternate" hreflang="it" href="../../it/methode/markov.html"><link rel="alternate" hreflang="tr" href="../../tr/methode/markov.html"><link rel="alternate" hreflang="pl" href="../../pl/methode/markov.html"><link rel="alternate" hreflang="nl" href="markov.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">Markov-aanval (probabilistisch)</h1>
+<blockquote>
+Projectreferentiedocument Time2Crack
+</blockquote>
+<blockquote>Ontvangers: ontwikkelaars, security onderzoekers, geavanceerde gebruikers</blockquote>
+<hr>
+<h2>Inhoud</h2>
+<li><a href="markov.html#1-vue-densemble">Overzicht</a></li>
+<li><a href="markov.html#2-contexte-historique-et-académique">Historische en academische achtergrond</a></li>
+<li><a href="markov.html#3-fondements-mathématiques--les-chaînes-de-markov">Wiskundige funderingen: Markovs ketens</a></li>
+<li><a href="markov.html#4-architecture-dun-cracktool-markov">Architectuur van een Markov cracktool</a></li>
+<li><a href="markov.html#5-phase-1--entraînement-sur-corpus-de-mots-de-passe-réels">Fase 1: training van echte wachtwoorden</a></li>
+<li><a href="markov.html#6-phase-2--génération-ordonnée-de-candidats">Fase 2 </a></li>
+<li><a href="markov.html#7-réduction-de-lespace-de-recherche--la-clé-de-lefficacité">Reductie van de onderzoeksruimte: de sleutel tot effectiviteit</a></li>
+<li><a href="markov.html#8-variantes-et-implémentations-notables">Opmerkelijke variaties en uitvoeringen</a></li>
+<li><a href="markov.html#9-comportement-face-à-différents-types-de-mots-de-passe">Gedrag tegen verschillende soorten wachtwoorden</a></li>
+<li><a href="markov.html#10-intégration-dans-time2crack--modélisation-et-paramètres">Integratie in Time2Crack: modellering en parameters</a></li>
+<li><a href="markov.html#11-comparaison-avec-les-autres-attaques-probabilistes">Vergelijking met andere probabilistische aanvallen</a></li>
+<li><a href="markov.html#12-limites-de-lattaque-markov">Limieten van de Markov-aanval</a></li>
+<li><a href="markov.html#13-défenses-efficaces">Doeltreffende verdediging</a></li>
+<li><a href="markov.html#14-références-bibliographiques">Referenties</a></li>
+<hr>
+<h2>1. Overzicht</h2>
+<p>Markov Attack is een wachtwoord kraken methode <strong>probabilistisch en statistisch</strong> die kandidaten genereert door te vertrouwen op de waargenomen frequenties van overgang tussen tekens in echte menselijke wachtwoorden. In plaats van het testen van alle mogelijke combinaties in alfabetische volgorde en zoals de ruwe kracht doet . . het sorteert kandidaten van de meest waarschijnlijke tenminste, concentreren van de berekening inspanning waar menselijke wachtwoorden daadwerkelijk zijn gevestigd.</p>
+<strong>In eenvoudige termen</strong> : een aanvaller die genoeg GPU en een goed getrainde Markov model zal testen "letmein," "p@ssword" en "sun2024" voordat het testen van "aaaaaaaaaaaaab" of "xqzfkw" omdat mensen maken wachtwoorden die eruit zien als woorden, niet wit lawaai.
+<strong>Gemeten efficiëntie</strong> : Dürmuth et al. (2015) onderzoek aan de RockYou corpus (14 miljoen wachtwoorden) toont aan dat een Markov 5 model de werkelijke zoekruimte vermindert tot <strong>0,6% van de brutoruimte</strong> voor wachtwoorden met een typische menselijke structuur een 99,4 % reductie.
+<hr>
+<h2>2. Historische en academische achtergrond</h2>
+<h3>2.1 Oorsprong</h3>
+<p>De toepassing van Markov's kanalen op wachtwoord kraken is eerder dan formele academische publicaties. Offensive security beoefenaars gebruikt soortgelijke modellen sinds de jaren 2000, maar strenge formalisering dateert voornamelijk uit de 2010s.</p>
+<strong>Chronologie van mijlpalen</strong> :
+JaarGebeurtenis
+---------------------
+2005Nakashima &amp; Oyama: eerste formele toepassing van n-grams op wachtwoorden
+2009Weir et al. (IEEE S&amp;P): directe concurrent, posities structurele kansen
+2012Ma et al. (USENIX Security): Vergelijkende studie van probabilistische modellen op 70M wachtwoorden
+2013Durmuth: eerste VROUWENanalyses op verschillende corpus
+2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>VROUWEN</strong> (ESORICS 2015) 
+2016Wheeler (zxcvbn) bevestigt de effectiviteit van n-grams bij het schatten van werkelijke entropie
+2018VROUWEN+: verbeterde versie met gladmaken en interpoleren
+2019Markov hybride werk + neurale netwerken (PassGAN, FuzzyPSM)
+<h3>2.2 Referentieorgaan</h3>
+<p>Modeltraining Markov is gebaseerd op wachtwoorddatabases van bekende datalekken:</p>
+<ul>
+<li><strong>RockYou (2009)</strong> : 14,3 miljoen gewone wachtwoorden, universele referentie corpus</li>
+</ul>
+<li><strong>LinkedIn (2012)</strong> : 6,5 miljoen niet-gezouten SHA-1 hash (inclusief 4,4M gebarsten)</li>
+<li><strong>Adobe (2013)</strong> : 153 miljoen identificatiegegevens (3DES hashs </li>
+<li><strong>Verzameling #1</strong> : 2,7 miljard paar identificeren/wachtwoord</li>
+<li><strong>Heb ik gepowned (2024)</strong> : ~14 miljard enkele geaggregeerde referenties</li>
+<p>Deze corpus onthullen de feitelijke statistische verdeling van menselijke wachtwoorden, die radicaal verschilt van een uniforme verdeling.</p>
+<hr>
+<h2>3. Wiskundige stichtingen: de kettingen van Markov</h2>
+<h3>3.1 Formele definitie</h3>
+<p>Markov-volgordeketen <em>k</em> op een alfabet <em>k</em> Vorige tekens:</p>
+<pre><code class="language-plaintext">P(cₙ | c₁c₂...cₙ₋₁) = P(cₙ | cₙ₋ₖ...cₙ₋₁)</code></pre>
+<p>Voor wachtwoorden omvat het meestal 95 afdrukbare ASCII-tekens (26 kleine letters + 26 hoofdletters + 10 cijfers + 33 symbolen).</p>
+<strong>Volgorde 1 (bigram)</strong> :
+<pre><code class="language-plaintext">P("password") = P("p") × P("a"|"p") × P("s"|"a") × P("s"|"s") × ...</code></pre>
+<strong>Besluit nr. 5 (optimal volgens Dürmuth 2015)</strong> :
+<pre><code class="language-plaintext">P("password") = P("p") × P("a"|"p") × P("s"|"pa") × P("s"|"pas")
+                × P("w"|"pass") × P("o"|"passw") × P("r"|"passwo")
+                × P("d"|"passwor")</code></pre>
+<p>Order 5 vangt contexten zoals "na "passw," de meest waarschijnlijke follow-up is "o" informatie ontoegankelijk voor een ordermodel 1.</p>
+<h3>3.2 De overgangsmatrix</h3>
+<p>Voor een orde van 1 op 95 karakters is de overgangsmatrix grootte <strong>95 × 95 = 9,025 inputs</strong>. Voor Orde 5 gaat het naar <strong>955 × 95 = ~7,7 × 1010 theoretische inputs</strong> Implementaties gebruiken holle datastructuren (tries, hash maps) om alleen waargenomen n-grams op te slaan.</p>
+<h3>3.3 Log waarschijnlijkheid en sorteren</h3>
+<p>Om drijvende overschrijdingen op 8+-karakter wachtwoorden (waarschijnlijkheden van de orde van 10−20) te voorkomen, werken de gereedschappen in <strong>log waarschijnlijkheden</strong> :</p>
+<pre><code class="language-plaintext">log P("password") = log P("p") + log P("a"|"p") + log P("s"|"a") + ...</code></pre>
+<p>Deze waarde is de <strong>score Markov</strong> Kandidaten worden gegenereerd in afnemende volgorde van score, d.w.z. de meest waarschijnlijke ten minste waarschijnlijk.</p>
+<h3>3.4 Waarom Bestel 5?</h3>
+<p>Uit empirisch onderzoek (Dürmuth 2015, bevestigd door Ma et al. 2012) blijkt dat:</p>
+<li><strong>Volgorde 1</strong> : vangt frequenties van individuele tekens (e, a, o gemeenschappelijk in klein), reductie ~50%</li>
+<li><strong>Beschikking 2</strong> : vangt gewone bigrams (pa, ss, wo, rd), reductie ~75%</li>
+<li><strong>Beschikking 3</strong> : vangt trigrams (niet, kont, ssw), reductie ~90%</li>
+<li><strong>Beschikking 4</strong> : afnemende opbrengst start, reductie ~95 %</li>
+<li><strong>Beschikking 5</strong> : Optimum empirisch op RockYou, reductie ~99,4%</li>
+<li><strong>Volgorde 6+</strong> : overfitting, model memoriseert training wachtwoorden zonder generaliseren</li>
+<hr>
+<h2>4. Architectuur van een Markov cracktool</h2>
+<h3>4.1 Belangrijkste onderdelen</h3>
+<pre><code class="language-plaintext">┌─────────────────────────────────────────────────────────────┐
+│                    OUTIL DE CRACKING MARKOV                 │
+├─────────────────┬───────────────────┬───────────────────────┤
+│  Phase          │  Composant        │  Rôle                 │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Entraînement   │ Corpus Parser     │ Lit les mots de passe │
+│                 │ N-gram Counter    │ Compte les transitions│
+│                 │ Probability Table │ Normalise en probas   │
+│                 │ Model Serializer  │ Sauvegarde le modèle  │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Génération     │ Candidate Gen     │ Énumère par score     │
+│                 │ Length Controller │ Filtre par longueur   │
+│                 │ Threshold Filter  │ Coupe les improbables │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Attaque        │ Hash Engine       │ Compare aux cibles    │
+│                 │ GPU Interface     │ Hashcat backend       │
+└─────────────────┴───────────────────┴───────────────────────┘</code></pre>
+<h3>4.2 Integratie met Hashcat</h3>
+<p>De meest voorkomende uitvoering in de praktijk is via de <strong>Hashcat-stdinmodus</strong> (<code>-a 0</code> met een externe generator) of via Python-modules als <code>statsgen</code> (van de PACK toolkit):</p>
+<pre><code class="language-bash"># Exemple d'attaque Markov pratique
+python statsgen.py rockyou.txt --output markov<em>model.stats
+python maskergen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes.txt</em></code></pre>
+<p>Specifieke hulpmiddelen zoals <strong>VROUWEN</strong> (Open Markov Estimator van Next wachtwoorden) direct genereren lijsten van gesorteerde kandidaten.</p>
+<hr>
+<h2>5. Fase 1 </h2>
+<h3>5.1. Extractie van n-grams</h3>
+<p>Voor elk wachtwoord in het corpus worden alle n-grams uitgepakt (met een startmarkering). <code>^</code> en eindigen <code>$</code>) :</p>
+<p>Voorbeeld met "hallo" (orde 2):
+</p><pre><code class="language-plaintext">^h, he, el, ll, lo, o$</code></pre><p></p>
+<p>Voorbeeld met "P@ss1!" (orde 2:
+</p><pre><code class="language-plaintext">^P, P@, @s, ss, s1, 1!, !$</code></pre><p></p>
+<h3>5.2 Telling en normalisatie</h3>
+<p>Voor elke context (n-1 vorige tekens) worden de gebeurtenissen van elk volgende teken geteld en genormaliseerd:</p>
+<pre><code class="language-plaintext">Contexte "pa" → {s: 847, r: 12, t: 8, l: 3, ...}
+→ P(s|pa) = 847/870 = 0.973
+→ P(r|pa) = 12/870 = 0.014</code></pre>
+<p>Deze verdelingen onthullen menselijke taalgewoonten: na "pa" schrijven mensen massaal "s" (wachtwoord, pass, pablo...).</p>
+<h3>Gladmaken</h3>
+<p>Het probleem van ongeobserveerde n-grams: als "xq" nooit verschijnt in het corpus, P(c)xq) = 0 voor elke c </p>
+<li><strong>Add-one (Laplace)</strong> : voeg 1 toe aan alle rekeningen</li>
+<li><strong>Goede tournee</strong> : herdistribueer de waarschijnlijkheid van de n-grams die ooit gezien zijn naar degenen die nooit gezien zijn</li>
+<li><strong>Kneser-Ney</strong> : state of the art methode, gebruikt in VROUWEN+</li>
+<p>Smoothing maakt het model ook mogelijk om kandidaten uit de training te genereren .. cruciaal om iets nieuwe wachtwoorden te dekken.</p>
+<h3>5.4 Wat het model leert</h3>
+<p>Na training op RockYou, een Markov 5-orde model internaliseert patronen als:</p>
+<li><strong>Digitale achtervoegsels</strong> : nummers verschijnen massaal aan het einde van het wachtwoord (→ "123," "2024," "1!")</li>
+<li><strong>Huidige begin</strong> : "pa," "my," "lo," "ch," "123," "abc" zijn veelvuldige beginnelingen</li>
+<li><strong>Oorspronkelijke betaling</strong> : de hoofdletter in de eerste positie is veel waarschijnlijker dan in het midden van de ketting</li>
+<li><strong>Zeldzame symbolen in het midden</strong> : "@," "#," "!" verschijnen voornamelijk ter vervanging van letters of achtervoegsel</li>
+<li><strong>Menselijke herhalingen</strong> : "aa," "ll," "ee" komen vaker voor dan duplicaten van zeldzame medeklinkers</li>
+<hr>
+<h2>6. Fase 2 </h2>
+<h3>6.1 Het probleem van de opsomming van scores</h3>
+<p>Het genereren van kandidaten in dalende volgorde van waarschijnlijkheid Markov is een niet-triviaal probleem. We kunnen niet gewoon de waarschijnlijkheid van alle mogelijke kandidaten (948 x 6 × 1015 voor 8 tanks) berekenen en ze vervolgens uitzoeken.</p>
+<p>De oplossing: <strong>Heuristische zoektocht met prioriteit staart</strong> Het algoritme lijkt op Dijkstra:</p>
+<li>Initialiseer de regel met het meest waarschijnlijke begin (<code>^a</code>, <code>^p</code>, <code>^1</code>...)</li>
+<li>In elke fase, depileren de meest waarschijnlijke gedeeltelijke kandidaat</li>
+<li>Verleng het met elk mogelijk karakter, bereken de score van de uitgebreide kandidaat</li>
+<li>Als doellengte bereikt is, kandidaat uit te geven</li>
+<li>Zo niet, bestand terug</li>
+<p>Deze aanpak zorgt voor een ongeveer afnemende sortering zonder de hele ruimte te onthouden.</p>
+<h3>6.2. Drempeldrempel</h3>
+<p>Om te voorkomen dat miljarden onwaarschijnlijke kandidaten, een <strong>Minimumscore</strong> waaronder een gedeeltelijke kandidaat wordt uitgeschakeld (sladen).</p>
+<pre><code class="language-plaintext">Si log P(candidatpartiel) &lt; THRESHOLD → abandon de cette branche</code></pre>
+<p>Drempelwaarde is een kritische parameter: te hoog → je mist wachtwoorden aan de limiet; te laag → je genereert te veel kandidaten en vertraagt de aanval.</p>
+<h3>6.3 Duurbeheer</h3>
+<p>Markov modellen zijn opgeleid en werken over het algemeen <strong>door vaste lengte</strong>Een typische aanval:</p>
+<li>Lengte 6: N-kandidaten genereren in afnemende volgorde van waarschijnlijkheid</li>
+<li>Lengte 7: Idem</li>
+<li>Lengte 8: Idem (meest voorkomende lengte in corpus)</li>
+<li>Lengtes 9-12: afnemende dekking</li>
+<p>Lengteverdeling in RockYou: 8 tanks = 24%, 7 tanks = 21%, 9 tanks = 12%, 6 tanks = 10%...</p>
+<hr>
+<h2>7. Het verminderen van onderzoeksruimte: de sleutel tot effectiviteit</h2>
+<h3>7.1 Empirische kwantificering (Dürmuth 2015)</h3>
+<p>Voor een wachtwoord van 8 tekens met het volledige alfabet (94 tanks):</p>
+MethodeOnderzoeksruimteVerminderingsfactor
+-----------------------------------------------------
+Brutosterkte948 6 × 10151× (referentie)
+Markov Order 1~3 × 1015~2×
+Markov Order 3~6 × 1013~100×
+Markov Order 5~3,6 × 1010~166 000×
+Markov Order 5 (typisch menselijk)~4 × 107<strong>~150 miljoen×</strong>
+<p>Het verschil tussen "gereduceerde ruimte" en "typische menselijke ruimte" kan worden verklaard door het feit dat echte menselijke wachtwoorden geconcentreerd zijn in <strong>top-k% waarschijnlijk</strong> Afhankelijk van het model.</p>
+<h3>7.2 Waarom mensen voorspelbaar zijn</h3>
+<p>De door Markov gebruikte voorspelbaarheidsfactoren:</p>
+<strong>Taalbeperkingen</strong> wachtwoorden zijn afgeleid van bestaande woorden. "letmein," "sunshine," "iloveyou" volgen fonotische regels van het Engels de overgangen van letters zijn zeer waarschijnlijk.
+<strong>Cognitieve beperkingen</strong> Mensen herinneren zich niet echt willekeurige sequenties. Een willekeurig wachtwoord zoals "xqzfw9@" wordt zelden spontaan gekozen.
+<strong>Culturele patronen</strong> Deze patronen creëren clusters met hoge dichtheid in de wachtwoordruimte.
+<strong>Voorspelbare substituties</strong> Deze veranderingen komen zo vaak voor dat ze deel uitmaken van het model.
+<strong>Positie van nummers en symbolen</strong> : de nummers aan het einde van het wachtwoord (passwd123) zijn 10× vaker dan de nummers aan het begin. Achtervoegsel symbolen (passwd!) zijn 5× vaker dan in de centrale positie.
+<h3>7.3 Het geval van toetsenbordpatronen</h3>
+<p>Toetsenbordsequenties (qwerty, asdf, zxcv, 1234, azerty...) zijn bijzonder kwetsbaar.</p>
+<li>Karakterovergangen volgen de beperkingen van toetsenbordtopologie</li>
+<li>Van elke sleutel zijn slechts 4-8 directe buren relevant</li>
+<li>Een Markov model gedreven op corpus met inbegrip van deze patronen bereikt een vermindering van <strong>99,7 %</strong> (vs 99,4% voor algemene menselijke woorden)</li>
+<p>In Time2Crack (huidige versie) is dit onderscheid niet langer een vaste lager. <code>kbPat</code> als signaal in een rangschatting (<code>markovExpectedGuesses</code>) vervolgens voortdurend interpoleren tussen "mens-achtige" en "random-achtige" regimes.</p>
+<hr>
+<h2>8. Opmerkelijke variaties en implementaties</h2>
+<h3>8.1 VROUWEN (Open Markov Estimator van Volgende wachtwoorden)</h3>
+<strong>Ontwikkeling</strong> : Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge (ESORICS 2015)
+<strong>Beschikbaarheid</strong> : Open bron (GitHub)
+<strong>Belangrijkste innovatie</strong> : geoptimaliseerde planning volgens niveauscore (samengevat door waarschijnlijkheidsstappen)
+<p>VROUWEN maken gebruik van een discretie van waarschijnlijkheden in <strong>hele niveaus</strong> om de generatie te versnellen:
+</p><li>Elk n-gram ontvangt een integer score (0 = zeer waarschijnlijk, 10 = onwaarschijnlijk)</li>
+<li>De som van de scores van een wachtwoord is de <strong>totale score</strong></li>
+<li>Wachtwoorden worden gegenereerd in stijgende volgorde van de totale score</li><p></p>
+<p>Deze aanpak lost het probleem van een ordelijke opsomming zonder dure prioritaire staart elegant op.</p>
+<h3>8.2 VROUWEN+</h3>
+<p>Uitbreiding van vrouwen met:
+</p><li><strong>Smoothing Kneser-Ney</strong> voor een betere generalisatie</li>
+<li><strong>Multi-order-interpolatie</strong> : combineert ordervoorspellingen 3, 4 en 5</li>
+<li><strong>Aanpassing van de drempel</strong> gebaseerd op empirische corpusdistributie</li><p></p>
+<p>Gerapporteerde prestaties: +15 tot +20% gebarsten wachtwoorden vs originele VROUWEN met gelijk budget.</p>
+<h3>8.3 Statsgen / PACK (Wachtwoordanalyse en kraken Kit)</h3>
+<strong>Ontwikkeling</strong> : Peter Kacherginsky (ifelix)
+<strong>Aanpak</strong> : lichter dan VROUWEN, genereert Hashcat compatibele maskers en statistieken
+<strong>Typisch gebruik</strong> : analyse van een reeks gebarsten wachtwoorden om toekomstige aanvallen aan te passen
+<h3>8,4 JohnTheRipper Markov-modus</h3>
+<p>John TheRipper integreert een <strong>native Markov-modus</strong> (ontwikkeld door Samuel Giovanni Tonon):</p>
+<pre><code class="language-bash">john --markov --min-length=6 --max-length=8 hashes.txt</code></pre>
+<p>Parameter <code>--markov-threshold</code> (0-400): regelt de afkapdrempel. 150 = aanbevolen standaardparameter.</p>
+<p>JtR Markov-modus maakt gebruik van vooraf berekende statistieken opgeslagen in bestanden <code>.mkv</code> (markov statistieken bestanden) gegenereerd door <code>calc<em>stat</em></code>.</p>
+<h3>8.5 Markov hybride modellen</h3>
+<strong>Markov + regels</strong> : genereren Markov kandidaten, vervolgens toepassen Hashcat transformatie regels
+<strong>Markov + woordenboek</strong> : gebruik Markov wachtwoorden als basis voor hybride aanvallen
+<strong>Markov + PCFG</strong> : combineer de probabilistische orde Markov met de structurele stress PCFG
+<p>Deze hybridisaties worden gebruikt in professionele kraakconfiguraties om CPU/GPU budget dekking te maximaliseren.</p>
+<h3>8.6 Moderne taalmodellen (LLM/L URL)</h3>
+<p>LSTM en Transformer netwerken kunnen worden gezien als generalisaties van Markov kanalen:
+</p><li>Markov orde k = k tokens vaste context venster</li>
+<li>LSTM = variabel en ongebonden contextvenster (langdurig geheugen)</li>
+<li>Transformeren = totale aandacht voor de gehele reeks</li><p></p>
+<p>PassGAN (2017), FLA (2019), PassBERT (2022) overtrof de klassieke Markov modellen met 20-30% in cracksnelheden op het moderne corpus.</p>
+<hr>
+<h2>9. Gedrag tegen verschillende soorten wachtwoorden</h2>
+<h3>9.1 Wachtwoorden uit natuurlijke woorden</h3>
+<strong>Voorbeelden</strong> : Sunshine, let mein, dragon, ilove you
+<strong>Kwetsbaarheid</strong> : extreem
+<strong>Mechanisme</strong> : het model kent een zeer hoge waarschijnlijkheid toe aan de sequenties van het huidige Engels. <strong>boven 0,001 %</strong> gegenereerde kandidaten.
+<strong>Tijd</strong> : milliseconden op MD5/SHA-1
+<h3>9.2 Woorden met leetspeak substituties</h3>
+<strong>Voorbeelden</strong> : p@ssw0rd, L3tm3In, $unsh1ne
+<strong>Kwetsbaarheid</strong> : hoog
+<strong>Mechanisme</strong> Het model heeft geleerd dat "@" vaak volgt "p" (omdat "p@ss..." zeer gebruikelijk is in het corpus), dat "0" vaak volgt "w" (w0rd...), enz. De meest voorkomende substituties zijn geïntegreerd in de kans op overgang.
+<strong>Tijd</strong> : seconden tot minuten
+<h3>9.3 Woorden met digitaal achtervoegsel</h3>
+<strong>Voorbeelden</strong> Wachtwoord123, zonneschijn2024, draak1!
+<strong>Kwetsbaarheid</strong> : hoog
+<strong>Mechanisme</strong> De numerieke achtervoegsels komen zo vaak voor dat het model een hoge kans heeft op de letter→ overgangen aan het einde van de reeks. "123," "1," "2024," "12" zijn de meest waarschijnlijke achtervoegsels.
+<strong>Tijd</strong> : seconden tot enkele minuten
+<h3>9.4 Voornamen en juiste namen</h3>
+<strong>Voorbeelden</strong> Thomas92, AnneM@rie, NICOLAS
+<strong>Kwetsbaarheid</strong> matig tot hoog
+<strong>Mechanisme</strong> : Gewone namen (in het Engels) zijn goed vertegenwoordigd in het referentie corpus. Minder gangbare namen in het Engels corpus (Frans, Pools, enz.) profiteren minder van het model.
+<strong>Tijd</strong> : minuten tot uren afhankelijk van de populariteit van de voornaam
+<h3>9.5 Pass woorden van schijnbare willekeurige structuur maar mnemotechnische</h3>
+<strong>Voorbeelden</strong> : Tr0ub4dor&amp;3 (van artikel XKCD), Il0v3myC@t!
+<strong>Kwetsbaarheid</strong> matig
+<strong>Mechanisme</strong> Deze wachtwoorden hebben een menselijke structuur (baseword + substituions + achtervoegsel), maar de basis en de specifieke transformaties zijn niet in de top-k van Markov kandidaten. Het model zal ze uiteindelijk bereiken, maar ze vallen in de 10-30% van de ruimte.
+<strong>Tijd</strong> : uren tot dagen volgens lengte en hash algoritme
+<h3>9.6 Toetsenbordpatronen</h3>
+<strong>Voorbeelden</strong> : qwerty, 1234567, azerty, qweasdzxc
+<strong>Kwetsbaarheid</strong> : extreem (erger dan natuurlijke woorden)
+<strong>Mechanisme</strong> : De toetsenbordovergangen zijn zo vertegenwoordigd in het corpus dat het model hen tot de eerste duizenden kandidaten rangschikt.
+<strong>Tijd</strong> : microseconden tot milliseconden
+<h3>9.7 Echt willekeurige wachtwoorden</h3>
+<strong>Voorbeelden</strong> : xQz7@mK9, 4#pL$2nR, kRf9!Ws3
+<strong>Kwetsbaarheid</strong> : laag tot nul
+<strong>Mechanisme</strong> : De karaktertransities in deze wachtwoorden hebben zeer lage waarschijnlijkheden in een model getraind op menselijke wachtwoorden. Ze worden gevonden in de laatste percentages van de gegenereerde ruimte.
+<strong>Gedrag</strong> De echte "kosten" van de veiligheid is entropie.
+<strong>Tijd</strong> : vergelijkbaar met of groter dan brutokracht
+<h3>9,8 Wachtwoordzinnen</h3>
+<strong>Voorbeelden</strong> : paardenbattery-staple-correct, monchieneestlouisXIV
+<strong>Kwetsbaarheid</strong> : variabele
+<strong>Complex mechanisme</strong> :
+<li>Een Markov model kan inter-woord overgangen vastleggen in een korte wachtwoordzin (2 woorden) als deze combinaties gemeenschappelijk zijn in het corpus</li>
+<li>Maar voor lange wachtwoorden (4+ woorden) zal de door Markov bestelde kandidaatruimte ze pas bereiken nadat alle typische korte wachtwoorden zijn uitgeput</li>
+<li>Aanvallen <strong>combinator</strong> is over het algemeen effectiever dan Markov op wachtwoorden</li>
+<hr>
+<h2>10. Integratie in Time2Crack: Modellering en Parameters</h2>
+<h3>Algemene berekeningslogica (v2)</h3>
+<p>Time2Crack nu modellen Markov in <strong>verwachte rang</strong> (rank-based) in plaats van met vaste reductiefactoren.</p>
+<p>Berekeningslijn:</p>
+<li>Unicode tokenisatie in segmenten <code>L</code>'<code>D</code>'<code>S</code>,</li>
+<li>schatting van een menselijke rang via skelet + vorm + rijen tokens,</li>
+<li>modulatie door structurele signalen (<code>kbPat</code>, <code>seq</code>, <code>dt</code>, <code>rep</code>, <code>hybridVuln</code>),</li>
+<li>continue interpolatie naar een "willekeurig" regime volgens <code>charset</code> en lengte,</li>
+<li>tijdconversie via <code>budgetTime(rangestime, vitesse<em>hash)</em></code>.</li>
+<h3>10.2 Unicode Tokenization en gekalibreerd profiel per taal</h3>
+<p>Het Markov v2 model maakt gebruik van Unicode klassen (<code>\p{L}</code>, <code>\p{N}</code>, anderszins symbool) en een gekalibreerd profiel per taal (geladen sinds <code>data/markov-calibration.json</code>, met interne terugval).</p>
+<p>Het profiel bevat:</p>
+<li><code>skeletonRanks</code> (<code>L8D2</code>, <code>L8D2S1</code>, ...),</li>
+<li><code>shapeRanks</code> (<code>LD</code>, <code>LDS</code>, ...),</li>
+<li><code>tokenRanks</code> naar klasse/lengte,</li>
+<li>taalmultipliers (<code>shapeMultipliers</code>),</li>
+<li>signaalmultiplicatoren (<code>signalMultipliers</code>).</li>
+<h3>10.3. Continue interpolatie (eind van steile drempels)</h3>
+<p>Het oude model gebruikte lagers (0,03 / 0,006 / 0,25 / 0,9). Het v2 model vervangt deze logica door continue interpolatie tussen:</p>
+<li><code>humanRank</code> (waarschijnlijke structurele oppervlakte),</li>
+<li><code>randomRank</code> (oppervlakte dicht bij ruw, begrensd).</li>
+<p>Willekeurig gewicht is een continue functie van de lengte, tank en sterkte van menselijke signalen, waardoor kunstmatige onderbrekingen worden vermeden.</p>
+<h3>10.4 Vertrouwen en toepasbaarheid score</h3>
+<p>Time2Crack Scoring Model (functie <code>annotateScenarioApplicability()</code>) wordt toegewezen aan Markov:</p>
+<strong>Basisvertrouwen</strong> : 0,75 (lijn 4800)
+Interpretatie: Markov aanval wordt overwogen <strong>matig betrouwbaar</strong> Meer betrouwbaar dan de neurale schatting (0,7) of PRINCE (0,7), minder dan het woordenboek (0,9) of de groeftabellen (0,95).
+<strong>Toepassingsscore</strong> (lijn 4873-4874):
+<pre><code class="language-javascript">case "markov":
+  return context.looksHuman ? 0.76 : 0.34;</code></pre>
+<li><code>looksHuman = true</code> → score 0,76: Markov aanval is <strong>zeer van toepassing</strong>, het model zal de menselijke regelmaat benutten</li>
+<li><code>looksHuman = false</code> → score 0,34: van toepassing maar zonder groot voordeel boven brute kracht</li>
+<strong>Bewijsscore</strong> (lijn 4829-4830):
+<pre><code class="language-javascript">case "markov":
+  return Number(!!context.looksHuman) + Number(!!context.kbPat)
+       + Number(!!context.seq)        + Number(!!context.rep);</code></pre>
+Elk signaal van "menselijk karakter" van het wachtwoord verhoogt Markov's duidelijke score.
+<h3>10,5 HF aanpassing</h3>
+<p>Bij Markov v2 zijn de structurele signalen al geïntegreerd in de geschatte rang. De HF-aanpassing is daarom neutraal voor Markov om dubbeltelling te voorkomen.</p>
+<h3>10.6 Prioriteit in de tiebreak</h3>
+<p>Wanneer meerdere aanvallen vergelijkbare tijden (&lt; 1ms van verschil) geven, Time2Crack kiest de meest relevante volgens een semantische prioriteit:</p>
+<pre><code class="language-javascript">const tieBreakPriority = {
+  // ...
+  markov: 8,    // Statistical n-gram — broad coverage
+  // ...
+};</code></pre>
+<p>Markov is een nuttige aanvulling aanval die gebruik maakt van statistische regulariteiten. Het heeft voorrang op bruto kracht voor wachtwoorden met menselijke structuur, maar geeft voorrang aan woordenboek en hybride aanvallen die meer direct zijn.</p>
+<h3>10.7 Ultra zwakke zaak</h3>
+<p>Voor ultra-lage wachtwoorden (gedetecteerd door <code>isWeakPassword()</code>), gebruikt Markov een tijd gebaseerd op een minimum rang (<code>weakGuessTime</code>) in plaats van een vaste constante:</p>
+<pre><code class="language-javascript">if (weak) {
+  rows.push({ ..., sec: weakGuessTime(a.rate), note: t("nWeakPassword"), cat: "markov" });
+}</code></pre>
+<p>Reden: een ultra-laag wachtwoord (wachtwoord, 123456, qwerty...) is in de <strong>top-100 absoluut</strong> Markov ruimte </p>
+<hr>
+<h2>11. Vergelijking met andere probabilistische aanvallen</h2>
+<h3>11,1 Markov vs PCFG</h3>
+AfmetingenMarkovPCFG
+----------------------------
+<strong>Meeteenheid</strong>Overgangen van individuele tekensSegmentstructuren (L/D/S)
+<strong>Opgenomen informatie</strong>Lokale regelmaat (n-gram)Wereldwijd (grammatica)
+<strong>Aandringen</strong>Natuurlijke woorden, continue patronenWoorden + getallen, samengestelde structuren
+<strong>Maximumhoeveelheid</strong>Bevat geen mondiale structurenLokale overgangen niet vastleggen
+<strong>Complementariteit</strong>Ideaal voor pure woordenIdeaal voor Wachtwoord123
+<strong>Optimaal voorbeeld</strong>"zonneschijn"Sunshine#93
+<strong>Orde in Time2Crack</strong>Markov = 8, PCFG = 6PCFG nauwkeuriger indien structuur gedetecteerd
+<h3>11.2 Markov vs. Regelgebonden aanval</h3>
+AfmetingenMarkovRegelmatig
+----------------------››
+<strong>Aanpak</strong>Generatie ab initio probabilsticTransformatie van een bestaand woordenboek
+<strong>Dekking</strong>Alle waarschijnlijk wachtwoordenVertalingen van woordenboek woorden
+<strong>Aandringen</strong>Zeldzame of enigszins niet-woordelijke woordenTraditionele transformaties van bekende woorden
+<strong>Maximumhoeveelheid</strong>Minder effectief dan dictator+regels voor huidige mutatiesAfhankelijk van de kwaliteit van het woordenboek
+<h3>11.3 Markov vs Neural Networks (PassGAN, LSTM)</h3>
+AfmetingenMarkov (orde 5)Neuronale netwerk
+------------------------------------------------
+<strong>Complexiteit</strong>O(k ×) door voorspellingO(n2 × d) (Transformer)
+<strong>Vereiste gegevens</strong>1-10M voorbeelden voldoende10M-1B voor goede resultaten
+<strong>Vertolking</strong>Totaal (waarschijnlijkheidstabellen)Zwarte doos
+<strong>Generalisering</strong>Beperkt tot lokale context kAlgemeen potentieel
+<strong>Kraaksnelheid</strong>Rubrieknummer+20-30% op moderne wachtwoorden
+<strong>Generatiesnelheid</strong>Zeer snelLangzamer
+<h3>11.4 Algemene positionering</h3>
+<p>In een professionele kraken workflow is de typische volgorde:</p>
+<li><strong>Woordenboek</strong> (credlist) Bekende exacte wachtwoorden</li>
+<li><strong>Credential vulling</strong> Hergebruikte ID/mdp paren</li>
+<li><strong>Wachtwoord spuiten</strong> Top-20 gemeenschappelijk</li>
+<li><strong>Hybride</strong> Dico + Hashcat regels</li>
+<li><strong>PCFG</strong> Als L+D-structuur is gedetecteerd</li>
+<li><strong>Masker</strong> </li>
+<li><strong>Markov</strong> Algemene statistische dekking</li>
+<li><strong>Neuraal</strong> Indien beschikbaar</li>
+<li><strong>Brutosterkte</strong> Laatste redmiddel</li>
+<p>Markov is vaak de <strong>achtergrondregel</strong> front brute kracht: het dekt effectief menselijke wachtwoorden die ontsnapt zijn aan meer gerichte aanvallen.</p>
+<hr>
+<h2>12. Grenzen van de Markov aanval</h2>
+<h3>12.1 Afhankelijkheid van de opleiding</h3>
+<p>Het model is zo goed als zijn corpus. Een corpus gedomineerd door Engelse wachtwoorden (RockYou, LinkedIn) begrijpt de regelmaat verkeerd:
+</p><li>Wachtwoorden in talen met hoge morfologische dichtheid (Pools, Tsjechisch, Fins)</li>
+<li>Wachtwoorden op basis van niet-vertegenwoordigde culturen (vertaalde mandarijn, geromaniseerd Arabisch)</li>
+<li>Wachtwoorden van gespecialiseerde velden afwezig bij lekken (medische slang, zeldzame technische jargon)</li><p></p>
+<strong>Gedeeltelijke oplossing</strong> : het trainen van specifieke modellen per taal en veld (aanpak vereist diverse corpus).
+<h3>12.2 Langeafstandsonafhankelijkheid</h3>
+<p>Een Markov 5 model ziet niet meer dan 5 tekens. Voor een wachtwoord van 12 tekens, kan het niet correleren het 12e karakter met de 1e. Een wachtwoordzin zoals "stargate2004!" heeft een globale structuur ("woord + jaar +!") die Markov ziet lokaal, maar niet wereldwijd is PCFG beter hier.</p>
+<h3>12.3 Ongevoeligheid voor samenstellingsstructuren</h3>
+<p>"HorseStapleBatttery" (eerste majusculum + 3 samengevoegde woorden) is moeilijk voor Markov omdat inter-woord overgangen (e→S, e→B) zijn onverwacht. De combinator aanval of PCFG is beter geschikt.</p>
+<h3>12.4 Willekeurig wachtwoord ineffectiviteit</h3>
+<p>Een wachtwoord gegenereerd door <code>/dev/urandom</code> met 12+ alfanumerieke tekens heeft geen structuur die Markov kan exploiteren. De aanvalstijd Markov convergeert naar de ruwe kracht.</p>
+<h3>12.5 Gevoeligheid voor bijgewerkt wachtwoordbeleid</h3>
+<p>Als een organisatie strenge regels heeft opgelegd (lengte ≥ 16, verplicht 1 kapitaal + 1 cijfer + 1 symbool), kunnen de resulterende wachtwoorden een andere verdeling van de opleiding hebben . .</p>
+<hr>
+<h2>13. Doeltreffende verdediging</h2>
+<h3>13.1 Wat Markov volledig neutraliseert</h3>
+<strong>Willekeurige wachtwoordgeneratoren</strong> : elke wachtwoord manager (Bitwarden, 1Password, KeePass) met een cryptografische veilige generator produceert sequenties zonder structuur exploiteerbaar door Markov. Een wachtwoord van 16 willekeurige tekens is buiten bereik, ongeacht de aanval.
+<strong>Genoeg lengte met willekeurige</strong> : zelfs met een gereduceerde tank (alleen a-z), 16 willekeurige tekens vertegenwoordigen 26^16
+<h3>13.2 Wat de effectiviteit van Markov sterk vermindert</h3>
+<strong>Lange wachtwoordzinnen van zeldzame woorden</strong> : 4+ ongewone woorden gescheiden zijn uit de top Markov kandidaten, vooral als woorden komen uit verschillende talen of gespecialiseerde woordenlijsten.
+<strong>Vermijd gemeenschappelijke leetpiekvervangers</strong> : Substituons a→@, e→3, enz. zijn geïntegreerd in het model, maar niet-standaard transformaties (a→
+<strong>Vermijd toetsenbordpatronen en natuurlijke woorden</strong> : Markovs maximale kwetsbaarheid.
+<h3>13.3 Wat niet verdedigt tegen Markov</h3>
+<strong>Complexiteitseisen (majuscule + cijfer + symbool)</strong> : als deze elementen worden toegevoegd aan een natuurlijk woord (P@ssw0rd!), legt het model deze patronen vast. <strong>valse zekerheid</strong> gezien.
+<strong>Basic leetspeak substituties</strong> : volledig vastgelegd door het model (overgangen "@"→"s," "3"→"y"...).
+<strong>Digitale achtervoegsels/prefixes</strong> : "word + 123" of "word + 2024" patronen behoren tot de eerste getest.
+<h3>13.4 Slotaanbeveling</h3>
+<p>De meest effectieve verdediging tegen Markov (en elke probabilistische aanval) is om<strong>elke te verwachten menselijke structuur elimineren</strong>, wat neerkomt op het delegeren van wachtwoorden aan een veilige willekeurige generator.</p>
+<hr>
+<h2>14.</h2>
+<h3>Academici (peer-reviewed)</h3>
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., Nürnberger, S., &amp; Rüegge, A. (2015).</strong>
+VROUWEN: Sneller wachtwoord raden met behulp van een bestelde Markov teller.
+<em>Engineering Secure Software and Systems (ESSOS 2015)</em>, LNCS 8978, blz. 119.
+→ Hoofdreferentie voor Markov probabilistische kalibratie gebruikt in Time2Crack (RockYou 14M, Order 5)
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong>
+Een studie van Probabilistische Password Modellen.
+<em>IEEE Symposium over beveiliging en privacy (S&amp;P 2014)</em>.
+→ Empirische vergelijking Markov, PCFG, n-grams op 70M wachtwoorden
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong>
+Wachtwoord volgen Met behulp van Probabistic Context-Free Grammatica.
+<em>IEEE Symposium over beveiliging en privacy (S&amp;P 2009)</em>.
+→ Oprichting van structurele probabilistische methoden (Markov concurrent)
+<strong>Wheeler (2016).</strong>
+zxcvbn: Low-Budget Wachtwoord Sterkteschatting.
+<em>25e USENIX Security Symposium</em>.
+→ Bevestigt de effectiviteit van n-grams voor realistische wachtwoordkrachtschatting
+<strong>Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M. (2021).</strong>
+Het verminderen van Bias in Modeling Real-World Password Strength via Deep Learning en Dynamic Dictionarys.
+<em>30e USENIX Security Symposium</em>.
+→ Kwantitatieve vergelijking Markov vs diep leren op modern corpus
+<strong>Hitaj, B., Gasti, P., Ateniese, G., &amp; Perez-Cruz, F. (2019).</strong>
+PassGAN: Een diepe leren aanpak voor wachtwoord raden.
+<em>ACNS 2019</em>.
+→ Markov Neural Successor, vergelijkingspunt voor Time2Crack <code>descNeural</code>
+<h3>Open source implementaties</h3>
+<strong>VROUWEN</strong> https://github.com/RUB-SysSec/VROUWEN
+<strong>John TheRipper (Markov-modus)</strong> https://www.openwall.com/john/doc/MARKOV.shtml
+<strong>VERPAKKING (statsgen/maskgen)</strong> https://github.com/iphelix/pack
+<strong>Hashcat</strong> https://hashcat.net/hashcat/
+<h3>Bronnen van corpus</h3>
+<strong>RockYou (2009)</strong> : 14,3M wachtwoorden van de RockYou sociale netwerk fout
+<strong>Ben ik verliefd geweest?</strong> https://haveibeenpwned.com 
+<strong>Seclists</strong> : https://github.com/danielmeissler/SecLists
+<h3>Webbronnen geciteerd in de Time2Crack-toepassing</h3>
+<strong>Springer (hoofdstuk Markov/probabilistisch kraken).</strong>
+https://link.springer.com/hoofdstuk/10.1007/978-3-319-24174-67
+→ Verwante bron in <code>descMarkov</code> (app.js) voor een effectieve vermindering van de onderzoeksruimte door statistische prioritering.
+<hr>
+<em>Document gegenereerd voor Time2Crack project Laatste update: 2026-04-01</em>
+<em>Gebaseerd op implementatie in app.js (Markov v2 rang-based) en academische publicaties geciteerd</em>
+</main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

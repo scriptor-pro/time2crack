@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FAQ — Time2Crack</title><link rel="preload" href="../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="../style.min.css" rel="stylesheet"></noscript><meta name="description" content="Antworten auf häufige Fragen zu Time2Crack, der lokalen Funktionsweise, der wissenschaftlichen Methodik und den Ergebnissen."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="FAQ — Time2Crack"><meta property="og:description" content="Antworten auf häufige Fragen zu Time2Crack, der lokalen Funktionsweise, der wissenschaftlichen Methodik und den Ergebnissen."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/de/faq.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="de_DE"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="FAQ — Time2Crack"><meta name="twitter:description" content="Antworten auf häufige Fragen zu Time2Crack, der lokalen Funktionsweise, der wissenschaftlichen Methodik und den Ergebnissen."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="faq.html"><link rel="alternate" hreflang="fr" href="../fr/faq.html"><link rel="alternate" hreflang="en" href="../en/faq.html"><link rel="alternate" hreflang="es" href="../es/faq.html"><link rel="alternate" hreflang="pt" href="../pt/faq.html"><link rel="alternate" hreflang="de" href="faq.html"><link rel="alternate" hreflang="it" href="../it/faq.html"><link rel="alternate" hreflang="tr" href="../tr/faq.html"><link rel="alternate" hreflang="pl" href="../pl/faq.html"><link rel="alternate" hreflang="nl" href="../nl/faq.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><main>
+<h2>Häufig gestellte Fragen</h2>
+<p><small><a href="how-time2crack-works.html">Technische Funktion verstehen →</a></small></p>
+<dl class="faq-list">
+<dt>Wie kann ich den Widerstand meines Passworts messen?</dt>
+<dd>
+<p>
+<strong>Time2Crackist ein freier Passwort-Resistenz-Schätzer</strong> die die Robustheit Ihres Passworts gegen echte Computerangriffe misst.
+        </p>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Dreistufiges Bewertungsverfahren</h3>
+<ol style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>Geben Sie Ihr Passwort ein</strong> im WerkzeugfeldTime2Crack.
+            <em style="color: #999;">(Ihr Passwort bleibt ganz auf Ihrem Computer — keine Übertragung)</em>
+</li>
+<li>
+<strong>Klicken Sie auf "Analyse"</strong> um die Widerstandsanalyse auszulösen.
+Das Tool testet Ihr Passwort gegen 7 Arten von realistischen Computerangriffen: Rohkraftangriff, Wörterbuch, Hybrid, Maske,Markovprobabilistisch,PCFGgrammatisch und Wortkombinator.
+          </li>
+<li>
+<strong>Lesen Sie die Ergebnisse</strong> : Das Tool zeigt die geschätzte Zeit, um Ihr Passwort mit jedem der 6 Hash-Algorithmen zu knacken (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id).
+          </li>
+</ol>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Zwischenergebnisse</h3>
+<p>
+          Time2Crackzeigt zwei Hauptmaßnahmen:
+        </p>
+<ul style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>"Crack Time"</strong> : Wie lange dauert es einen durchschnittlichen Angreifer (12 moderne GPU) um Ihr Passwort zu knacken.
+            <ul style="margin-top: 0.5em; font-size: 0.95em;">
+<li> <strong>Ausgezeichnet.</strong> &gt; 100 Jahre</li>
+<li> <strong>Sehr gut</strong> 1 Jahr – 100 Jahre</li>
+<li> <strong>Akzeptabel</strong> : 1 Tag – 1 Jahr</li>
+<li> <strong>Niedrig</strong> &lt; 1 Tag</li>
+<li> <strong>Ultra-low</strong> &lt; 1 Sekunde</li>
+</ul>
+</li>
+<li>
+<strong>"Fast Attack"</strong> : Welche Art von Angriff wird Ihr Passwort zuerst knacken.
+Beispielsweise wird ein einfaches Wörterbuch-Passwort durch ein <strong>Wörterbuch-Angriff</strong>, während eine Passphrase (4+ Wörter) wird durch <strong>Combiner-Angriff</strong>.
+          </li>
+</ul>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Warum diese Maßnahme wissenschaftlich ist</h3>
+<p>
+          Time2Cracknicht messen<strong>theoretische Entropie</strong> (traditioneller NIST-Ansatz), der Passwörter überschätzt, indem man menschliche Muster ignoriert.
+Stattdessen betrachtet er die <strong>praktische Angriffskosten</strong> auf Basis von:
+        </p>
+<ul style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li><strong>Wissenschaftliche Forschung</strong> (Wheeler 2016, Wang &amp; Ding 2023, Weir 2009) validiert 7 echte Angriffe</li>
+<li><strong>Empirische Daten rockyou2021</strong> (32.6M echte Passwörter) um probabilistische Modelle zu kalibrieren</li>
+<li><strong>Offizielle GPU-Benchmarks</strong> (Hashcat v6.2.6, Hive Systems 2025) für Rißgeschwindigkeiten</li>
+</ul>
+<p style="margin-top: 1em;">
+          Das bedeutet, <strong>Time2Crackgenauer wahrnehmen reale Sicherheit</strong> eine traditionelle visuelle Kraftleiste.
+        </p>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Schritte, um Ihre Bewertung zu verbessern</h3>
+<p>
+          Wenn Ihr Passwort niedrig bewertet wird, verbessern Sie es wie folgt:
+        </p>
+<ol style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>Die Länge erhöhen</strong> : Erhöhen von 8 bis 12+ Zeichen.
+Jedes zusätzliche Zeichen multipliziert die Schwierigkeit um ~70 (durchschnittliche Anzahl der Zeichen).
+          </li>
+<li>
+<strong>Verwenden Sie eine Passphrase</strong> (empfohlen): 4-5 zufällige Wörter durch Striche oder Leerzeichen getrennt.
+Beispiel: <code style="background: #f5f5f5; padding: 2px 4px; border-radius: 3px;">correct-horse-battery-staple</code>
+            Dies ist sicherer und unvergesslicher als ein komplexes Wort.
+          </li>
+<li>
+<strong>Vermeiden Sie menschliche Muster</strong> : Nicht kombinieren "Name + Jahr" (z.B. Jean1985).
+Time2Crackerkennt diese Muster und knackt sie in Sekunden durch AngriffPCFG.
+          </li>
+<li>
+<strong>Verwenden Sie einen Passwort-Manager</strong> : Lassen Sie einen Manager erzeugen eine 16-32 Zeichen zufällige String.
+Time2CrackSie wird auf mehr als 10.000 Jahre geschätzt und garantiert maximale Sicherheit.
+          </li>
+</ol>
+<p style="margin-top: 1em; padding-top: 1em; border-top: 1px solid #eee; font-size: 0.95em; color: #666;">
+<strong>Schlüsselberatung</strong> : Suchen Sie keine perfekte visuelle Kraftleiste. <strong>Bruchzeit &gt; 100 Jahre</strong> für ein kritisches Passwort (E-Mail, Bank).
+Ein 4-Worte-Passphrase gelingt einfach, während ein 12-Kennzeichen Wort je nach Zusammensetzung ausfallen kann.
+        </p>
+</dd>
+<dt>Was ist los?Time2Crack?</dt>
+<dd>Time2Crackist ein Passwort-Cracking-Zeitrechner. Es schätzt, wie lange es einen Angreifer nehmen würde, um Ihr Passwort mit 7 verschiedenen Angriffen zu erraten (Rohkraft, Wörterbuch, Hybrid, Maske,Markov,PCFG, Kombinator). Das Werkzeug berechnet vollständig <strong>auf Ihrem Computer</strong> - Ihr Passwort verlässt nie Ihr Gerät.</dd>
+<dt>Sind meine Daten sicher?</dt>
+<dd>
+<p>
+          Ja.Time2CrackWerke <strong>100% lokal</strong> in Ihrem Browser. Kein Passwort wird an unsere Server gesendet. Wir tun nur eine optionale Prüfung: Überprüfen Sie via Have I Been Pwned (HIBP), wenn Ihr Passwort in alten Lecks bekannt ist. <strong>k-Anonymität</strong> (wir senden nur die ersten 5 Zeichen des SHA-1 Hash, nie das volle Passwort).
+        </p>
+<h4 style="font-size: 0.95em; margin: 0.8em 0 0.3em 0; font-weight: 600;">Konkretes Beispiel: Wie k-Anonymität funktioniert</h4>
+<p style="font-size: 0.9em; color: #666; margin: 0.5em 0;">
+          Für das Passwort <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">password</code> :
+        </p>
+<ul style="font-size: 0.9em; color: #555; margin: 0.5em 0 1em 2em; list-style: disc;">
+<li>Komplett Hash SHA-1 (lokal, nie übertragen): <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code></li>
+<li>Präfix an HIBP gesendet: <code style="background: #e8f5e9; padding: 0.2em 0.4em; border-radius: 2px; color: #2e7d32;">5BAA6</code> (nur 5 Zeichen)</li>
+<li>Suffix lokal konserviert (nicht übertragen): <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code></li>
+<li>HIBP gibt alle Hashs ab <code>5BAA6</code> (~500-1000 anonyme Ergebnisse)</li>
+<li>Time2CrackLokal vergleicht das Suffix mit den Antworten, nur auf Ihrem Computer</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin: 0.5em 0;">
+          Ergebnis: <strong>Das volle Passwort lässt nie Ihr Gerät</strong>sogar während der HIBP-Verifikation.
+        </p>
+</dd>
+<dt>Warum variieren Zeitvorausschätzungen je nach Hash-Algorithmus?</dt>
+<dd>Verschiedene Hash-Algorithmen haben sehr unterschiedliche Rissgeschwindigkeiten. MD5 und SHA-1 (unsalted) sind schnell zu knacken (~2 Milliarden Versuche/Sekunde), während bcrypt und Argon2id freiwillig langsam sind (~2 Millionen und ~800 Versuche/Sekunde).Time2Crackzeigt Zeit für jeden Algorithmus, so verstehen Sie die Bedeutung der Verwendung <strong>bcrypt</strong> oder <strong>Argon2id</strong> für kritische Passwörter.</dd>
+<dt>Was ist "Kreuzkraft", "Diktionär", etc.?</dt>
+<dd>Dies sind die 7 Arten von realen Angriffen, die Piraten verwenden:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>Bruttowertschöpfung</strong> : testen Sie jede mögliche Kombination (langsam für lange Passwörter)</li>
+<li><strong>Wörterbuch</strong> : Prüfen Sie gemeinsame Wörter und bekannte Lecks (fast für einfache Wörter)</li>
+<li><strong>Hybride)</strong> : Wörterbuch + kleinere Mutationen (z.B. Passwort → p@ssw0rd)</li>
+<li><strong>Maske</strong> Zielvorhersagbare Strukturen (z.B. Name + Jahr)</li>
+<li><strong>Markov</strong> : Analyse der Wahrscheinlichkeiten von Sequenzen (ex: "qu" current in Französisch)</li>
+<li><strong>PCFG</strong> : Grammatische Strukturen (z.B. Majuscule+minuscules+figures)</li>
+<li><strong>Kombinationen</strong> : Konkrete Wörter (ex: "korrect-horse-battery-staple")</li>
+</ul>
+</dd>
+<dt>Was ist "vorteilhaft" gegen "Standard"?</dt>
+<dd><strong>Standard</strong> : glaubt optimistisch, dass der Angreifer den bekanntesten Angriff nutzt. <strong>Vorzüglich</strong> : vermutet, dass der Angreifer nur das Wörterbuch und einfache Mutationen (das günstigste Szenario für Ihr Passwort) testet. In der Praxis sind diese beiden Schätzungen oft ähnlich, wie die besten Angreifer testen alle Methoden parallel.</dd>
+<dt>Mein Passwort ist mit "Ultra-weak" gekennzeichnet.</dt>
+<dd>Ein ultra-niedriges Passwort (in weniger als einer Sekunde gecrackt) bedeutet, dass es in den häufigsten Passwortlisten enthalten ist. <strong>Ändern Sie es sofort.</strong> Verwenden Sie stattdessen:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li>Ein <strong>Passphrasen</strong> (4+ zufällige Wörter, die durch Leerzeichen getrennt werden, z.B. "korrect-horse-battery-staple")</li>
+<li>Ein <strong>zufällig generiertes Passwort</strong> (mindestens 12 gemischte Zeichen)</li>
+<li>Ein <strong>Passwort vergessen?</strong> (Bitwarden, 1Passwort, KeePass, etc.)</li>
+</ul>
+</dd>
+<dt>Wie erstelle ich ein sicheres Passwort?</dt>
+<dd>Die drei Ansätze:
+        <ol style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>Passphrasen</strong> (empfohlen): 4-5 häufige zufällige Wörter (z.B. "sun-table-computer-flower"). Einfach zu merken, sehr sicher (~10.000+ Jahre, wenn zusätzliche Zahlen).</li>
+<li><strong>Zufällig</strong> : 16+ Zeichen (Majuscules, winzige Figuren, Symbole). Cracking dauert 10.000+ Jahre.</li>
+<li><strong>Passphrasen + Mutation</strong> "Sun2024!" (passphrase + Jahr + Symbol). Kombiniert Sicherheit und Gedächtnis.</li>
+</ol>
+</dd>
+<dt>Warum ist ein kurzes Passwort mit Symbolen nicht genug?</dt>
+<dd>Beispiel: "P@ssw0rd!" (10 Zeichen) kann in ein paar Tagen mit bcrypt geknackt werden. Selbst mit Symbolen bleibt ein kurzes Wort verletzlich, weil es einem folgt <strong>vorhersehbares Muster</strong> (majuscule + winzig + Ziffern + Symbol).PCFGEin 4-Worte-Passphrase ist sicherer als ein "komplexes" Kurzwort.</dd>
+<dt>Was, wenn ich einen Passwort-Manager benutze?</dt>
+<dd>Exzellente Wahl! Manager (Bitwarden, 1Password, KeePass) erzeugen zufällige Passwörter von 16-32 Zeichen, die Sie nicht einprägen müssen.Time2Crackdie Rißzeit zu schätzen <strong>10.000+ Jahre</strong> für ein zufällig generiertes Wort. <strong>solid passphrase to entlock manager</strong>.</dd>
+<dt>Können meine Schätzungen falsch sein?</dt>
+<dd>Time2Crackverwendet die besten verfügbaren öffentlichen Daten (rockyou2021, NIST, akademische Forschung), um seine Schätzungen zu kalibrieren. <strong>Der typische Fehler ist ±1 Größenordnung</strong> (d.h. 10× schneller/kleiner als Realität). <strong>Angriff mit 12× RTX 4090</strong> — ein echter Angreifer kann je nach seinen Ressourcen 100× langsamer oder 10.000× schneller sein. <strong>Argon2id</strong> sind zuverlässiger (kleiner, weniger Variation).</dd>
+<dt>Warum?Time2Crackzeigt sieben verschiedene Angriffe?</dt>
+<dd>Weil <strong>jedes Passwort ist anfällig für einen anderen Angriff</strong>. "Passwort" fällt in 1 Versuch (diktionär). "P@ssw0rd!" fällt in ~10.000 Versuche (hybrid +PCFG) "a1b2c3d4e5f6g7h8" fällt nur in grober Kraft (~10^30 Versuche).Time2Crackidentifiziert <strong>der beste Angriff auf Ihr Passwort</strong> und zeigt die Zeit für jeden Hash-Algorithmus an.</dd>
+<dt>Die Method-Seite erklärt, wie es funktioniert?</dt>
+<dd>Ja! <strong>Methode</strong> (über Menü erreichbar) Details:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li>Wie jeder Angriff funktioniert (mit Beispielen)</li>
+<li>Datenquellen verwendet (rockyou, NIST, Hive Systems)</li>
+<li>Einschränkungen und Annahmen</li>
+<li>Wissenschaftliche Forschung, die unsere Schätzungen validiert</li>
+</ul>
+</dd>
+<dt>Darf ich benutzen?Time2CrackAus der Linie?</dt>
+<dd>Ja!Time2Crackfunktioniert komplett offline, sobald geladen.Markov,PCFG) werden einmal beim Start heruntergeladen. Sie können dann das Internet schließen —Time2Crackfunktioniert weiterhin normal.</dd>
+<dt>Wie lange kann ein "gutes" Passwort geknackt werden?</dt>
+<dd>Mit einer konservativen Schätzung:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>8 zufällige Zeichen</strong> : ~8 Stunden (MD5) / ~3 Jahre (bcrypt)</li>
+<li><strong>12 zufällige Zeichen</strong> : ~2.000 Jahre (MD5) / ~1 Million Jahre (bcrypt)</li>
+<li><strong>16 zufällige Zeichen</strong> : ~2 Millionen Jahre (bcrypt)</li>
+<li><strong>Passphrase 4 Wörter + Symbol</strong> : ~ 10,000+ years (bcrypt)</li>
+</ul>
+        Verwendung <strong>bcrypt</strong> oder <strong>Argon2id</strong> für alle kritischen Passwörter.
+      </dd>
+<dt>Time2CrackIst es Open Source?</dt>
+<dd>Ja! Der Quellcode ist auf Codeberg verfügbar.Time2Crackhat <strong>0 Abhängigkeit</strong> — es ist reines JavaScript, keine Bündel oder Schwitzen. Sie können den Code selbst überprüfen, um zu bestätigen, dass kein Passwort übertragen wird.</dd>
+</dl>
+</main><footer id="site-footer"></footer><script src="../includes.js"></script></body></html>

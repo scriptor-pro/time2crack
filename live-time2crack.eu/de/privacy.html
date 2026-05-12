@@ -1,0 +1,251 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Datenschutz &amp; Sicherheit — Time2Crack</title><link rel="preload" href="../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="../style.min.css" rel="stylesheet"></noscript><meta name="description" content="Erfahren Sie, wie Time2Crack mit Ihren Daten umgeht: lokale Berechnung im Browser, keine Passwortübertragung und minimale Leak-Prüfungen."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Datenschutz &amp; Sicherheit — Time2Crack"><meta property="og:description" content="Erfahren Sie, wie Time2Crack mit Ihren Daten umgeht: lokale Berechnung im Browser, keine Passwortübertragung und minimale Leak-Prüfungen."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/de/privacy.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="de_DE"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Datenschutz &amp; Sicherheit — Time2Crack"><meta name="twitter:description" content="Erfahren Sie, wie Time2Crack mit Ihren Daten umgeht: lokale Berechnung im Browser, keine Passwortübertragung und minimale Leak-Prüfungen."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="privacy.html"><link rel="alternate" hreflang="fr" href="../fr/privacy.html"><link rel="alternate" hreflang="en" href="../en/privacy.html"><link rel="alternate" hreflang="es" href="../es/privacy.html"><link rel="alternate" hreflang="pt" href="../pt/privacy.html"><link rel="alternate" hreflang="de" href="privacy.html"><link rel="alternate" hreflang="it" href="../it/privacy.html"><link rel="alternate" hreflang="tr" href="../tr/privacy.html"><link rel="alternate" hreflang="pl" href="../pl/privacy.html"><link rel="alternate" hreflang="nl" href="../nl/privacy.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><main>
+<h1>Datenschutz und Sicherheit</h1>
+<p style="font-size: 1.05em; color: #666; margin-bottom: 2em;">
+      Genau das verstehen, wasTime2Cracktut und nicht mit Ihrem Passwort
+    </p>
+ ================================================================================================================================================================================================================================================================
+WAS TIME2CRACK
+================================================================================================================================================================================================================================================================ 
+<section>
+<h2>Was?Time2CrackKONTAKT</h2>
+<div class="privacy-section">
+<h3>1. Lokale Scan in Ihrem Browser</h3>
+<ul class="does-list">
+<li><strong>Passwort erhalten</strong> Nur wenn Sie es im Feld eingeben</li>
+<li><strong>Berechnen in local</strong> alle Angriffspunkte (Rohkraft, Wörterbuch,Markov, usw.)</li>
+<li><strong>Ergebnisse anzeigen</strong> direkt auf Ihrem Bildschirm</li>
+<li><strong>Passwort vergessen</strong> sobald Sie die Seite verlassen oder ändern</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin-top: 1em;">
+          Ihr Browser sendet das Passwort nirgendwo – es bleibt nur im lokalen RAM-Speicher während des Scans.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>2. Optionale HIBP-Verifikation (Have I Been Pwned)</h3>
+<p>
+          Wenn Sie die Option "Überprüfen Sie bekannte Lecks",Time2Crackkann überprüfen, ob Ihr Passwort in historischen Lecks erscheint. <strong>k-Anonymität</strong> um Ihre Privatsphäre zu schützen.
+        </p>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Wie k-Anonymität funktioniert</h4>
+<div class="flow-diagram">
+<div class="flow-step">
+<div class="flow-number">1</div>
+<div class="flow-content">
+<p><strong>Berechnung der Hash SHA-1</strong> (auf Ihrem Computer)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crackdie komplette SHA-1 Hash Ihres Passworts berechnen, aber <strong>nie ihn verlassen</strong>.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">2.</div>
+<div class="flow-content">
+<p><strong>Extraktion von Präfix</strong> (5 erste Zeichen)</p>
+<p style="color: #666; margin-top: 0.3em;">Nur die ersten 5 Zeichen der Hash werden an HIBP gesendet. Es ist nicht ausreichend, Ihr Passwort zu identifizieren.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">3</div>
+<div class="flow-content">
+<p><strong>Anonyme Anfrage an HIBP</strong></p>
+<p style="color: #666; margin-top: 0.3em;">HiBP gibt alle Passwörter zurück, die mit diesem Präfix beginnen (ca. 500-1000 anonyme Ergebnisse).</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">ANHANG</div>
+<div class="flow-content">
+<p><strong>Lokaler Vergleich</strong> (auf Ihrem Computer)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2CrackVergleicht die restlichen 35 Zeichen der Hash lokal. Nur Ihr Computer weiß, ob es ein Spiel ist.</p>
+</div>
+</div>
+</div>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Konkretes Beispiel: Passwort-Passwort</h4>
+<div class="example-box">
+<div class="example-title">Schritt für Schritt</div>
+<div class="hash-row">
+<span class="hash-label">Passwort:</span>
+<span class="hash-value"><code>password</code></span>
+</div>
+<div class="hash-row">
+<span class="hash-label">Komplette Hash SHA-1:</span>
+<span class="hash-value">
+<code>5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+</span>
+</div>
+<div style="margin: 1em 0; padding: 1em; background: #f0f0f0; border-radius: 4px; border-left: 4px solid #2196F3;">
+<p style="margin-top: 0; color: #666; font-size: 0.9em;"><strong>SPLIT</strong></p>
+<div class="hash-row" style="margin-top: 0.8em;">
+<span class="hash-label"><span class="hash-sent">Sent zu HIBP</span> :</span>
+<span class="hash-value">
+<code class="hash-sent">5BAA6</code>
+<span style="color: #666; font-size: 0.85em;"> (5 Zeichen = ~2,000 mögliche Hashs)</span>
+</span>
+</div>
+<div class="hash-row">
+<span class="hash-label"><span class="hash-local">lokal konserviert</span> :</span>
+<span class="hash-value">
+<code class="hash-local">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+<span style="color: #666; font-size: 0.85em;"> (35 Zeichen, nie übertragen)</span>
+</span>
+</div>
+</div>
+<div style="margin-top: 1em; padding: 1em; background: #e8f5e9; border-radius: 4px; border-left: 4px solid #388e3c;">
+<p style="margin: 0; color: #1b5e20; font-weight: 500;">
+               <code>5BAA6</code> (~500-1000 Ergebnisse).
+              <br>Time2Crackvergleicht lokal und bestimmt, ob es ein Spiel ist. <strong>Ihr volles Passwort lässt nie Ihr Gerät.</strong>
+</p>
+</div>
+</div>
+<p style="font-size: 0.9em; color: #666; margin-top: 1.5em;">
+<strong>Warum 5 Zeichen genügen für k-Anonymität:</strong>
+          Mit 5 hexadezimalen Zeichen gibt es 16^5 = 1,048,576 mögliche Kombinationen. HIBP gibt für jedes Präfix etwa 500-1000 Ergebnisse zurück, wodurch eine kritische Masse entsteht, in der Ihr Passwort unter Hunderten von anderen anonymisiert wird.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>3. Datenspeicherung</h3>
+<ul class="does-list">
+<li><strong>Verwenden Sie die lokale Speicherort Ihres Browsers</strong> nur für Benutzereinstellungen (Sprache, Präferenzen)</li>
+<li><strong>Keine Passwortsicherung</strong> oder Rißzeitergebnisse</li>
+<li><strong>Automatische Löschen</strong> Speicherkennwort nach Analyse</li>
+</ul>
+</div>
+</section>
+ ================================================================================================================================================================================================================================================================
+WAS TIME2CRACK tut NICHT
+================================================================================================================================================================================================================================================================ 
+<section>
+<h2>Was?Time2CrackHINWEIS</h2>
+<div class="privacy-section">
+<h3>1. Passwortübermittlung</h3>
+<ul class="does-list doesnt-list">
+<li>Nicht senden <span class="highlight-red">Nie</span> Ihr Passwort an unsere Server oder Dritte</li>
+<li>Nicht senden <span class="highlight-red">Nie</span> Ihr Passwort für HIBP oder andere Dienste</li>
+<li>Nicht senden <span class="highlight-red">Nie</span> die komplette Hash SHA-1 (nur 5 Zeichen)</li>
+<li>Rekord <span class="highlight-red">Nie</span> Kennwörter geprüft</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>2. Verwendung von Daten</h3>
+<ul class="does-list doesnt-list">
+<li>Behalten <span class="highlight-red">keine Spur</span> Ihrer Aktivität oder Passwörter getestet</li>
+<li>Erzeugt <span class="highlight-red">kein Benutzerprofil</span> im Zusammenhang mit Ihren personenbezogenen Daten</li>
+<li>Nicht teilen <span class="highlight-red">keine Informationen</span> mit Dritten (Inserenten, Partner usw.)</li>
+<li>nicht verkaufen <span class="highlight-red">Nie</span> Ihre Daten</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Lagerung bleibt bestehen</h3>
+<ul class="does-list doesnt-list">
+<li>Home <span class="highlight-red">keine Datenbank</span> Benutzerpasswörter</li>
+<li>Speichern <span class="highlight-red">keine Geschichte</span> Berechnungen oder Ergebnisse</li>
+<li>Nicht erforderlich <span class="highlight-red">kein Benutzerkonto</span> oder Registrierung</li>
+</ul>
+</div>
+<div class="warning-box">
+<div class="warning-title">Wichtig</div>
+<p style="margin: 0.5em 0 0;">
+          Selbst wennTime2CrackIhr Passwort niemals übermitteln, <strong>testen Sie nicht Ihr echtes Passwort hier, wenn jemand anderes auf Ihrem Bildschirm aussieht</strong>. Verwenden Sie ein Test-Passwort oder konsultieren Sie dieses Tool privat.
+        </p>
+</div>
+</section>
+ ================================================================================================================================================================================================================================================================
+VERGLEICHUNG
+================================================================================================================================================================================================================================================================ 
+<section>
+<h2>Zusammenfassung: Fakten gegen Nicht Fertig</h2>
+<table class="comparison-table">
+<thead>
+<tr>
+<th>Aktion</th>
+<th class="does-column">Time2Crack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rißzeiten berechnen</strong></td>
+<td class="does-column">Ja (lokal)</td>
+</tr>
+<tr>
+<td><strong>Vollständiges Passwort senden</strong></td>
+<td class="doesnt-column">Nein</td>
+</tr>
+<tr>
+<td><strong>Senden Sie die komplette SHA-1 Hash</strong></td>
+<td class="doesnt-column">Nein</td>
+</tr>
+<tr>
+<td><strong>Senden Sie die ersten 5 Zeichen der Hash (k-Anonymität)</strong></td>
+<td class="does-column">Ja (wenn HIBP aktiviert ist)</td>
+</tr>
+<tr>
+<td><strong>Passwörter speichern</strong></td>
+<td class="doesnt-column">Nein</td>
+</tr>
+<tr>
+<td><strong>Benutzerkonto erstellen</strong></td>
+<td class="doesnt-column">Nein</td>
+</tr>
+<tr>
+<td><strong>Daten mit Dritten teilen</strong></td>
+<td class="doesnt-column">Nein</td>
+</tr>
+<tr>
+<td><strong>Verwendung von Tracking-Cookies</strong></td>
+<td class="doesnt-column">Nein</td>
+</tr>
+<tr>
+<td><strong>Anzeigen anzeigen</strong></td>
+<td class="doesnt-column">Nein</td>
+</tr>
+<tr>
+<td><strong>Ausgelagerter Kundencode ausführen</strong></td>
+<td class="doesnt-column">Nein (Nullabhängigkeiten)</td>
+</tr>
+</tbody>
+</table>
+</section>
+ ================================================================================================================================================================================================================================================================
+VERIFIZIERUNG
+================================================================================================================================================================================================================================================================ 
+<section>
+<h2>Wie man selbst verifiziert</h2>
+<div class="privacy-section">
+<h3>1. Browser Development Tools</h3>
+<ol style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Öffne die <strong>Entwicklungswerkzeuge</strong> (F12 oder Cmd+Option+I)</li>
+<li>Zur Registerkarte <strong>Netzwerk</strong> (Netzwerk)</li>
+<li>Geben Sie ein Test-Passwort einTime2Crack</li>
+<li>Netzwerkanfragen anschauen: Sie werden nicht sehen <strong>dass</strong> HiBP-Anfrage mit 5-char-Präfix</li>
+<li>Das volle Passwort erscheint nicht <strong>Nie</strong> in Anfragen</li>
+</ol>
+</div>
+<div class="privacy-section">
+<h3>2. Siehe Quellcode</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Time2Crackist <strong>100% Open Source</strong> auf Codeberg</li>
+<li>Der Code enthält <strong>Null externe Abhängigkeiten</strong> — es ist reines JavaScript</li>
+<li>Sie können überprüfen <code>app.js</code> und überprüfen, dass:
+            <ul style="margin-top: 0.5em;">
+<li>Passwörter sind immer lokal</li>
+<li>Nur das HiBP 5-char-Präfix wird gesendet</li>
+<li>Kein Tracking-Cookie oder persönliche Analysen</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Test im Offline-Modus</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Sie können verwendenTime2Crack <strong>komplett offline</strong></li>
+<li>Dateien herunterladen und öffnen <code>index.html</code> Ort</li>
+<li>Alle Berechnungen funktionieren ohne Verbindung (außer optionaler HIBP-Verifikation)</li>
+</ul>
+</div>
+</section>
+ ================================================================================================================================================================================================================================================================
+FOOTER
+================================================================================================================================================================================================================================================================ 
+<section style="margin-top: 3em; padding-top: 2em; border-top: 1px solid #eee;">
+<p style="color: #999; font-size: 0.9em;">
+<strong>Fragen?</strong> Vgl. <a href="faq.html">FAQ</a> oder <a href="sources.html">Wissenschaftliche Quellen</a> für weitere DetailsTime2Crack.
+      </p>
+</section>
+</main><footer id="site-footer"></footer><script src="../includes.js"></script><script src="../app.js" type="module"></script></body></html>

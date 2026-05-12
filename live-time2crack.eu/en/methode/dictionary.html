@@ -1,0 +1,635 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dictionary — Attack Methods — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Try passwords from curated wordlists and common variants. Fast when the secret is based on known words or patterns."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Dictionary — Attack Methods — Time2Crack"><meta property="og:description" content="Try passwords from curated wordlists and common variants. Fast when the secret is based on known words or patterns."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/en/methode/dictionary.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="tr_TR"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Dictionary — Attack Methods — Time2Crack"><meta name="twitter:description" content="Try passwords from curated wordlists and common variants. Fast when the secret is based on known words or patterns."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="dictionary.html"><link rel="alternate" hreflang="fr" href="../../fr/methode/dictionary.html"><link rel="alternate" hreflang="en" href="dictionary.html"><link rel="alternate" hreflang="es" href="../../es/methode/dictionary.html"><link rel="alternate" hreflang="pt" href="../../pt/methode/dictionary.html"><link rel="alternate" hreflang="de" href="../../de/methode/dictionary.html"><link rel="alternate" hreflang="it" href="../../it/methode/dictionary.html"><link rel="alternate" hreflang="tr" href="../../tr/methode/dictionary.html"><link rel="alternate" hreflang="pl" href="../../pl/methode/dictionary.html"><link rel="alternate" hreflang="nl" href="../../nl/methode/dictionary.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
+</head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
+<h1 style="display:none">Dictionary attack — Comprehensive operation</h1>
+<blockquote>
+Project reference document Time2Crack
+</blockquote>
+<blockquote>Recipients: developers, security researchers, advanced users</blockquote>
+<hr>
+<h2>Contents</h2>
+<li><a href="dictionary.html#1-vue-densemble">Overview</a></li>
+<li><a href="dictionary.html#2-contexte-historique-et-académique">Historical and academic background</a></li>
+<li><a href="dictionary.html#3-fondements-conceptuels--pourquoi-les-dictionnaires-fonctionnent">Conceptual foundations: why dictionaries work</a></li>
+<li><a href="dictionary.html#4-architecture-dune-attaque-dictionnaire-moderne">Architecture of a modern dictionary attack</a></li>
+<li><a href="dictionary.html#5-les-corpus-de-mots-de-passe-réels">The corpus of real passwords</a></li>
+<li><a href="dictionary.html#6-la-vérification-k-anonymat-hibp--une-attaque-en-temps-réel">K-Anonymity HIBP verification: a real-time attack</a></li>
+<li><a href="dictionary.html#7-les-wordlists-linguistiques-de-time2crack">Time2Crack Language Wordlists</a></li>
+<li><a href="dictionary.html#8-détection-dictionnaire-dans-time2crack--isdictword">Dictionary Detection in Time2Crack: <code>isDictWord()</code></a></li>
+<li><a href="dictionary.html#9-de-leetification--comment-lattaquant-décode-les-substitutions">De-leetification: how the attacker decodes substitutions</a></li>
+<li><a href="dictionary.html#10-calcul-du-temps-de-cracking--adddictionaryattacks">Calculation of cracking time: <code>addDictionaryAttacks()</code></a></li>
+<li><a href="dictionary.html#11-calibration-haute-fidélité--applyhighfidelitycalibration">High fidelity calibration: <code>applyHighFidelityCalibration()</code></a></li>
+<li><a href="dictionary.html#12-probabilité-dapplicabilité-et-score-de-confiance">Likelihood of applicability and confidence score</a></li>
+<li><a href="dictionary.html#13-bloom-filter-rockyou--détection-locale-des-mots-de-passe-répandus">Bloom filter RockYou : local detection of widespread passwords</a></li>
+<li><a href="dictionary.html#14-comparaison-avec-les-attaques-dérivées">Comparison with derived attacks</a></li>
+<li><a href="dictionary.html#15-limites-de-lattaque-dictionnaire">Limitations of attack dictionary</a></li>
+<li><a href="dictionary.html#16-défenses-efficaces">Effective defences</a></li>
+<li><a href="dictionary.html#17-références-bibliographiques">References</a></li>
+<hr>
+<h2>1. Overview</h2>
+<p>Dictionary attack is the oldest password cracking method, the simplest conceptually, and statistically most effective on the majority of real human passwords. Its principle is to test, in descending order of probability, a pre-compiled list of candidates — the "dictionary" — rather than exhaustively enumerate all possible combinations as the raw force does.</p>
+<strong>Why it's dreadfully effective</strong> Humans do not choose their passwords randomly. Decades of data leaks reveal that the actual distribution of passwords is extremely concentrated: the most common 1,000 passwords represent about 5 to 10% of all online accounts. The most common 1 million cover 40 to 60%. A well-built dictionary attack will test these candidates in milliseconds to seconds — where gross force would take millions of years.
+<p>In Time2Crack, the dictionary attack models two distinct but complementary mechanisms:</p>
+<li><strong>HIBP verification</strong> (Have I Been Pwned): Confrontation of the password to the ~14 billion unique credentials from historical data leaks. If the password is there, an attacker would discover it in a fraction of a second.</li>
+<li><strong>Language Wordlist Detection</strong> A common language word — "sun" or "sunshine" — is vulnerable even if it is not in HIBP.</li>
+<p>These two detections are independent and complementary: HiBP covers the exact compromise credentials, the wordlist covers the common words not yet leaked.</p>
+<hr>
+<h2>2. Historical and academic background</h2>
+<h3>2.1 Origins</h3>
+<p>The dictionary attack precedes the modern era of computer security. The first Unix systems stored passwords in plain language in <code>/etc/passwd</code>, making any dictionary attack trivial as soon as the file was accessible.</p>
+<strong>Chronology of milestones</strong> :
+YearEvent
+-------------------
+1979Morris &amp; Thompson: First academic article on Unix password security. See that 1/3 of passwords choose common English words
+1988Morris Worm: partially propagates via a 432 word dictionary + host /usr/share/dict/words
+1993Crack 5.0 (Alec Muffett): First public dictionary attack tool on Unix, includes mutation rules
+2000John the Ripper: popularizes wordlists combined with hashcat rules (wordlist + rules mode)
+2009RockYou leak: 14.3 million clear passwords reveal the real distribution of human choices
+2012Have I Been Pwned (Troy Hunt): first public audit service for compromised credentials
+2013Adobe break: 153 million accounts — top passwords become identifiable by frequency analysis even on unsalted hashs
+2016Hashcat open source v3.0: massive optimization of wordlist attacks on GPU (MD5: 2 TH/s on 8 GPU cluster)
+2019Collection #1–5: 2.7 billion login/password pairs compiled, publicly distributed
+2024HIBP v8: ~14 billion unique passwords indexed
+<h3>2.2 Founding leaks</h3>
+<p>Some leaks have transformed the landscape of the attack by dictionary by revealing the actual distribution of human passwords:</p>
+<strong>RockYou (2009)</strong> A developer had stored 14.3 million passwords in plain language.
+<ul>
+<li>Password #1 ("123456") represented 290,731 accounts (2%)</li>
+</ul>
+<li>The first 10 passwords covered ~5% of accounts</li>
+<li>First 1,000: ~20% of accounts</li>
+<li>Distribution follows a power law — confirming that humans "think the same"</li>
+<strong>LinkedIn (2012)</strong> — 6.5 million non-salted SHA-1.
+<strong>Adobe (2013)</strong> — 153 million accounts.
+<strong>Have I Been Pwned (2013–present)</strong> - Progressive aggregation of public leaks, allowing Troy Hunt to create a reference base used worldwide.
+<h3>2.3 Reference Benchmarks for Dictionary Attack</h3>
+<p>A wordlist of 200,000 entries tested at the speed of a RTX 4090:</p>
+AlgorithmSpeedTime for 200k candidates
+------------------------------------------------
+MD5168.9 GH/s~1,2 nanosecond
+SHA-150.86 GH/s~3.9 nanoseconds
+SHA-25622.68 GH/s~8.8 nanoseconds
+NTLM288.5 GH/s~0,7 nanosecond
+bcrypt (cost 5)184 kH/s~1.09 second
+Argon2id~67 H/s~50 minutes
+<p>The dictionary attack is therefore almost instantaneous for MD5, SHA-1 and NTLM — and remains very fast even for bcrypt on small lists.</p>
+<hr>
+<h2>3. Conceptual foundations: why dictionaries work</h2>
+<h3>3.1 The Power Law of Human Passwords</h3>
+<p>All empirical studies converge towards the same observation: the distribution of human passwords is not uniform — it follows a <strong>law of power</strong> (Zipf). Some passwords concentrate an disproportionate fraction of choices.</p>
+<strong>Formally</strong> : if all passwords are classified by decreasing frequency, the frequency of the rank password <em>r</em> is proportional to <em>r^(-α)</em> with <em>α 1.5 to 2</em> According to the corpus.
+<p>Direct consequence: <strong>10 most common passwords</strong> An attacker who tests only 10 candidates already has a chance in 20 to succeed — statistically, it's huge for the amount of noise generated.</p>
+<h3>3.2 Cognitive Bias in Password Creation</h3>
+<p>Humans do not choose at random. They systematically apply heuristics that make their passwords predictable:</p>
+<li><strong>Memory Bias</strong> : the words easy to remember (common names, first names, terms of popular culture) are overrepresented</li>
+<li><strong>Availability Bias</strong> The password reflects the immediate environment (domestic animal name, sports team, serial character)</li>
+<li><strong>Predictable substitution biases</strong> : "e" → "3", "a" → "@", "o" → "0" — the user believes the password to be strong, but these substitutions are exactly the first that the attacker tries to do</li>
+<li><strong>Complete Bias</strong> : addition of a number or symbol at the end of a word (password1, sunshine!)</li>
+<li><strong>Cultural bias</strong> Common passwords are linked to the language and culture of the user ("Soleil123" in France, "Sommer123" in Germany)</li>
+<h3>3.3 The concept of "password already in the lists"</h3>
+<p>A password may be in an attack list for two different reasons:</p>
+<strong>Reason 1 — He's in HIBP</strong> The exact credential has been compromised in a past leak. The attacker does not need to guess — it tests the known credentials one by one, in order of frequency. If the target server accepts the credential, it is finished.
+<strong>Reason 2 — It is in a linguistic wordlist</strong> The password is an ordinary word of common vocabulary. Even if it has never fled, it is in all attack wordlists because it is an obvious candidate. "Paillon" may not be in HiBP, but it is in the French wordlist of any serious cracking tool.
+<p>These two cases correspond to attacks of a different nature, with different speeds — and this is precisely what Time2Crack models.</p>
+<hr>
+<h2>4. Architecture of a modern dictionary attack</h2>
+<h3>4.1 General pipeline</h3>
+<p>A modern dictionary attack takes place in several phases:</p>
+<pre><code class="language-plaintext">Phase 1 : Constitution de la wordlist
+    ├── Mots de passe fuités (HIBP, RockYou, Collections)
+    ├── Wordlists linguistiques (dictionnaires, prénoms, lieux)
+    ├── Wordlists thématiques (sport, pop culture, tech, religion)
+    └── Wordlists contextuelles (domaine de l'entreprise cible, noms d'employés)
+<p>Phase 2: Wordlist Preprocessing
+- Sort by frequency (most likely first)
+- - Deduplication (not twice the same candidate)
+- - Length filtration (target length + ±2)
+- - Standardization (lowercase, Unicode NFC)</p>
+<p>Phase 3: Calculation of Candidate Hashs
+For each candidate w in the wordlist:
+│ hash<em>candidate = hash</em>algo(w)
+Promotional │ if hash<em>candidate== hash</em>Target : FINDED
+- - Speed: 168 GH/s for MD5 on RTX 4090</p>
+<p>Phase 4: Analysis of results
+Report of cracked passwords, coverage statistics</p></code></pre>
+<h3>4.2 Hardware optimizations</h3>
+<p>Modern dictionary attacks are massively paralleled on GPU:</p>
+<li><strong>Hashcat</strong> (reference tool): exploits the CUDA cores of the GPU to parallelize billions of hash simultaneous computations</li>
+<li><strong>Vector Pipeline</strong> : on a RTX 4090, a single SIMD instruction calculates 8 to 16 MD5 hashs in parallel</li>
+<li><strong>GPU cache</strong> : the wordlist is loaded in VRAM to minimize memory latency</li>
+<li><strong>Batching</strong> : the candidates are sent to the GPU in batches of millions to maximize the flow</li>
+<p>For a wordlist of 14 billion entries (HIBP size) on 12× RTX 4090:
+</p><li>MD5 : 14e9 / (168.9e9 × 12) <strong>6.9 seconds</strong></li>
+<li>bcrypt cost 5 : 14e9 / (184000 × 12) <strong>6,337 years</strong></li><p></p>
+<p>This difference of ~9 orders of magnitude between MD5 and bcrypt explains why the choice of the hash algorithm is critical.</p>
+<h3>4.3 Test order of candidates</h3>
+<p>The wordlist is not tested in alphabetical order — it is <strong>sorted by decreasing probability</strong> :</p>
+<li>The most common escape passwords (RockYou top 100)</li>
+<li>Common multi-fault passwords (HIBP priority list)</li>
+<li>Common words of target language</li>
+<li>The proper names (first names, cities, celebrities)</li>
+<li>Target-related thematic terms</li>
+<li>Variations and conjugations</li>
+<p>This sort ensures that if the password is "low", it will be found in the first milliseconds — whatever the hash speed.</p>
+<hr>
+<h2>5. The corpus of real passwords</h2>
+<h3>5.1 Have I Been Pwned (HIBP)</h3>
+<strong>Size</strong> ~14 billion unique passwords (2024)
+<strong>Source</strong> : aggregation of public leaks since 2013
+<strong>Format</strong> : SHA-1 sorted by frequency of appearance
+<strong>Public access</strong> : k- anonymity API, full hash download available for defenders
+<p>HiBP is the global reference because:
+</p><li>It covers almost all major public leaks</li>
+<li>The hashs are sorted by frequency — the most common passwords are tested first</li>
+<li>It is actively maintained (new leaks added continuously)</li><p></p>
+<p>An attacker with the complete HIBP dump can first test the ~14 billion candidates in descending order of frequency. For non-salted algorithms (MD5, SHA-1), this list covers in the order of 50-70% of all real online passwords.</p>
+<h3>5.2 RockYou (2009) — Founding corpus</h3>
+<strong>Size</strong> : 14.3 million clear passwords
+<strong>Key characteristics</strong> :
+RankPasswordOccurrences% of corpus
+------------------------------------------------
+1123456290 7312.03%
+21234579 0780.55%
+312345678976 7900.54%
+4password59 4620.42%
+5iloveyou49 9520.35%
+Top 10—~650,000~4.5%
+Top 100—~1 200 000~8.4%
+Top 1 000—~2 500 000~17.5%
+Top 10,000—~4 500 000~31.5%
+<strong>Education</strong> Test only 10,000 candidates (100 μs MD5 speed) compromises ~31% of a database of MD5 protected accounts.
+<h3>5.3 Collections of specialized wordlists</h3>
+<strong>SecLists</strong> (Daniel Miessler): open-source collection of ~4 GB wordlists covering:
+<li>Passwords (RockYou, top passwords various leaks)</li>
+<li>Current uses</li>
+<li>Passwords sorted by language</li>
+<li>Technical terms, product names, celebrities</li>
+<strong>Kaonashi</strong> : 1.3 billion entries wordlist compiled since public leaks
+<strong>Crackstation</strong> : 1.5 billion entries including words from all Wikipedia dictionaries in several languages
+<strong>Weakpass</strong> : aggregation of ~8 billion single real password entries
+<p>These corpuses are publicly downloadable — their existence is an established fact of offensive security.</p>
+<hr>
+<h2>6. K-Anonymity Verification HIBP: A Real-Time Attack</h2>
+<h3>6.1 Protocol k- anonymity</h3>
+<p>Time2Crack incorporates a real-time HIBP check that reproduces exactly what an attacker would do with the HIBP database — but never transmit the password in plain language or its full hash.</p>
+<p>The k-anonymity protocol works as follows:</p>
+<pre><code class="language-plaintext">1. Calculer SHA-1(password)      → par exemple "CBFDAC6008F9CAB4083784CBD1874F76618D2A97"
+<li>Send only the first 5 characters to the HIBP API: "CBFDA"</li>
+<li>The API returns ALL SHA-1 suffixes starting with "CBFDA" (approximately 400-600 hashes)</li>
+<li>Search locally if the rest of the hash ("C6008F9CAB4083784CBD1874F76618D2A97") is in the list</li>
+<li>If found: password has been compromised (HIBP also returns the number of leaks)</li></code></pre>
+<strong>Guarantee of confidentiality</strong> The HIBP server never sees the complete hash (so it cannot identify the password), let alone the clear password. The final calculation is done locally.
+<strong>What this means for the attack</strong> : if HIBP returns a match with a high count (e.g. 9,547,236 appearances for "123456"), this means that an attacker with the HIBP database testing this credential would find him in a very high position on his list sorted by frequency — in a fraction of nanoseconds.
+<h3>6.2 Implementation in Time2Crack (app.js)</h3>
+<p>The HIBP check is asynchronous and non-blocking. The password is immediately analyzed by local methods, and the HIBP check completes the result:</p>
+<pre><code class="language-javascript">// Pseudo-code simplifié
+async function checkHIBP(password) {
+  const sha1 = await sha1Hash(password);
+  const prefix = sha1.substring(0, 5);   // 5 premiers chars
+  const suffix = sha1.substring(5);       // reste du hash
+<p>const response = await fetch(
+    <code>https://api.pwnedpasswords.com/range/${prefix}</code>
+  );
+const lines = await response.text();</p>
+<p>for (const line of lines.split('\n')) {
+const [hashSuffix, count] = line.split(':');
+if (hashSuffix.toLowerCase() = suffix.toLowerCase()) {
+return parseInt(count); // number of leaks
+}
+}
+return 0; // not found
+}</p></code></pre>
+<strong>HIBP performance data</strong> :
+<li>Typical API latency: 50–200 ms (network)</li>
+<li>Volume of suffixes returned: ~400–600 per query</li>
+<li>False positive: 0 (SHA-1 is deterministic)</li>
+<li>False negative: 0 (if in HiBP, always returned)</li>
+<h3>6.3 Interpretation of Count HIBP</h3>
+<p>The count returned by HiBP indicates the number of times this exact password appeared in indexed leaks:</p>
+CountInterpretationCrack time (MD5, 12× RTX 4090)
+------------------------------------------------------------
+&gt; 1 000 000Top 100 World&lt; 1 nanosecond
+10,000–1,000,000Very common&lt; 10 nanoseconds
+1 000–10 000Common&lt; 100 nanoseconds
+100–1,000Uncommon but known&lt; 1 microsecond
+1–100Rare but compromised&lt; 10 microseconds
+<p>Even a count of 1 (the password appeared only once in a leak) indicates a vulnerability: if an attacker targets this account specifically and has the list of credentials of the leak in question, he will find it.</p>
+<hr>
+<h2>7. Time2Crack Language Wordlists</h2>
+<h3>7.1 Why language wordlists in addition to HIBP</h3>
+<p>HiBP covers the exact compromise credentials — but not the common words never run away yet. A francophone user who chooses "ephemeral" as a password may not be in HiBP (the word is unlikely in anglophone credentials), but it is in the French wordlist of any attacker targeting a francophone system.</p>
+<p>Time2Crack's language wordlists cover this gap:</p>
+LanguageSourceEstimated size
+--------------------------------
+EnglishSecLists Wikipedia EN~200,000 entries
+French (fr)SecLists Wikipedia EN~150,000 entries
+SpanishSecLists Wikipedia ES~150,000 entries
+Portuguese (pt)SecLists Wikipedia PT~120,000 entries
+GermanSecLists Wikipedia DE~180,000 entries
+Turkish (tr)SecLists Wikipedia TR~100,000 entries
+Italian (it)kkrypt0nn~100,000 entries
+Polish (pl)kkrypt0nn~80 000 entries
+Netherlands (nl)kkrypt0nn~80 000 entries
+<strong>Filtering applied</strong> Only words of ≥ 4 characters are retained (the 1–3 characters are too short to be a realistic password, and their inclusion would inflate the list without added value).
+<h3>7.2 Lazy loading</h3>
+<p>Wordlists are not included in the code — they are loaded on request when changing language, to meet the network budget:</p>
+<pre><code class="language-javascript">// app.js - loadDictionary()
+async function loadDictionary(lang) {
+  if (DICT<em>lang &amp; DICT</em>WORDS) return;  // Déjà chargé
+  if (DICT<em>LOADING) {
+DICT</em>PENDING<em>LANG = lang; // Waiting file
+return;
+}
+DICT</em>LOADING = true;
+<p>const res = await fetch(<code>data/wordlists/${lang}.txt</code>);
+const text = await res.text();</p>
+<p>// Convert to Set&lt;string&gt; for O(1) lookup
+DICT<em>WORDS = new Set(
+text.split("\n")
+.map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+.filter(w =&gt; w.length &gt;= 4)
+);
+DICT</em>LANG = Lang;
+DICT<em>LOADING = false;
+}</em></p></code></pre>
+<strong>Why a <code>Set</code> ?</strong> Structure <code>Set</code> JavaScript guarantees O(1) lookups — regardless of dictionary size (50,000 or 200,000 entries), verification <code>DICTWORDS.has(word)</code> takes the same constant time. <code>Array</code> would require O(n) per lookup, i.e. up to 200,000 comparisons per check.
+<h3>Loading queue</h3>
+<p>The <code>DICT<em>PENDING</em>LANG</code> avoids race conditions during rapid language changes:</p>
+<pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE
+├── EN demandé : DICT<em>LOADING = false → start of the fetch EN
+FR requested during fetch EN : DICT</em>LOADING = true → DICT<em>PENDING</em>LANG = "fr"
+├── DE demandé pendant fetch EN : DICT<em>LOADING = true → DICT</em>PENDING<em>LANG = "de" (crash "fr")
+- Fetch Ends: DICT</em>LANG = "en", puis lance loadDictionary("de")
+└── Résultat : seule la dernière langue demandée est chargée</code></pre>
+<p>This behaviour is intentional: the most recently requested language is loaded, not all intermediate languages.</p>
+<hr>
+<h2>8. Dictionary Detection in Time2Crack: <code>isDictWord()</code></h2>
+<h3>8.1. Detection operation</h3>
+<p>The function <code>isDictWord(pw)</code> determines whether a password is or is derived from a current dictionary word:</p>
+<pre><code class="language-javascript">// app.js - ligne 2181
+function isDictWord(pw) {
+  if (!DICT<em>(WORDS) return false;
+<p>// Standardization: NFC + Lowercase
+const l = pw.normalize("NFC").toLowerCase();</p>
+<p>// Direct verification
+if (DICT)</p></em>WORDS.has(l) || DICT<em>WORDS.has(deLeet(pw)) return true;
+<p>// Morphological variations
+const deleetWord = deLeet(pw);
+const variations = getMorphVariations(deleetWord);</p>
+<p>for (const variation of variations) {
+if (DICT)</p></em>WORDS.has(variation)) return true;
+  }
+<p>return false;
+}</p></code></pre>
+<strong>3 layer detection line</strong> :
+<li><strong>Direct correspondence</strong> : Is the standard password in the dictionary as it stands?</li>
+<li>"sun" → direct hit</li>
+<li>"SOLEIL" → standard in "sun" → hit</li>
+<li><strong>After-leetification correspondence</strong> : Does the password contain standard let substitutions?</li>
+<li>"s0l3il" → deLeet → "sun" → hit</li>
+<li>"p@ssw0rd" → deLeet → "password" → hit</li>
+<li><strong>Morphological variations</strong> : is the password a known morphological variant?</li>
+<li>"sun" → plural variation of "sun" → hit</li>
+<li>"passwords" → variation of "password" → hit</li>
+<h3>8.2 Unicode Standardization (NFC)</h3>
+<p>Standardization <code>normalize("NFC")</code> ensures that accented characters are treated consistently:
+</p><li>"e" can be represented in Unicode as a single point code (U+00E9) or as "e" + combining accent (U+0065 + U+0301)</li>
+<li>Without standardization, "coffee" and "coffee" (different encodings) would not match</li><p></p>
+<p>This standardization is applied both when creating the dictionary and when checking — ensuring correct correspondence for accent languages (FR, ES, DE, PT, etc.).</p>
+<h3>8.3 Impact on vulnerability detected</h3>
+<p>When <code>isDictWord()</code> Go back <code>true</code>several attacks become applicable:
+</p><li><strong>Dictionary attack</strong> self: confidence score 0.85 (vs 0 if absent)</li>
+<li><strong>Hybrid attack</strong> : <code>hybridVuln = true</code> → 1000 mutations tested on dictionary basis</li>
+<li><strong>PCFG attack</strong> : increased confidence score (lexical base detected)</li>
+<li><strong>Morphological attack</strong> : high priority if morphological variant detected</li><p></p>
+<hr>
+<h2>9. De-leetification: how the attacker decodes substitutions</h2>
+<h3>9.1 Leetspeak and its limitations as protection</h3>
+<p>The leetspeak (or "1337 speech") is a practice of replacing letters with visually similar numbers or symbols: <code>a→@</code>, <code>e→3</code>, <code>i→1</code> or <code>!</code>, <code>o→0</code>, <code>s→$</code>. Users use it to "strengthen" common words.</p>
+<strong>Example</strong> : "password" → "p@$$w0rd"
+<p>The reality: these substitutions are <strong>the first rules applied</strong> in any dictionary attack with rules of mutation. They do not constitute a real defense against a competent attacker.</p>
+<h3>9.2 Implementation of <code>deLeet()</code> in Time2Crack</h3>
+<pre><code class="language-javascript">// app.js - ligne 3622
+const LEET<em>BASE = {
+a: ["@", "4"],
+e: ["3"],
+o: ["0"],
+s: ["$", "5"],
+t: ["+", "7"],
+h: ["#"],
+g: ["9"],
+};
+<p>function ofLeetWith(pw, oneMap) {
+let r = pw.normalize("NFC").toLowerCase();
+for (const [ch, reps] of Object.entries(LEET)</p></em>BASE))
+    for (const c of reps) r = r.split(c).join(ch);
+  // Appliquer la résolution ambiguë (i ou l) en dernier
+  for (const [ch, reps] of Object.entries(oneMap))
+    for (const c of reps) r = r.split(c).join(ch);
+  return r;
+}
+<p>function ofLeet(pw) {
+// Ambiguity: "1" may be "i" or "l"
+const withI = deLeetWith(pw, { i: "1!", l: "" });
+const withL = deLeetWith(pw, { l: "1", i: "!" });</p>
+<p>// If the dictionary is loaded, prefer the variant that matches
+if (DICT)<em>WORDS) {
+if (DICT)</em>WORDS.has(withL)) return withL;
+if (DICT)<em>WORDS.has(withI) return withI;
+}</em></p>
+<p>// Otherwise: prefer the variant with the least remaining numbers
+const digestsI = (withI.match(/\d/g)
+const digestsL = (withL.match(/\d/g)
+return digit L &lt;= digit I ? withL: withI;
+}</p></code></pre>
+<h3>9.3 Ambiguity Management "1" → "i" or "l"</h3>
+<p>The substitution "1" is ambiguous: "1" can represent "i" (as in "1nfo" → "info") or "l" (as in "p1ayer" → "player"). Time2Crack resolves this ambiguity by:</p>
+<li>Testing both variants ("withI" and "withL")</li>
+<li>If the dictionary is loaded, preferring the variant that gives a dictionary match</li>
+<li>Without a dictionary, preferring the variant that leaves the fewest residual numbers (assumption: complete de-leetification is more likely)</li>
+<strong>Example</strong> :
+<li>"b1ue" → withI = "biue" (not in dict), withL = "blue" (in dict) → returns "blue"</li>
+<li>"f1le" → withI = "file" (in dict), withL = "flle" (not in dict) → returns "file"</li>
+<h3>9.4 Substitutions not covered (intentionally)</h3>
+<p>Time2Crack does not cover rare or ambiguous substitutions beyond LEETBASE patterns. It is a design choice: covering too many cases would increase the false positives (detecting a password as a "current word" while it is not). The included patterns cover &gt;95% of the actual leetifications observed in the corpus.</p>
+<hr>
+<h2>10. Calculation of cracking time: <code>addDictionaryAttacks()</code></h2>
+<h3>Calculation logic</h3>
+<pre><code class="language-javascript">// app.js - ligne 3848
+function addDictionaryAttacks(rows, common, weak, dictWord) {
+  for (const a of ALGOS) {
+    let sec;
+    if (weak)     sec = 100 / a.rate;     // Top ~100 entrées
+    else if (common) sec = 10000 / a.rate; // HIBP priority list ~10k
+    else if (dictWord) sec = 200000 / a.rate; // Scan wordlist complète ~200k mots
+    else sec = null;                        // Non applicable
+<p>const note = weak ? t("nWeakPassword")
+: common ? t("nInLeaks")
+: dictWord ? t(nDictHit)
+: t(nAbsentLeaks);</p>
+<p>rows.push({ atk: t("aDict"), hash: a.name, spleen: a.rate, sec, note, cat: "dict" });
+}
+}</p></code></pre>
+<h3>10.2 Three levels of vulnerability</h3>
+<strong>Level 1 — Ultra-weak</strong> (<code>weak = true</code>) : ~100 / spleen
+The password is in the world's Top 100 ("password", "123456", "qwerty"...). An attacker testing these 100 priority candidates finds it in the first pass. For MD5: 100 / 168.9e9 <strong>0.6 nanosecond</strong>.
+<strong>Level 2 — Common</strong> (<code>common = true</code>) : ~10 000 / spleen
+The password is in the reference HIBP list of the ~10,000 most frequent passwords. These candidates are tested in the first microseconds. For MD5: 10,000 / 168,9e9 <strong>59 nanoseconds</strong>.
+<strong>Level 3 — DictWord</strong> (<code>dictWord = true</code>) : ~200,000 / spleen
+The password is a word from the current language dictionary (local wordlist ~50k–200k entries). A complete scan of the wordlist is almost instantaneous for fast algorithms. For MD5: 200 000 / 168,9e9 <strong>1.18 microsecond</strong>.
+<strong>Level 4 — Not applicable</strong> (<code>sec = null</code>) : the password is neither ultra-weak, nor common, nor a word from the current dictionary. The dictionary attack alone is not applicable — other attacks (gross force, Markov, PCFG) become the main threat.
+<h3>10.3 Why these numbers (100, 10,000, 200,000)?</h3>
+<p>These values are calibrated to actual data:</p>
+<li><strong>100</strong> The first 100 RockYou passwords represent ~10% of the corpus. All serious tools test them as a priority.</li>
+<li><strong>10 000</strong> : HiBP sorts its ~14 billion entries by frequency. The top 10,000 cover about 30–40% of the real passwords in use. Any competent attacker starts with this subset.</li>
+<li><strong>200 000</strong> : typical size of a complete language wordlist after filtering. This is sufficient to cover the current vocabulary of a language without exceeding the reasonable load capacity in memory.</li>
+<strong>Reference</strong> Weir et al. (2009) show that dictionary words are found in the first 200,000 attempts at a well-ordered attack. Ur et al. (2012) confirm that common passwords are found in the first 10,000 attempts.
+<h3>10.4 Complete numerical example</h3>
+<p>For the "sun" password (current French word, detected as <code>dictWord</code>) :</p>
+AlgorithmSpeed (12× RTX 4090)FormulaTime
+---------------------------------------------------
+NTLM3,462 GH/s200 000 / 3 462e9<strong>57.8 picoseconds</strong>
+MD52 027 GH/s200 000 / 2 027e9<strong>98.7 picoseconds</strong>
+SHA-1610 GH/s200 000 / 610e9<strong>327.9 picoseconds</strong>
+SHA-256272 GH/s200 000 / 272e9<strong>735 picoseconds</strong>
+bcrypt (cost 5)2.2 MH/s200 000 / 2 200 000<strong>90.9 milliseconds</strong>
+Argon2id800 H/s200 000 / 800<strong>250 seconds</strong>
+<p>Even for Argon2id, 250 seconds is less than 5 minutes — for a simple word from the French dictionary.</p>
+<hr>
+<h2>11. High fidelity calibration: <code>applyHighFidelityCalibration()</code></h2>
+<h3>11.1 Why additional calibration?</h3>
+<p>The gross calculation <code>addDictionaryAttacks()</code> gives an estimate of the "worst case" — as if the attacker was testing the entire wordlist uniformly. <strong>ordered by probability</strong> : the most common passwords arrive first.</p>
+<p>High fidelity calibration applies a corrective multiplier based on empirical observations:</p>
+<pre><code class="language-javascript">// app.js - ligne 4442
+case "dict":
+  // Ur et al. 2012 : mots communs trouvés dans les 100-10k premiers essais
+  // Weir 2009 : mots dict trouvés dans les 200k premiers essais (scan ordonné)
+  m <em>= context.common ? 0.15: context.dictWord ? 0.5: 1.0;
+Break;</em></code></pre>
+<strong>Multiplier <code>common</code> (0.15)</strong> : if the password is in the common priority list, it is found on average at the 15th percentile of the list — that is ~1,500 tests of the 10,000 listed. Time is multiplied by 0.15 → 6.7× faster than the uniform scan.
+<strong>Multiplier <code>dictWord</code> (0.5)</strong> : a common dictionary word is found on average mid-term of a well-ordered list. Multiplier 0.5 → 2× faster than the uniform scan.
+<h3>11.2 Academic Sources of Calibration</h3>
+<li><strong>Ur et al. (2012)</strong> — How Does Your Password Measure Up?<em> (USENIX Security): analysis of the distribution of passwords in real corpus. Common words: found in the first 10,000 trials for 95% of cases.</em></li>
+<li><strong>Weir et al. (2009)</strong> — Password Cracking Using Probabilistic Context-Free Grammars<em> (IEEE S&amp;P): Pure dictionary words are found in the first 200,000 trials of an orderly attack.</em></li>
+<hr>
+<h2>12. Likelihood of applicability and confidence score</h2>
+<h3>12.1 Scoring system</h3>
+<p>Time2Crack does not just calculate a time — it also evaluates the probability that the dictionary attack is actually the fastest attack, via a multi-factor scoring system:</p>
+<pre><code class="language-javascript">// Score d'applicabilité (0-1)
+case "dict":
+  return context.common ? 0.99 : context.dictWord ? 0.85 : 0;</code></pre>
+<li><strong>0.99</strong> if <code>common</code> The password is in HIBP → the dictionary attack applies with maximum confidence.</li>
+<li><strong>0.85</strong> if <code>dictWord</code> Only: high probability. A dictionary word is vulnerable, but an attacker must have the right linguistic wordlist.</li>
+<li><strong>0</strong> Otherwise: the dictionary attack does not apply (no lexical vulnerability detected).</li>
+<h3>12.2 Evidence score</h3>
+<p>In parallel with the applicability score, a "evidence" score records the observed signals:</p>
+<pre><code class="language-javascript">case "dict":
+  return Number(!!context.common) + Number(!!context.dictWord);
+  // 0 : aucun signal
+  // 1 : un signal (common OU dictWord)
+  // 2 : deux signaux (common ET dictWord)</code></pre>
+<p>An evidence score of 2 (word in both HIBP and the linguistic dictionary) boosts the final confidence of 0.08 (2 × 0.04).</p>
+<h3>12.3 Final Confidence Score</h3>
+<pre><code class="language-javascript">const base = confidenceBase["dict"] || 0.6;  // confiance de base
+const evidenceBoost = Math.min(0.12, row.evidenceScore  0.04);
+const speculativePenalty = speculativeCats.has("dict") ? 0.08 : 0;  // dict n'est pas spéculatif
+<p>row.confidence = Math.max(0, Math.min(1,
+Math.max(applicability, base) + evidenceBoost - specificPenalty
+));</p></code></pre>
+<p>For a password <code>common</code> with <code>dictWord</code> also detected:
+</p><li><code>applicability = 0.99</code></li>
+<li><code>evidenceBoost = min(0.12, 2 × 0.04) = 0.08</code></li>
+<li><code>confidence = min(1, max(0.99, 0.6) + 0.08) = min(1, 1.07) = 1.0</code></li><p></p>
+<p>Maximum confidence: The dictionary attack is the primary attack unambiguously.</p>
+<hr>
+<h2>13. Bloom filter RockYou: local detection of widespread passwords</h2>
+<h3>13.1 Background</h3>
+<p>In addition to the HIBP verification (which requires a network call), Time2Crack incorporates a <strong>bloom filter</strong> A bloom filter is a probabilistic data structure that allows you to test belonging to a set with a probability of false positives (~1%), without storing the elements themselves.</p>
+<h3>13.2 Benefits of the bloom filter</h3>
+CriteriaHIBP k- anonymityBloom filter local
+---------------------------------------------
+Coverage~14 billion~14 million (RockYou)
+Latency50–200 ms (network)&lt;1 ms (local)
+Confidentialityk- anonymity (5 SHA-1 tanks)100% local, nothing transmitted
+False positive0%~1%
+SizeAPI~2–5 MB (bloom filter binary)
+<h3>13.3 Operation of double hashing</h3>
+<pre><code class="language-javascript">// app.js - ligne 1962
+function bloomHas(filter, word) {
+  if (!filter) return false;
+  const { bitArray, m, k } = filter;
+  const w = word.toLowerCase();
+<p>// Double-hashing: h1 and h2 are two independent hash functions
+const h1 = fnv1a32(w, 2166136261); // FNV1a with standard seed
+const h2 = fnv1a32(w, 0x811c9dc5); // FNV1a with alternative seed</p>
+<p>for (let i = 0; i &lt; k; i++) {
+const pos = (h1 + (i <em> (h2) &gt;&gt;&gt; (0)) % m; // k positions in the bit array
+const byteIdx = Math.floor(pos / 8);
+const bitIdx = pos % 8;</em></p>
+<p>// If a bit is 0: the word is DEFINITLY absent
+if ((bitArray[byteIdx] &amp; (1 &lt;&lt; bitIdx)) = 0) return false;
+}
+// All bits are at 1 : the word is PROBABLY present (with 1% of FP)
+return true;
+}</p></code></pre>
+<p>The FNV1a double-hashing ensures a uniform distribution of positions in the bit array, minimizing collisions and keeping the false positives rate close to 1%.</p>
+<h3>13.4 Loading and binary format</h3>
+<p>The bloom filter is stored in <code>data/rockyou.bloom</code> — a binary file with:
+</p><li><strong>Header</strong> (20 bytes): magic number (0x424c4f4f = "BLOO"), version, m (bit array size), k (number of hash functions), n (number of elements)</li>
+<li><strong>Payload</strong> : bit array (m/8 bytes)</li><p></p>
+<p>The load is triggered manually by the user (button in the UI), not automatically at the page loading — to preserve the initial performance.</p>
+<hr>
+<h2>14. Comparison with derived attacks</h2>
+<p>The "pure" dictionary attack is the first of a family of attacks that all share a common root: a lexical wordlist. Time2Crack implements 7 offline cracking models (gross force, dictionary, hybrid, mask, PCFG, Markov, combinator), each attacking the password from a different angle.</p>
+<h3>14.1 Dictionary vs Hybrid</h3>
+CriteriaDictionaryHybrid (dict+rules)
+----------------------------------------------
+CandidatesDictionary Words asWords + ~1000 mutations per word
+Keyspace200,000 candidates~200 million candidates
+Cracked examples"password", "sun""P@ssw0rd!", "s0l3il2024"
+Relative speed1000× fasterMuch wider coverage
+Applicable ifexact word in listPassword derived from a dict word
+<p>The hybrid attack begins where the pure dictionary stops: it takes every word from the wordlist and applies systematic mutation rules (hashcat "best64.rule" in mind).</p>
+<h3>14.2 Dictionary vs PCFG</h3>
+CriteriaDictionaryPCFG
+------------------------------
+ModelFixed list of candidatesProbabilistic structure grammar
+ForceAccurate wordsWord+Digits structures, Cap+lower+sym
+Example"password" → ✓"Password123" → ✓ (structure detected)
+CoverageKnown vocabularyGeneric human structures
+<p>A password like "Password123" can go unnoticed in a dictionary (the exact word "Password123" may not be listed) but will be cracked very quickly by PCFG which recognizes the structure [Majuscule][minuscules][digits].</p>
+<h3>14.3 Dictionary vs Markov</h3>
+CriteriaDictionaryMarkov
+--------------------------------
+CandidatesPre-compiled listFly-generated by statistical model
+CoverageKnown vocabularyAny probable "human" sequence
+AdvantageVery fast on exact wordsCovers unknown vocabulary words
+Example"sunshine" → ✓"sunsh1ne" potentially ✓
+<p>Markov covers cases where the password looks like a human word without being in any list.</p>
+<h3>14.4 Dictionary vs Credential Stuffing</h3>
+CriteriaDictionaryCredential Stuffing
+---------------------------------------------
+ObjectiveCracking a hashTest a specific login
+MechanismHash local computationRemote connection attempts
+SourceGeneric WordlistPair login/password leaks
+DefenceStrong hash algorithmRate limiting, MFA, IP blocking
+<p>Credential stuffing does not attack a hash — it directly tries login/password pairs on remote services. It is conceptually different from cracking, but shares the same data source (HIBP/fail).</p>
+<hr>
+<h2>15. Limitations of attack dictionary</h2>
+<h3>15.1 Intrinsic limits</h3>
+<strong>1. Known vocabulary only</strong>
+A invented password that does not resemble any existing word and is not in HiBP is impervious to pure dictionary attack. "Xqz7mK9pL" will never be in any wordlist.
+<strong>2. Language coverage</strong>
+An attacker targeting a French-speaking user without a French wordlist will miss words such as "ephemeral", "grenouille", or "bricolage" that are not in standard English wordlists.
+<strong>3. New passwords</strong>
+A credential that has just been created and has never fled will not be in HiBP — even if it is very common, it will have to wait until the next leak to find it.
+<strong>4. Very long passwords</strong>
+A password consisting of a long invented phrase ("MaGrandeAventure2024SousLesEtoiles") will be in no wordlist — even if each word taken separately is trivial. This is the idea behind the passphrases, treated by other attacks (Combinator, PRINCE).
+<h3>15.2 What Time2Crack's Calculation Does Not Model</h3>
+<strong>Context Wordlists</strong> : an attacker targeting a specific sector will build adapted wordlists (medical terms for hospitals, video game slang for gaming platforms). Time2Crack uses generic wordlists.
+<strong>Combined gross force Wordlists</strong> : Tools such as CeWL (Custom Word List Generator) can extract terms from the target website to build a custom wordlist. This level of targeting is not modelled.
+<strong>Recent leaks not yet in HIBP</strong> between the moment a leak occurs and its integration into HIBP, the compromised credentials circulate in private forums without being accessible via the public API.
+<strong>Hash algorithms not covered</strong> Time2Crack models 6 algorithms (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id). Algorithms such as SHA-512, scrypt, or PBKDF2 have different profiles.
+<hr>
+<h2>16. Effective defences</h2>
+<h3>16.1 What protects against dictionary attack</h3>
+<strong>Modern hash algorithm (bcrypt, Argon2id)</strong>
+This is the most effective defense on the server side.
+<li>MD5: crack in ~1 microsecond</li>
+<li>bcrypt cost 12 : crack in <strong>35 hours</strong></li>
+<li>Argon2id (recommended parameters): crack in <strong>years</strong></li>
+<p>The difference of 10+ orders of magnitude between MD5 and Argon2id makes the dictionary password "sun" immune in practice if protected by Argon2id — even if the attacker knows it is a French word.</p>
+<strong>Single salt per account</strong>
+A salt prevents pre-calculated table attacks and forces the attacker to recalculate individually for each account. It does not protect targeted wordlist attacks (the attacker can still test the 200,000 words with the salt), but invalidates the rainbow tables and makes massive attacks on large databases impracticable.
+<strong>Password length</strong>
+A password of a single dictionary word (8-10 characters) is vulnerable. A passphrase of 4-5 words ("cheval-lumière-forest-voyage") is resistant to the pure dictionary attack but not to the Combinator attack — hence the importance of the length AND the randomity.
+<strong>Randomly generated passwords</strong>
+The real solution: use a password manager that generates long random passwords (20+ characters of all types). These passwords will never be in any dictionary.
+<strong>Multifactor authentication (MFA)</strong>
+The MFA does not prevent crack offline (the attacker recovers hashs and cracks offline), but protects against credential stuffing (use cracked credentials to connect).
+<strong>Rate limiting and detecting anomalies</strong>
+Protects against online attacks (direct connection attempts), not against offline cracking of stolen hashs.
+<h3>16.2 What does not protect</h3>
+<strong>Simple leet substitutions</strong> : "password" → "p@ssw0rd" — see section 9.
+<strong>Added numbers at the end</strong> : "password" → "password1" — among the first rules tested.
+<strong>Initial payment</strong> : "password" → "Password" — standard capitalization rule.
+<strong>Figures and symbols if the word remains recognizable</strong> "sunshine!" is in any wordlist that includes "sunshine" with basic rules.
+<strong>Complexity imposed without length</strong> "P@s1w" meets the complexity criteria (maj, min, number, symbol) but is shorter and more predictable than "correcthorsebaterystaple".
+<h3>16.3 Practical recommendations</h3>
+<li><strong>Use a password manager</strong> (Bitwarden, 1Password, KeePass) — generates random passwords, you only have to remember the master password.</li>
+<li><strong>Enable MFA everywhere</strong> — even if the password is compromised, the attacker cannot connect.</li>
+<li><strong>Check HIBP regularly</strong> — whether his email is in known leaks.</li>
+<li><strong>Never reuse a password</strong> — credential stuffing exploits cross-services reuse.</li>
+<li><strong>For memorizable passwords</strong> : 5+ words passphrases <strong>random</strong> (not "horse-correct-battery-agrafe-violet" but words really drawn by lot).</li>
+<hr>
+<h2>17. References</h2>
+<h3>Primary sources (academic studies)</h3>
+<strong>Morris, R., &amp; Thompson, K. (1979).</strong> Password security: A case history.<em> Communications of the ACM, 22(11), 594–597.
+<li>First academic analysis of Unix password distribution</li>
+<li>Recognizes that ~1/3 passwords are common English words</li>
+<strong>Klein, D.V. (1990).</strong> </em>Foiling the cracker: A survey of, and improvements to, password security.<em> UNIX Security Symposium Proceedings, 5–14.
+<li>15,000 Unix password crack: 25% cracked in a few hours</li>
+<li>Document first wordlists and mutation rules</li>
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong> </em>Password cracking using probabilistic context-free grammars.<em> IEEE Symposium on Security and Privacy.
+<li>Basic reference on PCFG attack and comparison with pure dictionary attack</li>
+<li>Determines that dictionary words are found in the first 200,000 attempts of an orderly attack</li>
+<li><strong>Cited in Time2Crack</strong> for the HF calibration of the dictionary attack (multiplier 0.5)</li>
+<strong>Ur, B., Kelley, P. G., Komanduri, S., Lee, J., Maase, M., Shay, R., Vaniea, K., Bauer, L., &amp; Cranor, L. F. (2012).</strong> </em>How Does Your Password Measure Up? The Effect of Strength Meters on Password-User Choice.<em> 21st USENIX Security Symposium.
+<li>Analysis of the distribution of common words in real corpus</li>
+<li>Common words found in the first 100–10 000 attempts</li>
+<li><strong>Cited in Time2Crack</strong> for HF calibration <code>common ? 0.15</code> (top 10k level)</li>
+<strong>Bonneau, J (2012).</strong> </em>The science of singing: Analyzing an anonymous corpus of 70 million passwords.<em> IEEE Symposium on Security and Privacy.
+<li>Study of 70 million anonymized Yahoo passwords</li>
+<li>Quantifies the actual distribution of passwords, confirms the power law</li>
+<li>Measuring the effectiveness of credential stuffing (2–5% hit rate on real accounts)</li>
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong> </em>A study of probabilistic password models.<em> IEEE Symposium on Security and Privacy.
+<li>Comparison of probabilistic models (dictionary, Markov, PCFG) on real corpus</li>
+<li>Best64.rule prioritized → ~40% reduction in average time for dictionary words</li>
+<li><strong>Cited in Time2Crack</strong> for HF calibration of hybrid attack</li>
+<strong>Wheeler, D.L. (2016).</strong> </em>zxcvbn: Low-budget password strength estimate.<em> 25th USENIX Security Symposium, 157–173.
+<li>Force estimation system using wordlists and patterns</li>
+<li>Analysis of cognitive biases in password creation</li>
+<li>Measure the effectiveness of wordlists in relation to gross force</li>
+<strong>Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M. (2021).</strong> </em>Reducing bias in modelling real-world password strength via deep learning and dynamic dictionaries.<em> 30th USENIX Security Symposium.
+<li>Assessment of estimation models for actual attacks</li>
+<li>Confirms that dictionaries remain the most effective tool for common human passwords</li>
+<h3>Industrial sources</h3>
+<strong>Have I Been Pwned. (2024).</strong> </em>Pwned Passwords.<em> https://haveibeenpwned.com/Passwords
+<li>Basis of ~14 billion unique passwords from documented leaks</li>
+<li>k- anonymity API used by Time2Crack for real-time verification</li>
+<strong>Hive Systems. (2025).</strong> </em>2025 Hive Systems Password Table.<em>
+<li>Benchmarks 12× RTX 4090: MD5 2,027 GH/s, NTLM 3,462 GH/s, bcrypt cost 5 : 2,2 MH/s</li>
+<li><strong>Main source of hash rates used in Time2Crack</strong></li>
+<strong>Hashcat. (2025).</strong> </em>Hashcat — Advanced password recovery.<em>
+<li>Reference tool for GPU benchmarks</li>
+<li>Documentation of mutation rules (best64.rule, OneRuleToRuleThemAll)</li>
+<strong>Gosney, J (2012).</strong> </em>Strictures on Lee et al. and Probabilistic Password Cracking.<em> Passwordscon proceedings.
+<li>First publicly documented multi-GPU benchmarks</li>
+<li>Reference for calibration of rule-based attacks</li>
+<strong>Miessler, D. (2024).</strong> </em>SecLists — A collection of multiple types of lists used during security assessments.<em> GitHub.
+<li>Source of Wikipedia language wordlists used in Time2Crack</li>
+<li>Wordlists in English, French, Spanish, Portuguese, German, Turkish</li>
+<h3>Secondary sources (context)</h3>
+<strong>Troy Hunt. (2013).</strong> </em>Introduction 306 Million Freely Downloadable Pwned Passwords.<em> troyhunt.com.
+<li>Initial establishment of the HIBP service and explanation of the k-anonymity protocol</li>
+<strong>Thomas, K., et al. (2019).</strong> </em>Protecting accounts from credential stuffing with password break alerting.<em> 28th USENIX Security Symposium.
+<li>Google/Stanford study on the protection of compromised credentials</li>
+<li>Confirms the effectiveness of k-anonymity as a privacy mechanism</li>
+<strong>Wang, D., Cheng, H., Wang, P., Huang, X., &amp; Jian, G. (2016).</strong> </em>Zipf's law in passwords.<em> IEEE Transactions on Information Forensics and Security, 12(11), 2776–2791.
+<li>Mathematical formalization of power law in password distribution</li>
+<li>Confirms that Zipf distribution holds on all known large corpus</li>
+<h3>Web sources cited in the Time2Crack application</h3>
+<strong>IEEE Xplore (dictional reference).</strong>
+https://ieeexplore.ieee.org/document/6234435
+<li>Related source in <code>descDict</code> (app.js) for the order of coverage of top dictionaries.</li>
+<strong>HIBP API range (k- anonymity).</strong>
+https://api.pwnedpasswords.com/range/
+<li>Endpoint actually used by Time2Crack for k-anonymity verification (sha1 prefix request).</li>
+<strong>HIBP call pattern in code.</strong>
+https://api.pwnedpasswords.com/range/${prefix}
+<li>The exact form of the URL called in the document code examples (interpolated SHA-1 prefix).</li>
+<hr>
+</em>Document generated for Time2Crack Project — Version 1.0 — 2026-04-01<em>
+</em>Source code: <code>app.js</code> (functions <code>addDictionaryAttacks</code>, <code>isDictWord</code>, <code>deLeet</code>, <code>loadDictionary</code>, <code>applyHighFidelityCalibration</code>, <code>bloomHas</code>)*
+
+  </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

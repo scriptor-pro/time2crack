@@ -205,6 +205,36 @@
     }
   };
 
+  const HERO_TEXTS = {
+    fr: {
+      title: 'Si ton mot de passe est attaqué par un pirate, combien de temps va-t-il résister ?',
+    },
+    en: {
+      title: 'Test your password strength',
+    },
+    es: {
+      title: 'Comprueba la fuerza de tu contraseña',
+    },
+    pt: {
+      title: 'Teste a força da sua senha',
+    },
+    de: {
+      title: 'Testen Sie die Stärke Ihres Passworts',
+    },
+    it: {
+      title: 'Testa la forza della tua password',
+    },
+    tr: {
+      title: 'Şifrenizin gücünü test edin',
+    },
+    pl: {
+      title: 'Sprawdź siłę swojego hasła',
+    },
+    nl: {
+      title: 'Test de sterkte van je wachtwoord',
+    }
+  };
+
   function getPageContext() {
     const pathname = window.location.pathname;
     const segments = pathname.split('/').filter(Boolean);
@@ -215,6 +245,15 @@
     const pagePrefix = isMethodDir ? '../' : '';
     const texts = HEADER_TEXTS[lang] || HEADER_TEXTS.fr;
     return { lang, localized, isMethodDir, assetPrefix, pagePrefix, texts };
+  }
+
+  function getLanguageHref(targetLang) {
+    const pathname = window.location.pathname;
+    const segments = pathname.split('/').filter(Boolean);
+    const hasLangPrefix = LANGS.includes(segments[0]);
+    const rest = hasLangPrefix ? segments.slice(1).join('/') : segments.join('/');
+    const targetRest = rest || 'index.html';
+    return `/${targetLang}/${targetRest}`;
   }
 
   // Detect current page for active state
@@ -235,7 +274,9 @@
 
   function setupUI() {
     renderSharedHeader();
+    renderHomeHero();
     renderSharedFooter();
+    reorderHomeLayout();
 
     // Set active nav link (primary + secondary + drawer)
     const activeNavClass = pageToNavClass[pageName];
@@ -274,6 +315,85 @@
     document.dispatchEvent(new CustomEvent('includesLoaded'));
   }
 
+  function reorderHomeLayout() {
+    const inputGroup = document.querySelector('.input-group');
+    const results = document.querySelector('#results');
+    const hibpBadge = document.querySelector('#hibp-badge');
+    const bestAttackCard = document.querySelector('.best-attack-card');
+    const profileSelector = document.querySelector('.profile-selector');
+
+    if (inputGroup && hibpBadge && hibpBadge.parentElement !== inputGroup) {
+      inputGroup.appendChild(hibpBadge);
+    }
+
+    if (results && bestAttackCard && profileSelector) {
+      results.insertBefore(profileSelector, bestAttackCard.nextElementSibling);
+    }
+  }
+
+  function renderHomeHero() {
+    if (pageName !== 'index.html') return;
+
+    const main = document.querySelector('main');
+    if (!main || main.querySelector('.hero')) return;
+    const ctx = getPageContext();
+
+    if (!document.getElementById('hero-inline-style')) {
+      const style = document.createElement('style');
+      style.id = 'hero-inline-style';
+      style.textContent = `
+        .hero{margin-bottom:var(--space-4)}
+        .hero__grid{display:flex;flex-direction:column;gap:var(--space-3)}
+        .hero__media{margin:0;width:100%;max-width:560px;align-self:center;overflow:hidden}
+        .hero__media picture,.hero__media img{display:block;width:100%;max-width:100%;height:auto}
+        .hero__image{aspect-ratio:1344/768;object-fit:cover}
+        .hero__content{width:100%;max-width:560px;align-self:center}
+        .hero__title{width:100%;font-size:clamp(1.35rem,2.8vw,2rem);line-height:1.06;max-width:none}
+        @media (min-width:860px){
+          .hero{margin-bottom:var(--space-3)}
+          .hero__grid{gap:var(--space-3)}
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const { assetPrefix } = ctx;
+    const hero = document.createElement('section');
+    hero.className = 'hero';
+    hero.setAttribute('aria-labelledby', 'hero-title');
+    hero.innerHTML = `
+      <div class="hero__grid">
+        <figure class="hero__media">
+          <picture>
+            <source media="(min-width: 1100px)" srcset="${assetPrefix}hero/time2crack-password-desktop.png">
+            <source media="(min-width: 700px)" srcset="${assetPrefix}hero/time2crack-password-tablet.png">
+            <img
+              class="hero__image"
+              src="${assetPrefix}hero/time2crack-password-mobile.png"
+              alt="Password resistance illustration"
+              loading="eager"
+              fetchpriority="high"
+            >
+          </picture>
+        </figure>
+        <div class="hero__content">
+          <h1 class="hero__title" id="hero-title"></h1>
+        </div>
+      </div>
+    `;
+
+    const heroText = HERO_TEXTS[ctx.lang] || HERO_TEXTS.fr;
+    const heroTitle = hero.querySelector('#hero-title');
+    if (heroTitle) heroTitle.textContent = heroText.title;
+
+    const inputSection = main.querySelector('.input-section');
+    if (inputSection) {
+      main.insertBefore(hero, inputSection);
+    } else {
+      main.prepend(hero);
+    }
+  }
+
   function renderSharedHeader() {
     const header = document.getElementById('site-header');
     if (!header) return;
@@ -297,7 +417,10 @@
               <span class="dropdown-arrow">▼</span>
             </button>
             <menu id="lang-menu" class="lang-menu" hidden role="menu" aria-label="${texts.selectLanguage}">
-              ${Object.entries(LANGUAGE_NAMES).map(([code, label]) => `<button type="button" data-lang="${code}" class="lang-menu__item" role="menuitem">${label}</button>`).join('')}
+              ${Object.entries(LANGUAGE_NAMES).map(([code, label]) => {
+                const href = getLanguageHref(code);
+                return `<button type="button" data-lang="${code}" class="lang-menu__item" role="menuitem" onclick="localStorage.setItem('time2crack-lang','${code}');window.location.href='${href}';return false;">${label}</button>`;
+              }).join('')}
             </menu>
           </div>
         </div>
@@ -404,15 +527,15 @@
       </p>
 
       <div class="footer-social">
-        <a href="https://linkedin.com" title="LinkedIn" class="footer-social__link" aria-label="Suivez-nous sur LinkedIn">
+        <a href="https://www.linkedin.com/in/baudouinvanhumbeeck/" title="LinkedIn" class="footer-social__link" aria-label="Suivez-nous sur LinkedIn">
           <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true">
             <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
           </svg>
         </a>
-        <a href="https://bsky.social" title="Bluesky" class="footer-social__link" aria-label="Suivez-nous sur Bluesky">
+        <a href="https://bsky.app/profile/bvh.fyi" title="Bluesky" class="footer-social__link" aria-label="Suivez-nous sur Bluesky">
           <img src="${assetPrefix}bluesky-line.svg" alt="Bluesky" class="footer-social__icon" role="img" aria-hidden="true">
         </a>
-        <a href="https://fosstodon.org" title="Mastodon" class="footer-social__link" aria-label="Suivez-nous sur Mastodon">
+        <a href="https://mastodon.social/@baudouinvh" title="Mastodon" class="footer-social__link" aria-label="Suivez-nous sur Mastodon">
           <img src="${assetPrefix}mastodon-line.svg" alt="Mastodon" class="footer-social__icon" role="img" aria-hidden="true">
         </a>
       </div>
@@ -535,7 +658,6 @@
   function setupLanguageSelector() {
     const toggle = document.getElementById('lang-toggle');
     const menu = document.getElementById('lang-menu');
-    const items = menu?.querySelectorAll('.lang-menu__item') || [];
 
     if (!toggle || !menu) return;
 
@@ -545,16 +667,6 @@
       const isOpen = toggle.getAttribute('aria-expanded') === 'true';
       toggle.setAttribute('aria-expanded', String(!isOpen));
       menu.toggleAttribute('hidden');
-    });
-
-    // Sélectionner une langue
-    items.forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const newLang = item.getAttribute('data-lang');
-        localStorage.setItem('time2crack-lang', newLang);
-        window.location.href = `/${newLang}/index.html`;
-      });
     });
 
     // Fermer le menu si clic ailleurs

@@ -21,6 +21,8 @@
 
 'use strict';
 
+import { charsetSize, passwordLength } from '../charset.js';
+
 // ─── État interne ─────────────────────────────────────────────────────────────
 
 let DATA = null;
@@ -206,27 +208,5 @@ export function rankPCFG(password) {
  * @returns {number}
  */
 function computeBruteForceRank(password) {
-  const charsets = {
-    lower: 26,
-    upper: 26,
-    digit: 10,
-    symbol: 32, // ~32 symboles courants
-  };
-
-  let charset = new Set();
-  for (const c of password) {
-    if (/[a-z]/.test(c)) charset.add('lower');
-    else if (/[A-Z]/.test(c)) charset.add('upper');
-    else if (/[0-9]/.test(c)) charset.add('digit');
-    else charset.add('symbol');
-  }
-
-  let charsetSize = 0;
-  if (charset.has('lower')) charsetSize += charsets.lower;
-  if (charset.has('upper')) charsetSize += charsets.upper;
-  if (charset.has('digit')) charsetSize += charsets.digit;
-  if (charset.has('symbol')) charsetSize += charsets.symbol;
-
-  const len = password.length;
-  return Math.pow(charsetSize, len) / 2;
+  return Math.pow(charsetSize(password), passwordLength(password)) / 2;
 }

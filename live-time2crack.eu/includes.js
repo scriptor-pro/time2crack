@@ -503,14 +503,6 @@
 
         <div id="drawer-backdrop" class="drawer-backdrop" hidden aria-hidden="true"></div>
 
-        <div class="privacy-notice" role="note" aria-label="${texts.privacyLead}">
-          <span class="privacy-notice__icon" aria-hidden="true">🔒</span>
-          <div class="privacy-notice__text">
-            <strong>${texts.privacyLead}</strong>
-            ${texts.privacyBody1}
-            ${texts.privacyBody2}
-          </div>
-        </div>
       </header>
     `;
   }

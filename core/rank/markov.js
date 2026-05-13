@@ -19,6 +19,8 @@
 
 'use strict';
 
+import { passwordLength } from '../charset.js';
+
 // ─── État interne ─────────────────────────────────────────────────────────────
 
 let DATA = null; // Données chargées via init()
@@ -65,7 +67,7 @@ export function isReady() {
  * @returns {number} log10(P)
  */
 function logProbability(chars) {
-  const { starts, starts_total, bigrams, bigram_totals, trigrams, trigram_totals, char_totals, char_grand_total } = DATA;
+  const { starts, starts_total, bigrams, bigram_totals, trigrams, trigram_totals, char_totals } = DATA;
 
   let logP = 0;
 
@@ -148,7 +150,7 @@ export function rankMarkov(password) {
   if (!DATA) return { rank: null, model: 'markov' };
 
   const chars = [...password];
-  const len   = chars.length;
+  const len   = passwordLength(password);
 
   const logP = logProbability(chars);
 

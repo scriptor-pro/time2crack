@@ -87,10 +87,10 @@ function detectMask(password, lang = 'en') {
   const len = chars.length;
 
   // Convertit chaque caractère en classe positionnelle
-  // Inclut accents français et autres diactritiques (à, é, ç, etc.)
+  // Inclut accents français et autres diacritiques (à, é, ç, etc.)
   const classes = chars.map(c => {
-    if (/[A-ZÀÂÄÆÇÉÈÊËÌÎÏÑÒÔÖŒÚÙÛÜÝŸ]/i.test(c)) {
-      return /[A-Z]/.test(c) ? 'U' : 'L'; // Uppercase ou lowercase avec accents
+    if (/\p{L}/u.test(c)) {
+      return /\p{Lu}/u.test(c) ? 'U' : 'L';
     }
     if (/[0-9]/.test(c)) return 'D'; // Digit
     return 'S';                       // Symbol

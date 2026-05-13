@@ -277,10 +277,10 @@ function detectPassphraseConcatenated(pw, dictWords) {
  * Mot simple mal orthographié (ex: "peinttture") reste rejeté.
  */
 function detectPassphrase(pw, dictWords) {
-  // Séparateurs explicites (espace ou tiret entre mots alphabétiques)
-  // IMPORTANT: Use [ \-] to match space or hyphen, NOT [ -] which is a range!
-  // [ -] matches ASCII 32-45, including 14 unintended characters (!, ", #, $, %, etc.)
-  if (/[\p{L}]{2,}[ \-][\p{L}]{2,}/u.test(pw)) return true;
+  // Séparateurs explicites (espace, tiret ou underscore entre mots alphabétiques)
+  // IMPORTANT: Use [ _-] to match the literal separators, NOT [ -] which is a range.
+  // [ -] matches ASCII 32-45, including unintended characters (!, ", #, $, %, etc.)
+  if (/[\p{L}]{2,}[ _-][\p{L}]{2,}/u.test(pw)) return true;
 
   // Passphrases concaténées (mots dict reconnus)
   if (detectPassphraseConcatenated(pw, dictWords)) return true;

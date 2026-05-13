@@ -10,6 +10,7 @@
 
 'use strict';
 
+import { passwordLength } from '../charset.js';
 import { rankMask } from './mask.js';
 
 // Top passwords dans l'ordre de fréquence RockYou/HIBP.
@@ -172,7 +173,7 @@ export function rankDictionary(password, dictWords = null) {
       const mid = Math.floor(dictWords.size / 2);
       // Pour les longs mots allemands, une décomposition en composés peut être
       // plus informative qu'un rang médian générique.
-      if (password.length >= 9) {
+      if (passwordLength(password) >= 9) {
         const compound = rankGermanCompound(password, dictWords);
         if (compound && compound.rank < mid) return compound;
       }

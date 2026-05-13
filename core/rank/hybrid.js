@@ -9,6 +9,7 @@
 
 'use strict';
 
+import { passwordLength } from '../charset.js';
 import { rankDictionary } from './dictionary.js';
 
 // Déleetification helper (same as patterns.js but inline to avoid circular deps)
@@ -109,7 +110,7 @@ export function rankHybrid(password, dictWords = null) {
 
   // Estimation de la complexité de la transformation par rapport au mot de base.
   // On compte : (1) longueur du suffixe non-alpha, (2) nombre de substitutions leet internes.
-  const suffixLen = password.length - base.length;
+  const suffixLen = passwordLength(password) - passwordLength(base);
 
   // Substitutions leet internes : compte les symboles non-ambigus de leet-speak
   // @ a, 0 o, $ s (non-ambigus)

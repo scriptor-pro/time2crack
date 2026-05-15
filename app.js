@@ -3060,6 +3060,8 @@
   const crackDurationFast = $("crack-duration-fast");
   const resultSentenceFast = $("result-sentence-fast");
   const resultLabelFast = $("result-label-fast");
+  const bestAttackDuration = $("best-attack-duration");
+  const bestAttackMeta = $("best-attack-meta");
   const crackDatePro = $("crack-date-pro");
   const crackDurationPro = $("crack-duration-pro");
   const resultSentencePro = $("result-sentence-pro");
@@ -5812,6 +5814,8 @@
     if (isReal(crackDurationFast)) if (isReal(crackDurationFast)) crackDurationFast.textContent = "";
     if (isReal(crackDateFast)) if (isReal(crackDateFast)) crackDateFast.textContent = "—";
     if (isReal(resultSentenceFast)) if (isReal(resultSentenceFast)) resultSentenceFast.textContent = "";
+    if (isReal(bestAttackDuration)) bestAttackDuration.textContent = "—";
+    if (isReal(bestAttackMeta)) bestAttackMeta.textContent = "";
     if (isReal(liveDetailsVisible)) if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = true;
     if (isReal(vulnTagsEl)) if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = "";
   }
@@ -6063,6 +6067,8 @@
         crackDateFast.style.color = "";
       }
       if (isReal(resultSentenceFast)) resultSentenceFast.textContent = "";
+      if (isReal(bestAttackDuration)) bestAttackDuration.textContent = "—";
+      if (isReal(bestAttackMeta)) bestAttackMeta.textContent = "";
       if (isReal(resultLabelPro)) resultLabelPro.textContent = "—";
       if (isReal(crackDurationPro)) {
         crackDurationPro.textContent = "—";
@@ -6251,6 +6257,24 @@
     const fastSec = fastest ? fastest.sec : 0;
     const fastDur = fmtDuration(fastSec);
     const fastDt = fmtDate(fastSec);
+
+    // Best-attack card (nouvelle carte typographique)
+    if (isReal(bestAttackDuration)) {
+      bestAttackDuration.textContent = fastest ? fastDur.text : "—";
+    }
+    if (isReal(bestAttackMeta) && fastest) {
+      const guesses = fastest.sec != null && isFinite(fastest.sec) && fastest.rate > 0
+        ? Math.round(fastest.sec * fastest.rate)
+        : null;
+      const triesStr = guesses != null
+        ? guesses.toLocaleString(LANG === "fr" ? "fr-FR" : "en-US")
+        : "—";
+      const methLabel = LANG === "fr" ? "Nombre de tentatives" : "Number of attempts";
+      const meth = LANG === "fr" ? "méthode" : "method";
+      bestAttackMeta.innerHTML = methLabel + " : <strong>" + triesStr + "</strong> – " + meth + " : <strong>" + fastest.atk + "</strong>";
+    } else if (isReal(bestAttackMeta)) {
+      bestAttackMeta.textContent = "";
+    }
 
     if (isReal(crackDurationFast)) crackDurationFast.style.color = col;
     if (isReal(crackDateFast)) crackDateFast.style.color = col;

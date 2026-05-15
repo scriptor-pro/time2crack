@@ -3,6 +3,11 @@ node_modules/
 .venv/
 public/data/wordlists/
 public/data/corpus-*/
+v2/data/corpus-en/passwords-en-combined.txt
+v2/data/corpus-es/rockyou-training.txt
+v2/data/corpus-en/rockyou2021-en-filtered.txt
+v2/data/corpus-es/rockyou2021-es-combined.txt
 .env
 *.log
 .DS_Store
+hashmob.net_*

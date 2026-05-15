@@ -2990,12 +2990,11 @@
       }
     });
     syncA11yLabels();
-    renderAttackTabs();
-    updateAttackDescription();
-    updateHighFidelityUI();
+    const _hfStatus = safe("hf-status");
+    if (_hfStatus) _hfStatus.textContent = HIGH_FIDELITY ? t("hfModeOn") : t("hfModeOff");
     // Load dictionary for the new language (async, non-blocking)
     loadDictionary(lang);
-    // Re-render if there's content
+    // Re-render if there's content (covers renderAttackTabs + updateAttackDescription)
     if (_input && _input.value.length) render();
   }
 
@@ -3122,17 +3121,13 @@
   let HIGH_FIDELITY = false;
 
   function renderAttackTabs() {
-    // Re-render attack tabs with new language
-    if (input && input.value) {
-      render();
-    }
+    const _pw = safe("pw-input");
+    if (_pw && _pw.value) render();
   }
 
   function updateAttackDescription() {
-    // Update attack method description with new language
-    if (input && input.value) {
-      render();
-    }
+    const _pw = safe("pw-input");
+    if (_pw && _pw.value) render();
   }
 
   function updateHighFidelityUI() {

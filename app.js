@@ -1,6 +1,14 @@
 (function () {
   "use strict";
 
+  // Safe DOM access helper — returns null if element not found (caller must use isReal() check)
+  const safe = (id) => {
+    return document.getElementById(id);
+  };
+
+  // Check if element exists and is real (not null)
+  const isReal = (el) => el !== null && el !== undefined;
+
   // ============================================================
   // I18N
   // ============================================================
@@ -51,12 +59,10 @@
   let BLOOM_RESULT = null;   // "found" | "not_found" | "error" | null
 
   // ============================================================
-  // ML MODEL
+  // ML MODEL (ONNX Runtime)
   // ============================================================
-  let ML_MODEL = null;           // TensorFlow.js model
-  let ML_NORMALIZATION = null;   // Mean and std for feature normalization
+  let ML_NORMALIZATION = null;   // Mean and std for feature normalization (loaded with ONNX model)
   let ML_LOADING = false;        // Prevent double-load
-  const ML_PRED_CACHE = new Map(); // password -> probability
   const ML_MIN_LENGTH = 10;
   const ML_SCORE_MIN = 35;
   const ML_SCORE_MAX = 80;
@@ -294,7 +300,7 @@
       skip: "Aller au contenu principal",
       subtitle:
         "Et si un pirate s'en prenait à votre mot de passe\u00a0? Tapez-le pour voir combien de temps il résisterait. Tout est calculé sur votre appareil\u00a0— rien ne quitte votre navigateur.",
-      inputLabel: "Tester la solidité d'un mot de passe ici :",
+      inputLabel: "Testez votre mot de passe",
       placeholder: "Votre mot de passe…",
       show: "Afficher",
       hide: "Masquer",
@@ -1849,10 +1855,10 @@
   }
 
   function syncA11yLabels() {
-    const langToggleBtn = document.getElementById("lang-toggle");
+    const langToggleBtn = safe("lang-toggle");
     if (langToggleBtn) langToggleBtn.setAttribute("aria-label", t("languageAria") || "Change language");
 
-    if (barWrapper) barWrapper.setAttribute("aria-label", t("strengthAria"));
+    if (isReal(barWrapper)) barWrapper.setAttribute("aria-label", t("strengthAria"));
 
     if (resetBtn) resetBtn.setAttribute("aria-label", t("resetAria"));
 
@@ -1890,7 +1896,7 @@
     DICT_PENDING_LANG = null;
     
     // Show loading indicator
-    const dictLoadingEl = document.getElementById('dict-loading');
+    const dictLoadingEl = safe('dict-loading');
     if (dictLoadingEl) {
       dictLoadingEl.hidden = false;
     }
@@ -2016,110 +2022,19 @@
     },
   };
 
-  function mergeNumericMaps(baseMap, extraMap) {
-    const out = Object.assign({}, baseMap || {});
-    for (const [key, value] of Object.entries(extraMap || {})) {
-      if (!isFinite(value) || value <= 0) continue;
-      if (!isFinite(out[key]) || out[key] <= 0 || value < out[key]) {
-        out[key] = value;
-      }
-    }
-    return out;
-  }
-
-  function corpusStatsToPcfgCalibration(stats) {
-    if (!stats || typeof stats !== "object") return null;
-    const total = Number(stats.total_passwords || 0);
-    if (!isFinite(total) || total <= 0) return null;
-
-    const skeletonRanks = {};
-    for (const [key, count] of Object.entries(stats.skeletons || {})) {
-      if (!isFinite(count) || count <= 0) continue;
-      skeletonRanks[key] = Math.max(1, Math.round(total / count));
-    }
-
-    const shapeCounts = {};
-    for (const [skeletonKey, count] of Object.entries(stats.skeletons || {})) {
-      if (!isFinite(count) || count <= 0) continue;
-      const shapeKey = skeletonKey.replace(/\d+\+?/g, "").replace(/\d+/g, "");
-      shapeCounts[shapeKey] = (shapeCounts[shapeKey] || 0) + count;
-    }
-
-    const shapeRanks = {};
-    for (const [key, count] of Object.entries(shapeCounts)) {
-      if (!isFinite(count) || count <= 0) continue;
-      shapeRanks[key] = Math.max(1, Math.round(total / count));
-    }
-
-    const tokenRanks = { L: {}, D: {}, S: {} };
-    for (const cls of ["L", "D", "S"]) {
-      const buckets = (stats.segments && stats.segments[cls]) || {};
-      for (const [bucket, entry] of Object.entries(buckets)) {
-        const count = entry && typeof entry === "object" ? Number(entry.count || 0) : Number(entry || 0);
-        if (!isFinite(count) || count <= 0) continue;
-        tokenRanks[cls][bucket] = Math.max(1, Math.round(total / count));
-      }
-    }
-
-    return {
-      version: 1,
-      global: {
-        skeletonRanks,
-        shapeRanks,
-        tokenRanks,
-      },
-    };
-  }
-
-  function mergePcfgCalibration(base, extra) {
-    if (!extra) return base;
-    if (!base) return extra;
-
-    const gBase = base.global || {};
-    const gExtra = extra.global || {};
-
-    return {
-      ...base,
-      global: {
-        ...gBase,
-        defaultRank: gBase.defaultRank || gExtra.defaultRank || 50000,
-        skeletonRanks: mergeNumericMaps(gBase.skeletonRanks, gExtra.skeletonRanks),
-        shapeRanks: mergeNumericMaps(gBase.shapeRanks, gExtra.shapeRanks),
-        tokenRanks: {
-          L: mergeNumericMaps((gBase.tokenRanks || {}).L, (gExtra.tokenRanks || {}).L),
-          D: mergeNumericMaps((gBase.tokenRanks || {}).D, (gExtra.tokenRanks || {}).D),
-          S: mergeNumericMaps((gBase.tokenRanks || {}).S, (gExtra.tokenRanks || {}).S),
-        },
-        orderMultipliers: Object.assign({}, gBase.orderMultipliers || {}, gExtra.orderMultipliers || {}),
-        shapeMultipliers: Object.assign({}, gBase.shapeMultipliers || {}, gExtra.shapeMultipliers || {}),
-        classFallback: Object.assign({ L: 32, D: 10, S: 22 }, gBase.classFallback || {}, gExtra.classFallback || {}),
-      },
-      langs: base.langs || {},
-    };
-  }
-
   async function loadPcfgCalibration() {
     if (PCFG_CALIBRATION || PCFG_CALIB_LOADING) return;
     PCFG_CALIB_LOADING = true;
     try {
-      const [baseRes, corpusRes] = await Promise.all([
-        fetch("data/pcfg-calibration.json"),
-        fetch("data/corpus/common-zxcvbn-pcfg.json"),
-      ]);
-
-      let baseJson = null;
-      let corpusJson = null;
-
-      if (baseRes.ok) baseJson = await baseRes.json();
-      if (corpusRes.ok) corpusJson = await corpusRes.json();
-
-      const corpusCal = corpusStatsToPcfgCalibration(corpusJson);
-      if (baseJson && typeof baseJson === "object") {
-        PCFG_CALIBRATION = mergePcfgCalibration(baseJson, corpusCal);
-      } else if (corpusCal) {
-        PCFG_CALIBRATION = corpusCal;
-      }
-    } catch {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch("data/pcfg-calibration.json", { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error(res.status);
+      const json = await res.json();
+      if (json && typeof json === "object") PCFG_CALIBRATION = json;
+    } catch (err) {
+      console.warn("PCFG calibration load failed:", err.message);
       PCFG_CALIBRATION = null;
     } finally {
       PCFG_CALIB_LOADING = false;
@@ -2218,11 +2133,15 @@
     if (MARKOV_CALIBRATION || MARKOV_CALIB_LOADING) return;
     MARKOV_CALIB_LOADING = true;
     try {
-      const res = await fetch("data/markov-calibration.json");
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch("data/markov-calibration.json", { signal: controller.signal });
+      clearTimeout(timeout);
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
       if (json && typeof json === "object") MARKOV_CALIBRATION = json;
-    } catch {
+    } catch (err) {
+      console.warn("Markov calibration load failed:", err.message);
       MARKOV_CALIBRATION = null;
     } finally {
       MARKOV_CALIB_LOADING = false;
@@ -2328,11 +2247,15 @@
     if (NEURAL_CALIBRATION || NEURAL_CALIB_LOADING) return;
     NEURAL_CALIB_LOADING = true;
     try {
-      const res = await fetch("data/neural-calibration.json");
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch("data/neural-calibration.json", { signal: controller.signal });
+      clearTimeout(timeout);
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
       if (json && typeof json === "object") NEURAL_CALIBRATION = json;
-    } catch {
+    } catch (err) {
+      console.warn("Neural calibration load failed:", err.message);
       NEURAL_CALIBRATION = null;
     } finally {
       NEURAL_CALIB_LOADING = false;
@@ -2432,11 +2355,15 @@
     if (PRINCE_CALIBRATION || PRINCE_CALIB_LOADING) return;
     PRINCE_CALIB_LOADING = true;
     try {
-      const res = await fetch("data/prince-calibration.json");
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch("data/prince-calibration.json", { signal: controller.signal });
+      clearTimeout(timeout);
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
       if (json && typeof json === "object") PRINCE_CALIBRATION = json;
-    } catch {
+    } catch (err) {
+      console.warn("Prince calibration load failed:", err.message);
       PRINCE_CALIBRATION = null;
     } finally {
       PRINCE_CALIB_LOADING = false;
@@ -2497,9 +2424,9 @@
     if (BLOOM_LOADING || BLOOM_LOADED) return;
     BLOOM_LOADING = true;
 
-    const bloomLoadingEl = $("bloom-loading");
-    const bloomBtnEl = $("bloom-check-btn");
-    const bloomTriggerEl = $("bloom-trigger");
+    const bloomLoadingEl = safe("bloom-loading");
+    const bloomBtnEl = safe("bloom-check-btn");
+    const bloomTriggerEl = safe("bloom-trigger");
 
     if (bloomLoadingEl) bloomLoadingEl.hidden = false;
     if (bloomBtnEl) bloomBtnEl.disabled = true;
@@ -2560,12 +2487,12 @@
    * Update bloom filter UI banners based on state
    */
   function updateBloomBanner(state) {
-    const bannerEl = $("bloom-banner");
-    const safeEl = $("bloom-safe");
-    const errorEl = $("bloom-error");
-    const badge = $("rockyou-status-badge");
-    const hintEl = $("rockyou-hint");
-    const wrapperEl = $("qp-rockyou-wrapper");
+    const bannerEl = safe("bloom-banner");
+    const safeEl = safe("bloom-safe");
+    const errorEl = safe("bloom-error");
+    const badge = safe("rockyou-status-badge");
+    const hintEl = safe("rockyou-hint");
+    const wrapperEl = safe("qp-rockyou-wrapper");
 
     if (bannerEl) bannerEl.hidden = state !== "found";
     if (safeEl) safeEl.hidden = state !== "not_found";
@@ -2966,7 +2893,7 @@
    */
   async function predictHumanPattern(pw) {
     // Lazy load ML model on first prediction
-    if (!ML_SESSION && ML_NORMALIZATION == null) {
+    if (!ML_SESSION || !ML_NORMALIZATION) {
       await loadMLModel();
     }
 
@@ -3017,7 +2944,7 @@
         : "When will your password be cracked?");
     
     // Update canonical URL dynamically for SEO
-    const canonicalLink = document.getElementById('canonical-link');
+    const canonicalLink = safe('canonical-link');
     if (canonicalLink) {
       canonicalLink.setAttribute('href', `https://time2crack.eu/?lang=${lang}`);
     }
@@ -3040,7 +2967,7 @@
     if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
     toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
     // Update lang selector (globe button + menu)
-    const langCodeSpan = document.getElementById("lang-code");
+    const langCodeSpan = safe("lang-code");
     if (langCodeSpan) {
       langCodeSpan.textContent = lang.toUpperCase();
     }
@@ -3064,9 +2991,9 @@
   }
 
   // Lang selector: toggle dropdown menu
-  const langToggle = document.getElementById("lang-toggle");
-  const langMenu = document.getElementById("lang-menu");
-  const langSelector = document.getElementById("lang-selector");
+  const langToggle = safe("lang-toggle");
+  const langMenu = safe("lang-menu");
+  const langSelector = safe("lang-selector");
   
   if (langToggle && langMenu) {
     langToggle.addEventListener("click", (e) => {
@@ -3105,8 +3032,21 @@
     }
   });
 
-  const $ = (id) => document.getElementById(id);
-  const input = $("password-input");
+  // Defer password analyzer initialization to DOMContentLoaded
+  // This ensures DOM is ready and prevents crashes on pages without password input
+  document.addEventListener("DOMContentLoaded", () => {
+    const $ = (id) => safe(id);
+    const input = $("pw-input");
+
+    // If page doesn't have password input, don't initialize analyzer
+    if (!input) return;
+
+    // Check for critical elements required by the analyzer
+    const resultsDiv = $("results");
+    if (!resultsDiv) return; // Can't render results without results div
+
+  // Only run password analysis code on pages that have the password input (index + generator)
+  if (input) {
   const toggleBtn = $("toggle-visibility");
   const strengthIcon = $("strength-icon");
   const strengthLabel = $("strength-label");
@@ -3120,6 +3060,8 @@
   const crackDurationFast = $("crack-duration-fast");
   const resultSentenceFast = $("result-sentence-fast");
   const resultLabelFast = $("result-label-fast");
+  const bestAttackDuration = $("best-attack-duration");
+  const bestAttackMeta = $("best-attack-meta");
   const crackDatePro = $("crack-date-pro");
   const crackDurationPro = $("crack-duration-pro");
   const resultSentencePro = $("result-sentence-pro");
@@ -3169,6 +3111,20 @@
   let selectedProfileMult = 12;
   let userPinnedAlgo = false; // true once user manually changes ct-algo select
   let HIGH_FIDELITY = false;
+
+  function renderAttackTabs() {
+    // Re-render attack tabs with new language
+    if (input && input.value) {
+      render();
+    }
+  }
+
+  function updateAttackDescription() {
+    // Update attack method description with new language
+    if (input && input.value) {
+      render();
+    }
+  }
 
   function updateHighFidelityUI() {
     if (!hfStatus) return;
@@ -3471,7 +3427,7 @@
   }
 
   // Toggle visibility
-  toggleBtn.addEventListener("click", () => {
+  if (toggleBtn) toggleBtn.addEventListener("click", () => {
     const show = input.type === "password";
     input.type = show ? "text" : "password";
     const textSpan = toggleBtn.querySelector("span");
@@ -3728,6 +3684,14 @@
 
     return softCapGuesses(Math.min(blendedRank, full), MARKOV_SOFTCAP_KNEE, MARKOV_MAX_GUESSES);
   }
+
+  // PRINCE parameters (v2 rank-based model) — moved here to avoid TDZ references
+  const PRINCE_SOFTCAP_KNEE = 1e15;
+  const PRINCE_MAX_GUESSES = 1e19;
+
+  // Neural guessing parameters (v2 rank-based model) — moved here to avoid TDZ references
+  const NEURAL_SOFTCAP_KNEE = 1e15;
+  const NEURAL_MAX_GUESSES = 1e19;
 
   function getNeuralProfile(lang) {
     const source = NEURAL_CALIBRATION || DEFAULT_NEURAL_CALIBRATION;
@@ -4014,10 +3978,6 @@
   // Advanced rule engine keyspace (hashcat/JtR rule stacks)
   const RULE_KEYSPACE = 250e6;
 
-  // PRINCE parameters (v2 rank-based model)
-  const PRINCE_SOFTCAP_KNEE = 1e15;
-  const PRINCE_MAX_GUESSES = 1e19;
-
   // Morphological variants around dictionary roots
   // Kiesel et al. 2022 (PassMorph): ~150 variants/word (inflections + leet + diacritics) × 200k words
   const MORPH_KEYSPACE = 30e6;
@@ -4026,10 +3986,6 @@
   // Bonneau et al. 2012 (IEEE S&P): OSINT-driven attack generates 10^3–10^5 usable candidates
   // CUPP README: 600–2000 candidates for a full profile; 500k is already generous with permutations
   const TARGETED_KEYSPACE = 500_000;
-
-  // Neural guessing parameters (v2 rank-based model)
-  const NEURAL_SOFTCAP_KNEE = 1e15;
-  const NEURAL_MAX_GUESSES = 1e19;
 
   // High-fidelity calibration controls
   const HF_MULT_MIN = 0.08;
@@ -5839,27 +5795,29 @@
   function setPendingState() {
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
-    resetBtn.classList.add("visible");
+    if (resetBtn) resetBtn.classList.add("visible");
     
     // Reset strength bar segments
     strengthSegments.forEach((seg) => seg.classList.remove("active"));
     if (strengthIcon) strengthIcon.textContent = "—";
-    if (strengthLabel) {
+    if (isReal(strengthLabel)) {
       strengthLabel.textContent = "—";
       strengthLabel.style.color = "";
     }
-    if (strengthBits) strengthBits.textContent = "—";
-    if (barWrapper) {
+    if (isReal(strengthBits)) strengthBits.textContent = "—";
+    if (isReal(barWrapper)) {
       barWrapper.classList.remove("strong");
       barWrapper.setAttribute("aria-valuenow", "0");
       barWrapper.setAttribute("aria-valuetext", "No password entered");
     }
-    resultLabelFast.textContent = "—";
-    crackDurationFast.textContent = "";
-    crackDateFast.textContent = "—";
-    resultSentenceFast.textContent = "";
-    liveDetailsVisible.hidden = true;
-    vulnTagsEl.innerHTML = "";
+    if (isReal(resultLabelFast)) if (isReal(resultLabelFast)) resultLabelFast.textContent = "—";
+    if (isReal(crackDurationFast)) if (isReal(crackDurationFast)) crackDurationFast.textContent = "";
+    if (isReal(crackDateFast)) if (isReal(crackDateFast)) crackDateFast.textContent = "—";
+    if (isReal(resultSentenceFast)) if (isReal(resultSentenceFast)) resultSentenceFast.textContent = "";
+    if (isReal(bestAttackDuration)) bestAttackDuration.textContent = "—";
+    if (isReal(bestAttackMeta)) bestAttackMeta.textContent = "";
+    if (isReal(liveDetailsVisible)) if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = true;
+    if (isReal(vulnTagsEl)) if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = "";
   }
 
   input.addEventListener("input", () => {
@@ -6013,8 +5971,8 @@
   }
 
   function renderCharacterAnalysis(pw) {
-    const wrapper = document.getElementById("character-analysis-wrapper");
-    const container = document.getElementById("character-analysis");
+    const wrapper = safe("character-analysis-wrapper");
+    const container = safe("character-analysis");
 
     // Element may not exist (removed with Advanced Details panel)
     if (!wrapper) return;
@@ -6043,8 +6001,8 @@
 
   // Render heatmap in real-time (always visible, below crack time)
   function renderCharacterAnalysisLive(pw) {
-    const wrapper = document.getElementById("character-analysis-live-wrapper");
-    const container = document.getElementById("character-analysis-live");
+    const wrapper = safe("character-analysis-live-wrapper");
+    const container = safe("character-analysis-live");
 
     // Element must exist (required for real-time display)
     if (!wrapper || !container) return;
@@ -6078,45 +6036,57 @@
     const pw = inputPw;
 
     if (inputEmpty) {
-      resetBtn.classList.remove("visible");
+      if (resetBtn) resetBtn.classList.remove("visible");
       resultsDiv.classList.add("visible");
-      resultsDiv.classList.remove("is-empty");
+      resultsDiv.classList.add("is-empty");
       if (attackerFrame) attackerFrame.hidden = false;
 
       // Neutral strength state (visible placeholders)
       strengthSegments.forEach((seg) => seg.classList.remove("active"));
       if (strengthIcon) strengthIcon.textContent = "—";
-      if (strengthLabel) {
+      if (isReal(strengthLabel)) {
         strengthLabel.textContent = "—";
         strengthLabel.style.color = "";
       }
-      if (strengthBits) strengthBits.textContent = "—";
-      if (barLabel) barLabel.style.display = "flex";
-      if (barWrapper) {
+      if (isReal(strengthBits)) strengthBits.textContent = "—";
+      if (isReal(barLabel)) barLabel.style.display = "flex";
+      if (isReal(barWrapper)) {
         barWrapper.classList.remove("strong");
         barWrapper.setAttribute("aria-valuenow", "0");
         barWrapper.setAttribute("aria-valuetext", "No password entered");
       }
 
       // Reset attacker cards to neutral "—" state (mirrors initial HTML)
-      resultLabelFast.textContent = "—";
-      crackDurationFast.textContent = "—";
-      crackDurationFast.style.color = "";
-      crackDateFast.textContent = "—";
-      crackDateFast.style.color = "";
-      resultSentenceFast.textContent = "";
-      if (resultLabelPro) resultLabelPro.textContent = "—";
-      if (crackDurationPro) { crackDurationPro.textContent = "—"; crackDurationPro.style.color = ""; }
-      if (crackDatePro) { crackDatePro.textContent = "—"; crackDatePro.style.color = ""; }
-      if (resultSentencePro) resultSentencePro.textContent = "";
+      if (isReal(resultLabelFast)) resultLabelFast.textContent = "—";
+      if (isReal(crackDurationFast)) {
+        crackDurationFast.textContent = "—";
+        crackDurationFast.style.color = "";
+      }
+      if (isReal(crackDateFast)) {
+        crackDateFast.textContent = "—";
+        crackDateFast.style.color = "";
+      }
+      if (isReal(resultSentenceFast)) resultSentenceFast.textContent = "";
+      if (isReal(bestAttackDuration)) bestAttackDuration.textContent = "—";
+      if (isReal(bestAttackMeta)) bestAttackMeta.textContent = "";
+      if (isReal(resultLabelPro)) resultLabelPro.textContent = "—";
+      if (isReal(crackDurationPro)) {
+        crackDurationPro.textContent = "—";
+        crackDurationPro.style.color = "";
+      }
+      if (isReal(crackDatePro)) {
+        crackDatePro.textContent = "—";
+        crackDatePro.style.color = "";
+      }
+      if (resultSentencePro) if (isReal(resultSentencePro)) resultSentencePro.textContent = "";
 
       // Reset quality/pattern/HIBP badges to "—"
       if (qualityBadge) { qualityBadge.textContent = "—"; qualityBadge.style.background = ""; qualityBadge.style.color = ""; }
       if (patternBadge) { patternBadge.textContent = "—"; patternBadge.style.background = ""; patternBadge.style.color = ""; }
 
       // Reset visible details when empty
-      vulnTagsEl.innerHTML = "";
-      liveDetailsVisible.hidden = true;
+      if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = "";
+      if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = true;
       if (ctFastestValue) {
         ctFastestValue.textContent = "—";
         ctFastestValue.style.color = "";
@@ -6136,7 +6106,7 @@
       return;
     }
 
-    resetBtn.classList.add("visible");
+    if (resetBtn) resetBtn.classList.add("visible");
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
     if (attackerFrame) attackerFrame.hidden = false;  // Show force bar
@@ -6202,23 +6172,23 @@
     });
     
     // Icon + label (Forget et al. 2008: +58% comprehension)
-    if (barLabel) barLabel.style.display = "flex";
+    if (isReal(barLabel)) barLabel.style.display = "flex";
     if (strengthIcon) strengthIcon.textContent = scoreIcon(sc);
-    if (strengthLabel) {
+    if (isReal(strengthLabel)) {
       strengthLabel.textContent = scoreText(sc);
       strengthLabel.style.color = col;
     }
-    if (strengthBits) {
+    if (isReal(strengthBits)) {
       const bits = Math.round(ent);
       strengthBits.textContent = `(${bits} bits)`;
     }
-    if (barWrapper) {
+    if (isReal(barWrapper)) {
       barWrapper.setAttribute("aria-valuenow", sc);
       barWrapper.setAttribute("aria-valuetext", scoreText(sc));
     }
 
     // Update strength bar color indicator
-    if (barWrapper) {
+    if (isReal(barWrapper)) {
       if (sc >= 60) {
         barWrapper.classList.add("strong");
       } else {
@@ -6227,13 +6197,13 @@
     }
 
     // Live details visible (always visible below heatmap)
-    detailLengthLive.textContent = pw.length;
-    detailCharsetLive.textContent = cs;
-    detailEntropyLive.textContent = Math.round(ent);
-    detailCombosLive.textContent =
+    if (isReal(detailLengthLive)) detailLengthLive.textContent = pw.length;
+    if (isReal(detailCharsetLive)) detailCharsetLive.textContent = cs;
+    if (isReal(detailEntropyLive)) detailEntropyLive.textContent = Math.round(ent);
+    if (isReal(detailCombosLive)) detailCombosLive.textContent =
       ent > 60 ? "2^" + Math.round(ent) : fmtBig(Math.pow(2, ent));
 
-    liveDetailsVisible.hidden = false;
+    if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = false;
 
     // Tags
     const vulns = getVulns(pw);
@@ -6246,7 +6216,7 @@
       vulns.push({ t: t("vMLHuman") + ` (${Math.round(mlProb * 100)}%)`, l: "warn" });
     }
     
-    vulnTagsEl.innerHTML = vulns
+    if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = vulns
       .map(
         (v) =>
           '<span class="vuln-tag ' +
@@ -6288,8 +6258,26 @@
     const fastDur = fmtDuration(fastSec);
     const fastDt = fmtDate(fastSec);
 
-    crackDurationFast.style.color = col;
-    crackDateFast.style.color = col;
+    // Best-attack card (nouvelle carte typographique)
+    if (isReal(bestAttackDuration)) {
+      bestAttackDuration.textContent = fastest ? fastDur.text : "—";
+    }
+    if (isReal(bestAttackMeta) && fastest) {
+      const guesses = fastest.sec != null && isFinite(fastest.sec) && fastest.rate > 0
+        ? Math.round(fastest.sec * fastest.rate)
+        : null;
+      const triesStr = guesses != null
+        ? guesses.toLocaleString(LANG === "fr" ? "fr-FR" : "en-US")
+        : "—";
+      const methLabel = LANG === "fr" ? "Nombre de tentatives" : "Number of attempts";
+      const meth = LANG === "fr" ? "méthode" : "method";
+      bestAttackMeta.innerHTML = methLabel + " : <strong>" + triesStr + "</strong> – " + meth + " : <strong>" + fastest.atk + "</strong>";
+    } else if (isReal(bestAttackMeta)) {
+      bestAttackMeta.textContent = "";
+    }
+
+    if (isReal(crackDurationFast)) crackDurationFast.style.color = col;
+    if (isReal(crackDateFast)) crackDateFast.style.color = col;
 
     // Map attack types to methodology anchor IDs
     const attackAnchorMap = {
@@ -6317,11 +6305,11 @@
     const fastestConfidenceText = fastest ? confidenceText(fastest.confidence) : "";
 
     if (fastDur.instant) {
-      resultLabelFast.textContent = fastest
+      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest
         ? fastest.atk + " — " + fastest.hash
         : "";
-      crackDurationFast.textContent = t("lessSec");
-      crackDateFast.textContent = t("now");
+      if (isReal(crackDurationFast)) crackDurationFast.textContent = t("lessSec");
+      if (isReal(crackDateFast)) crackDateFast.textContent = t("now");
       resultSentenceFast.innerHTML =
         t("instantVia") +
         (fastest ? " via " + fastest.atk + "." : ".") +
@@ -6329,19 +6317,19 @@
         fastestConfidenceText +
         methodAnchor;
     } else if (fastDur.inf || !fastDur.ok) {
-      resultLabelFast.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
-      crackDurationFast.textContent = fastDur.text;
-      crackDateFast.textContent = t("beyondDate");
-      resultSentenceFast.innerHTML = fastest 
+      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
+      if (isReal(crackDurationFast)) crackDurationFast.textContent = fastDur.text;
+      if (isReal(crackDateFast)) crackDateFast.textContent = t("beyondDate");
+      if (isReal(resultSentenceFast)) resultSentenceFast.innerHTML = fastest 
         ? t("unreachableFastest").replace("{attack}", "<strong>" + fastest.atk + "</strong>") +
             (fastestMethodDesc ? " " + fastestMethodDesc : "") +
             fastestConfidenceText +
             methodAnchor
         : t("unreachable") + fastestConfidenceText + methodAnchor;
     } else {
-      resultLabelFast.textContent = fastest.atk + " — " + fastest.hash;
-      crackDurationFast.textContent = fastDur.text;
-      crackDateFast.textContent = fastDt || t("beyondDate");
+      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest.atk + " — " + fastest.hash;
+      if (isReal(crackDurationFast)) crackDurationFast.textContent = fastDur.text;
+      if (isReal(crackDateFast)) crackDateFast.textContent = fastDt || t("beyondDate");
       resultSentenceFast.innerHTML =
         t("via") +
         " <strong>" +
@@ -6361,11 +6349,11 @@
     const proDt = fmtDate(proSec);
 
     if (proDur.instant) {
-      resultLabelPro.textContent = fastest
+      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest
         ? fastest.atk + " — " + fastest.hash
         : "";
-      crackDurationPro.textContent = t("lessSec");
-      crackDatePro.textContent = t("now");
+      if (isReal(crackDurationPro)) crackDurationPro.textContent = t("lessSec");
+      if (isReal(crackDatePro)) crackDatePro.textContent = t("now");
       resultSentencePro.innerHTML =
         t("instantVia") +
         (fastest ? " via " + fastest.atk + "." : ".") +
@@ -6373,19 +6361,19 @@
         fastestConfidenceText +
         methodAnchor;
     } else if (proDur.inf || !proDur.ok) {
-      resultLabelPro.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
-      crackDurationPro.textContent = proDur.text;
-      crackDatePro.textContent = t("beyondDate");
-      resultSentencePro.innerHTML = fastest 
+      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
+      if (isReal(crackDurationPro)) crackDurationPro.textContent = proDur.text;
+      if (isReal(crackDatePro)) crackDatePro.textContent = t("beyondDate");
+      if (isReal(resultSentencePro)) resultSentencePro.innerHTML = fastest 
         ? t("unreachableFastest").replace("{attack}", "<strong>" + fastest.atk + "</strong>") +
             (fastestMethodDesc ? " " + fastestMethodDesc : "") +
             fastestConfidenceText +
             methodAnchor
         : t("unreachable") + fastestConfidenceText + methodAnchor;
     } else {
-      resultLabelPro.textContent = fastest.atk + " — " + fastest.hash;
-      crackDurationPro.textContent = proDur.text;
-      crackDatePro.textContent = proDt || t("beyondDate");
+      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest.atk + " — " + fastest.hash;
+      if (isReal(crackDurationPro)) crackDurationPro.textContent = proDur.text;
+      if (isReal(crackDatePro)) crackDatePro.textContent = proDt || t("beyondDate");
       resultSentencePro.innerHTML =
         t("via") +
         " <strong>" +
@@ -6608,25 +6596,27 @@
   }
 
   // Reset
-  resetBtn.addEventListener("click", () => {
-    input.value = "";
-    input.type = "password";
-    const textSpan = toggleBtn.querySelector("span");
-    if (textSpan) textSpan.textContent = t("show");
-    toggleBtn.setAttribute("aria-label", t("showAria"));
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      input.value = "";
+      input.type = "password";
+      const textSpan = toggleBtn.querySelector("span");
+      if (textSpan) textSpan.textContent = t("show");
+      toggleBtn.setAttribute("aria-label", t("showAria"));
 
-    // Cancel pending renders/checks and force a fresh empty-state render
-    clearTimeout(timer);
-    userPinnedAlgo = false;
-    selectedAlgo = "sha256";
-    if (ctAlgo) ctAlgo.value = "sha256";
-    if (hibpAbort) hibpAbort.abort();
-    clearTimeout(hibpDebounce);
-    lastCheckedPw = "";
+      // Cancel pending renders/checks and force a fresh empty-state render
+      clearTimeout(timer);
+      userPinnedAlgo = false;
+      selectedAlgo = "sha256";
+      if (ctAlgo) ctAlgo.value = "sha256";
+      if (hibpAbort) hibpAbort.abort();
+      clearTimeout(hibpDebounce);
+      lastCheckedPw = "";
 
-    render();
-    input.focus();
-  });
+      render();
+      input.focus();
+    });
+  }
 
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -6638,7 +6628,7 @@
   // ============================================================
   // CHARACTER PREVIEW (brief reveal on type)
   // ============================================================
-  const charPreview = document.getElementById('char-preview');
+  const charPreview = safe('char-preview');
   let previewTimeout = null;
   let lastLength = 0;
 
@@ -6678,7 +6668,7 @@
   // INFO TOOLTIP
   // ============================================================
   const tooltipTrigger = document.querySelector('.info-tooltip-trigger');
-  const tooltip = document.getElementById('speed-tooltip');
+  const tooltip = safe('speed-tooltip');
   
   if (tooltipTrigger && tooltip) {
     let isTooltipVisible = false;
@@ -6766,10 +6756,10 @@
 
   // Test button (currently just triggers analysis, password is analyzed on input)
   // Initialize: hide strength label on page load
-  if (barLabel) barLabel.style.display = "none";
+  if (isReal(barLabel)) barLabel.style.display = "none";
 
   // Strength info tooltip toggle
-  if (strengthInfoBtn && strengthTooltip) {
+  if (isReal(strengthInfoBtn) && isReal(strengthTooltip)) {
     strengthInfoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       strengthTooltip.hidden = !strengthTooltip.hidden;
@@ -6784,24 +6774,26 @@
   }
 
   // Copy button
-  copyBtn.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(input.value);
-      
-      // Visual feedback - change aria-label since no visible text
-      copyBtn.classList.add('copied');
-      const originalLabel = copyBtn.getAttribute('aria-label');
-      copyBtn.setAttribute('aria-label', t('copied'));
-      
-      // Reset after 2 seconds
-      setTimeout(() => {
-        copyBtn.classList.remove('copied');
-        copyBtn.setAttribute('aria-label', originalLabel);
+  if (isReal(copyBtn)) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(input.value);
+
+        // Visual feedback - change aria-label since no visible text
+        copyBtn.classList.add('copied');
+        const originalLabel = copyBtn.getAttribute('aria-label');
+        copyBtn.setAttribute('aria-label', t('copied'));
+
+        // Reset after 2 seconds
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.setAttribute('aria-label', originalLabel);
       }, 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  });
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+  }
 
   // Hide copy button when user types
   input.addEventListener('input', () => {
@@ -6830,7 +6822,7 @@
       });
       // Show selected panel
       const panelId = tab.getAttribute("aria-controls");
-      const panel = document.getElementById(panelId);
+      const panel = safe(panelId);
       if (panel) panel.hidden = false;
     });
   });
@@ -6846,14 +6838,18 @@
       if (!BLOOM_LOADED && !BLOOM_LOADING) loadBloomFilter();
     });
   }
+  } // End of: if (input) block
 
   // Initialize i18n and load dictionary on page load
   // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
-  setLang(LANG);
-  loadDictionary(LANG); // Load in background, don't block initialization
-  loadPcfgCalibration();
-  loadMarkovCalibration();
-  loadNeuralCalibration();
-  loadPrinceCalibration();
-  render(); // Keep layout fully visible even with empty input
+  if (input) {
+    setLang(LANG);
+    loadDictionary(LANG); // Load in background, don't block initialization
+    loadPcfgCalibration();
+    loadMarkovCalibration();
+    loadNeuralCalibration();
+    loadPrinceCalibration();
+    render(); // Keep layout fully visible even with empty input
+  }
+  }); // End DOMContentLoaded
 })();

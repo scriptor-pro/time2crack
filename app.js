@@ -2962,10 +2962,14 @@
       if (I[lang][k]) el.placeholder = I[lang][k];
     });
     // Update toggle button text (preserve icon)
-    const isVisible = input.type === "text";
-    const textSpan = toggleBtn.querySelector("span");
-    if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
-    toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+    const _input = safe("pw-input");
+    const _toggleBtn = safe("toggle-visibility");
+    if (_input && _toggleBtn) {
+      const isVisible = _input.type === "text";
+      const textSpan = _toggleBtn.querySelector("span");
+      if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
+      _toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+    }
     // Update lang selector (globe button + menu)
     const langCodeSpan = safe("lang-code");
     if (langCodeSpan) {
@@ -2987,7 +2991,7 @@
     // Load dictionary for the new language (async, non-blocking)
     loadDictionary(lang);
     // Re-render if there's content
-    if (input.value.length) render();
+    if (_input && _input.value.length) render();
   }
 
   // Lang selector: toggle dropdown menu

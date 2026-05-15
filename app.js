@@ -46,11 +46,9 @@
 
   // Neural calibration profiles (lazy-loaded, fallback to built-in defaults)
   let NEURAL_CALIBRATION = null;
-  let NEURAL_CALIB_LOADING = false;
 
   // PRINCE calibration profiles (lazy-loaded, fallback to built-in defaults)
   let PRINCE_CALIBRATION = null;
-  let PRINCE_CALIB_LOADING = false;
 
   // RockYou Bloom Filter (lazy-loaded on user request)
   let BLOOM_FILTER = null;   // { bitArray: Uint8Array, m: number, k: number } | null
@@ -2247,25 +2245,6 @@
     },
   };
 
-  async function loadNeuralCalibration() {
-    if (NEURAL_CALIBRATION || NEURAL_CALIB_LOADING) return;
-    NEURAL_CALIB_LOADING = true;
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/neural-calibration.json", { signal: controller.signal });
-      clearTimeout(timeout);
-      if (!res.ok) throw new Error(res.status);
-      const json = await res.json();
-      if (json && typeof json === "object") NEURAL_CALIBRATION = json;
-    } catch (err) {
-      console.warn("Neural calibration load failed:", err.message);
-      NEURAL_CALIBRATION = null;
-    } finally {
-      NEURAL_CALIB_LOADING = false;
-      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
-    }
-  }
 
   const DEFAULT_PRINCE_CALIBRATION = {
     version: 1,
@@ -2355,25 +2334,6 @@
     },
   };
 
-  async function loadPrinceCalibration() {
-    if (PRINCE_CALIBRATION || PRINCE_CALIB_LOADING) return;
-    PRINCE_CALIB_LOADING = true;
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/prince-calibration.json", { signal: controller.signal });
-      clearTimeout(timeout);
-      if (!res.ok) throw new Error(res.status);
-      const json = await res.json();
-      if (json && typeof json === "object") PRINCE_CALIBRATION = json;
-    } catch (err) {
-      console.warn("Prince calibration load failed:", err.message);
-      PRINCE_CALIBRATION = null;
-    } finally {
-      PRINCE_CALIB_LOADING = false;
-      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
-    }
-  }
 
   // ============================================================
   // ROCKYOU BLOOM FILTER (lazy-loaded)
@@ -6853,8 +6813,6 @@
     loadDictionary(LANG); // Load in background, don't block initialization
     loadPcfgCalibration();
     loadMarkovCalibration();
-    loadNeuralCalibration();
-    loadPrinceCalibration();
     render(); // Keep layout fully visible even with empty input
   }
   }); // End DOMContentLoaded

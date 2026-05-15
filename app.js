@@ -1858,13 +1858,17 @@
     const langToggleBtn = safe("lang-toggle");
     if (langToggleBtn) langToggleBtn.setAttribute("aria-label", t("languageAria") || "Change language");
 
-    if (isReal(barWrapper)) barWrapper.setAttribute("aria-label", t("strengthAria"));
+    const _barWrapper = document.querySelector(".strength-bar-wrapper");
+    if (isReal(_barWrapper)) _barWrapper.setAttribute("aria-label", t("strengthAria"));
 
-    if (resetBtn) resetBtn.setAttribute("aria-label", t("resetAria"));
+    const _resetBtn = safe("reset-btn");
+    if (_resetBtn) _resetBtn.setAttribute("aria-label", t("resetAria"));
 
-    if (toggleBtn && input) {
-      const isVisible = input.type === "text";
-      toggleBtn.setAttribute(
+    const _toggleBtn = safe("toggle-visibility");
+    const _input = safe("pw-input");
+    if (_toggleBtn && _input) {
+      const isVisible = _input.type === "text";
+      _toggleBtn.setAttribute(
         "aria-label",
         isVisible ? t("hideAria") : t("showAria"),
       );
@@ -1872,9 +1876,9 @@
 
     const tooltipBtn = document.querySelector(".info-tooltip-trigger");
     if (tooltipBtn) tooltipBtn.setAttribute("aria-label", t("tooltipBenchmarkAria"));
-    
-    // Update copy button aria-label
-    if (copyBtn) copyBtn.setAttribute("aria-label", t("copyBtnAria"));
+
+    const _copyBtn = safe("copy-btn");
+    if (_copyBtn) _copyBtn.setAttribute("aria-label", t("copyBtnAria"));
   }
 
   // ============================================================
@@ -1933,7 +1937,7 @@
         loadDictionary(nextLang);
       }
       
-      if (input && input.value.length) render();
+      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
     }
   }
 
@@ -2038,7 +2042,7 @@
       PCFG_CALIBRATION = null;
     } finally {
       PCFG_CALIB_LOADING = false;
-      if (input && input.value.length) render();
+      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
     }
   }
 
@@ -2145,7 +2149,7 @@
       MARKOV_CALIBRATION = null;
     } finally {
       MARKOV_CALIB_LOADING = false;
-      if (input && input.value.length) render();
+      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
     }
   }
 
@@ -2259,7 +2263,7 @@
       NEURAL_CALIBRATION = null;
     } finally {
       NEURAL_CALIB_LOADING = false;
-      if (input && input.value.length) render();
+      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
     }
   }
 
@@ -2367,7 +2371,7 @@
       PRINCE_CALIBRATION = null;
     } finally {
       PRINCE_CALIB_LOADING = false;
-      if (input && input.value.length) render();
+      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
     }
   }
 
@@ -2456,8 +2460,9 @@
       BLOOM_LOADED = true;
 
       // Check current password if one is entered
-      if (input && input.value.length) {
-        checkBloom(input.value);
+      const _pw = safe("pw-input");
+      if (_pw && _pw.value.length) {
+        checkBloom(_pw.value);
       }
       updateBloomBanner(BLOOM_RESULT);
     } catch (e) {

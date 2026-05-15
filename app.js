@@ -3040,6 +3040,8 @@
     }
   });
 
+  let render = async () => {};
+
   // Defer password analyzer initialization to DOMContentLoaded
   // This ensures DOM is ready and prevents crashes on pages without password input
   document.addEventListener("DOMContentLoaded", () => {
@@ -6033,7 +6035,7 @@
     }).join("");
   }
 
-  async function render() {
+  render = async function render() {
     const runId = ++renderRunId;
     const inputPw = input.value;
     const inputEmpty = !inputPw.length;

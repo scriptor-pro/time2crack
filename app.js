@@ -2572,6 +2572,36 @@
     return Array.from(variations);
   }
 
+  const LEET_BASE = {
+    a: "@4",
+    e: "3",
+    o: "0",
+    s: "$5",
+    t: "7",
+    b: "8",
+  };
+
+  function deLeetWith(pw, oneMap) {
+    let r = pw.normalize("NFC").toLowerCase();
+    for (const [ch, reps] of Object.entries(LEET_BASE))
+      for (const c of reps) r = r.split(c).join(ch);
+    for (const [ch, reps] of Object.entries(oneMap))
+      for (const c of reps) r = r.split(c).join(ch);
+    return r;
+  }
+
+  function deLeet(pw) {
+    const withI = deLeetWith(pw, { i: "1!", l: "" });
+    const withL = deLeetWith(pw, { l: "1", i: "!" });
+    if (DICT_WORDS) {
+      if (DICT_WORDS.has(withL)) return withL;
+      if (DICT_WORDS.has(withI)) return withI;
+    }
+    const digitsI = (withI.match(/\d/g) || []).length;
+    const digitsL = (withL.match(/\d/g) || []).length;
+    return digitsL <= digitsI ? withL : withI;
+  }
+
   /**
    * Check if word appears in dictionary with morphological variations
    */
@@ -4184,43 +4214,6 @@
     // Numeric sequences (reverse)
     "9876", "8765", "7654", "0987",
   ];
-
-  // De-leet: try both i→1 and l→1 interpretations, return the one
-  // that matches a dictionary word (or the i-variant as default).
-  // This avoids the collision where P@55w1rd → "password" requires l→1,
-  // but m1lk → "milk" requires i→1.
-  const LEET_BASE = {
-    a: "@4",
-    e: "3",
-    o: "0",
-    s: "$5",
-    t: "7",
-    b: "8",
-  };
-
-  function deLeetWith(pw, oneMap) {
-    let r = pw.normalize("NFC").toLowerCase();
-    for (const [ch, reps] of Object.entries(LEET_BASE))
-      for (const c of reps) r = r.split(c).join(ch);
-    // Apply the 1-mapping last (either i or l)
-    for (const [ch, reps] of Object.entries(oneMap))
-      for (const c of reps) r = r.split(c).join(ch);
-    return r;
-  }
-
-  function deLeet(pw) {
-    const withI = deLeetWith(pw, { i: "1!", l: "" });
-    const withL = deLeetWith(pw, { l: "1", i: "!" });
-    // If dictionary loaded, prefer the variant that matches
-    if (DICT_WORDS) {
-      if (DICT_WORDS.has(withL)) return withL;
-      if (DICT_WORDS.has(withI)) return withI;
-    }
-    // Default: try both, return the one with fewer digits remaining (more resolved)
-    const digitsI = (withI.match(/\d/g) || []).length;
-    const digitsL = (withL.match(/\d/g) || []).length;
-    return digitsL <= digitsI ? withL : withI;
-  }
 
   function isCommon(pw) {
     const l = pw.normalize("NFC").toLowerCase();

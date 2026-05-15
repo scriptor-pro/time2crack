@@ -5877,8 +5877,7 @@
     const vulns = getVulns(pw);
     
     if (runId !== renderRunId) return;
-    }
-    
+
     if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = vulns
       .map(
         (v) =>
@@ -6501,16 +6500,12 @@
       if (!BLOOM_LOADED && !BLOOM_LOADING) loadBloomFilter();
     });
   }
-  } // End of: if (input) block
-
   // Initialize i18n and load dictionary on page load
-  // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
-  if (input) {
-    setLang(LANG);
-    loadDictionary(LANG); // Load in background, don't block initialization
-    loadPcfgCalibration();
-    loadMarkovCalibration();
-    render(); // Keep layout fully visible even with empty input
-  }
+  setLang(LANG);
+  loadDictionary(LANG);
+  loadPcfgCalibration();
+  loadMarkovCalibration();
+  render();
+  } // End of: if (input) block
   }); // End DOMContentLoaded
 })();

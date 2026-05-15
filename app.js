@@ -2032,7 +2032,7 @@
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/pcfg-calibration.json", { signal: controller.signal });
+      const res = await fetch("data/calibration/pcfg-data.json", { signal: controller.signal });
       clearTimeout(timeout);
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
@@ -2139,7 +2139,7 @@
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/markov-calibration.json", { signal: controller.signal });
+      const res = await fetch("data/calibration/markov-ngrams.json", { signal: controller.signal });
       clearTimeout(timeout);
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();

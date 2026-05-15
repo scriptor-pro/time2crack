@@ -1888,7 +1888,7 @@
     window.TIME2CRACK_WORDLISTS_BASE_URL ||
     (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
       ? "data/wordlists/"
-      : "https://time2crack.b-cdn.net/data/wordlists/");
+      : "https://time2crack.b-cdn.net/");
 
   async function loadDictionary(lang) {
     if (DICT_LANG === lang && DICT_WORDS) return;

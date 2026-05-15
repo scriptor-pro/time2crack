@@ -3344,7 +3344,7 @@
     updateHibpStatusBadge("loading");
 
     if (!pw || pw.length < 1) {
-      hibpLoading.hidden = true;
+      if (hibpLoading) hibpLoading.hidden = true;
       updateHibpStatusBadge("default");
       return;
     }
@@ -3364,7 +3364,7 @@
       if (hibpCache.has(prefix)) {
         text = hibpCache.get(prefix);
         // Hide loading immediately for cached results
-        hibpLoading.hidden = true;
+        if (hibpLoading) hibpLoading.hidden = true;
       } else {
         const resp = await fetch(
           "https://api.pwnedpasswords.com/range/" + prefix,
@@ -3377,7 +3377,7 @@
         if (!resp.ok) {
           // Only update if the password hasn't changed during the request
           if (input.value !== pw) return;
-          hibpLoading.hidden = true;
+          if (hibpLoading) hibpLoading.hidden = true;
           updateHibpStatusBadge("error");
           return;
         }
@@ -3394,7 +3394,7 @@
         }
         
         // Hide loading after fetch completes
-        hibpLoading.hidden = true;
+        if (hibpLoading) hibpLoading.hidden = true;
       }
 
       const lines = text.split("\n");
@@ -3421,12 +3421,12 @@
       }
     } catch (e) {
       if (e.name === "AbortError") {
-        hibpLoading.hidden = true;
+        if (hibpLoading) hibpLoading.hidden = true;
         return; // expected on rapid typing
       }
       // Network error: update badge if password hasn't changed
       if (input.value === pw) {
-        hibpLoading.hidden = true;
+        if (hibpLoading) hibpLoading.hidden = true;
         updateHibpStatusBadge("error");
       }
     }
@@ -6316,7 +6316,7 @@
         : "";
       if (isReal(crackDurationFast)) crackDurationFast.textContent = t("lessSec");
       if (isReal(crackDateFast)) crackDateFast.textContent = t("now");
-      resultSentenceFast.innerHTML =
+      if (isReal(resultSentenceFast)) resultSentenceFast.innerHTML =
         t("instantVia") +
         (fastest ? " via " + fastest.atk + "." : ".") +
         (fastestMethodDesc ? " " + fastestMethodDesc : "") +
@@ -6336,7 +6336,7 @@
       if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest.atk + " — " + fastest.hash;
       if (isReal(crackDurationFast)) crackDurationFast.textContent = fastDur.text;
       if (isReal(crackDateFast)) crackDateFast.textContent = fastDt || t("beyondDate");
-      resultSentenceFast.innerHTML =
+      if (isReal(resultSentenceFast)) resultSentenceFast.innerHTML =
         t("via") +
         " <strong>" +
         fastest.atk +
@@ -6803,7 +6803,7 @@
 
   // Hide copy button when user types
   input.addEventListener('input', () => {
-    copyBtn.hidden = true;
+    if (copyBtn) copyBtn.hidden = true;
   });
 
   // No ML model cleanup needed (vanilla JS uses native GC)

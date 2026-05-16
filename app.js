@@ -1,14 +1,6 @@
 (function () {
   "use strict";
 
-  // Safe DOM access helper — returns null if element not found (caller must use isReal() check)
-  const safe = (id) => {
-    return document.getElementById(id);
-  };
-
-  // Check if element exists and is real (not null)
-  const isReal = (el) => el !== null && el !== undefined;
-
   // ============================================================
   // I18N
   // ============================================================
@@ -46,9 +38,11 @@
 
   // Neural calibration profiles (lazy-loaded, fallback to built-in defaults)
   let NEURAL_CALIBRATION = null;
+  let NEURAL_CALIB_LOADING = false;
 
   // PRINCE calibration profiles (lazy-loaded, fallback to built-in defaults)
   let PRINCE_CALIBRATION = null;
+  let PRINCE_CALIB_LOADING = false;
 
   // RockYou Bloom Filter (lazy-loaded on user request)
   let BLOOM_FILTER = null;   // { bitArray: Uint8Array, m: number, k: number } | null
@@ -57,9 +51,12 @@
   let BLOOM_RESULT = null;   // "found" | "not_found" | "error" | null
 
   // ============================================================
-  // ML MODEL (ONNX Runtime)
+  // ML MODEL
   // ============================================================
+  let ML_MODEL = null;           // TensorFlow.js model
+  let ML_NORMALIZATION = null;   // Mean and std for feature normalization
   let ML_LOADING = false;        // Prevent double-load
+  const ML_PRED_CACHE = new Map(); // password -> probability
   const ML_MIN_LENGTH = 10;
   const ML_SCORE_MIN = 35;
   const ML_SCORE_MAX = 80;
@@ -297,7 +294,7 @@
       skip: "Aller au contenu principal",
       subtitle:
         "Et si un pirate s'en prenait à votre mot de passe\u00a0? Tapez-le pour voir combien de temps il résisterait. Tout est calculé sur votre appareil\u00a0— rien ne quitte votre navigateur.",
-      inputLabel: "Testez votre mot de passe",
+      inputLabel: "Tester la solidité d'un mot de passe ici :",
       placeholder: "Votre mot de passe…",
       show: "Afficher",
       hide: "Masquer",
@@ -1852,20 +1849,16 @@
   }
 
   function syncA11yLabels() {
-    const langToggleBtn = safe("lang-toggle");
+    const langToggleBtn = document.getElementById("lang-toggle");
     if (langToggleBtn) langToggleBtn.setAttribute("aria-label", t("languageAria") || "Change language");
 
-    const _barWrapper = document.querySelector(".strength-bar-wrapper");
-    if (isReal(_barWrapper)) _barWrapper.setAttribute("aria-label", t("strengthAria"));
+    if (barWrapper) barWrapper.setAttribute("aria-label", t("strengthAria"));
 
-    const _resetBtn = safe("reset-btn");
-    if (_resetBtn) _resetBtn.setAttribute("aria-label", t("resetAria"));
+    if (resetBtn) resetBtn.setAttribute("aria-label", t("resetAria"));
 
-    const _toggleBtn = safe("toggle-visibility");
-    const _input = safe("pw-input");
-    if (_toggleBtn && _input) {
-      const isVisible = _input.type === "text";
-      _toggleBtn.setAttribute(
+    if (toggleBtn && input) {
+      const isVisible = input.type === "text";
+      toggleBtn.setAttribute(
         "aria-label",
         isVisible ? t("hideAria") : t("showAria"),
       );
@@ -1873,9 +1866,9 @@
 
     const tooltipBtn = document.querySelector(".info-tooltip-trigger");
     if (tooltipBtn) tooltipBtn.setAttribute("aria-label", t("tooltipBenchmarkAria"));
-
-    const _copyBtn = safe("copy-btn");
-    if (_copyBtn) _copyBtn.setAttribute("aria-label", t("copyBtnAria"));
+    
+    // Update copy button aria-label
+    if (copyBtn) copyBtn.setAttribute("aria-label", t("copyBtnAria"));
   }
 
   // ============================================================
@@ -1885,7 +1878,7 @@
     window.TIME2CRACK_WORDLISTS_BASE_URL ||
     (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
       ? "data/wordlists/"
-      : "https://time2crack.b-cdn.net/");
+      : "https://time2crack.b-cdn.net/data/wordlists/");
 
   async function loadDictionary(lang) {
     if (DICT_LANG === lang && DICT_WORDS) return;
@@ -1897,7 +1890,7 @@
     DICT_PENDING_LANG = null;
     
     // Show loading indicator
-    const dictLoadingEl = safe('dict-loading');
+    const dictLoadingEl = document.getElementById('dict-loading');
     if (dictLoadingEl) {
       dictLoadingEl.hidden = false;
     }
@@ -1934,7 +1927,7 @@
         loadDictionary(nextLang);
       }
       
-      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
+      if (input && input.value.length) render();
     }
   }
 
@@ -2023,23 +2016,114 @@
     },
   };
 
+  function mergeNumericMaps(baseMap, extraMap) {
+    const out = Object.assign({}, baseMap || {});
+    for (const [key, value] of Object.entries(extraMap || {})) {
+      if (!isFinite(value) || value <= 0) continue;
+      if (!isFinite(out[key]) || out[key] <= 0 || value < out[key]) {
+        out[key] = value;
+      }
+    }
+    return out;
+  }
+
+  function corpusStatsToPcfgCalibration(stats) {
+    if (!stats || typeof stats !== "object") return null;
+    const total = Number(stats.total_passwords || 0);
+    if (!isFinite(total) || total <= 0) return null;
+
+    const skeletonRanks = {};
+    for (const [key, count] of Object.entries(stats.skeletons || {})) {
+      if (!isFinite(count) || count <= 0) continue;
+      skeletonRanks[key] = Math.max(1, Math.round(total / count));
+    }
+
+    const shapeCounts = {};
+    for (const [skeletonKey, count] of Object.entries(stats.skeletons || {})) {
+      if (!isFinite(count) || count <= 0) continue;
+      const shapeKey = skeletonKey.replace(/\d+\+?/g, "").replace(/\d+/g, "");
+      shapeCounts[shapeKey] = (shapeCounts[shapeKey] || 0) + count;
+    }
+
+    const shapeRanks = {};
+    for (const [key, count] of Object.entries(shapeCounts)) {
+      if (!isFinite(count) || count <= 0) continue;
+      shapeRanks[key] = Math.max(1, Math.round(total / count));
+    }
+
+    const tokenRanks = { L: {}, D: {}, S: {} };
+    for (const cls of ["L", "D", "S"]) {
+      const buckets = (stats.segments && stats.segments[cls]) || {};
+      for (const [bucket, entry] of Object.entries(buckets)) {
+        const count = entry && typeof entry === "object" ? Number(entry.count || 0) : Number(entry || 0);
+        if (!isFinite(count) || count <= 0) continue;
+        tokenRanks[cls][bucket] = Math.max(1, Math.round(total / count));
+      }
+    }
+
+    return {
+      version: 1,
+      global: {
+        skeletonRanks,
+        shapeRanks,
+        tokenRanks,
+      },
+    };
+  }
+
+  function mergePcfgCalibration(base, extra) {
+    if (!extra) return base;
+    if (!base) return extra;
+
+    const gBase = base.global || {};
+    const gExtra = extra.global || {};
+
+    return {
+      ...base,
+      global: {
+        ...gBase,
+        defaultRank: gBase.defaultRank || gExtra.defaultRank || 50000,
+        skeletonRanks: mergeNumericMaps(gBase.skeletonRanks, gExtra.skeletonRanks),
+        shapeRanks: mergeNumericMaps(gBase.shapeRanks, gExtra.shapeRanks),
+        tokenRanks: {
+          L: mergeNumericMaps((gBase.tokenRanks || {}).L, (gExtra.tokenRanks || {}).L),
+          D: mergeNumericMaps((gBase.tokenRanks || {}).D, (gExtra.tokenRanks || {}).D),
+          S: mergeNumericMaps((gBase.tokenRanks || {}).S, (gExtra.tokenRanks || {}).S),
+        },
+        orderMultipliers: Object.assign({}, gBase.orderMultipliers || {}, gExtra.orderMultipliers || {}),
+        shapeMultipliers: Object.assign({}, gBase.shapeMultipliers || {}, gExtra.shapeMultipliers || {}),
+        classFallback: Object.assign({ L: 32, D: 10, S: 22 }, gBase.classFallback || {}, gExtra.classFallback || {}),
+      },
+      langs: base.langs || {},
+    };
+  }
+
   async function loadPcfgCalibration() {
     if (PCFG_CALIBRATION || PCFG_CALIB_LOADING) return;
     PCFG_CALIB_LOADING = true;
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/calibration/pcfg-data.json", { signal: controller.signal });
-      clearTimeout(timeout);
-      if (!res.ok) throw new Error(res.status);
-      const json = await res.json();
-      if (json && typeof json === "object") PCFG_CALIBRATION = json;
-    } catch (err) {
-      console.warn("PCFG calibration load failed:", err.message);
+      const [baseRes, corpusRes] = await Promise.all([
+        fetch("data/pcfg-calibration.json"),
+        fetch("data/corpus/common-zxcvbn-pcfg.json"),
+      ]);
+
+      let baseJson = null;
+      let corpusJson = null;
+
+      if (baseRes.ok) baseJson = await baseRes.json();
+      if (corpusRes.ok) corpusJson = await corpusRes.json();
+
+      const corpusCal = corpusStatsToPcfgCalibration(corpusJson);
+      if (baseJson && typeof baseJson === "object") {
+        PCFG_CALIBRATION = mergePcfgCalibration(baseJson, corpusCal);
+      } else if (corpusCal) {
+        PCFG_CALIBRATION = corpusCal;
+      }
+    } catch {
       PCFG_CALIBRATION = null;
     } finally {
       PCFG_CALIB_LOADING = false;
-      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
+      if (input && input.value.length) render();
     }
   }
 
@@ -2134,19 +2218,15 @@
     if (MARKOV_CALIBRATION || MARKOV_CALIB_LOADING) return;
     MARKOV_CALIB_LOADING = true;
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/calibration/markov-ngrams.json", { signal: controller.signal });
-      clearTimeout(timeout);
+      const res = await fetch("data/markov-calibration.json");
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
       if (json && typeof json === "object") MARKOV_CALIBRATION = json;
-    } catch (err) {
-      console.warn("Markov calibration load failed:", err.message);
+    } catch {
       MARKOV_CALIBRATION = null;
     } finally {
       MARKOV_CALIB_LOADING = false;
-      const _pw = safe("pw-input"); if (_pw && _pw.value.length) render();
+      if (input && input.value.length) render();
     }
   }
 
@@ -2244,6 +2324,21 @@
     },
   };
 
+  async function loadNeuralCalibration() {
+    if (NEURAL_CALIBRATION || NEURAL_CALIB_LOADING) return;
+    NEURAL_CALIB_LOADING = true;
+    try {
+      const res = await fetch("data/neural-calibration.json");
+      if (!res.ok) throw new Error(res.status);
+      const json = await res.json();
+      if (json && typeof json === "object") NEURAL_CALIBRATION = json;
+    } catch {
+      NEURAL_CALIBRATION = null;
+    } finally {
+      NEURAL_CALIB_LOADING = false;
+      if (input && input.value.length) render();
+    }
+  }
 
   const DEFAULT_PRINCE_CALIBRATION = {
     version: 1,
@@ -2333,6 +2428,21 @@
     },
   };
 
+  async function loadPrinceCalibration() {
+    if (PRINCE_CALIBRATION || PRINCE_CALIB_LOADING) return;
+    PRINCE_CALIB_LOADING = true;
+    try {
+      const res = await fetch("data/prince-calibration.json");
+      if (!res.ok) throw new Error(res.status);
+      const json = await res.json();
+      if (json && typeof json === "object") PRINCE_CALIBRATION = json;
+    } catch {
+      PRINCE_CALIBRATION = null;
+    } finally {
+      PRINCE_CALIB_LOADING = false;
+      if (input && input.value.length) render();
+    }
+  }
 
   // ============================================================
   // ROCKYOU BLOOM FILTER (lazy-loaded)
@@ -2387,9 +2497,9 @@
     if (BLOOM_LOADING || BLOOM_LOADED) return;
     BLOOM_LOADING = true;
 
-    const bloomLoadingEl = safe("bloom-loading");
-    const bloomBtnEl = safe("bloom-check-btn");
-    const bloomTriggerEl = safe("bloom-trigger");
+    const bloomLoadingEl = $("bloom-loading");
+    const bloomBtnEl = $("bloom-check-btn");
+    const bloomTriggerEl = $("bloom-trigger");
 
     if (bloomLoadingEl) bloomLoadingEl.hidden = false;
     if (bloomBtnEl) bloomBtnEl.disabled = true;
@@ -2419,9 +2529,8 @@
       BLOOM_LOADED = true;
 
       // Check current password if one is entered
-      const _pw = safe("pw-input");
-      if (_pw && _pw.value.length) {
-        checkBloom(_pw.value);
+      if (input && input.value.length) {
+        checkBloom(input.value);
       }
       updateBloomBanner(BLOOM_RESULT);
     } catch (e) {
@@ -2451,12 +2560,12 @@
    * Update bloom filter UI banners based on state
    */
   function updateBloomBanner(state) {
-    const bannerEl = safe("bloom-banner");
-    const safeEl = safe("bloom-safe");
-    const errorEl = safe("bloom-error");
-    const badge = safe("rockyou-status-badge");
-    const hintEl = safe("rockyou-hint");
-    const wrapperEl = safe("qp-rockyou-wrapper");
+    const bannerEl = $("bloom-banner");
+    const safeEl = $("bloom-safe");
+    const errorEl = $("bloom-error");
+    const badge = $("rockyou-status-badge");
+    const hintEl = $("rockyou-hint");
+    const wrapperEl = $("qp-rockyou-wrapper");
 
     if (bannerEl) bannerEl.hidden = state !== "found";
     if (safeEl) safeEl.hidden = state !== "not_found";
@@ -2572,36 +2681,6 @@
     return Array.from(variations);
   }
 
-  const LEET_BASE = {
-    a: "@4",
-    e: "3",
-    o: "0",
-    s: "$5",
-    t: "7",
-    b: "8",
-  };
-
-  function deLeetWith(pw, oneMap) {
-    let r = pw.normalize("NFC").toLowerCase();
-    for (const [ch, reps] of Object.entries(LEET_BASE))
-      for (const c of reps) r = r.split(c).join(ch);
-    for (const [ch, reps] of Object.entries(oneMap))
-      for (const c of reps) r = r.split(c).join(ch);
-    return r;
-  }
-
-  function deLeet(pw) {
-    const withI = deLeetWith(pw, { i: "1!", l: "" });
-    const withL = deLeetWith(pw, { l: "1", i: "!" });
-    if (DICT_WORDS) {
-      if (DICT_WORDS.has(withL)) return withL;
-      if (DICT_WORDS.has(withI)) return withI;
-    }
-    const digitsI = (withI.match(/\d/g) || []).length;
-    const digitsL = (withL.match(/\d/g) || []).length;
-    return digitsL <= digitsI ? withL : withI;
-  }
-
   /**
    * Check if word appears in dictionary with morphological variations
    */
@@ -2630,6 +2709,303 @@
   // ============================================================
   // ML INFERENCE (ONNX Runtime Web)
   // Note: Uses ONNX format (model.onnx) since 2026-03-20
+  // Legacy TensorFlow.js format (model.json + weights.bin) removed 2026-03-22
+  // ============================================================
+
+  let ML_SESSION = null;
+  let ML_RUNTIME_LOADED = false;
+
+  /**
+   * Dynamically load ONNX Runtime from jsDelivr CDN
+   * (Production: replace with https://cdn.time2crack.eu)
+   */
+  async function loadONNXRuntime() {
+    if (ML_RUNTIME_LOADED) return window.ort;
+
+    try {
+      // Load ONNX Runtime from jsDelivr (public CDN, free)
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/ort.min.js';
+      script.async = true;
+
+      await new Promise((resolve, reject) => {
+        script.onload = () => {
+          ML_RUNTIME_LOADED = true;
+          resolve(window.ort);
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+
+      return window.ort;
+    } catch (err) {
+      console.warn('Failed to load ONNX Runtime:', err);
+      return null;
+    }
+  }
+
+  /**
+   * Load ML model (ONNX format) and normalization parameters
+   */
+  async function loadMLModel() {
+    if (ML_SESSION) return;
+
+    try {
+      const ort = await loadONNXRuntime();
+      if (!ort) throw new Error('ONNX Runtime not available');
+
+      // Configure WASM backend
+      ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/';
+      ort.env.wasm.numThreads = 1; // Single-thread (no SharedArrayBuffer)
+      ort.env.wasm.simdEnabled = true;
+
+      // Load normalization parameters
+      const normRes = await fetch('data/model-v2/normalization.json');
+      if (!normRes.ok) throw new Error('Normalization file not found');
+      ML_NORMALIZATION = await normRes.json();
+
+      // Load ONNX model
+      ML_SESSION = await ort.InferenceSession.create('data/model-v2/model.onnx', {
+        executionProviders: ['wasm'],
+        logSeverityLevel: 3, // Error only
+      });
+
+      console.log('✓ ML model v2 loaded (ONNX Runtime)');
+      console.log(`  Input: ${ML_SESSION.inputNames[0]}`);
+      console.log(`  Output: ${ML_SESSION.outputNames[0]}`);
+    } catch (err) {
+      console.warn('ML model not available:', err);
+      ML_SESSION = null;
+      ML_NORMALIZATION = null;
+    }
+  }
+
+  /**
+   * Extract 35 features from password (v2 model)
+   */
+  function extractMLFeatures(pw) {
+    // Keyboard layouts for adjacency detection
+    const QWERTY = {
+      rows: [
+        ['q','w','e','r','t','y','u','i','o','p'],
+        ['a','s','d','f','g','h','j','k','l'],
+        ['z','x','c','v','b','n','m']
+      ]
+    };
+    const AZERTY = {
+      rows: [
+        ['a','z','e','r','t','y','u','i','o','p'],
+        ['q','s','d','f','g','h','j','k','l','m'],
+        ['w','x','c','v','b','n']
+      ]
+    };
+    
+    const MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec','janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    const COMMON_BIGRAMS = ['th','he','in','er','an','re','on','at','en','nd','ti','es','or','te','of','ed','is','it','al','ar','le','de','la','es','en','qu','un','ou','se','ai','st','to','nt','ng','se','ha','as','ou','io','le','pa','ss','wo','rd','lo','ve','me','my'];
+    const COMMON_TRIGRAMS = ['the','and','ing','ion','tio','ent','ati','for','her','ter','hat','tha','ere','ate','his','con','que','les','des','une','ent','ion','ait','our','par','ais','res','ver','all','ons','nce','men','wit','are','ess','pro','ass','ord','pas'];
+    
+    // Helper: check keyboard adjacency
+    function isAdjacent(c1, c2, layout) {
+      c1 = c1.toLowerCase(); c2 = c2.toLowerCase();
+      for (const row of layout.rows) {
+        const i1 = row.indexOf(c1), i2 = row.indexOf(c2);
+        if (i1 !== -1 && i2 !== -1 && Math.abs(i1 - i2) === 1) return true;
+      }
+      return false;
+    }
+    
+    // Helper: Shannon entropy
+    function calcEntropy(s) {
+      const freq = {};
+      for (const c of s) freq[c] = (freq[c] || 0) + 1;
+      let ent = 0;
+      for (const c in freq) {
+        const p = freq[c] / s.length;
+        ent -= p * Math.log2(p);
+      }
+      return ent;
+    }
+    
+    // Helper: Levenshtein distance
+    function levDist(s1, s2) {
+      const m = s1.length, n = s2.length;
+      const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+      for (let i = 0; i <= m; i++) dp[i][0] = i;
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
+          dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+        }
+      }
+      return dp[m][n];
+    }
+    
+    // ===== BASIC FEATURES (1-15) =====
+    const len = pw.length;
+    const upperCount = (pw.match(/[A-Z]/g) || []).length;
+    const lowerCount = (pw.match(/[a-z]/g) || []).length;
+    const digitCount = (pw.match(/[0-9]/g) || []).length;
+    const symbolCount = (pw.match(/[^A-Za-z0-9]/g) || []).length;
+    const upperStart = /^[A-Z]/.test(pw) ? 1 : 0;
+    const digitEnd = /[0-9]$/.test(pw) ? 1 : 0;
+    const hasSeq = /(?:123|234|345|456|567|678|789|890|098|987|876|765|654|543|432|321|210|abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|qwer|asdf|zxcv|qwerty|azerty|qwertz)/i.test(pw) ? 1 : 0;
+    const hasYear = /(19|20)\d{2}/.test(pw) ? 1 : 0;
+    const ent = calcEntropy(pw);
+    const ratioUpper = upperCount / len;
+    const ratioDigit = digitCount / len;
+    const hasSub = /[@0314!$]/.test(pw) ? 1 : 0;
+    const pwLower = pw.toLowerCase();
+    const bigramScore = COMMON_BIGRAMS.filter(bg => pwLower.includes(bg)).length / Math.max(1, pw.length - 1);
+    const trigramScore = COMMON_TRIGRAMS.filter(tg => pwLower.includes(tg)).length / Math.max(1, pw.length - 2);
+    
+    // ===== ADVANCED FEATURES (16-35) =====
+    // 16-17: Keyboard adjacency
+    let qwertyAdj = 0, azertyAdj = 0;
+    if (pw.length >= 2) {
+      for (let i = 0; i < pw.length - 1; i++) {
+        if (isAdjacent(pw[i], pw[i + 1], QWERTY)) qwertyAdj++;
+        if (isAdjacent(pw[i], pw[i + 1], AZERTY)) azertyAdj++;
+      }
+      qwertyAdj /= (pw.length - 1);
+      azertyAdj /= (pw.length - 1);
+    }
+    
+    // 18-19: Repeated characters/substrings
+    let repeatChars = 0;
+    for (let i = 0; i < pw.length - 1; i++) {
+      if (pw[i] === pw[i + 1]) repeatChars++;
+    }
+    let repeatSubs = 0;
+    for (let subLen = 2; subLen <= 3; subLen++) {
+      for (let i = 0; i <= pw.length - subLen * 2; i++) {
+        const sub = pw.substring(i, i + subLen);
+        if (pw.substring(i + subLen).includes(sub)) repeatSubs++;
+      }
+    }
+    
+    // 20-22: Position entropy
+    const third = Math.floor(len / 3);
+    const entStart = calcEntropy(pw.substring(0, third || 1));
+    const entMid = calcEntropy(pw.substring(third, 2 * third || len));
+    const entEnd = calcEntropy(pw.substring(2 * third, len));
+    
+    // 23-26: Additional patterns
+    const ratioSymbol = symbolCount / len;
+    const datePattern = /\d{1,2}[\/\-\.]\d{1,2}|\d{4}[\/\-\.]\d{1,2}/.test(pw) ? 1 : 0;
+    const monthName = MONTHS.some(m => pwLower.includes(m)) ? 1 : 0;
+    const namePattern = /[A-Z][a-z]{2,}/.test(pw) ? 1 : 0;
+    
+    // 27-28: Digit/letter clusters
+    let maxDigit = 0, currDigit = 0;
+    let maxLetter = 0, currLetter = 0;
+    for (const c of pw) {
+      if (/\d/.test(c)) { currDigit++; maxDigit = Math.max(maxDigit, currDigit); currLetter = 0; }
+      else if (/[a-zA-Z]/.test(c)) { currLetter++; maxLetter = Math.max(maxLetter, currLetter); currDigit = 0; }
+      else { currDigit = 0; currLetter = 0; }
+    }
+    
+    // 29-30: Charset diversity & consonant/vowel ratio
+    let diversity = 0;
+    if (/[a-z]/.test(pw)) diversity++;
+    if (/[A-Z]/.test(pw)) diversity++;
+    if (/[0-9]/.test(pw)) diversity++;
+    if (/[^a-zA-Z0-9]/.test(pw)) diversity++;
+    const vowels = (pw.match(/[aeiouAEIOU]/g) || []).length;
+    const consonants = (pw.match(/[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]/g) || []).length;
+    const cvRatio = consonants ? vowels / consonants : 0;
+    
+    // 31-32: Uppercase/special in middle
+    const upperMid = pw.length >= 3 ? (pw.substring(1).match(/[A-Z]/g) || []).length : 0;
+    const specialMid = pw.length >= 3 ? (pw.substring(1, pw.length - 1).match(/[^a-zA-Z0-9]/g) || []).length : 0;
+    
+    // 33: Repeating pattern
+    let repeatPat = 0;
+    for (let pLen = 2; pLen <= Math.floor(pw.length / 2); pLen++) {
+      const pat = pw.substring(0, pLen);
+      if (pw.startsWith(pat.repeat(Math.floor(pw.length / pLen)))) {
+        repeatPat = 1;
+        break;
+      }
+    }
+    
+    // 34: Transition count
+    function charType(c) {
+      if (/[a-z]/.test(c)) return 'l';
+      if (/[A-Z]/.test(c)) return 'u';
+      if (/[0-9]/.test(c)) return 'd';
+      return 's';
+    }
+    let transitions = 0;
+    if (pw.length >= 2) {
+      let prevType = charType(pw[0]);
+      for (let i = 1; i < pw.length; i++) {
+        const currType = charType(pw[i]);
+        if (currType !== prevType) transitions++;
+        prevType = currType;
+      }
+    }
+    
+    // 35: Edit distance to "password"
+    const editDist = levDist(pwLower, 'password') / Math.max(pw.length, 8);
+    
+    return [
+      len, upperCount, lowerCount, digitCount, symbolCount,
+      upperStart, digitEnd, hasSeq, hasYear, ent,
+      ratioUpper, ratioDigit, hasSub, bigramScore, trigramScore,
+      qwertyAdj, azertyAdj, repeatChars, repeatSubs,
+      entStart, entMid, entEnd, ratioSymbol,
+      datePattern, monthName, namePattern, maxDigit, maxLetter,
+      diversity, cvRatio, upperMid, specialMid,
+      repeatPat, transitions, editDist
+    ];
+  }
+
+  /**
+   * Predict if password is human-created (returns probability 0-1)
+   */
+  async function predictHumanPattern(pw) {
+    // Lazy load ML model on first prediction
+    if (!ML_SESSION && ML_NORMALIZATION == null) {
+      await loadMLModel();
+    }
+
+    if (!ML_SESSION || !ML_NORMALIZATION) return null;
+
+    try {
+      const ort = await loadONNXRuntime();
+      if (!ort) return null;
+
+      const features = extractMLFeatures(pw);
+
+      // Normalize features using training mean/std
+      const normalized = features.map((f, i) =>
+        (f - ML_NORMALIZATION.mean[i]) / (ML_NORMALIZATION.std[i] + 1e-7)
+      );
+
+      // Create input tensor
+      const inputData = new Float32Array(normalized);
+      const inputTensor = new ort.Tensor('float32', inputData, [1, 35]);
+
+      // Get input/output names from session
+      const inputName = ML_SESSION.inputNames[0];
+      const outputName = ML_SESSION.outputNames[0];
+
+      // Run inference
+      const feeds = { [inputName]: inputTensor };
+      const results = await ML_SESSION.run(feeds);
+      const outputTensor = results[outputName];
+
+      // Extract probability
+      const probability = outputTensor.data[0];
+
+      return probability;
+    } catch (err) {
+      console.warn('ML prediction error:', err);
+      return null;
+    }
+  }
+
   function setLang(lang) {
     LANG = lang;
     document.documentElement.setAttribute('lang', lang);
@@ -2641,7 +3017,7 @@
         : "When will your password be cracked?");
     
     // Update canonical URL dynamically for SEO
-    const canonicalLink = safe('canonical-link');
+    const canonicalLink = document.getElementById('canonical-link');
     if (canonicalLink) {
       canonicalLink.setAttribute('href', `https://time2crack.eu/?lang=${lang}`);
     }
@@ -2659,16 +3035,12 @@
       if (I[lang][k]) el.placeholder = I[lang][k];
     });
     // Update toggle button text (preserve icon)
-    const _input = safe("pw-input");
-    const _toggleBtn = safe("toggle-visibility");
-    if (_input && _toggleBtn) {
-      const isVisible = _input.type === "text";
-      const textSpan = _toggleBtn.querySelector("span");
-      if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
-      _toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
-    }
+    const isVisible = input.type === "text";
+    const textSpan = toggleBtn.querySelector("span");
+    if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
+    toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
     // Update lang selector (globe button + menu)
-    const langCodeSpan = safe("lang-code");
+    const langCodeSpan = document.getElementById("lang-code");
     if (langCodeSpan) {
       langCodeSpan.textContent = lang.toUpperCase();
     }
@@ -2682,18 +3054,19 @@
       }
     });
     syncA11yLabels();
-    const _hfStatus = safe("hf-status");
-    if (_hfStatus) _hfStatus.textContent = HIGH_FIDELITY ? t("hfModeOn") : t("hfModeOff");
+    renderAttackTabs();
+    updateAttackDescription();
+    updateHighFidelityUI();
     // Load dictionary for the new language (async, non-blocking)
     loadDictionary(lang);
-    // Re-render if there's content (covers renderAttackTabs + updateAttackDescription)
-    if (_input && _input.value.length) render();
+    // Re-render if there's content
+    if (input.value.length) render();
   }
 
   // Lang selector: toggle dropdown menu
-  const langToggle = safe("lang-toggle");
-  const langMenu = safe("lang-menu");
-  const langSelector = safe("lang-selector");
+  const langToggle = document.getElementById("lang-toggle");
+  const langMenu = document.getElementById("lang-menu");
+  const langSelector = document.getElementById("lang-selector");
   
   if (langToggle && langMenu) {
     langToggle.addEventListener("click", (e) => {
@@ -2732,23 +3105,8 @@
     }
   });
 
-  let render = async () => {};
-
-  // Defer password analyzer initialization to DOMContentLoaded
-  // This ensures DOM is ready and prevents crashes on pages without password input
-  document.addEventListener("DOMContentLoaded", () => {
-    const $ = (id) => safe(id);
-    const input = $("pw-input");
-
-    // If page doesn't have password input, don't initialize analyzer
-    if (!input) return;
-
-    // Check for critical elements required by the analyzer
-    const resultsDiv = $("results");
-    if (!resultsDiv) return; // Can't render results without results div
-
-  // Only run password analysis code on pages that have the password input (index + generator)
-  if (input) {
+  const $ = (id) => document.getElementById(id);
+  const input = $("password-input");
   const toggleBtn = $("toggle-visibility");
   const strengthIcon = $("strength-icon");
   const strengthLabel = $("strength-label");
@@ -2762,8 +3120,6 @@
   const crackDurationFast = $("crack-duration-fast");
   const resultSentenceFast = $("result-sentence-fast");
   const resultLabelFast = $("result-label-fast");
-  const bestAttackDuration = $("best-attack-duration");
-  const bestAttackMeta = $("best-attack-meta");
   const crackDatePro = $("crack-date-pro");
   const crackDurationPro = $("crack-duration-pro");
   const resultSentencePro = $("result-sentence-pro");
@@ -2813,16 +3169,6 @@
   let selectedProfileMult = 12;
   let userPinnedAlgo = false; // true once user manually changes ct-algo select
   let HIGH_FIDELITY = false;
-
-  function renderAttackTabs() {
-    const _pw = safe("pw-input");
-    if (_pw && _pw.value) render();
-  }
-
-  function updateAttackDescription() {
-    const _pw = safe("pw-input");
-    if (_pw && _pw.value) render();
-  }
 
   function updateHighFidelityUI() {
     if (!hfStatus) return;
@@ -3036,7 +3382,7 @@
     updateHibpStatusBadge("loading");
 
     if (!pw || pw.length < 1) {
-      if (hibpLoading) hibpLoading.hidden = true;
+      hibpLoading.hidden = true;
       updateHibpStatusBadge("default");
       return;
     }
@@ -3056,7 +3402,7 @@
       if (hibpCache.has(prefix)) {
         text = hibpCache.get(prefix);
         // Hide loading immediately for cached results
-        if (hibpLoading) hibpLoading.hidden = true;
+        hibpLoading.hidden = true;
       } else {
         const resp = await fetch(
           "https://api.pwnedpasswords.com/range/" + prefix,
@@ -3069,7 +3415,7 @@
         if (!resp.ok) {
           // Only update if the password hasn't changed during the request
           if (input.value !== pw) return;
-          if (hibpLoading) hibpLoading.hidden = true;
+          hibpLoading.hidden = true;
           updateHibpStatusBadge("error");
           return;
         }
@@ -3086,7 +3432,7 @@
         }
         
         // Hide loading after fetch completes
-        if (hibpLoading) hibpLoading.hidden = true;
+        hibpLoading.hidden = true;
       }
 
       const lines = text.split("\n");
@@ -3113,19 +3459,19 @@
       }
     } catch (e) {
       if (e.name === "AbortError") {
-        if (hibpLoading) hibpLoading.hidden = true;
+        hibpLoading.hidden = true;
         return; // expected on rapid typing
       }
       // Network error: update badge if password hasn't changed
       if (input.value === pw) {
-        if (hibpLoading) hibpLoading.hidden = true;
+        hibpLoading.hidden = true;
         updateHibpStatusBadge("error");
       }
     }
   }
 
   // Toggle visibility
-  if (toggleBtn) toggleBtn.addEventListener("click", () => {
+  toggleBtn.addEventListener("click", () => {
     const show = input.type === "password";
     input.type = show ? "text" : "password";
     const textSpan = toggleBtn.querySelector("span");
@@ -3382,14 +3728,6 @@
 
     return softCapGuesses(Math.min(blendedRank, full), MARKOV_SOFTCAP_KNEE, MARKOV_MAX_GUESSES);
   }
-
-  // PRINCE parameters (v2 rank-based model) — moved here to avoid TDZ references
-  const PRINCE_SOFTCAP_KNEE = 1e15;
-  const PRINCE_MAX_GUESSES = 1e19;
-
-  // Neural guessing parameters (v2 rank-based model) — moved here to avoid TDZ references
-  const NEURAL_SOFTCAP_KNEE = 1e15;
-  const NEURAL_MAX_GUESSES = 1e19;
 
   function getNeuralProfile(lang) {
     const source = NEURAL_CALIBRATION || DEFAULT_NEURAL_CALIBRATION;
@@ -3676,6 +4014,10 @@
   // Advanced rule engine keyspace (hashcat/JtR rule stacks)
   const RULE_KEYSPACE = 250e6;
 
+  // PRINCE parameters (v2 rank-based model)
+  const PRINCE_SOFTCAP_KNEE = 1e15;
+  const PRINCE_MAX_GUESSES = 1e19;
+
   // Morphological variants around dictionary roots
   // Kiesel et al. 2022 (PassMorph): ~150 variants/word (inflections + leet + diacritics) × 200k words
   const MORPH_KEYSPACE = 30e6;
@@ -3684,6 +4026,10 @@
   // Bonneau et al. 2012 (IEEE S&P): OSINT-driven attack generates 10^3–10^5 usable candidates
   // CUPP README: 600–2000 candidates for a full profile; 500k is already generous with permutations
   const TARGETED_KEYSPACE = 500_000;
+
+  // Neural guessing parameters (v2 rank-based model)
+  const NEURAL_SOFTCAP_KNEE = 1e15;
+  const NEURAL_MAX_GUESSES = 1e19;
 
   // High-fidelity calibration controls
   const HF_MULT_MIN = 0.08;
@@ -4214,6 +4560,43 @@
     // Numeric sequences (reverse)
     "9876", "8765", "7654", "0987",
   ];
+
+  // De-leet: try both i→1 and l→1 interpretations, return the one
+  // that matches a dictionary word (or the i-variant as default).
+  // This avoids the collision where P@55w1rd → "password" requires l→1,
+  // but m1lk → "milk" requires i→1.
+  const LEET_BASE = {
+    a: "@4",
+    e: "3",
+    o: "0",
+    s: "$5",
+    t: "7",
+    b: "8",
+  };
+
+  function deLeetWith(pw, oneMap) {
+    let r = pw.normalize("NFC").toLowerCase();
+    for (const [ch, reps] of Object.entries(LEET_BASE))
+      for (const c of reps) r = r.split(c).join(ch);
+    // Apply the 1-mapping last (either i or l)
+    for (const [ch, reps] of Object.entries(oneMap))
+      for (const c of reps) r = r.split(c).join(ch);
+    return r;
+  }
+
+  function deLeet(pw) {
+    const withI = deLeetWith(pw, { i: "1!", l: "" });
+    const withL = deLeetWith(pw, { l: "1", i: "!" });
+    // If dictionary loaded, prefer the variant that matches
+    if (DICT_WORDS) {
+      if (DICT_WORDS.has(withL)) return withL;
+      if (DICT_WORDS.has(withI)) return withI;
+    }
+    // Default: try both, return the one with fewer digits remaining (more resolved)
+    const digitsI = (withI.match(/\d/g) || []).length;
+    const digitsL = (withL.match(/\d/g) || []).length;
+    return digitsL <= digitsI ? withL : withI;
+  }
 
   function isCommon(pw) {
     const l = pw.normalize("NFC").toLowerCase();
@@ -5456,29 +5839,27 @@
   function setPendingState() {
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
-    if (resetBtn) resetBtn.classList.add("visible");
+    resetBtn.classList.add("visible");
     
     // Reset strength bar segments
     strengthSegments.forEach((seg) => seg.classList.remove("active"));
     if (strengthIcon) strengthIcon.textContent = "—";
-    if (isReal(strengthLabel)) {
+    if (strengthLabel) {
       strengthLabel.textContent = "—";
       strengthLabel.style.color = "";
     }
-    if (isReal(strengthBits)) strengthBits.textContent = "—";
-    if (isReal(barWrapper)) {
+    if (strengthBits) strengthBits.textContent = "—";
+    if (barWrapper) {
       barWrapper.classList.remove("strong");
       barWrapper.setAttribute("aria-valuenow", "0");
       barWrapper.setAttribute("aria-valuetext", "No password entered");
     }
-    if (isReal(resultLabelFast)) if (isReal(resultLabelFast)) resultLabelFast.textContent = "—";
-    if (isReal(crackDurationFast)) if (isReal(crackDurationFast)) crackDurationFast.textContent = "";
-    if (isReal(crackDateFast)) if (isReal(crackDateFast)) crackDateFast.textContent = "—";
-    if (isReal(resultSentenceFast)) if (isReal(resultSentenceFast)) resultSentenceFast.textContent = "";
-    if (isReal(bestAttackDuration)) bestAttackDuration.textContent = "—";
-    if (isReal(bestAttackMeta)) bestAttackMeta.textContent = "";
-    if (isReal(liveDetailsVisible)) if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = true;
-    if (isReal(vulnTagsEl)) if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = "";
+    resultLabelFast.textContent = "—";
+    crackDurationFast.textContent = "";
+    crackDateFast.textContent = "—";
+    resultSentenceFast.textContent = "";
+    liveDetailsVisible.hidden = true;
+    vulnTagsEl.innerHTML = "";
   }
 
   input.addEventListener("input", () => {
@@ -5632,8 +6013,8 @@
   }
 
   function renderCharacterAnalysis(pw) {
-    const wrapper = safe("character-analysis-wrapper");
-    const container = safe("character-analysis");
+    const wrapper = document.getElementById("character-analysis-wrapper");
+    const container = document.getElementById("character-analysis");
 
     // Element may not exist (removed with Advanced Details panel)
     if (!wrapper) return;
@@ -5662,8 +6043,8 @@
 
   // Render heatmap in real-time (always visible, below crack time)
   function renderCharacterAnalysisLive(pw) {
-    const wrapper = safe("character-analysis-live-wrapper");
-    const container = safe("character-analysis-live");
+    const wrapper = document.getElementById("character-analysis-live-wrapper");
+    const container = document.getElementById("character-analysis-live");
 
     // Element must exist (required for real-time display)
     if (!wrapper || !container) return;
@@ -5690,64 +6071,52 @@
     }).join("");
   }
 
-  render = async function render() {
+  async function render() {
     const runId = ++renderRunId;
     const inputPw = input.value;
     const inputEmpty = !inputPw.length;
     const pw = inputPw;
 
     if (inputEmpty) {
-      if (resetBtn) resetBtn.classList.remove("visible");
+      resetBtn.classList.remove("visible");
       resultsDiv.classList.add("visible");
-      resultsDiv.classList.add("is-empty");
+      resultsDiv.classList.remove("is-empty");
       if (attackerFrame) attackerFrame.hidden = false;
 
       // Neutral strength state (visible placeholders)
       strengthSegments.forEach((seg) => seg.classList.remove("active"));
       if (strengthIcon) strengthIcon.textContent = "—";
-      if (isReal(strengthLabel)) {
+      if (strengthLabel) {
         strengthLabel.textContent = "—";
         strengthLabel.style.color = "";
       }
-      if (isReal(strengthBits)) strengthBits.textContent = "—";
-      if (isReal(barLabel)) barLabel.style.display = "flex";
-      if (isReal(barWrapper)) {
+      if (strengthBits) strengthBits.textContent = "—";
+      if (barLabel) barLabel.style.display = "flex";
+      if (barWrapper) {
         barWrapper.classList.remove("strong");
         barWrapper.setAttribute("aria-valuenow", "0");
         barWrapper.setAttribute("aria-valuetext", "No password entered");
       }
 
       // Reset attacker cards to neutral "—" state (mirrors initial HTML)
-      if (isReal(resultLabelFast)) resultLabelFast.textContent = "—";
-      if (isReal(crackDurationFast)) {
-        crackDurationFast.textContent = "—";
-        crackDurationFast.style.color = "";
-      }
-      if (isReal(crackDateFast)) {
-        crackDateFast.textContent = "—";
-        crackDateFast.style.color = "";
-      }
-      if (isReal(resultSentenceFast)) resultSentenceFast.textContent = "";
-      if (isReal(bestAttackDuration)) bestAttackDuration.textContent = "—";
-      if (isReal(bestAttackMeta)) bestAttackMeta.textContent = "";
-      if (isReal(resultLabelPro)) resultLabelPro.textContent = "—";
-      if (isReal(crackDurationPro)) {
-        crackDurationPro.textContent = "—";
-        crackDurationPro.style.color = "";
-      }
-      if (isReal(crackDatePro)) {
-        crackDatePro.textContent = "—";
-        crackDatePro.style.color = "";
-      }
-      if (resultSentencePro) if (isReal(resultSentencePro)) resultSentencePro.textContent = "";
+      resultLabelFast.textContent = "—";
+      crackDurationFast.textContent = "—";
+      crackDurationFast.style.color = "";
+      crackDateFast.textContent = "—";
+      crackDateFast.style.color = "";
+      resultSentenceFast.textContent = "";
+      if (resultLabelPro) resultLabelPro.textContent = "—";
+      if (crackDurationPro) { crackDurationPro.textContent = "—"; crackDurationPro.style.color = ""; }
+      if (crackDatePro) { crackDatePro.textContent = "—"; crackDatePro.style.color = ""; }
+      if (resultSentencePro) resultSentencePro.textContent = "";
 
       // Reset quality/pattern/HIBP badges to "—"
       if (qualityBadge) { qualityBadge.textContent = "—"; qualityBadge.style.background = ""; qualityBadge.style.color = ""; }
       if (patternBadge) { patternBadge.textContent = "—"; patternBadge.style.background = ""; patternBadge.style.color = ""; }
 
       // Reset visible details when empty
-      if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = "";
-      if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = true;
+      vulnTagsEl.innerHTML = "";
+      liveDetailsVisible.hidden = true;
       if (ctFastestValue) {
         ctFastestValue.textContent = "—";
         ctFastestValue.style.color = "";
@@ -5767,7 +6136,7 @@
       return;
     }
 
-    if (resetBtn) resetBtn.classList.add("visible");
+    resetBtn.classList.add("visible");
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
     if (attackerFrame) attackerFrame.hidden = false;  // Show force bar
@@ -5833,23 +6202,23 @@
     });
     
     // Icon + label (Forget et al. 2008: +58% comprehension)
-    if (isReal(barLabel)) barLabel.style.display = "flex";
+    if (barLabel) barLabel.style.display = "flex";
     if (strengthIcon) strengthIcon.textContent = scoreIcon(sc);
-    if (isReal(strengthLabel)) {
+    if (strengthLabel) {
       strengthLabel.textContent = scoreText(sc);
       strengthLabel.style.color = col;
     }
-    if (isReal(strengthBits)) {
+    if (strengthBits) {
       const bits = Math.round(ent);
       strengthBits.textContent = `(${bits} bits)`;
     }
-    if (isReal(barWrapper)) {
+    if (barWrapper) {
       barWrapper.setAttribute("aria-valuenow", sc);
       barWrapper.setAttribute("aria-valuetext", scoreText(sc));
     }
 
     // Update strength bar color indicator
-    if (isReal(barWrapper)) {
+    if (barWrapper) {
       if (sc >= 60) {
         barWrapper.classList.add("strong");
       } else {
@@ -5858,20 +6227,26 @@
     }
 
     // Live details visible (always visible below heatmap)
-    if (isReal(detailLengthLive)) detailLengthLive.textContent = pw.length;
-    if (isReal(detailCharsetLive)) detailCharsetLive.textContent = cs;
-    if (isReal(detailEntropyLive)) detailEntropyLive.textContent = Math.round(ent);
-    if (isReal(detailCombosLive)) detailCombosLive.textContent =
+    detailLengthLive.textContent = pw.length;
+    detailCharsetLive.textContent = cs;
+    detailEntropyLive.textContent = Math.round(ent);
+    detailCombosLive.textContent =
       ent > 60 ? "2^" + Math.round(ent) : fmtBig(Math.pow(2, ent));
 
-    if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = false;
+    liveDetailsVisible.hidden = false;
 
     // Tags
     const vulns = getVulns(pw);
     
+    // ML prediction (async)
+    const mlProb = await predictHumanPattern(pw);
     if (runId !== renderRunId) return;
-
-    if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = vulns
+    if (mlProb !== null && mlProb > 0.85) {
+      // If model predicts >85% probability of human pattern, add warning
+      vulns.push({ t: t("vMLHuman") + ` (${Math.round(mlProb * 100)}%)`, l: "warn" });
+    }
+    
+    vulnTagsEl.innerHTML = vulns
       .map(
         (v) =>
           '<span class="vuln-tag ' +
@@ -5888,7 +6263,7 @@
     updatePatternBadge(vulns);
 
     // Scenarios
-    const all = getScenarios(pw, null);
+    const all = getScenarios(pw, mlProb);
 
     // Find FASTEST attack: true minimum across all applicable attacks
     const allFinite = all.filter((r) => r.sec !== null && isFinite(r.sec) && r.sec > 0);
@@ -5913,26 +6288,8 @@
     const fastDur = fmtDuration(fastSec);
     const fastDt = fmtDate(fastSec);
 
-    // Best-attack card (nouvelle carte typographique)
-    if (isReal(bestAttackDuration)) {
-      bestAttackDuration.textContent = fastest ? fastDur.text : "—";
-    }
-    if (isReal(bestAttackMeta) && fastest) {
-      const guesses = fastest.sec != null && isFinite(fastest.sec) && fastest.rate > 0
-        ? Math.round(fastest.sec * fastest.rate)
-        : null;
-      const triesStr = guesses != null
-        ? guesses.toLocaleString(LANG === "fr" ? "fr-FR" : "en-US")
-        : "—";
-      const methLabel = LANG === "fr" ? "Nombre de tentatives" : "Number of attempts";
-      const meth = LANG === "fr" ? "méthode" : "method";
-      bestAttackMeta.innerHTML = methLabel + " : <strong>" + triesStr + "</strong> – " + meth + " : <strong>" + fastest.atk + "</strong>";
-    } else if (isReal(bestAttackMeta)) {
-      bestAttackMeta.textContent = "";
-    }
-
-    if (isReal(crackDurationFast)) crackDurationFast.style.color = col;
-    if (isReal(crackDateFast)) crackDateFast.style.color = col;
+    crackDurationFast.style.color = col;
+    crackDateFast.style.color = col;
 
     // Map attack types to methodology anchor IDs
     const attackAnchorMap = {
@@ -5960,32 +6317,32 @@
     const fastestConfidenceText = fastest ? confidenceText(fastest.confidence) : "";
 
     if (fastDur.instant) {
-      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest
+      resultLabelFast.textContent = fastest
         ? fastest.atk + " — " + fastest.hash
         : "";
-      if (isReal(crackDurationFast)) crackDurationFast.textContent = t("lessSec");
-      if (isReal(crackDateFast)) crackDateFast.textContent = t("now");
-      if (isReal(resultSentenceFast)) resultSentenceFast.innerHTML =
+      crackDurationFast.textContent = t("lessSec");
+      crackDateFast.textContent = t("now");
+      resultSentenceFast.innerHTML =
         t("instantVia") +
         (fastest ? " via " + fastest.atk + "." : ".") +
         (fastestMethodDesc ? " " + fastestMethodDesc : "") +
         fastestConfidenceText +
         methodAnchor;
     } else if (fastDur.inf || !fastDur.ok) {
-      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
-      if (isReal(crackDurationFast)) crackDurationFast.textContent = fastDur.text;
-      if (isReal(crackDateFast)) crackDateFast.textContent = t("beyondDate");
-      if (isReal(resultSentenceFast)) resultSentenceFast.innerHTML = fastest 
+      resultLabelFast.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
+      crackDurationFast.textContent = fastDur.text;
+      crackDateFast.textContent = t("beyondDate");
+      resultSentenceFast.innerHTML = fastest 
         ? t("unreachableFastest").replace("{attack}", "<strong>" + fastest.atk + "</strong>") +
             (fastestMethodDesc ? " " + fastestMethodDesc : "") +
             fastestConfidenceText +
             methodAnchor
         : t("unreachable") + fastestConfidenceText + methodAnchor;
     } else {
-      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest.atk + " — " + fastest.hash;
-      if (isReal(crackDurationFast)) crackDurationFast.textContent = fastDur.text;
-      if (isReal(crackDateFast)) crackDateFast.textContent = fastDt || t("beyondDate");
-      if (isReal(resultSentenceFast)) resultSentenceFast.innerHTML =
+      resultLabelFast.textContent = fastest.atk + " — " + fastest.hash;
+      crackDurationFast.textContent = fastDur.text;
+      crackDateFast.textContent = fastDt || t("beyondDate");
+      resultSentenceFast.innerHTML =
         t("via") +
         " <strong>" +
         fastest.atk +
@@ -6004,11 +6361,11 @@
     const proDt = fmtDate(proSec);
 
     if (proDur.instant) {
-      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest
+      resultLabelPro.textContent = fastest
         ? fastest.atk + " — " + fastest.hash
         : "";
-      if (isReal(crackDurationPro)) crackDurationPro.textContent = t("lessSec");
-      if (isReal(crackDatePro)) crackDatePro.textContent = t("now");
+      crackDurationPro.textContent = t("lessSec");
+      crackDatePro.textContent = t("now");
       resultSentencePro.innerHTML =
         t("instantVia") +
         (fastest ? " via " + fastest.atk + "." : ".") +
@@ -6016,19 +6373,19 @@
         fastestConfidenceText +
         methodAnchor;
     } else if (proDur.inf || !proDur.ok) {
-      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
-      if (isReal(crackDurationPro)) crackDurationPro.textContent = proDur.text;
-      if (isReal(crackDatePro)) crackDatePro.textContent = t("beyondDate");
-      if (isReal(resultSentencePro)) resultSentencePro.innerHTML = fastest 
+      resultLabelPro.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
+      crackDurationPro.textContent = proDur.text;
+      crackDatePro.textContent = t("beyondDate");
+      resultSentencePro.innerHTML = fastest 
         ? t("unreachableFastest").replace("{attack}", "<strong>" + fastest.atk + "</strong>") +
             (fastestMethodDesc ? " " + fastestMethodDesc : "") +
             fastestConfidenceText +
             methodAnchor
         : t("unreachable") + fastestConfidenceText + methodAnchor;
     } else {
-      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest.atk + " — " + fastest.hash;
-      if (isReal(crackDurationPro)) crackDurationPro.textContent = proDur.text;
-      if (isReal(crackDatePro)) crackDatePro.textContent = proDt || t("beyondDate");
+      resultLabelPro.textContent = fastest.atk + " — " + fastest.hash;
+      crackDurationPro.textContent = proDur.text;
+      crackDatePro.textContent = proDt || t("beyondDate");
       resultSentencePro.innerHTML =
         t("via") +
         " <strong>" +
@@ -6251,27 +6608,25 @@
   }
 
   // Reset
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      input.value = "";
-      input.type = "password";
-      const textSpan = toggleBtn.querySelector("span");
-      if (textSpan) textSpan.textContent = t("show");
-      toggleBtn.setAttribute("aria-label", t("showAria"));
+  resetBtn.addEventListener("click", () => {
+    input.value = "";
+    input.type = "password";
+    const textSpan = toggleBtn.querySelector("span");
+    if (textSpan) textSpan.textContent = t("show");
+    toggleBtn.setAttribute("aria-label", t("showAria"));
 
-      // Cancel pending renders/checks and force a fresh empty-state render
-      clearTimeout(timer);
-      userPinnedAlgo = false;
-      selectedAlgo = "sha256";
-      if (ctAlgo) ctAlgo.value = "sha256";
-      if (hibpAbort) hibpAbort.abort();
-      clearTimeout(hibpDebounce);
-      lastCheckedPw = "";
+    // Cancel pending renders/checks and force a fresh empty-state render
+    clearTimeout(timer);
+    userPinnedAlgo = false;
+    selectedAlgo = "sha256";
+    if (ctAlgo) ctAlgo.value = "sha256";
+    if (hibpAbort) hibpAbort.abort();
+    clearTimeout(hibpDebounce);
+    lastCheckedPw = "";
 
-      render();
-      input.focus();
-    });
-  }
+    render();
+    input.focus();
+  });
 
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -6283,7 +6638,7 @@
   // ============================================================
   // CHARACTER PREVIEW (brief reveal on type)
   // ============================================================
-  const charPreview = safe('char-preview');
+  const charPreview = document.getElementById('char-preview');
   let previewTimeout = null;
   let lastLength = 0;
 
@@ -6323,7 +6678,7 @@
   // INFO TOOLTIP
   // ============================================================
   const tooltipTrigger = document.querySelector('.info-tooltip-trigger');
-  const tooltip = safe('speed-tooltip');
+  const tooltip = document.getElementById('speed-tooltip');
   
   if (tooltipTrigger && tooltip) {
     let isTooltipVisible = false;
@@ -6411,10 +6766,10 @@
 
   // Test button (currently just triggers analysis, password is analyzed on input)
   // Initialize: hide strength label on page load
-  if (isReal(barLabel)) barLabel.style.display = "none";
+  if (barLabel) barLabel.style.display = "none";
 
   // Strength info tooltip toggle
-  if (isReal(strengthInfoBtn) && isReal(strengthTooltip)) {
+  if (strengthInfoBtn && strengthTooltip) {
     strengthInfoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       strengthTooltip.hidden = !strengthTooltip.hidden;
@@ -6429,30 +6784,28 @@
   }
 
   // Copy button
-  if (isReal(copyBtn)) {
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(input.value);
-
-        // Visual feedback - change aria-label since no visible text
-        copyBtn.classList.add('copied');
-        const originalLabel = copyBtn.getAttribute('aria-label');
-        copyBtn.setAttribute('aria-label', t('copied'));
-
-        // Reset after 2 seconds
-        setTimeout(() => {
-          copyBtn.classList.remove('copied');
-          copyBtn.setAttribute('aria-label', originalLabel);
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(input.value);
+      
+      // Visual feedback - change aria-label since no visible text
+      copyBtn.classList.add('copied');
+      const originalLabel = copyBtn.getAttribute('aria-label');
+      copyBtn.setAttribute('aria-label', t('copied'));
+      
+      // Reset after 2 seconds
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyBtn.setAttribute('aria-label', originalLabel);
       }, 2000);
-      } catch (err) {
-        console.error('Failed to copy:', err);
-      }
-    });
-  }
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  });
 
   // Hide copy button when user types
   input.addEventListener('input', () => {
-    if (copyBtn) copyBtn.hidden = true;
+    copyBtn.hidden = true;
   });
 
   // No ML model cleanup needed (vanilla JS uses native GC)
@@ -6477,7 +6830,7 @@
       });
       // Show selected panel
       const panelId = tab.getAttribute("aria-controls");
-      const panel = safe(panelId);
+      const panel = document.getElementById(panelId);
       if (panel) panel.hidden = false;
     });
   });
@@ -6493,12 +6846,14 @@
       if (!BLOOM_LOADED && !BLOOM_LOADING) loadBloomFilter();
     });
   }
+
   // Initialize i18n and load dictionary on page load
+  // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
   setLang(LANG);
-  loadDictionary(LANG);
+  loadDictionary(LANG); // Load in background, don't block initialization
   loadPcfgCalibration();
   loadMarkovCalibration();
-  render();
-  } // End of: if (input) block
-  }); // End DOMContentLoaded
+  loadNeuralCalibration();
+  loadPrinceCalibration();
+  render(); // Keep layout fully visible even with empty input
 })();

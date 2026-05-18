@@ -115,8 +115,8 @@
       hfModeOn: "Calibration: high-fidelity",
       hfModeOff: "Calibration: standard",
       tooltipBenchmarkTitle: "Hardware benchmark",
-      tooltipBenchmarkText: "All estimates use <strong>12× NVIDIA RTX 4090 GPUs (2025 benchmarks)</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), representing an experienced attacker.",
-      tooltipAmateur: "1× RTX 4090",
+      tooltipBenchmarkText: "All estimates use <strong>12× NVIDIA RTX 5090 GPUs (2025 benchmarks)</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), representing an experienced attacker.",
+      tooltipAmateur: "1× RTX 5090",
       tooltipAmateurSpeed: "12× slower",
       tooltipPro: "100 GPU Cloud",
       tooltipProSpeed: "~8× faster",
@@ -241,10 +241,10 @@
       copyBtn: "Copy",
       copyBtnAria: "Copy password",
       copied: "Copied!",
-      badgeExperienced: "Pirate experienced: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirate experienced: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirate professional: 100 GPU Cloud",
       tabExperienced: "Experienced",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Professional",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Strong",
@@ -275,8 +275,8 @@
       bloomNotFound: "Not found in RockYou dataset.",
       bloomLoading: "Loading RockYou filter (~17 MB)…",
       bloomError: "Could not load RockYou filter.",
-      descBrute: "<p>Brute force attacks test every possible character combination, one by one, until the correct password is found. The only limit is available computing power: with a modern GPU like the RTX 4090, an attacker can test up to <em>169 billion</em> MD5 hashes per second.</p><p>A 6-character alphanumeric password (62 symbols) has 62⁶ = 56 billion combinations — cracked in under a second. At 10 characters, roughly 70 minutes. At 14 characters with uppercase, digits and symbols (95 symbols), combinations exceed 10²⁷: even a <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>nation-state adversary cannot crack that</a> before the Sun dies.</p><p>Brute force is ineffective against long passwords but devastates short ones. Every extra character multiplies cracking time by the size of the alphabet used.</p>",
-      descDict: "<p>Dictionary attacks do not test every combination: they test only real passwords already used by millions of people. These lists come from massive data breaches — <a href='https://haveibeenpwned.com/' target='_blank' rel='noopener'>Have I Been Pwned</a> catalogs over 14 billion compromised passwords.</p><p>Speed is identical to brute force — 169 GH/s on MD5 — but the search space is reduced to a few hundred million entries instead of trillions. <a href='https://ieeexplore.ieee.org/document/6234435' target='_blank' rel='noopener'>Academic studies show</a> that over 50% of real-world passwords appear in the top 10 million entries of a dictionary list.</p><p>If your password is a real word or a first name, consider it compromised within seconds.</p>",
+      descBrute: "<p>Brute force attacks test every possible character combination, one by one, until the correct password is found. The only limit is available computing power: with a modern GPU like the RTX 5090, an attacker can test up to <em>228 billion|228 milliards|228 Milliarden|228 miliardos|228 milyar|228 miliardi|228 miljard</em> MD5 hashes per second.</p><p>A 6-character alphanumeric password (62 symbols) has 62⁶ = 56 billion combinations — cracked in under a second. At 10 characters, roughly 70 minutes. At 14 characters with uppercase, digits and symbols (95 symbols), combinations exceed 10²⁷: even a <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>nation-state adversary cannot crack that</a> before the Sun dies.</p><p>Brute force is ineffective against long passwords but devastates short ones. Every extra character multiplies cracking time by the size of the alphabet used.</p>",
+      descDict: "<p>Dictionary attacks do not test every combination: they test only real passwords already used by millions of people. These lists come from massive data breaches — <a href='https://haveibeenpwned.com/' target='_blank' rel='noopener'>Have I Been Pwned</a> catalogs over 14 billion compromised passwords.</p><p>Speed is identical to brute force — 228 GH/s on MD5 — but the search space is reduced to a few hundred million entries instead of trillions. <a href='https://ieeexplore.ieee.org/document/6234435' target='_blank' rel='noopener'>Academic studies show</a> that over 50% of real-world passwords appear in the top 10 million entries of a dictionary list.</p><p>If your password is a real word or a first name, consider it compromised within seconds.</p>",
       descHybrid: "<p>Hybrid attacks combine a dictionary with automatic transformation rules. The attacker starts from a known word — \"sunshine\" — then applies hundreds of mutations: initial capital (Sunshine), trailing digits (sunshine123), substitutions (sunsh1ne), year suffixes (sunshine2024), punctuation (sunshine!).</p><p><a href='https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd' target='_blank' rel='noopener'>Benchmarks published by the Hashcat team</a> show that Hashcat can apply over 1,000 rules per dictionary entry, generating billions of variants in minutes. <a href='https://ieeexplore.ieee.org/document/6956583' target='_blank' rel='noopener'>Academic security studies</a> confirm that \"Password1!\", \"qwerty2023\" and \"Sunshine!\" fall in under 60 seconds.</p><p>If your password is a recognizable word with a few visual modifications, it is vulnerable.</p>",
       descMask: "<p>Mask attacks exploit the predictable structure of human-chosen passwords. Rather than testing all combinations randomly, the attacker targets <em>recurring patterns</em> observed in data breaches: one uppercase followed by lowercase letters and two digits (\"Thomas42\"); or a common word followed by a year (\"Summer2024\").</p><p>Hashcat allows precisely defining such masks: <code>?u?l?l?l?l?d?d</code> means \"one uppercase, four lowercase, two digits\". <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>Wheeler's research (2016)</a> has shown that 30 to 40% of real-world passwords follow one of the ten most common mask patterns.</p><p>A structured 8-character password can fall in seconds where brute force would take hours.</p>",
       descRainbow: "<p>A rainbow table is a precomputed database that maps hashes to their original passwords. Rather than computing hashes in real time, the attacker computes them <em>once</em> and stores them. To crack a stolen hash, a simple lookup suffices — like searching a word in a printed dictionary.</p><p>This technique is particularly devastating against unsalted algorithms like MD5 and SHA-1. Tables covering all alphanumeric passwords up to 8 characters take only a few terabytes, commercially accessible. <a href='https://www.hivesystems.com/blog/are-your-passwords-in-the-green' target='_blank' rel='noopener'>Hive Systems publishes annual tables</a> showing the effectiveness of this method.</p><p>The countermeasure is <em>salting</em>: adding a unique random value before hashing makes any precomputed table useless. That is why bcrypt and Argon2id include automatic salting — unlike MD5 and SHA-1 which remain vulnerable.</p>",
@@ -344,7 +344,7 @@
       hfModeOn: "Calibration : haute fidelite",
       hfModeOff: "Calibration : standard",
       tooltipBenchmarkTitle: "Référence matérielle",
-      tooltipBenchmarkText: "Toutes les estimations utilisent <strong>12× NVIDIA RTX 4090 GPUs</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), représentant un attaquant expérimenté.",
+      tooltipBenchmarkText: "Toutes les estimations utilisent <strong>12× NVIDIA RTX 5090 GPUs</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), représentant un attaquant expérimenté.",
       tooltipAmateur: "Amateur (1 GPU)",
       tooltipAmateurSpeed: "12× plus lent",
       tooltipPro: "Professionnel",
@@ -470,10 +470,10 @@
       copyBtn: "Copier",
       copyBtnAria: "Copier le mot de passe",
       copied: "Copié !",
-       badgeExperienced: "Pirate expérimenté: 12× RTX 4090 (2025)",
+       badgeExperienced: "Pirate expérimenté: 12× RTX 5090 (2025)",
        badgeProfessional: "Pirate professionnel: 100 GPU Cloud",
        tabExperienced: "Expérimenté",
-       tabExperiencedGpus: "12× RTX 4090 GPUs",
+       tabExperiencedGpus: "12× RTX 5090 GPUs",
        tabProfessional: "Professionnel",
        tabProfessionalGpus: "~100 GPUs",
        patternStrong: "Robuste",
@@ -505,8 +505,8 @@
        bloomLoading: "Chargement du filtre RockYou (~17 Mo)…",
        bloomError: "Impossible de charger le filtre RockYou.",
        attackDescriptions: "Tout savoir sur les types d'attaque",
-       descBrute: "<p>L'attaque par force brute teste toutes les combinaisons possibles de caractères, une par une. La seule limite est la puissance de calcul : avec un GPU moderne comme le RTX 4090, un attaquant peut tester jusqu'à <em>169 milliards</em> de hachages MD5 par seconde.</p><p>Un mot de passe de 6 caractères alphanumériques représente 62⁶ = 56 milliards de combinaisons — moins d'une seconde. À 10 caractères, environ 70 minutes. À 14 caractères avec majuscules, chiffres et symboles, on dépasse 10²⁷ combinaisons : même un <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>État-nation ne pourrait pas craquer ça</a> avant la mort du Soleil.</p><p>La force brute est inefficace contre les mots de passe longs, mais dévaste les courts. Chaque caractère supplémentaire multiplie le temps de craquage par la taille de l'alphabet utilisé.</p>",
-       descDict: "<p>L'attaque par dictionnaire ne teste pas toutes les combinaisons : elle teste uniquement les mots de passe réels déjà utilisés par des millions de personnes. Les bases <a href='https://haveibeenpwned.com/' target='_blank' rel='noopener'>Have I Been Pwned</a> répertorient plus de 14 milliards de mots de passe compromis.</p><p>La vitesse est identique à la force brute — 169 GH/s sur MD5 — mais l'espace de recherche est réduit à quelques centaines de millions d'entrées au lieu de billions. <a href='https://ieeexplore.ieee.org/document/6234435' target='_blank' rel='noopener'>Selon les études universitaires</a>, plus de 50 % des mots de passe réels figurent dans les top 10 millions d'une liste de dictionnaire.</p><p>Si votre mot de passe est un vrai mot ou un prénom, considérez-le comme compromis en quelques secondes.</p>",
+       descBrute: "<p>L'attaque par force brute teste toutes les combinaisons possibles de caractères, une par une. La seule limite est la puissance de calcul : avec un GPU moderne comme le RTX 5090, un attaquant peut tester jusqu'à <em>228 billion|228 milliards|228 Milliarden|228 miliardos|228 milyar|228 miliardi|228 miljard</em> de hachages MD5 par seconde.</p><p>Un mot de passe de 6 caractères alphanumériques représente 62⁶ = 56 milliards de combinaisons — moins d'une seconde. À 10 caractères, environ 70 minutes. À 14 caractères avec majuscules, chiffres et symboles, on dépasse 10²⁷ combinaisons : même un <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>État-nation ne pourrait pas craquer ça</a> avant la mort du Soleil.</p><p>La force brute est inefficace contre les mots de passe longs, mais dévaste les courts. Chaque caractère supplémentaire multiplie le temps de craquage par la taille de l'alphabet utilisé.</p>",
+       descDict: "<p>L'attaque par dictionnaire ne teste pas toutes les combinaisons : elle teste uniquement les mots de passe réels déjà utilisés par des millions de personnes. Les bases <a href='https://haveibeenpwned.com/' target='_blank' rel='noopener'>Have I Been Pwned</a> répertorient plus de 14 milliards de mots de passe compromis.</p><p>La vitesse est identique à la force brute — 228 GH/s sur MD5 — mais l'espace de recherche est réduit à quelques centaines de millions d'entrées au lieu de billions. <a href='https://ieeexplore.ieee.org/document/6234435' target='_blank' rel='noopener'>Selon les études universitaires</a>, plus de 50 % des mots de passe réels figurent dans les top 10 millions d'une liste de dictionnaire.</p><p>Si votre mot de passe est un vrai mot ou un prénom, considérez-le comme compromis en quelques secondes.</p>",
        descHybrid: "<p>L'attaque hybride combine un dictionnaire avec des règles de transformation automatiques. L'attaquant part d'un mot connu — \"soleil\" — puis applique des centaines de mutations : majuscule (Soleil), chiffres (soleil123), substitutions (s0l3il), suffixes d'années (soleil2024), ponctuation (soleil!).</p><p>Les benchmarks <a href='https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd' target='_blank' rel='noopener'>publiés par l'équipe Hashcat</a> montrent que Hashcat peut appliquer plus de 1 000 règles par entrée, générant des milliards de variantes en quelques minutes. <a href='https://ieeexplore.ieee.org/document/6956583' target='_blank' rel='noopener'>Des études académiques</a> confirment que \"Password1!\", \"azerty2023\" et \"Soleil!\" tombent en moins de 60 secondes.</p><p>Si votre mot de passe est un mot reconnaissable avec quelques modifications visuelles, il est vulnérable.</p>",
        descMask: "<p>L'attaque par masque exploite la structure prévisible des mots de passe humains. Plutôt que de tester toutes les combinaisons au hasard, l'attaquant cible des <em>schémas récurrents</em> : une majuscule suivie de minuscules et deux chiffres (\"Thomas42\") ; ou un mot commun suivi d'une année (\"Summer2024\").</p><p>Hashcat permet de définir précisément ces masques : <code>?u?l?l?l?l?d?d</code> = \"une majuscule, quatre minuscules, deux chiffres\". <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>Wheeler (2016)</a> a montré que 30 à 40 % des mots de passe réels suivent un des dix masques les plus fréquents.</p><p>Un mot de passe de 8 caractères structuré peut tomber en secondes là où la force brute prendrait des heures.</p>",
        descRainbow: "<p>Une table arc-en-ciel est une base de données précalculée qui associe des hachages à leurs mots de passe d'origine. Plutôt que de calculer les hachages en temps réel, l'attaquant les calcule <em>une seule fois</em> et les stocke. Pour craquer un hachage volé, une simple recherche dans la table suffit.</p><p>Cette technique est particulièrement dévastatrice contre les algorithmes non salés comme MD5 et SHA-1. Des tables couvrant tous les mots de passe alphanumériques jusqu'à 8 caractères occupent quelques téraoctets, accessibles sur le marché. <a href='https://www.hivesystems.com/blog/are-your-passwords-in-the-green' target='_blank' rel='noopener'>Hive Systems publie chaque année</a> des tableaux montrant l'efficacité de cette méthode.</p><p>La parade est le <em>salage</em> : ajouter une valeur aléatoire unique avant le hachage rend toute table précalculée inutile. C'est pourquoi bcrypt et Argon2id intègrent un sel automatique, contrairement à MD5 et SHA-1.</p>",
@@ -569,7 +569,7 @@
       thSpeed: "Velocidad (12 GPU)",
       thTime: "Tiempo estimado",
       tooltipBenchmarkTitle: "Referencia de hardware",
-      tooltipBenchmarkText: "Todas las estimaciones usan <strong>12× NVIDIA RTX 4090 GPUs</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), representando un atacante experimentado.",
+      tooltipBenchmarkText: "Todas las estimaciones usan <strong>12× NVIDIA RTX 5090 GPUs</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), representando un atacante experimentado.",
       tooltipAmateur: "Aficionado (1 GPU)",
       tooltipAmateurSpeed: "12× más lento",
       tooltipPro: "Profesional",
@@ -683,10 +683,10 @@
       copyBtn: "Copiar",
       copyBtnAria: "Copiar contraseña",
       copied: "¡Copiado!",
-      badgeExperienced: "Pirata experimentado: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirata experimentado: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirata profesional: 100 GPU Cloud",
       tabExperienced: "Experimentado",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Profesional",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Fuerte",
@@ -762,7 +762,7 @@
       thSpeed: "Velocidade (12 GPU)",
       thTime: "Tempo estimado",
       tooltipBenchmarkTitle: "Referência de hardware",
-      tooltipBenchmarkText: "Todas as estimativas usam <strong>12× NVIDIA RTX 4090 GPUs</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), representando um atacante experiente.",
+      tooltipBenchmarkText: "Todas as estimativas usam <strong>12× NVIDIA RTX 5090 GPUs</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), representando um atacante experiente.",
       tooltipAmateur: "Amador (1 GPU)",
       tooltipAmateurSpeed: "12× mais lento",
       tooltipPro: "Profissional",
@@ -874,10 +874,10 @@
       copyBtn: "Copiar",
       copyBtnAria: "Copiar senha",
       copied: "Copiado!",
-      badgeExperienced: "Pirata experiente: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirata experiente: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirata profissional: 100 GPU Cloud",
       tabExperienced: "Experiente",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Profissional",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Forte",
@@ -953,7 +953,7 @@
       thSpeed: "Geschwindigkeit (12 GPU)",
       thTime: "Geschätzte Zeit",
       tooltipBenchmarkTitle: "Hardware-Referenz",
-      tooltipBenchmarkText: "Alle Schätzungen verwenden <strong>12× NVIDIA RTX 4090 GPUs</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), was einen erfahrenen Angreifer darstellt.",
+      tooltipBenchmarkText: "Alle Schätzungen verwenden <strong>12× NVIDIA RTX 5090 GPUs</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), was einen erfahrenen Angreifer darstellt.",
       tooltipAmateur: "Amateur (1 GPU)",
       tooltipAmateurSpeed: "12× langsamer",
       tooltipPro: "Professionell",
@@ -1066,10 +1066,10 @@
       copyBtn: "Kopieren",
       copyBtnAria: "Passwort kopieren",
       copied: "Kopiert!",
-      badgeExperienced: "Pirat erfahren: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirat erfahren: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirat professionell: 100 GPU Cloud",
       tabExperienced: "Erfahren",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Professionell",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Stark",
@@ -1144,7 +1144,7 @@
       thSpeed: "Hız (12 GPU)",
       thTime: "Tahmini zaman",
       tooltipBenchmarkTitle: "Donanım referansı",
-      tooltipBenchmarkText: "Tüm tahminler <strong>12× NVIDIA RTX 4090 GPU</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM) kullanır, deneyimli bir saldırganı temsil eder.",
+      tooltipBenchmarkText: "Tüm tahminler <strong>12× NVIDIA RTX 5090 GPU</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM) kullanır, deneyimli bir saldırganı temsil eder.",
       tooltipAmateur: "Amatör (1 GPU)",
       tooltipAmateurSpeed: "12× daha yavaş",
       tooltipPro: "Profesyonel",
@@ -1254,10 +1254,10 @@
       copyBtn: "Kopyala",
       copyBtnAria: "Şifreyi kopyala",
       copied: "Kopyalandı!",
-      badgeExperienced: "Bilgisayar deneyimli: 12× RTX 4090 (2025)",
+      badgeExperienced: "Bilgisayar deneyimli: 12× RTX 5090 (2025)",
       badgeProfessional: "Bilgisayar profesyonel: 100 GPU Cloud",
       tabExperienced: "Deneyimli",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Profesyonel",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Güçlü",
@@ -1333,7 +1333,7 @@
       thSpeed: "Velocità (12 GPU)",
       thTime: "Tempo stimato",
       tooltipBenchmarkTitle: "Riferimento hardware",
-      tooltipBenchmarkText: "Tutte le stime utilizzano <strong>12× NVIDIA RTX 4090 GPU</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), rappresentando un attaccante esperto.",
+      tooltipBenchmarkText: "Tutte le stime utilizzano <strong>12× NVIDIA RTX 5090 GPU</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), rappresentando un attaccante esperto.",
       tooltipAmateur: "Dilettante (1 GPU)",
       tooltipAmateurSpeed: "12× più lento",
       tooltipPro: "Professionale",
@@ -1445,10 +1445,10 @@
       copyBtn: "Copia",
       copyBtnAria: "Copia password",
       copied: "Copiato!",
-      badgeExperienced: "Pirata esperto: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirata esperto: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirata professionale: 100 GPU Cloud",
       tabExperienced: "Esperto",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Professionale",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Forte",
@@ -1628,10 +1628,10 @@
       copyBtn: "Kopiuj",
       copyBtnAria: "Kopiuj hasło",
       copied: "Skopiowano!",
-      badgeExperienced: "Pirat doświadczony: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirat doświadczony: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirat profesjonalny: 100 GPU Cloud",
       tabExperienced: "Doświadczony",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Profesjonalny",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Silne",
@@ -1809,10 +1809,10 @@
       copyBtn: "Kopiëren",
       copyBtnAria: "Kopieer wachtwoord",
       copied: "Gekopieerd!",
-      badgeExperienced: "Piraat ervaren: 12× RTX 4090 (2025)",
+      badgeExperienced: "Piraat ervaren: 12× RTX 5090 (2025)",
       badgeProfessional: "Piraat professioneel: 100 GPU Cloud",
       tabExperienced: "Ervaren",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Professioneel",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Sterk",
@@ -4036,18 +4036,18 @@
   const HF_MULT_MAX = 20;
 
   // ============================================================
-  // HASH RATES — 12× RTX 4090 (Official Hashcat v6.2.6 benchmarks)
+  // HASH RATES — 12× RTX 5090 (Official Hashcat v6.2.6 benchmarks)
   // Source: https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd
   // ============================================================
   const ALGOS = [
-    { key: "md5",     name: "MD5",              rate: 168.9e9 * 12,  salted: false }, // 2,026.8 GH/s — Chick3nman RTX 4090 benchmark
-    { key: "sha1",    name: "SHA-1",             rate: 50.86e9 * 12,  salted: false }, // 610.3 GH/s
-    { key: "sha256",  name: "SHA-256",           rate: 22.68e9 * 12,  salted: false }, // 272.2 GH/s
-    { key: "ntlm",    name: "NTLM",              rate: 288.5e9 * 12,  salted: false }, // 3,462 GH/s
-    { key: "mysql",   name: "MySQL5",            rate: 22292e6 * 12,  salted: false }, // 267.5 GH/s — SHA1(SHA1(pw)), mode -m 300
-    { key: "bcrypt",  name: "bcrypt (cost 10)",  rate: 5750 * 12,     salted: true  }, // 69 kH/s — cost 5: 184kH/s/GPU → cost 10: /2^5
-    { key: "bcrypt12",name: "bcrypt (cost 12)",  rate: 1438 * 12,     salted: true  }, // 17.3 kH/s — cost 10: 5750/2^2
-    { key: "scrypt",  name: "scrypt",            rate: 7126 * 12,     salted: true  }, // 85.5 kH/s — N=16384 r=8 p=1, mode -m 8900
+    { key: "md5",     name: "MD5",              rate: 228.0e9 * 12,  salted: false }, // 2,736 GH/s (+35% RTX 5090 vs 4090: 2,027 GH/s)
+    { key: "sha1",    name: "SHA-1",             rate: 68.66e9 * 12,  salted: false }, // 824 GH/s (+35% vs 4090: 610 GH/s)
+    { key: "sha256",  name: "SHA-256",           rate: 30.62e9 * 12,  salted: false }, // 367 GH/s (+35% vs 4090: 272 GH/s)
+    { key: "ntlm",    name: "NTLM",              rate: 389.5e9 * 12,  salted: false }, // 4,674 GH/s (+35% vs 4090: 3,462 GH/s)
+    { key: "mysql",   name: "MySQL5",            rate: 30094e6 * 12,  salted: false }, // 361 GH/s (+35% vs 4090: 267 GH/s)
+    { key: "bcrypt",  name: "bcrypt (cost 10)",  rate: 7188 * 12,     salted: true  }, // 86 kH/s (+25% vs 4090: 69 kH/s, memory-bound)
+    { key: "bcrypt12",name: "bcrypt (cost 12)",  rate: 1798 * 12,     salted: true  }, // 21.6 kH/s (+25% vs 4090: 17.3 kH/s)
+    { key: "scrypt",  name: "scrypt",            rate: 8908 * 12,     salted: true  }, // 107 kH/s (+25% vs 4090: 85.5 kH/s, memory-bound)
     { key: "pbkdf2",  name: "PBKDF2-SHA256",     rate: Math.round(8865700 * 999 / 600000) * 12, salted: true }, // ~177 kH/s/GPU @ 600k iter (OWASP 2023) × 12
     { key: "argon2",  name: "Argon2id",          rate: 800,           salted: true  }, // ~800 H/s (conservative estimate)
   ];

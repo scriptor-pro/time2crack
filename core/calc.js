@@ -63,7 +63,7 @@ export function calcCrackTime(password, options = {}) {
 
   // Couche 1 : estimation du rang de devinette
   const tRank0 = performance.now();
-  const rank = estimateRank(password, { dictWords, isHibpHit, hibpRank, looksPassphrase: context.looksPassphrase, hybridVuln: context.hybridVuln, lang });
+  const rank = estimateRank(password, { dictWords, isHibpHit, hibpRank, looksPassphrase: context.looksPassphrase, hybridVuln: context.hybridVuln, kbPat: context.kbPat, dt: context.dt, dateResult: context.datePattern, lang });
   const tRank1 = performance.now();
   const timeRank = tRank1 - tRank0;
 

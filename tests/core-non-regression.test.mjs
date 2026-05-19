@@ -200,3 +200,44 @@ test('rankDate — born1987 rang < brute', () => {
   const brute  = rankBrute('born1987');
   assert.ok(result.rank < brute.rank);
 });
+
+// ── Task 4 : pipeline estimateRank ───────────────────────────────────────────
+
+function estimateFull(password, words = null) {
+  const context = analyzePatterns(password, words);
+  return estimateRank(password, {
+    dictWords:       words,
+    looksPassphrase: context.looksPassphrase,
+    hybridVuln:      context.hybridVuln,
+    kbPat:           context.kbPat,
+    dt:              context.dt,
+    dateResult:      context.datePattern,
+    lang: 'en',
+  });
+}
+
+test('pipeline — qwerty a un rang keyboard dans details', () => {
+  const rank = estimateFull('qwerty');
+  assert.ok(rank.details.keyboard !== undefined, 'details.keyboard manquant');
+  assert.ok(rank.details.keyboard.rank !== null, 'rank keyboard null pour qwerty');
+});
+
+test('pipeline — 14071990 a un rang date dans details', () => {
+  const rank = estimateFull('14071990');
+  assert.ok(rank.details.date !== undefined, 'details.date manquant');
+  assert.ok(rank.details.date.rank !== null, 'rank date null pour 14071990');
+});
+
+test('pipeline — Qwerty123 best_attack est keyboard ou mask', () => {
+  const rank = estimateFull('Qwerty123');
+  assert.ok(
+    rank.best_attack === 'keyboard' || rank.best_attack === 'mask',
+    `best_attack inattendu: ${rank.best_attack}`
+  );
+});
+
+test('pipeline — born1987 rang date < rang brute', () => {
+  const rank = estimateFull('born1987');
+  assert.ok(rank.details.date.rank < rank.worst_case,
+    `date ${rank.details.date.rank} devrait être < brute ${rank.worst_case}`);
+});

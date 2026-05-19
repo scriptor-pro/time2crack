@@ -20,6 +20,8 @@ import { rankPCFG }       from './pcfg.js';
 import { rankMarkov }     from './markov.js';
 import { rankMask }       from './mask.js';
 import { rankCombinator } from './combinator.js';
+import { rankKeyboard }   from './keyboard.js';
+import { rankDate }       from './date.js';
 
 /**
  * Estime le rang de devinette d'un mot de passe.
@@ -49,7 +51,7 @@ import { rankCombinator } from './combinator.js';
  * }}
  */
 export function estimateRank(password, options = {}) {
-  const { dictWords = null, isHibpHit = false, hibpRank = null, looksPassphrase = false, hybridVuln = true, lang = 'en' } = options;
+  const { dictWords = null, isHibpHit = false, hibpRank = null, looksPassphrase = false, hybridVuln = true, lang = 'en', kbPat = false, dt = false, dateResult = null } = options;
 
   // Court-circuit : si le rang HIBP est connu et très bas, inutile de tout calculer
   if (isHibpHit && hibpRank !== null && hibpRank < 1_000) {
@@ -80,6 +82,8 @@ export function estimateRank(password, options = {}) {
     markov:     rankMarkov(password),
     mask:       rankMask(password, lang),
     combinator: rankCombinator(password, dictWords, looksPassphrase),
+    keyboard:   rankKeyboard(password, kbPat),
+    date:       rankDate(password, dt, dateResult),
   };
 
   const bruteRank = raw.brute.rank;
@@ -105,6 +109,8 @@ export function estimateRank(password, options = {}) {
     markov:     { ...raw.markov,     rank: cappedRank(raw.markov.rank, 'markov') },
     mask:       { ...raw.mask,       rank: cappedRank(raw.mask.rank, 'mask') },
     combinator: { ...raw.combinator, rank: cappedRank(raw.combinator.rank, 'combinator') },
+    keyboard:   { ...raw.keyboard,   rank: cappedRank(raw.keyboard.rank, 'keyboard') },
+    date:       { ...raw.date,       rank: cappedRank(raw.date.rank, 'date') },
   };
 
   const dictRank       = results.dictionary.rank;
@@ -113,20 +119,19 @@ export function estimateRank(password, options = {}) {
   const markovRank     = results.markov.rank;
   const maskRank       = results.mask.rank;
   const combinatorRank = results.combinator.rank;
+  const keyboardRank   = results.keyboard.rank;
+  const dateRank       = results.date.rank;
 
   // attack_rank = min de tous les modèles non-null applicables
   const attackCandidates = [
-    dictRank, hybridRank, pcfgRank, markovRank, maskRank, combinatorRank, bruteRank,
+    dictRank, hybridRank, pcfgRank, markovRank, maskRank, combinatorRank,
+    keyboardRank, dateRank, bruteRank,
   ].filter(r => r !== null);
   const attack_rank = Math.min(...attackCandidates);
 
-  // standard = score global lissé.
-  // On prend une moyenne géométrique sur les familles applicables, ce qui :
-  // - réduit les bascules brutales quand un modèle change de vainqueur
-  // - reste monotone dans chaque famille
-  // - évite de laisser un seul modèle dicter toute la sortie
   const stableCandidates = [
     dictRank, hybridRank, pcfgRank, markovRank, maskRank, combinatorRank,
+    keyboardRank, dateRank,
   ].filter(r => r !== null && r > 0);
   const standard = stableCandidates.length > 0
     ? Math.pow(
@@ -149,6 +154,8 @@ export function estimateRank(password, options = {}) {
     markov:     markovRank,
     mask:       maskRank,
     combinator: combinatorRank,
+    keyboard:   keyboardRank,
+    date:       dateRank,
     brute:      bruteRank,
   };
   const best_attack = Object.entries(modelRanks)

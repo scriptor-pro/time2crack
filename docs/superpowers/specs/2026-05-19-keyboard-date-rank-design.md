@@ -248,7 +248,55 @@ Bloc à ajouter dans `tests/core-non-regression.test.mjs` :
 
 ---
 
-## 7. Ce qui ne change pas
+## 7. Synchronisation `app.js` — moteur UI
+
+`app.js` contient un second système de détection indépendant de `core/patterns.js`,
+utilisé exclusivement pour l'affichage UI (badges de vulnérabilité, score de pénalité).
+Les deux moteurs ne partagent aucun code et doivent être mis à jour en parallèle,
+sinon les nouveaux formats seront détectés pour le rang mais **invisibles pour l'utilisateur**.
+
+### 7.1 `hasDate()` dans `app.js` (ligne ~4666)
+
+**État actuel :** détecte uniquement `YYYY` et `DD/MM/YYYY` avec séparateur.
+
+```js
+// Actuel — incomplet
+function hasDate(pw) {
+  return (
+    /(?:1[6-9]|20)\d{2}/.test(pw) ||
+    /\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/.test(pw)
+  );
+}
+```
+
+**À mettre à jour** pour couvrir les mêmes formats que `detectDate()` étendu :
+- `DDMM` sans séparateur (ex : `14071990`)
+- Noms de mois toutes langues (ex : `14Mai`, `juillet2003`, `April11`)
+- Formats US : `MonthNameDD`, `MonthNameDDYYYY`
+
+La liste `MONTH_NAMES` (144 tokens) définie dans `core/patterns.js` doit être
+dupliquée ou extraite dans un module partagé. Vu que `app.js` est un bundle
+autonome sans import ES module, la duplication est acceptable — une constante
+`APP_MONTH_NAMES` locale dans `app.js`.
+
+### 7.2 `KB_PATTERNS` dans `app.js` (ligne ~4546)
+
+**État actuel :** 20 séquences, liste différente de `KEYBOARD_SEQUENCES` dans
+`core/patterns.js`. Les deux listes doivent être alignées pour que le badge UI
+et le rang soient cohérents.
+
+**À vérifier :** identifier les séquences présentes dans l'une mais pas l'autre,
+et harmoniser. Priorité à `core/patterns.js` comme source de vérité.
+
+### 7.3 Impact sur `score()` dans `app.js`
+
+`score()` appelle `hasDate(pw)` pour appliquer `SCORE_DATE_PENALTY`. Une fois
+`hasDate()` étendu, les mots de passe comme `14Mai` ou `juillet2003` se verront
+correctement pénalisés dans le score de force.
+
+---
+
+## 9. Ce qui ne change pas
 
 - `rank/mask.js` : inchangé (keyboard et date ne sont plus sa responsabilité)
 - `rank/brute.js` : inchangé
@@ -267,5 +315,6 @@ Bloc à ajouter dans `tests/core-non-regression.test.mjs` :
 | `rank/date.js` | 45 min |
 | Modifications `index.js` | 30 min |
 | Modifications `calc.js` | 15 min |
+| Synchronisation `app.js` (`hasDate`, `KB_PATTERNS`) | 45 min |
 | Tests | 45 min |
-| **Total** | **~4h** |
+| **Total** | **~4h45** |

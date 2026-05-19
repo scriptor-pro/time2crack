@@ -99,6 +99,10 @@ test('global score is smoother than the winning attack rank', () => {
   assert.ok(standardDelta < attackDelta);
 });
 
+import { rankKeyboard } from '../core/rank/keyboard.js';
+import { rankDate }     from '../core/rank/date.js';
+import { rankBrute }    from '../core/rank/brute.js';
+
 // ── Task 1 : detectDate() étendu ─────────────────────────────────────────────
 
 test('detectDate — DDMM sans séparateur', () => {
@@ -142,4 +146,57 @@ test('detectDate — pas de faux positif', () => {
   // 14135555 : 13 n'est pas un mois valide, 5555 n'est pas une année 19xx/20xx
   const ctx2 = analyzePatterns('14135555');
   assert.equal(ctx2.dt, false);
+});
+
+// ── Task 2 : rankKeyboard ────────────────────────────────────────────────────
+
+test('rankKeyboard — qwerty retourne rang < 50 000', () => {
+  const result = rankKeyboard('qwerty', true);
+  assert.equal(result.model, 'keyboard');
+  assert.ok(result.rank !== null);
+  assert.ok(result.rank < 50_000, `rank trop élevé: ${result.rank}`);
+});
+
+test('rankKeyboard — kbPat=false retourne null', () => {
+  const result = rankKeyboard('aBcDeFgH', false);
+  assert.equal(result.model, 'keyboard');
+  assert.equal(result.rank, null);
+});
+
+test('rankKeyboard — rang < rang brute force', () => {
+  const kb    = rankKeyboard('azerty!', true);
+  const brute = rankBrute('azerty!');
+  assert.ok(kb.rank < brute.rank, `keyboard ${kb.rank} devrait être < brute ${brute.rank}`);
+});
+
+// ── Task 3 : rankDate ────────────────────────────────────────────────────────
+
+test('rankDate — 14071990 rang < brute', () => {
+  const ctx    = analyzePatterns('14071990');
+  const result = rankDate('14071990', ctx.dt, ctx.datePattern);
+  const brute  = rankBrute('14071990');
+  assert.equal(result.model, 'date');
+  assert.ok(result.rank !== null);
+  assert.ok(result.rank < brute.rank, `date ${result.rank} devrait être < brute ${brute.rank}`);
+});
+
+test('rankDate — dt=false retourne null', () => {
+  const result = rankDate('password', false, null);
+  assert.equal(result.model, 'date');
+  assert.equal(result.rank, null);
+});
+
+test('rankDate — 14Mai rang < brute', () => {
+  const ctx    = analyzePatterns('14Mai');
+  const result = rankDate('14Mai', ctx.dt, ctx.datePattern);
+  const brute  = rankBrute('14Mai');
+  assert.ok(result.rank < brute.rank);
+});
+
+test('rankDate — born1987 rang < brute', () => {
+  const ctx    = analyzePatterns('born1987');
+  assert.equal(ctx.dt, true);
+  const result = rankDate('born1987', ctx.dt, ctx.datePattern);
+  const brute  = rankBrute('born1987');
+  assert.ok(result.rank < brute.rank);
 });

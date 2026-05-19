@@ -4544,21 +4544,23 @@
   ]);
 
   const KB_PATTERNS = [
-    // Forward walks (QWERTY/QWERTZ/AZERTY rows)
-    "qwerty", "qwertz", "azerty",
-    "qwertyuiop", "azertyuiop",
-    "asdf", "asdfgh", "asdfghjkl",
-    "zxcvbn", "zxcvbnm",
-    // Diagonal walks — documented in RockYou/LinkedIn/Adobe leaks (Veras 2012)
-    "qazwsx", "1qaz2wsx", "1qaz", "2wsx", "3edc", "4rfv",
-    "zaq1zaq1",
-    // Reverse walks — 0.18% of RockYou corpus (Veras 2012, factor 7× less than forward)
+    // Lignes QWERTY/AZERTY (aligné avec core/patterns.js KEYBOARD_SEQUENCES)
+    "qwertyuiop", "asdfghjkl", "zxcvbnm",
+    "azertyuiop", "qsdfghjklm", "wxcvbn",
+    "qwerty", "azerty", "qwert", "azert",
+    "asdf", "zxcv", "poiuy", "lkjhg",
+    "1qaz", "2wsx", "3edc", "qazwsx",
+    // Inverses (Veras 2012 — 0.18% du corpus RockYou)
     "ytrewq", "trewq", "rewq",
     "fdsa", "lkjh", "kjhg",
     "mnbvc", "nbvc",
-    "poiuy", "oiuy",
-    // Numeric sequences (reverse)
+    "oiuy",
+    // Diagonales numpad
+    "zaq1zaq1", "1qaz2wsx", "4rfv",
+    // Séquences numériques décroissantes
     "9876", "8765", "7654", "0987",
+    // QWERTZ (allemand)
+    "qwertz",
   ];
 
   // De-leet: try both i→1 and l→1 interpretations, return the one
@@ -4663,11 +4665,37 @@
     return false;
   }
 
+  const APP_MONTH_NAMES = [
+    'janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre',
+    'janv','févr','avr','juil','sept','déc',
+    'january','february','march','april','may','june','july','august','september','october','november','december',
+    'jan','feb','mar','apr','jun','jul','aug','sep','oct','nov',
+    'enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre',
+    'ene','ago','dic',
+    'janeiro','fevereiro','março','junho','julho','setembro','novembro','dezembro',
+    'fev','set','out','dez',
+    'januar','februar','märz','juni','juli','oktober','mär','okt',
+    'gennaio','febbraio','aprile','maggio','giugno','luglio','settembre','ottobre','novembre','dicembre',
+    'gen','mag','giu','lug','ott',
+    'januari','februari','maart','augustus','mrt','mei',
+    'styczeń','luty','marzec','kwiecień','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień',
+    'sty','lut','kwi','cze','lip','sie','wrz','paź','lis','gru',
+    'ocak','şubat','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık',
+    'oca','şub','nis','haz','tem','ağu','eyl','eki','kas','ara',
+  ];
+  const APP_MONTH_REGEX = new RegExp(
+    APP_MONTH_NAMES.slice().sort((a, b) => b.length - a.length)
+      .map(m => m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'),
+    'i'
+  );
+
   function hasDate(pw) {
-    return (
-      /(?:1[6-9]|20)\d{2}/.test(pw) ||
-      /\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/.test(pw)
-    );
+    if (APP_MONTH_REGEX.test(pw)) return true;
+    if (/(?:19|20)\d{2}/.test(pw)) return true;
+    if (/(?<!\d)(?:0[1-9]|[12]\d|3[01])(?:0[1-9]|1[0-2])(?!\d)/.test(pw)) return true;
+    if (/\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/.test(pw)) return true;
+    if (/(?<!\d)(0?[1-9]|[12]\d|3[01])[\/\-\.](0?[1-9]|1[0-2])(?!\d)/.test(pw)) return true;
+    return false;
   }
 
   function detectDateAndReduce(pw, len, cs) {

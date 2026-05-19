@@ -24,6 +24,51 @@ const KEYBOARD_SEQUENCES = [
 const ALPHA_SEQUENCES = ['abcdef', 'abcde', 'abcd', 'bcde', 'cdef'];
 const NUM_SEQUENCES   = ['123456', '234567', '12345', '23456', '11111', '00000'];
 
+// Noms de mois — 9 langues (FR, EN, ES, PT, DE, IT, NL, PL, TR)
+// Noms complets + abréviations, en minuscules.
+const MONTH_NAMES = [
+  // FR
+  'janvier','février','mars','avril','mai','juin',
+  'juillet','août','septembre','octobre','novembre','décembre',
+  'janv','févr','avr','juil','sept','déc',
+  // EN
+  'january','february','march','april','may','june',
+  'july','august','september','october','november','december',
+  'jan','feb','mar','apr','jun','jul','aug','sep','oct','nov',
+  // ES
+  'enero','febrero','marzo','abril','mayo','junio',
+  'julio','agosto','septiembre','octubre','noviembre','diciembre',
+  'ene','ago','dic',
+  // PT
+  'janeiro','fevereiro','março','junho','julho','setembro','novembro','dezembro',
+  'fev','set','out','dez',
+  // DE
+  'januar','februar','märz','juni','juli','oktober',
+  'mär','okt',
+  // IT
+  'gennaio','febbraio','aprile','maggio','giugno','luglio',
+  'settembre','ottobre','novembre','dicembre',
+  'gen','mag','giu','lug','ott',
+  // NL
+  'januari','februari','maart','augustus',
+  'mrt','mei',
+  // PL
+  'styczeń','luty','marzec','kwiecień','czerwiec','lipiec',
+  'sierpień','wrzesień','październik','listopad','grudzień',
+  'sty','lut','kwi','cze','lip','sie','wrz','paź','lis','gru',
+  // TR
+  'ocak','şubat','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık',
+  'oca','şub','nis','haz','tem','ağu','eyl','eki','kas','ara',
+];
+
+// Regex pré-compilée (noms triés par longueur décroissante pour éviter les sous-matches)
+const MONTH_NAMES_PATTERN = new RegExp(
+  '(' + MONTH_NAMES.slice().sort((a, b) => b.length - a.length).map(m =>
+    m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  ).join('|') + ')',
+  'i'
+);
+
 /**
  * Détecte les patterns présents dans un mot de passe.
  *
@@ -165,21 +210,48 @@ function deleet(s) {
 
 /**
  * Détecte la présence d'une date dans le mot de passe.
- * Retourne une description du format trouvé ou null.
+ * Retourne { format, space } ou null.
+ * space = taille de l'espace de recherche pour ce format de date.
  */
 function detectDate(pw) {
-  // YYYY (ex: 2024, 1987, 2000)
-  if (/(?:19|20)\d{2}/.test(pw)) return 'YYYY';
+  const lower = pw.toLowerCase();
 
-  // DD/MM ou MM/DD (avec séparateur explicite)
-  // Utilise (?<!\d)/(?!\d) plutôt que \b : \b échoue entre lettre et chiffre (ex: born31-12)
-  if (/(?<!\d)(0?[1-9]|[12]\d|3[01])[\/\-\.](0?[1-9]|1[0-2])(?!\d)/.test(pw)) return 'DD/MM';
+  // Formats avec nom de mois — testés en premier (plus spécifiques)
+  const monthMatch = MONTH_NAMES_PATTERN.exec(lower);
+  if (monthMatch) {
+    const mIdx   = monthMatch.index;
+    const mLen   = monthMatch[0].length;
+    const before = lower.slice(0, mIdx);
+    const after  = lower.slice(mIdx + mLen);
 
-  // DDMM ou MMDD (sans séparateur) — exige que les 4 chiffres soient isolés
-  // (non précédés ni suivis d'autres chiffres) pour limiter les faux positifs
-  if (/(?<!\d)(?:0[1-9]|[12]\d|3[01])(?:0[1-9]|1[0-2])(?!\d)/.test(pw)) return 'DDMM';
+    // Année : 4 chiffres formant 19xx ou 20xx, isolés (pas précédés/suivis d'autres chiffres)
+    const yearAfter  = after.match(/^(?!\d{5})(?:19|20)\d{2}(?!\d)/);
+    const yearBefore = before.match(/(?<!\d)(?:19|20)\d{2}(?!\d)$/);
+    // Jour : 1-2 chiffres valides (1-31), isolés des chiffres d'une année
+    const dayBefore  = !yearBefore && before.match(/(?<!\d)([0-2]?\d|3[01])$/);
+    const dayAfter   = !yearAfter  && after.match(/^([0-2]?\d|3[01])(?!\d)/);
 
-  // YY supprimé — cas [mot][année_courte] absorbé par hybridVuln (option D)
+    const hasDay  = dayBefore || dayAfter;
+    const hasYear = yearAfter || yearBefore;
+
+    if (hasDay && hasYear) return { format: 'DDMonthNameYYYY', space: 41610 };
+    if (hasDay)            return { format: dayBefore ? 'DDMonthName' : 'MonthNameDD', space: 730 };
+    if (hasYear)           return { format: 'MonthNameYYYY', space: 1368 };
+    return { format: 'MonthName', space: 24 };
+  }
+
+  // DDMM sans séparateur — testé AVANT YYYY
+  // Accepte DDMM isolé OU DDMMYYYY (8 chiffres = date complète)
+  // (?!\d) uniquement si non suivi d'une année 19xx/20xx
+  if (/(?<!\d)(?:0[1-9]|[12]\d|3[01])(?:0[1-9]|1[0-2])(?:(?:19|20)\d{2})?(?!\d)/.test(pw))
+    return { format: 'DDMM', space: 365 };
+
+  // YYYY (ex: 2024, 1987) — seulement si pas déjà capturé par DDMM
+  if (/(?:19|20)\d{2}/.test(pw)) return { format: 'YYYY', space: 57 };
+
+  // DD/MM avec séparateur explicite
+  if (/(?<!\d)(0?[1-9]|[12]\d|3[01])[\/\-\.](0?[1-9]|1[0-2])(?!\d)/.test(pw))
+    return { format: 'DD/MM', space: 365 };
 
   return null;
 }

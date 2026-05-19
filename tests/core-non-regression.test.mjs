@@ -98,3 +98,48 @@ test('global score is smoother than the winning attack rank', () => {
 
   assert.ok(standardDelta < attackDelta);
 });
+
+// ── Task 1 : detectDate() étendu ─────────────────────────────────────────────
+
+test('detectDate — DDMM sans séparateur', () => {
+  const ctx = analyzePatterns('14071990');
+  assert.equal(ctx.dt, true);
+  assert.equal(ctx.datePattern.format, 'DDMM');
+  assert.equal(ctx.datePattern.space, 365);
+});
+
+test('detectDate — DDMonthName français', () => {
+  const ctx = analyzePatterns('14Mai');
+  assert.equal(ctx.dt, true);
+  assert.equal(ctx.datePattern.format, 'DDMonthName');
+  assert.equal(ctx.datePattern.space, 730);
+});
+
+test('detectDate — MonthNameDD anglais (format US)', () => {
+  const ctx = analyzePatterns('July4');
+  assert.equal(ctx.dt, true);
+  assert.equal(ctx.datePattern.format, 'MonthNameDD');
+  assert.equal(ctx.datePattern.space, 730);
+});
+
+test('detectDate — MonthNameYYYY', () => {
+  const ctx = analyzePatterns('avril2003');
+  assert.equal(ctx.dt, true);
+  assert.equal(ctx.datePattern.format, 'MonthNameYYYY');
+  assert.equal(ctx.datePattern.space, 1368);
+});
+
+test('detectDate — DDMonthNameYYYY', () => {
+  const ctx = analyzePatterns('14juillet1989');
+  assert.equal(ctx.dt, true);
+  assert.equal(ctx.datePattern.format, 'DDMonthNameYYYY');
+  assert.equal(ctx.datePattern.space, 41610);
+});
+
+test('detectDate — pas de faux positif', () => {
+  const ctx1 = analyzePatterns('password');
+  assert.equal(ctx1.dt, false);
+  // 14135555 : 13 n'est pas un mois valide, 5555 n'est pas une année 19xx/20xx
+  const ctx2 = analyzePatterns('14135555');
+  assert.equal(ctx2.dt, false);
+});

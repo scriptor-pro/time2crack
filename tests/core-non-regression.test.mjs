@@ -5,6 +5,9 @@ import { charsetSize } from '../core/charset.js';
 import { analyzePatterns } from '../core/patterns.js';
 import { estimateRank } from '../core/rank/index.js';
 import { rankMask } from '../core/rank/mask.js';
+import { uppercaseCost } from '../core/rank/uppercase.js';
+import { rankHybrid } from '../core/rank/hybrid.js';
+import { rankDictionary } from '../core/rank/dictionary.js';
 
 const dictWords = new Set(['correct', 'horse', 'battery', 'staple', 'time', 'crack', 'pizza']);
 
@@ -240,4 +243,27 @@ test('pipeline — born1987 rang date < rang brute', () => {
   const rank = estimateFull('born1987');
   assert.ok(rank.details.date.rank < rank.worst_case,
     `date ${rank.details.date.rank} devrait être < brute ${rank.worst_case}`);
+});
+
+// --- Toggle-case : uppercaseCost() ---
+
+test('uppercaseCost — all-lower retourne 1', () => {
+  assert.equal(uppercaseCost('mayonnaise'), 1);
+});
+
+test('uppercaseCost — StartCap retourne 2', () => {
+  assert.equal(uppercaseCost('Mayonnaise'), 2);
+});
+
+test('uppercaseCost — AllCaps retourne 2', () => {
+  assert.equal(uppercaseCost('MAYONNAISE'), 2);
+});
+
+test('uppercaseCost — EndCap retourne 2', () => {
+  assert.equal(uppercaseCost('mayonnaisE'), 2);
+});
+
+test('uppercaseCost — toggle aléatoire retourne combinatoire', () => {
+  // pAsSwOrD : U=4, L=4 → ∑C(8,1..4) = 8+28+56+70 = 162
+  assert.equal(uppercaseCost('pAsSwOrD'), 162);
 });

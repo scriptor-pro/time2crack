@@ -313,6 +313,33 @@ test('rankDictionary — Password (top HIBP StartCap) rank = 2× password', () =
   assert.equal(cap, lower * 2);
 });
 
+// --- Toggle-case : pipeline e2e ---
+
+test('pipeline — Password123 rank > password123 rank', () => {
+  const words = new Set(['password']);
+  const lower    = estimate('password123', words);
+  const startcap = estimate('Password123', words);
+  assert.ok(startcap.attack_rank > lower.attack_rank,
+    `Password123 (${startcap.attack_rank}) doit être > password123 (${lower.attack_rank})`);
+});
+
+test('pipeline — pAsSwOrD123 rank > Password123 rank', () => {
+  const words = new Set(['password']);
+  const startcap = estimate('Password123', words);
+  const toggled  = estimate('pAsSwOrD123', words);
+  assert.ok(toggled.attack_rank > startcap.attack_rank,
+    `pAsSwOrD123 (${toggled.attack_rank}) doit être > Password123 (${startcap.attack_rank})`);
+});
+
+test('pipeline — Mayonnaise rank > mayonnaise rank', () => {
+  // Wordlist de taille > 1 pour que mid = floor(size/2) > 0
+  const words = new Set(['mayonnaise', 'correct', 'horse', 'battery', 'staple']);
+  const lower = estimate('mayonnaise', words);
+  const cap   = estimate('Mayonnaise', words);
+  assert.ok(cap.attack_rank > lower.attack_rank,
+    `Mayonnaise (${cap.attack_rank}) doit être > mayonnaise (${lower.attack_rank})`);
+});
+
 // --- Toggle-case : uppercaseCost() ---
 
 test('uppercaseCost — all-lower retourne 1', () => {

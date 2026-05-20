@@ -11,6 +11,7 @@
 
 import { passwordLength } from '../charset.js';
 import { rankDictionary } from './dictionary.js';
+import { uppercaseCost } from './uppercase.js';
 
 // Déleetification helper (same as patterns.js but inline to avoid circular deps)
 // Only converts true leet-speak symbols to letters:
@@ -129,7 +130,13 @@ export function rankHybrid(password, dictWords = null) {
   const clampedLen = Math.max(1, Math.min(effectiveComplexity, 5));
   const rulesCount = RULES_BY_SUFFIX_LEN[clampedLen] ?? 25_000;
 
-  // rank_hybrid = rank_dict(base) × position_dans_règles
-  const rank = dictResult.rank * rulesCount;
+  // Partie alphabétique originale (avant lowercase) pour détecter la casse réelle.
+  const pwAlphaMatch = password.match(/[\p{L}]+/gu) || [];
+  const alpha = pwAlphaMatch.length > 0
+    ? pwAlphaMatch.reduce((a, b) => a.length >= b.length ? a : b)
+    : base;
+
+  // rank_hybrid = rank_dict(base) × uppercase_cost × position_dans_règles
+  const rank = dictResult.rank * uppercaseCost(alpha) * rulesCount;
   return { rank, model: 'hybrid' };
 }

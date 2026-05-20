@@ -245,6 +245,38 @@ test('pipeline — born1987 rang date < rang brute', () => {
     `date ${rank.details.date.rank} devrait être < brute ${rank.worst_case}`);
 });
 
+// --- Toggle-case : rankHybrid() ---
+
+test('rankHybrid — password123 rank non-null (all-lower inchangé)', () => {
+  const words = new Set(['password']);
+  const r = rankHybrid('password123', words);
+  assert.ok(r.rank !== null);
+});
+
+test('rankHybrid — Password123 rank = 2× password123', () => {
+  const words = new Set(['password']);
+  const lower    = rankHybrid('password123', words).rank;
+  const startcap = rankHybrid('Password123', words).rank;
+  assert.ok(lower !== null && startcap !== null);
+  assert.equal(startcap, lower * 2);
+});
+
+test('rankHybrid — PASSWORD123 rank = 2× password123', () => {
+  const words = new Set(['password']);
+  const lower  = rankHybrid('password123', words).rank;
+  const allcaps = rankHybrid('PASSWORD123', words).rank;
+  assert.ok(lower !== null && allcaps !== null);
+  assert.equal(allcaps, lower * 2);
+});
+
+test('rankHybrid — pAsSwOrD123 rank = 162× password123', () => {
+  const words = new Set(['password']);
+  const lower   = rankHybrid('password123', words).rank;
+  const toggled = rankHybrid('pAsSwOrD123', words).rank;
+  assert.ok(lower !== null && toggled !== null);
+  assert.equal(toggled, lower * 162);
+});
+
 // --- Toggle-case : uppercaseCost() ---
 
 test('uppercaseCost — all-lower retourne 1', () => {

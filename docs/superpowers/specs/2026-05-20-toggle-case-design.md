@@ -1,4 +1,4 @@
-# Spec — Toggle-case dans rankHybrid()
+# Spec — Toggle-case : couche multiplicative dans rankDictionary() et rankHybrid()
 
 *Date : 2026-05-20*
 
@@ -6,30 +6,41 @@
 
 ## Contexte
 
-Le modèle hybride actuel (`core/rank/hybrid.js`) extrait un mot de base alphabétique, cherche son rang dictionnaire, puis multiplie par un nombre de règles calibré sur la longueur du suffixe et les substitutions leet. Il lowercase tout avant de chercher dans le dict — la casse de la partie alphabétique est ignorée comme facteur de coût.
+Le modèle hybride actuel (`core/rank/hybrid.js`) et le modèle dictionnaire (`core/rank/dictionary.js`) lowercasent le mot de passe avant de chercher dans le dict — la casse est ignorée comme facteur de coût.
 
-Résultat : `PASSWORD123` et `password123` reçoivent le même rang hybride, alors qu'un attaquant hashcat doit parcourir des règles de casse supplémentaires pour atteindre `PASSWORD`.
+Résultat : `password123`, `Password123` et `PASSWORD123` reçoivent le même rang. De même, `mayonnaise` et `Mayonnaise` (mots dict purs sans suffixe) reçoivent le même rang dictionnaire, alors qu'un attaquant hashcat doit parcourir des règles de casse supplémentaires pour atteindre `Mayonnaise`.
 
 ---
 
 ## Décision architecturale
 
-Le toggle-case est une **couche multiplicative dans `rankHybrid()`**, pas un module concurrent dans `index.js`.
+Le toggle-case est une **couche multiplicative appliquée à deux endroits** :
 
-Justification scientifique : Wheeler (2016, zxcvbn) et Ma et al. (2014) modélisent les variantes de casse comme un facteur multiplicatif appliqué au rang du token dictionnaire. Le toggle est une mutation d'un mot connu, orthogonale au suffixe et au leet — pas une stratégie d'attaque indépendante.
+1. **`rankDictionary()`** — pour les mots dict purs sans suffixe (`Mayonnaise`, `MAYONNAISE`)
+2. **`rankHybrid()`** — pour les mots dict mutés avec suffixe ou leet (`Password123`, `pAsSwOrD!`)
+
+Pas de module concurrent dans `index.js`. Justification scientifique : Wheeler (2016, zxcvbn) applique `uppercase_variations` au niveau du token dictionnaire lui-même, que ce soit un mot pur ou muté. Le toggle est une propriété du mot, orthogonale au suffixe et au leet.
+
+Pas de double-comptage : `rankHybrid()` retourne `null` quand `base === password.toLowerCase()` (mot pur sans mutation) — donc dict et hybrid ne s'appliquent jamais simultanément sur le même mot.
 
 ---
 
-## Formule
+## Formules
 
+**Mot dict pur** (`mayonnaise` → `Mayonnaise`) :
+```
+rank = rank_dict(password) × uppercase_cost
+```
+
+**Mot dict muté** (`password` → `Password123`) :
 ```
 rank = rank_dict(base) × uppercase_cost × rules(suffix_len + leet_subs)
 ```
 
-Les trois facteurs sont indépendants :
-- `rank_dict(base)` — rang du mot de base dans le dictionnaire
+Les facteurs sont indépendants :
+- `rank_dict` — rang du mot dans le dictionnaire
 - `uppercase_cost` — coût des variantes de casse (nouveau)
-- `rules(suffix_len + leet_subs)` — coût des mutations existantes (inchangé)
+- `rules(...)` — coût des mutations suffixe/leet (inchangé, hybrid uniquement)
 
 ---
 
@@ -73,14 +84,18 @@ function nCk(n, k) {
 
 ### Exemples
 
-| Mot de passe | base | U | L | uppercase_cost |
+| Mot de passe | contexte | U | L | uppercase_cost |
 |---|---|---|---|---|
-| `password123` | `password` | 0 | 8 | 1 |
-| `Password123` | `password` | 1 | 7 | 2 (StartCap) |
-| `PASSWORD123` | `password` | 8 | 0 | 2 (all-caps) |
-| `passworD123` | `password` | 1 | 7 | 2 (EndCap) |
-| `pAsSwOrD123` | `password` | 4 | 4 | ∑C(8,1..4) = 8+28+56+70 = 162 |
-| `P@ssw0rd!` | `password` (via deleet) | 1 | 7 | 2 (StartCap) |
+| `mayonnaise` | dict pur | 0 | 10 | 1 |
+| `Mayonnaise` | dict pur | 1 | 9 | 2 (StartCap) |
+| `MAYONNAISE` | dict pur | 10 | 0 | 2 (all-caps) |
+| `mAYONNAISE` | dict pur | 9 | 1 | 2 (EndCap inversé → all-caps-sauf-1) |
+| `password123` | hybrid | 0 | 8 | 1 |
+| `Password123` | hybrid | 1 | 7 | 2 (StartCap) |
+| `PASSWORD123` | hybrid | 8 | 0 | 2 (all-caps) |
+| `passworD123` | hybrid | 1 | 7 | 2 (EndCap) |
+| `pAsSwOrD123` | hybrid | 4 | 4 | ∑C(8,1..4) = 8+28+56+70 = 162 |
+| `P@ssw0rd!` | hybrid | 1 | 7 | 2 (StartCap après deleet) |
 
 ---
 
@@ -96,9 +111,9 @@ Implémentation concrète : chercher la position de `base` dans `password.toLowe
 
 ## Périmètre d'activation
 
-`uppercase_cost` est calculé uniquement si :
-1. `rankDictionary(base)` a retourné un rang non-null (sinon hybrid retourne déjà `null`)
-2. La partie alphabétique contient au moins une majuscule (sinon `uppercase_cost = 1`, comportement identique à l'actuel)
+`uppercase_cost` est calculé et multiplié si :
+1. Le mot (ou son base word) est trouvé dans le dict (sinon les deux modèles retournent déjà `null`)
+2. La partie alphabétique contient au moins une majuscule (sinon `uppercase_cost = 1`, aucun changement)
 
 Condition 2 garantit la **rétrocompatibilité** : les mots de passe all-lowercase produisent exactement le même rang qu'avant.
 
@@ -106,25 +121,37 @@ Condition 2 garantit la **rétrocompatibilité** : les mots de passe all-lowerca
 
 ## Tests à couvrir
 
+**rankDictionary() — mots purs :**
+
+| Cas | Attendu |
+|---|---|
+| `mayonnaise` | rank inchangé vs actuel |
+| `Mayonnaise` | rank dict × 2 |
+| `MAYONNAISE` | rank dict × 2 |
+| `mAyOnNaIsE` | rank dict × ∑C(10,1..5) |
+| Mot absent du dict | null (inchangé) |
+
+**rankHybrid() — mots mutés :**
+
 | Cas | Attendu |
 |---|---|
 | `password123` | rank inchangé vs actuel |
-| `Password123` | rank × 2 vs actuel |
-| `PASSWORD123` | rank × 2 vs actuel |
-| `passworD123` | rank × 2 vs actuel |
-| `pAsSwOrD123` | rank × 162 vs actuel |
-| `P@ssw0rd!` | rank × 2 vs actuel (StartCap après deleet) |
-| `p@SSW0RD!` | rank × 2 vs actuel (all-caps après deleet) |
-| Mot absent du dict | hybrid retourne null (inchangé) |
-| all-lower sans suffixe | hybrid retourne null (déjà géré par dict pur, inchangé) |
+| `Password123` | rank hybrid × 2 |
+| `PASSWORD123` | rank hybrid × 2 |
+| `passworD123` | rank hybrid × 2 |
+| `pAsSwOrD123` | rank hybrid × 162 |
+| `P@ssw0rd!` | rank hybrid × 2 (StartCap après deleet) |
+| `p@SSW0RD!` | rank hybrid × 2 (all-caps après deleet) |
+| Mot absent du dict | null (inchangé) |
 
 ---
 
 ## Fichiers à modifier
 
 - `core/rank/hybrid.js` — ajout de `uppercaseCost()` + intégration dans `rankHybrid()`
+- `core/rank/dictionary.js` — import de `uppercaseCost()` + application sur le rang retourné
 
-Aucun autre fichier modifié. `index.js` ne change pas.
+`uppercaseCost()` est définie dans `hybrid.js` et exportée pour être réutilisée par `dictionary.js`. `index.js` ne change pas.
 
 ---
 

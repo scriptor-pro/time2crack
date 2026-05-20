@@ -277,6 +277,42 @@ test('rankHybrid — pAsSwOrD123 rank = 162× password123', () => {
   assert.equal(toggled, lower * 162);
 });
 
+// --- Toggle-case : rankDictionary() ---
+
+test('rankDictionary — mayonnaise (all-lower) rank non-null', () => {
+  const words = new Set(['mayonnaise']);
+  const r = rankDictionary('mayonnaise', words);
+  assert.ok(r.rank !== null);
+});
+
+test('rankDictionary — Mayonnaise rank = 2× mayonnaise', () => {
+  const words = new Set(['mayonnaise']);
+  const lower    = rankDictionary('mayonnaise', words).rank;
+  const startcap = rankDictionary('Mayonnaise', words).rank;
+  assert.ok(lower !== null && startcap !== null);
+  assert.equal(startcap, lower * 2);
+});
+
+test('rankDictionary — MAYONNAISE rank = 2× mayonnaise', () => {
+  const words = new Set(['mayonnaise']);
+  const lower  = rankDictionary('mayonnaise', words).rank;
+  const allcaps = rankDictionary('MAYONNAISE', words).rank;
+  assert.ok(lower !== null && allcaps !== null);
+  assert.equal(allcaps, lower * 2);
+});
+
+test('rankDictionary — password (top HIBP) all-lower rank = 2', () => {
+  const r = rankDictionary('password', null);
+  assert.equal(r.rank, 2);
+});
+
+test('rankDictionary — Password (top HIBP StartCap) rank = 2× password', () => {
+  const lower = rankDictionary('password', null).rank;
+  const cap   = rankDictionary('Password', null).rank;
+  assert.ok(cap !== null);
+  assert.equal(cap, lower * 2);
+});
+
 // --- Toggle-case : uppercaseCost() ---
 
 test('uppercaseCost — all-lower retourne 1', () => {

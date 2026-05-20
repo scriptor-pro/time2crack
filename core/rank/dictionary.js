@@ -12,6 +12,7 @@
 
 import { passwordLength } from '../charset.js';
 import { rankMask } from './mask.js';
+import { uppercaseCost } from './uppercase.js';
 
 // Top passwords dans l'ordre de fréquence RockYou/HIBP.
 // Source : RockYou 2009 trié par fréquence, complété par HIBP 2024.
@@ -152,36 +153,34 @@ function rankGermanCompound(password, dictWords) {
 export function rankDictionary(password, dictWords = null) {
   const lower = password.toLowerCase();
   const deleeted = deleet(password);
+  const alpha = password.replace(/[^a-zA-Z]/g, '');
+  const uCost = uppercaseCost(alpha);
 
   // 1. Présent tel quel dans le top HIBP ?
   const topIdx = TOP_PASSWORDS.indexOf(lower);
   if (topIdx !== -1) {
-    return { rank: topIdx + 1, model: 'dictionary' };
+    return { rank: (topIdx + 1) * uCost, model: 'dictionary' };
   }
 
   // 2. Forme déleetifiée dans le top HIBP ?
   const deIdx = TOP_PASSWORDS.indexOf(deleeted);
   if (deIdx !== -1) {
-    // Mutation leet → rang légèrement plus élevé
-    return { rank: (deIdx + 1) * 10, model: 'dictionary' };
+    return { rank: (deIdx + 1) * 10 * uCost, model: 'dictionary' };
   }
 
   // 3. Présent dans la wordlist locale ?
   if (dictWords instanceof Set) {
     if (dictWords.has(lower) || dictWords.has(deleeted)) {
-      // Rang approximé : milieu de la wordlist (les wordlists sont triées par fréquence)
       const mid = Math.floor(dictWords.size / 2);
-      // Pour les longs mots allemands, une décomposition en composés peut être
-      // plus informative qu'un rang médian générique.
       if (passwordLength(password) >= 9) {
         const compound = rankGermanCompound(password, dictWords);
-        if (compound && compound.rank < mid) return compound;
+        if (compound && compound.rank < mid) return { rank: compound.rank * uCost, model: 'dictionary' };
       }
-      return { rank: mid, model: 'dictionary' };
+      return { rank: mid * uCost, model: 'dictionary' };
     }
 
     const compound = rankGermanCompound(password, dictWords);
-    if (compound) return compound;
+    if (compound) return { rank: compound.rank * uCost, model: 'dictionary' };
   }
 
   // 4. Absent — cette attaque ne s'applique pas

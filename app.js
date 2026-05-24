@@ -4691,7 +4691,10 @@ import { calcCrackTime } from './core/calc.js';
     if (hasKBPattern(pw)) v.push({ t: t("vKeyboard"), l: "critical" });
     if (pw.length < 8) v.push({ t: t("vShort"), l: "critical" });
     if (hasSequence(pw)) v.push({ t: t("vSequence"), l: "warn" });
-    if (hasRepeat(pw)) v.push({ t: t("vRepeat"), l: "warn" });
+    const rep = _lastCalcResult
+      ? (_lastCalcResult.context.repeatResult !== null || _lastCalcResult.context.rep)
+      : hasRepeat(pw);
+    if (rep) v.push({ t: t("vRepeat"), l: "warn" });
     if (hasDate(pw)) v.push({ t: t("vDate"), l: "warn" });
     const { types } = getCharset(pw);
     if (types <= 1) v.push({ t: t("v1Type"), l: "critical" });

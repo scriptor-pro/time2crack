@@ -22,6 +22,7 @@ import { rankMask }       from './mask.js';
 import { rankCombinator } from './combinator.js';
 import { rankKeyboard }   from './keyboard.js';
 import { rankDate }       from './date.js';
+import { rankRepeat }     from './repeat.js';
 
 /**
  * Estime le rang de devinette d'un mot de passe.
@@ -51,7 +52,7 @@ import { rankDate }       from './date.js';
  * }}
  */
 export function estimateRank(password, options = {}) {
-  const { dictWords = null, isHibpHit = false, hibpRank = null, looksPassphrase = false, hybridVuln = true, lang = 'en', kbPat = false, dt = false, dateResult = null } = options;
+  const { dictWords = null, isHibpHit = false, hibpRank = null, looksPassphrase = false, hybridVuln = true, lang = 'en', kbPat = false, dt = false, dateResult = null, repeatResult = null } = options;
 
   // Court-circuit : si le rang HIBP est connu et très bas, inutile de tout calculer
   if (isHibpHit && hibpRank !== null && hibpRank < 1_000) {
@@ -84,6 +85,7 @@ export function estimateRank(password, options = {}) {
     combinator: rankCombinator(password, dictWords, looksPassphrase),
     keyboard:   rankKeyboard(password, kbPat),
     date:       rankDate(password, dt, dateResult),
+    repeat:     rankRepeat(password, repeatResult),
   };
 
   const bruteRank = raw.brute.rank;
@@ -111,6 +113,7 @@ export function estimateRank(password, options = {}) {
     combinator: { ...raw.combinator, rank: cappedRank(raw.combinator.rank, 'combinator') },
     keyboard:   { ...raw.keyboard,   rank: cappedRank(raw.keyboard.rank, 'keyboard') },
     date:       { ...raw.date,       rank: cappedRank(raw.date.rank, 'date') },
+    repeat:     { ...raw.repeat,     rank: cappedRank(raw.repeat.rank, 'repeat') },
   };
 
   const dictRank       = results.dictionary.rank;
@@ -121,17 +124,18 @@ export function estimateRank(password, options = {}) {
   const combinatorRank = results.combinator.rank;
   const keyboardRank   = results.keyboard.rank;
   const dateRank       = results.date.rank;
+  const repeatRank     = results.repeat.rank;
 
   // attack_rank = min de tous les modèles non-null applicables
   const attackCandidates = [
     dictRank, hybridRank, pcfgRank, markovRank, maskRank, combinatorRank,
-    keyboardRank, dateRank, bruteRank,
+    keyboardRank, dateRank, repeatRank, bruteRank,
   ].filter(r => r !== null);
   const attack_rank = Math.min(...attackCandidates);
 
   const stableCandidates = [
     dictRank, hybridRank, pcfgRank, markovRank, maskRank, combinatorRank,
-    keyboardRank, dateRank,
+    keyboardRank, dateRank, repeatRank,
   ].filter(r => r !== null && r > 0);
   const standard = stableCandidates.length > 0
     ? Math.pow(
@@ -156,6 +160,7 @@ export function estimateRank(password, options = {}) {
     combinator: combinatorRank,
     keyboard:   keyboardRank,
     date:       dateRank,
+    repeat:     repeatRank,
     brute:      bruteRank,
   };
   const best_attack = Object.entries(modelRanks)

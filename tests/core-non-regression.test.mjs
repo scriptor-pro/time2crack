@@ -462,3 +462,40 @@ test('analyzePatterns — kbPat=true bloque repeatResult', () => {
   assert.equal(ctx.kbPat, true);
   assert.equal(ctx.repeatResult, null);
 });
+
+// ── pipeline repeat ───────────────────────────────────────────────────────────
+
+function estimateWithRepeat(password, words = null) {
+  const context = analyzePatterns(password, words);
+  return estimateRank(password, {
+    dictWords:       words,
+    looksPassphrase: context.looksPassphrase,
+    hybridVuln:      context.hybridVuln,
+    lang:            'en',
+    kbPat:           context.kbPat,
+    dt:              context.dt,
+    dateResult:      context.datePattern,
+    repeatResult:    context.repeatResult,
+  });
+}
+
+test('pipeline repeat — aaaaaaa best_attack est repeat', () => {
+  const rank = estimateWithRepeat('aaaaaaa');
+  assert.equal(rank.best_attack, 'repeat', `best_attack=${rank.best_attack}, repeat=${rank.details.repeat?.rank}`);
+});
+
+test('pipeline repeat — 12341234 best_attack est repeat', () => {
+  const rank = estimateWithRepeat('12341234');
+  assert.equal(rank.best_attack, 'repeat');
+});
+
+test('pipeline repeat — details.repeat existe et rank non null pour aaaa', () => {
+  const rank = estimateWithRepeat('aaaa');
+  assert.ok(rank.details.repeat !== undefined, 'details.repeat manquant');
+  assert.ok(rank.details.repeat.rank !== null, 'repeat rank null pour aaaa');
+});
+
+test('pipeline repeat — password normal : details.repeat.rank est null', () => {
+  const rank = estimateWithRepeat('correcthorse', new Set(['correct', 'horse']));
+  assert.equal(rank.details.repeat.rank, null);
+});

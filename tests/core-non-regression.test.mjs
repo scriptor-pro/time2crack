@@ -499,3 +499,44 @@ test('pipeline repeat — password normal : details.repeat.rank est null', () =>
   const rank = estimateWithRepeat('correcthorse', new Set(['correct', 'horse']));
   assert.equal(rank.details.repeat.rank, null);
 });
+
+// Tests de non-régression calcCrackTime (pipeline complet)
+import { calcCrackTime } from '../core/calc.js';
+
+test('calcCrackTime: aaaa — rank très faible (repeat/mask)', () => {
+  const r = calcCrackTime('aaaa');
+  assert.ok(r.rank.standard < 1e6, `rank.standard trop élevé: ${r.rank.standard}`);
+  // mask ou repeat sont tous deux valides pour 'aaaa'
+  assert.ok(['mask', 'repeat'].includes(r.best_attack), `best_attack inattendu: ${r.best_attack}`);
+});
+
+test('calcCrackTime: azerty — keyboard détecté, rank faible', () => {
+  const r = calcCrackTime('azerty');
+  assert.ok(r.rank.standard < 1e8, `rank.standard trop élevé: ${r.rank.standard}`);
+});
+
+test('calcCrackTime: password123 — rank inférieur à aléatoire de même longueur', () => {
+  const rPw  = calcCrackTime('password123');
+  const rRnd = calcCrackTime('X9#mK2@pL5!');
+  assert.ok(rPw.rank.standard < rRnd.rank.standard,
+    `password123 (${rPw.rank.standard.toExponential(1)}) devrait être < X9#mK2@pL5! (${rRnd.rank.standard.toExponential(1)})`);
+});
+
+test('calcCrackTime: correct-horse-battery-staple — rank élevé (passphrase)', () => {
+  const r = calcCrackTime('correct-horse-battery-staple');
+  assert.ok(r.rank.standard > 1e15, `rank.standard trop faible: ${r.rank.standard}`);
+});
+
+test('calcCrackTime: times contient md5 et argon2', () => {
+  const r = calcCrackTime('hello');
+  assert.ok(typeof r.times.md5    === 'number', 'times.md5 absent');
+  assert.ok(typeof r.times.argon2 === 'number', 'times.argon2 absent');
+  assert.ok(r.times.md5 < r.times.argon2, "MD5 doit être plus rapide qu'Argon2");
+});
+
+test('calcCrackTime: 19/05/1990 — date détectée, rank réduit', () => {
+  const rDate = calcCrackTime('19/05/1990');
+  const rRnd  = calcCrackTime('xK9@mP2#');
+  assert.ok(rDate.rank.standard < rRnd.rank.standard,
+    `date (${rDate.rank.standard.toExponential(1)}) devrait être < aléatoire (${rRnd.rank.standard.toExponential(1)})`);
+});

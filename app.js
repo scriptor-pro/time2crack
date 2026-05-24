@@ -5892,6 +5892,30 @@ import { calcCrackTime } from './core/calc.js';
     return Math.max(0, Math.min(100, Math.round(s)));
   }
 
+  function rankToScore(rank) {
+    if (!rank || rank <= 0) return 0;
+    const log = Math.log10(rank);
+    // log10(rank) → score : 0→0, 3→10, 6→25, 9→40, 12→60, 15→80, 18→95, 21→100
+    const breakpoints = [
+      [0,  0],
+      [3,  10],
+      [6,  25],
+      [9,  40],
+      [12, 60],
+      [15, 80],
+      [18, 95],
+      [21, 100],
+    ];
+    for (let i = 1; i < breakpoints.length; i++) {
+      const [x0, y0] = breakpoints[i - 1];
+      const [x1, y1] = breakpoints[i];
+      if (log <= x1) {
+        return Math.round(y0 + ((log - x0) / (x1 - x0)) * (y1 - y0));
+      }
+    }
+    return 100;
+  }
+
   function scoreColor(s) {
     // 6-level security scale based on scientific research
     // Wogalter et al. (2002) - ISO 3864 + Brewer et al. (2003) - ColorBrewer

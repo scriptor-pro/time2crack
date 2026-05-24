@@ -8,6 +8,7 @@ import { rankMask } from '../core/rank/mask.js';
 import { uppercaseCost } from '../core/rank/uppercase.js';
 import { rankHybrid } from '../core/rank/hybrid.js';
 import { rankDictionary } from '../core/rank/dictionary.js';
+import { rankRepeat } from '../core/rank/repeat.js';
 
 const dictWords = new Set(['correct', 'horse', 'battery', 'staple', 'time', 'crack', 'pizza']);
 
@@ -361,4 +362,49 @@ test('uppercaseCost — EndCap retourne 2', () => {
 test('uppercaseCost — toggle aléatoire retourne combinatoire', () => {
   // pAsSwOrD : U=4, L=4 → ∑C(8,1..4) = 8+28+56+70 = 162
   assert.equal(uppercaseCost('pAsSwOrD'), 162);
+});
+
+// ── rankRepeat ────────────────────────────────────────────────────────────────
+
+test('rankRepeat — répétition pure aaaa < brute', () => {
+  const rr = { type: 'pure', motif: 'a', len_motif: 1, len_total: 4, reste: null };
+  const result = rankRepeat('aaaa', rr);
+  const brute  = rankBrute('aaaa');
+  assert.equal(result.model, 'repeat');
+  assert.ok(result.rank !== null);
+  assert.ok(result.rank < brute.rank, `repeat ${result.rank} devrait être < brute ${brute.rank}`);
+});
+
+test('rankRepeat — cycle abababab < brute', () => {
+  const rr = { type: 'cycle', motif: 'ab', len_motif: 2, len_total: 8, reste: null };
+  const result = rankRepeat('abababab', rr);
+  const brute  = rankBrute('abababab');
+  assert.ok(result.rank < brute.rank);
+});
+
+test('rankRepeat — sequence 1234 < brute', () => {
+  const rr = { type: 'sequence', motif: '1234', len_motif: 4, len_total: 4, reste: null };
+  const result = rankRepeat('1234', rr);
+  const brute  = rankBrute('1234');
+  assert.ok(result.rank < brute.rank);
+});
+
+test('rankRepeat — sequence inversée zyxw < brute', () => {
+  const rr = { type: 'sequence', motif: 'zyxw', len_motif: 4, len_total: 4, reste: null };
+  const result = rankRepeat('zyxw', rr);
+  const brute  = rankBrute('zyxw');
+  assert.ok(result.rank < brute.rank);
+});
+
+test('rankRepeat — mixte aaa123 < brute', () => {
+  const rr = { type: 'pure', motif: 'a', len_motif: 1, len_total: 3, reste: '123' };
+  const result = rankRepeat('aaa123', rr);
+  const brute  = rankBrute('aaa123');
+  assert.ok(result.rank < brute.rank);
+});
+
+test('rankRepeat — repeatResult null → rank null', () => {
+  const result = rankRepeat('aa123', null);
+  assert.equal(result.rank, null);
+  assert.equal(result.model, 'repeat');
 });

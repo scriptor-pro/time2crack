@@ -4054,6 +4054,91 @@ import { calcCrackTime } from './core/calc.js';
     { key: "argon2",  name: "Argon2id",          rate: 800,           salted: true  }, // ~800 H/s (conservative estimate)
   ];
 
+  // Convertit la sortie de calcCrackTime() en lignes de tableau pour l'UI.
+  // Format de sortie : [{ atk, hash, rate, sec, note, cat }, ...]
+  function buildRowsFromCalcResult(calcResult) {
+    const { context, rank, times } = calcResult;
+
+    // Correspondance clé ALGOS → clé times (core/time.js expose 6 algos)
+    const ALGO_TIME_KEY = {
+      md5: 'md5', sha1: 'sha1', sha256: 'sha256',
+      ntlm: 'ntlm', bcrypt: 'bcrypt', argon2: 'argon2',
+    };
+
+    // Correspondance best_attack → cat (pour annotateScenarioApplicability)
+    const ATTACK_CAT = {
+      brute: 'brute', dictionary: 'dict', hybrid: 'hybrid',
+      pcfg: 'pcfg', markov: 'markov', mask: 'mask',
+      combinator: 'combi', keyboard: 'mask', date: 'mask', repeat: 'mask',
+    };
+
+    function noteForAttack(attackName, ctx) {
+      switch (attackName) {
+        case 'brute':      return ctx.weak ? t('nWeakPassword') : t('nAllCombos');
+        case 'dictionary': return ctx.weak ? t('nWeakPassword') : ctx.dictWord ? t('nDictHit') : t('nAbsentLeaks');
+        case 'hybrid':     return ctx.hybridVuln ? t('nHybridVuln') : t('nAbsentLeaks');
+        case 'pcfg':       return t('nStatPrio');
+        case 'markov':     return ctx.kbPat ? t('nKeyboardUltra') : t('nStatPrio');
+        case 'mask':       return ctx.dt ? t('nDateDetected') : ctx.kbPat ? t('nKeyboard') : t('nAllCombos');
+        case 'combinator': return ctx.looksPassphrase ? t('nPassphrase') : t('nAbsentLeaks');
+        case 'keyboard':   return t('nKeyboard');
+        case 'date':       return t('nDateDetected');
+        case 'repeat':     return t('nRepeat') || t('nAllCombos');
+        default:           return '';
+      }
+    }
+
+    function labelForAttack(attackName) {
+      switch (attackName) {
+        case 'brute':      return t('aBrute');
+        case 'dictionary': return t('aDict');
+        case 'hybrid':     return t('aHybrid');
+        case 'pcfg':       return t('aPCFG');
+        case 'markov':     return t('aMarkov');
+        case 'mask':       return t('aMask');
+        case 'combinator': return t('aCombi');
+        case 'keyboard':   return t('aMask');
+        case 'date':       return t('aMask');
+        case 'repeat':     return t('aMask');
+        default:           return attackName;
+      }
+    }
+
+    const rows = [];
+
+    const attacks = Object.keys(rank.details);
+    for (const attackName of attacks) {
+      const attackRank = rank.details[attackName]?.rank ?? null;
+      if (attackRank === null) continue;
+
+      const cat = ATTACK_CAT[attackName] || 'brute';
+      const atk = labelForAttack(attackName);
+      const note = noteForAttack(attackName, context);
+
+      for (const algo of ALGOS) {
+        const timeKey = ALGO_TIME_KEY[algo.key];
+        let sec;
+        if (timeKey) {
+          sec = attackRank / (algo.rate);
+        } else {
+          sec = null;
+        }
+        rows.push({ atk, hash: algo.name, rate: algo.rate, sec, note, cat });
+      }
+    }
+
+    // Ajouter brute force depuis worst_case si non déjà présent
+    const hasBrute = rows.some(r => r.cat === 'brute');
+    if (!hasBrute) {
+      for (const algo of ALGOS) {
+        const sec = rank.worst_case / algo.rate;
+        rows.push({ atk: t('aBrute'), hash: algo.name, rate: algo.rate, sec, note: t('nAllCombos'), cat: 'brute' });
+      }
+    }
+
+    return rows;
+  }
+
   // ============================================================
   // COMMON PASSWORDS & PATTERNS
   // ============================================================

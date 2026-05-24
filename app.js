@@ -1,3 +1,5 @@
+import { calcCrackTime } from './core/calc.js';
+
 (function () {
   "use strict";
 

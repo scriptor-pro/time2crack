@@ -3171,6 +3171,7 @@ import { calcCrackTime } from './core/calc.js';
   let selectedProfileMult = 12;
   let userPinnedAlgo = false; // true once user manually changes ct-algo select
   let HIGH_FIDELITY = false;
+  let _lastCalcResult = null; // résultat du dernier appel à calcCrackTime()
 
   function updateHighFidelityUI() {
     if (!hfStatus) return;
@@ -5657,114 +5658,72 @@ import { calcCrackTime } from './core/calc.js';
   }
 
   function getScenarios(pw, mlProb = null) {
-    const { size: cs } = getCharset(pw);
-    const len = pw.length;
-    const full = Math.pow(cs, len);
+    // Calcul via core/calc.js (Bonneau 2012 + Wheeler 2016)
+    _lastCalcResult = calcCrackTime(pw, {
+      dictWords:  DICT_WORDS,
+      isHibpHit:  false,
+      hibpRank:   null,
+      lang:       LANG,
+      profile:    'experienced',
+    });
 
-    // Cache vulnerability checks
-    const weak = isWeakPassword(pw); // Ultra-weak detection (Top 100 + heuristics)
-    const common = isCommon(pw);
-    const kbPat = hasKBPattern(pw);
-    const seq = hasSequence(pw);
-    const rep = hasRepeat(pw);
-    const dt = hasDate(pw);
-    const deleet = deLeet(pw);
-     const dictWord = isDictWord(pw);
-     const hybridVuln = dictWord || (common && /[a-z]/i.test(pw));
-    const hasWordSeparator = hasMultipleDictWords(pw); // Smart detection instead of blind separator check
-    const looksPassphrase = hasWordSeparator || (dictWord && /[\s\-_]/.test(pw) && len >= 10);
+    const rows = buildRowsFromCalcResult(_lastCalcResult);
+    const context = _lastCalcResult.context;
+
+    const weak    = isWeakPassword(pw);
+    const common  = isCommon(pw);
+    const top20 = [
+      "123456","password","12345678","qwerty","abc123","1234567","letmein","trustno1","dragon","baseball",
+      "iloveyou","master","sunshine","ashley","bailey","shadow","123123","654321","superman","qazwsx",
+    ];
+    const looksPassphrase = context.looksPassphrase;
     const princeChainScore = princeChainabilityScore(pw, {
       looksPassphrase,
-      dictWord,
-      len,
-      cs,
-      dt,
-      seq,
+      dictWord:    context.dictWord,
+      len:         pw.length,
+      cs:          context.cs,
+      dt:          context.dt,
+      seq:         context.seq,
       hasSeparator: /[\s_-]/u.test(pw),
     });
-    const top20 = [
-      "123456", "password", "12345678", "qwerty", "abc123", "1234567", "letmein", "trustno1", "dragon", "baseball",
-      "iloveyou", "master", "sunshine", "ashley", "bailey", "shadow", "123123", "654321", "superman", "qazwsx",
-    ];
+    const targetedPattern = /^[A-Z][a-z]+(?:[-_. ]?[A-Z][a-z]+)?\d{0,4}[!@#$%^&*]?$/u.test(pw)
+                         || /(?:1[6-9]|20)\d{2}/.test(pw);
 
-    const rows = [];
-
-    // Add attacks in organized groups
-    addBruteForceAttacks(rows, full, weak);
-    addDictionaryAttacks(rows, common, weak, dictWord);
-    addHybridAttacks(rows, hybridVuln, weak, common, dictWord);
-    addRuleBasedAttacks(rows, hybridVuln, kbPat, seq, dt, weak);
-    addPrinceAttacks(rows, full, pw, looksPassphrase, dictWord, len, cs, dt, seq, weak);
-    addMaskAttacks(rows, full, len, cs, kbPat, seq, weak, dt, pw);
-    addRainbowTableAttacks(rows, len, cs, common, weak);
-    addSprayAttacks(rows, pw, weak);
-    addTargetedAttacks(rows, pw, common, dt, weak);
-    addMarkovAttacks(rows, full, hybridVuln, kbPat, seq, dt, rep, weak, cs, len, pw);
-    addNeuralAttacks(rows, full, hybridVuln, kbPat, seq, dt, rep, weak, cs, len, pw, mlProb);
-    addPCFGAttacks(rows, weak, pw);
-    addCombinatorAttacks(rows, len, pw, common, looksPassphrase, weak);
-    addMorphologicalAttacks(rows, dictWord, deleet, pw, weak);
-
-    const targetedPattern = /^[A-Z][a-z]+(?:[-_. ]?[A-Z][a-z]+)?\d{0,4}[!@#$%^&*]?$/u.test(pw) || /(?:1[6-9]|20)\d{2}/.test(pw);
-    applyHighFidelityCalibration(rows, {
-      len,
+    const calibrationContext = {
+      len:            pw.length,
       common,
-      dictWord,
-      hybridVuln,
-      kbPat,
-      seq,
-      rep,
-      dt,
+      dictWord:       context.dictWord,
+      hybridVuln:     context.hybridVuln,
+      kbPat:          context.kbPat,
+      seq:            context.seq,
+      rep:            context.rep,
+      dt:             context.dt,
       looksPassphrase,
       princeChainScore,
       targetedPattern,
-      hasUnicode: /[^\x00-\x7F]/.test(pw),
-      hasLeet: deleet !== pw.toLowerCase(),
-    });
+      hasUnicode:     /[^\x00-\x7F]/.test(pw),
+      hasLeet:        context.dictWord && pw.toLowerCase() !== pw,
+      weak,
+    };
 
+    applyHighFidelityCalibration(rows, calibrationContext);
     annotateScenarioApplicability(rows, {
       weak,
       common,
-      dictWord,
-      top20: top20.includes(pw.toLowerCase()),
-      hybridVuln,
-      ruleVuln: hybridVuln || kbPat || seq || dt,
+      dictWord:       context.dictWord,
+      top20:          top20.includes(pw.toLowerCase()),
+      hybridVuln:     context.hybridVuln,
+      ruleVuln:       context.hybridVuln || context.kbPat || context.seq || context.dt,
       looksPassphrase,
       princeChainScore,
-      looksHuman: hybridVuln || kbPat || seq || dt || rep,
-      kbPat,
-      seq,
-      rep,
-      dt,
+      looksHuman:     context.hybridVuln || context.kbPat || context.seq || context.dt || context.rep,
+      kbPat:          context.kbPat,
+      seq:            context.seq,
+      rep:            context.rep,
+      dt:             context.dt,
       targetedPattern,
-      morphStrong: dictWord && ((/[^\x00-\x7F]/.test(pw)) || (deleet !== pw.toLowerCase())),
+      morphStrong:    context.dictWord && /[^\x00-\x7F]/.test(pw),
     });
-
-    // Monotonicity guard: rule-of-thumb attacks should not claim to crack faster than
-    // a naive brute-force over just the alpha substring of the password.
-    // This prevents absurd results like hybrid claiming "0.001s" on a 15-char word.
-    //
-    // Exclusions from this guard:
-    // - "brute": already is brute force, no floor needed
-    // - "markov", "pcfg": these attacks have their own internal keyspace models that
-    //   correctly account for password structure (reduction factors, grammar derivations).
-    //   Applying the alpha floor on top would override their calibrated estimates and
-    //   cause them to collapse to the same value — exactly what happened with "C'1-télectuel/*"
-    //   where floorAlpha (52^9/2 = 1.39e15) exceeded both Markov (6e12) and PCFG (4e14).
-    const ALPHA_FLOOR_EXCLUDED = new Set(["brute", "markov", "pcfg", "mask", "rainbow", "prince"]);
-    if (!weak && !common) {
-      const alphaOnly = pw.replace(/[^a-zA-Z]/g, "");
-      if (alphaOnly.length >= 3) {
-        const alphaCS = (alphaOnly.match(/[a-z]/) ? 26 : 0) + (alphaOnly.match(/[A-Z]/) ? 26 : 0);
-        for (const row of rows) {
-          if (ALPHA_FLOOR_EXCLUDED.has(row.cat) || row.sec === null || !isFinite(row.sec)) continue;
-          const algo = ALGOS.find(a => a.name === row.hash);
-          if (!algo) continue;
-          const floorAlpha = bruteTime(Math.pow(Math.max(alphaCS, 26), alphaOnly.length), algo.rate);
-          if (row.sec < floorAlpha) row.sec = floorAlpha;
-        }
-      }
-    }
 
     return rows;
   }
@@ -6325,8 +6284,8 @@ import { calcCrackTime } from './core/calc.js';
       updateBloomBanner(null);
     }
     const { size: cs, types } = getCharset(pw);
-    const ent = entropy(pw);
-    const sc = score(pw);
+    const ent = entropy(pw);   // conservé pour l'affichage "X bits" uniquement
+    const sc = _lastCalcResult ? rankToScore(_lastCalcResult.rank.standard) : score(pw);
     const col = scoreColor(sc);
 
     // Segmented strength bar (Harrison et al. 2010: +23% clarity)

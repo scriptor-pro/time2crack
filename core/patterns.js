@@ -89,6 +89,7 @@ const MONTH_NAMES_PATTERN = new RegExp(
  * @property {boolean}      hybridVuln      - Éligible à l'attaque hybride (dict + mutations)
  * @property {boolean}      looksPassphrase - Ressemble à une passphrase (mots concaténés)
  * @property {string|null}  datePattern     - Format de date détecté (ex: 'YYYY', 'DDMM')
+ * @property {{ type: string, motif: string, len_motif: number, len_total: number, reste: string|null } | null} repeatResult - Pattern répété détecté
  */
 export function analyzePatterns(password, dictWords = null) {
   const len = passwordLength(password);
@@ -100,6 +101,9 @@ export function analyzePatterns(password, dictWords = null) {
   const kbPat = KEYBOARD_SEQUENCES.some(seq =>
     lower.includes(seq) || lower.includes(reverseStr(seq))
   );
+
+  // --- Pattern répété ---
+  const repeatResult = detectRepeat(pw, kbPat);
 
   // --- Séquences alpha/numériques ---
   const seq = ALPHA_SEQUENCES.some(s => lower.includes(s))
@@ -191,6 +195,7 @@ export function analyzePatterns(password, dictWords = null) {
     dictWord,
     hybridVuln,
     looksPassphrase,
+    repeatResult,
   };
 }
 
@@ -198,6 +203,71 @@ export function analyzePatterns(password, dictWords = null) {
 
 function reverseStr(s) {
   return [...s].reverse().join('');
+}
+
+/**
+ * Détecte un pattern répété dans un mot de passe.
+ * Couvre : répétition pure (aaaa), cycle (abababab), séquence (1234, abcd, zyxw).
+ * Seuil minimum : segment répété ≥ 3 caractères.
+ * Composition : si répétition en tête ≥ 3 chars, retourne le reste.
+ *
+ * @param {string} pw
+ * @param {boolean} kbPat - Si true, retourne null (keyboard a priorité)
+ * @returns {{ type: string, motif: string, len_motif: number, len_total: number, reste: string|null } | null}
+ */
+function detectRepeat(pw, kbPat) {
+  if (kbPat) return null;
+
+  const lower = pw.toLowerCase();
+
+  // 1. Répétition pure : un seul char répété N fois en tête
+  const pureMatch = lower.match(/^((.)\2{2,})/);
+  if (pureMatch) {
+    const segment = pureMatch[1];
+    const reste   = pw.slice(segment.length) || null;
+    return { type: 'pure', motif: segment[0], len_motif: 1, len_total: segment.length, reste };
+  }
+
+  // 2. Cycle : motif de longueur k ≥ 2 répété ≥ 2 fois en tête
+  for (let k = 2; k <= Math.floor(lower.length / 2); k++) {
+    const motif = lower.slice(0, k);
+    const regex = new RegExp(`^((?:${motif.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}){2,})`);
+    const m = lower.match(regex);
+    if (m && m[1].length >= 3) {
+      const segment = m[1];
+      const reste   = pw.slice(segment.length) || null;
+      return { type: 'cycle', motif, len_motif: k, len_total: segment.length, reste };
+    }
+  }
+
+  // 3. Séquence croissante ou décroissante (chiffres ou lettres), longueur ≥ 3
+  const seqMatch = detectSequenceSegment(lower);
+  if (seqMatch && seqMatch.len >= 3) {
+    const reste = pw.slice(seqMatch.len) || null;
+    return { type: 'sequence', motif: lower.slice(0, seqMatch.len), len_motif: seqMatch.len, len_total: seqMatch.len, reste };
+  }
+
+  return null;
+}
+
+/**
+ * Détecte une séquence consécutive (croissante ou décroissante) en tête de chaîne.
+ * @param {string} s - chaîne en minuscules
+ * @returns {{ len: number } | null}
+ */
+function detectSequenceSegment(s) {
+  if (s.length < 3) return null;
+
+  const codes = [...s].map(c => c.codePointAt(0));
+  const step  = codes[1] - codes[0];
+  if (step !== 1 && step !== -1) return null;
+
+  let len = 2;
+  while (len < codes.length && codes[len] - codes[len - 1] === step) {
+    len++;
+  }
+
+  return len >= 3 ? { len } : null;
 }
 
 function deleet(s) {

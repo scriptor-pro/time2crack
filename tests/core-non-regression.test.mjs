@@ -408,3 +408,57 @@ test('rankRepeat — repeatResult null → rank null', () => {
   assert.equal(result.rank, null);
   assert.equal(result.model, 'repeat');
 });
+
+// ── analyzePatterns — repeatResult ───────────────────────────────────────────
+
+test('analyzePatterns — aaaa produit repeatResult pure', () => {
+  const ctx = analyzePatterns('aaaa');
+  assert.ok(ctx.repeatResult !== null, 'repeatResult devrait être non-null pour aaaa');
+  assert.equal(ctx.repeatResult.type, 'pure');
+  assert.equal(ctx.repeatResult.motif, 'a');
+  assert.equal(ctx.repeatResult.len_motif, 1);
+  assert.equal(ctx.repeatResult.len_total, 4);
+  assert.equal(ctx.repeatResult.reste, null);
+});
+
+test('analyzePatterns — abababab produit repeatResult cycle', () => {
+  const ctx = analyzePatterns('abababab');
+  assert.ok(ctx.repeatResult !== null);
+  assert.equal(ctx.repeatResult.type, 'cycle');
+  assert.equal(ctx.repeatResult.motif, 'ab');
+  assert.equal(ctx.repeatResult.len_motif, 2);
+  assert.equal(ctx.repeatResult.len_total, 8);
+  assert.equal(ctx.repeatResult.reste, null);
+});
+
+test('analyzePatterns — 1234 produit repeatResult sequence', () => {
+  const ctx = analyzePatterns('1234');
+  assert.ok(ctx.repeatResult !== null);
+  assert.equal(ctx.repeatResult.type, 'sequence');
+});
+
+test('analyzePatterns — zyxw produit repeatResult sequence', () => {
+  const ctx = analyzePatterns('zyxw');
+  assert.ok(ctx.repeatResult !== null);
+  assert.equal(ctx.repeatResult.type, 'sequence');
+});
+
+test('analyzePatterns — aaa123 produit repeatResult mixte', () => {
+  const ctx = analyzePatterns('aaa123');
+  assert.ok(ctx.repeatResult !== null);
+  assert.equal(ctx.repeatResult.type, 'pure');
+  assert.equal(ctx.repeatResult.motif, 'a');
+  assert.equal(ctx.repeatResult.len_total, 3);
+  assert.equal(ctx.repeatResult.reste, '123');
+});
+
+test('analyzePatterns — aa123 produit repeatResult null (< 3 chars)', () => {
+  const ctx = analyzePatterns('aa123');
+  assert.equal(ctx.repeatResult, null);
+});
+
+test('analyzePatterns — kbPat=true bloque repeatResult', () => {
+  const ctx = analyzePatterns('qwerty');
+  assert.equal(ctx.kbPat, true);
+  assert.equal(ctx.repeatResult, null);
+});

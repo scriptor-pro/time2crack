@@ -3474,7 +3474,7 @@ import { calcCrackTime } from './core/calc.js';
   }
 
   // Toggle visibility
-  toggleBtn.addEventListener("click", () => {
+  if (toggleBtn) toggleBtn.addEventListener("click", () => {
     const show = input.type === "password";
     input.type = show ? "text" : "password";
     const textSpan = toggleBtn.querySelector("span");

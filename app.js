@@ -3055,10 +3055,12 @@ import { calcCrackTime } from './core/calc.js';
       if (I[lang][k]) el.placeholder = I[lang][k];
     });
     // Update toggle button text (preserve icon)
-    const isVisible = input.type === "text";
-    const textSpan = toggleBtn.querySelector("span");
-    if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
-    toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+    if (toggleBtn) {
+      const isVisible = input.type === "text";
+      const textSpan = toggleBtn.querySelector("span");
+      if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
+      toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
+    }
     // Update lang selector (globe button + menu)
     const langCodeSpan = safe("lang-code");
     if (langCodeSpan) {
@@ -3126,7 +3128,7 @@ import { calcCrackTime } from './core/calc.js';
   });
 
   const $ = (id) => document.getElementById(id);
-  const input = $("password-input");
+  const input = $("pw-input");
   const toggleBtn = $("toggle-visibility");
   const strengthIcon = $("strength-icon");
   const strengthLabel = $("strength-label");

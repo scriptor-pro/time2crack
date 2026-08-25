@@ -20,23 +20,54 @@ def target_files(root: Path):
 
 def unhide_first_h1(path: Path) -> bool:
     html = path.read_text(encoding="utf-8")
-    soup = BeautifulSoup(html, "html.parser")
-    h1 = soup.find("h1", style=lambda v: v and "display:none" in v.replace(" ", ""))
-    if h1 is None:
+
+    # Find the FIRST <h1 tag in the document (regardless of style)
+    match = re.search(r'<h1(?:\s+[^>]*)?>.*?</h1>', html, re.DOTALL)
+    if not match:
         return False
 
-    # Surgical text-based replacement: use regex to remove style="display:none" with proper spacing cleanup
-    # Find and replace the first <h1...style="display:none"...> pattern
-    # This regex handles: <h1 style="display:none"> or <h1 style="display:none">
-    pattern = r'<h1\s+style="display:none"\s*>'
-    replacement = '<h1>'
+    first_h1_start = match.start()
+    # Extract just the opening tag of the first h1 (handles both <h1> and <h1 ...>)
+    opening_tag_match = re.search(r'<h1(?:\s+[^>]*)?>',html[first_h1_start:])
+    if not opening_tag_match:
+        return False
 
-    if re.search(pattern, html):
-        html = re.sub(pattern, replacement, html, count=1)
-        path.write_text(html, encoding="utf-8")
-        return True
+    opening_tag_full = opening_tag_match.group(0)
 
-    return False
+    # Check if this first h1's opening tag contains style="display:none"
+    if 'style="display:none"' not in opening_tag_full:
+        return False
+
+    # Replace style="display:none" in ONLY the first h1 tag
+    # Remove the style attribute cleanly, leaving a simple <h1>
+    modified_tag = '<h1>'
+
+    # Replace in the original html at the first h1 position only
+    html_modified = html[:first_h1_start] + html[first_h1_start:].replace(opening_tag_full, modified_tag, 1)
+
+    path.write_text(html_modified, encoding="utf-8")
+    return True
+
+
+def would_change_first_h1(path: Path) -> bool:
+    """Check if the first h1 in the file has style="display:none"."""
+    html = path.read_text(encoding="utf-8")
+
+    # Find the FIRST <h1 tag in the document (handles both <h1> and <h1 ...>)
+    match = re.search(r'<h1(?:\s+[^>]*)?>.*?</h1>', html, re.DOTALL)
+    if not match:
+        return False
+
+    first_h1_start = match.start()
+    # Extract just the opening tag of the first h1
+    opening_tag_match = re.search(r'<h1(?:\s+[^>]*)?>',html[first_h1_start:])
+    if not opening_tag_match:
+        return False
+
+    opening_tag_full = opening_tag_match.group(0)
+
+    # Check if this first h1's opening tag contains style="display:none"
+    return 'style="display:none"' in opening_tag_full
 
 
 def main():
@@ -49,8 +80,7 @@ def main():
     changed = []
     for path in target_files(root):
         if args.dry_run:
-            html = path.read_text(encoding="utf-8")
-            if 'style="display:none"' in html and "<h1" in html:
+            if would_change_first_h1(path):
                 changed.append(path)
         else:
             if unhide_first_h1(path):

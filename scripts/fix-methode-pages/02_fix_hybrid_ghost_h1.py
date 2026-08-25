@@ -32,8 +32,9 @@ def fix_file(path: Path, dry_run: bool) -> int:
 
     for ghost_text in ghost_texts:
         # Pattern: <h1 style="display:none">EXACT_TEXT</h1>
+        # Replace with plain text (no <code> wrapper — the parent <pre><code> provides context)
         pattern = rf'<h1 style="display:none">{re.escape(ghost_text)}</h1>'
-        replacement = f'<code>{ghost_text}</code>'
+        replacement = ghost_text  # Plain text, no wrapper
         new_html = re.sub(pattern, replacement, modified_html, count=1)
 
         if new_html != modified_html:

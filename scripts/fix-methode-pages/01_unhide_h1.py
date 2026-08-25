@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Réaffiche le <h1> masqué sur les pages /methode/*.html (sauf hybrid.html)."""
 import argparse
+import re
 import sys
 from pathlib import Path
 from bs4 import BeautifulSoup
@@ -23,9 +24,19 @@ def unhide_first_h1(path: Path) -> bool:
     h1 = soup.find("h1", style=lambda v: v and "display:none" in v.replace(" ", ""))
     if h1 is None:
         return False
-    del h1["style"]
-    path.write_text(str(soup), encoding="utf-8")
-    return True
+
+    # Surgical text-based replacement: use regex to remove style="display:none" with proper spacing cleanup
+    # Find and replace the first <h1...style="display:none"...> pattern
+    # This regex handles: <h1 style="display:none"> or <h1 style="display:none">
+    pattern = r'<h1\s+style="display:none"\s*>'
+    replacement = '<h1>'
+
+    if re.search(pattern, html):
+        html = re.sub(pattern, replacement, html, count=1)
+        path.write_text(html, encoding="utf-8")
+        return True
+
+    return False
 
 
 def main():

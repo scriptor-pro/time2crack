@@ -1,0 +1,11 @@
+{
+  "en": {"text": "Curious whether your own password would resist this kind of attack? Test it for free, entirely in your browser, in a couple of seconds.", "button": "Test my password"},
+  "fr": {"text": "Curieux de savoir si votre mot de passe résisterait à ce type d'attaque ? Testez-le gratuitement, entièrement dans votre navigateur, en quelques secondes.", "button": "Tester mon mot de passe"},
+  "es": {"text": "¿Tiene curiosidad por saber si su contraseña resistiría este tipo de ataque? Pruébela gratis, totalmente en su navegador, en unos segundos.", "button": "Probar mi contraseña"},
+  "pt": {"text": "Tem curiosidade em saber se a sua palavra-passe resistiria a este tipo de ataque? Teste-a gratuitamente, totalmente no seu navegador, em poucos segundos.", "button": "Testar a minha palavra-passe"},
+  "de": {"text": "Neugierig, ob Ihr eigenes Passwort dieser Art von Angriff standhält? Testen Sie es kostenlos, vollständig in Ihrem Browser, in wenigen Sekunden.", "button": "Mein Passwort testen"},
+  "it": {"text": "Curioso di sapere se la tua password resisterebbe a questo tipo di attacco? Provala gratuitamente, interamente nel tuo browser, in pochi secondi.", "button": "Testa la mia password"},
+  "pl": {"text": "Ciekawi Cię, czy Twoje hasło oprze się tego typu atakowi? Przetestuj je za darmo, w całości w przeglądarce, w kilka sekund.", "button": "Przetestuj moje hasło"},
+  "nl": {"text": "Benieuwd of jouw eigen wachtwoord bestand is tegen dit soort aanval? Test het gratis, volledig in je browser, in een paar seconden.", "button": "Test mijn wachtwoord"},
+  "tr": {"text": "Kendi şifrenizin bu tür bir saldırıya dayanıp dayanamayacağını merak ediyor musunuz? Ücretsiz olarak, tamamen tarayıcınızda, birkaç saniyede test edin.", "button": "Şifremi test et"}
+}

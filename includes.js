@@ -235,10 +235,14 @@
     }
   };
 
+  // Root pages declare their own language (the homepage is English, other root pages French).
+  // Read it now, before app.js rewrites <html lang> from the browser language.
+  const ROOT_PAGE_LANG = LANGS.includes(document.documentElement.lang) ? document.documentElement.lang : 'fr';
+
   function getPageContext() {
     const pathname = window.location.pathname;
     const segments = pathname.split('/').filter(Boolean);
-    const lang = LANGS.includes(segments[0]) ? segments[0] : 'fr';
+    const lang = LANGS.includes(segments[0]) ? segments[0] : ROOT_PAGE_LANG;
     const localized = LANGS.includes(segments[0]);
     const isMethodDir = localized ? segments[1] === 'methode' : segments[0] === 'methode';
     const assetPrefix = segments.length > 1 ? '../'.repeat(segments.length - 1) : '';

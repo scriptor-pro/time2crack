@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Calculateur de temps de crack pour les mots de passe. Analysez la force réelle de votre mot de passe avec 7 modèles d'attaque et 6 algorithmes de hachage. Calcul 100% local, aucun mot de passe transmis." />
+  <title>Password Crack Time Calculator — 100% Local | Time2Crack</title>
+  <meta name="description" content="How long would it take to crack your password? 7 attack models, 6 hash algorithms. Runs 100% in your browser: nothing is sent." />
   <meta name="theme-color" content="#2563EB" />
-  <meta property="og:title" content="Time2Crack — Estimateur de temps de crack" />
-  <meta property="og:description" content="Calculateur précis de temps de crack avec 7 modèles d'attaque (brute force, dictionnaire, Markov, PCFG, etc.)" />
+  <meta property="og:title" content="Password Crack Time Calculator — Time2Crack" />
+  <meta property="og:description" content="Accurate crack time estimates with 7 attack models (brute force, dictionary, Markov, PCFG, etc.)" />
   <meta property="og:image" content="https://time2crack.eu/favicon.ico" />
   <meta property="og:type" content="website" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
@@ -27,8 +28,8 @@
   <noscript><link rel="stylesheet" href="style.min.css" /></noscript>
 
   <link rel="canonical" href="https://time2crack.eu/" />
-  <link rel="alternate" hreflang="fr" href="https://time2crack.eu/index.html" />
-  <link rel="alternate" hreflang="en" href="https://time2crack.eu/en/index.html" />
+  <link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/index.html" />
+  <link rel="alternate" hreflang="en" href="https://time2crack.eu/" />
   <link rel="alternate" hreflang="es" href="https://time2crack.eu/es/index.html" />
   <link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/index.html" />
   <link rel="alternate" hreflang="de" href="https://time2crack.eu/de/index.html" />
@@ -36,7 +37,7 @@
   <link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/index.html" />
   <link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/index.html" />
   <link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/index.html" />
-  <link rel="alternate" hreflang="x-default" href="https://time2crack.eu/en/index.html" />
+  <link rel="alternate" hreflang="x-default" href="https://time2crack.eu/" />
 <script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
 
   <script type="importmap">
@@ -79,15 +80,15 @@
           placeholder="Ex: Password2024!"
           aria-describedby="status"
         />
-        <p class="input-hint" id="main-hint">Analyse locale, sécurisée, gratuite • Aucun mot de passe n'est transmis</p>
-        <p class="input-hint"><small><a href="how-time2crack-works.html" id="how-it-works-link">Comment ça marche? →</a></small></p>
+        <p class="input-hint" id="main-hint">Local, secure, free analysis • Your password never leaves your device</p>
+        <p class="input-hint"><small><a href="how-time2crack-works.html" id="how-it-works-link">How does it work? →</a></small></p>
       </div>
     </div>
 
-    <!-- Barre de chargement du dictionnaire -->
+    <!-- Dictionary loading bar -->
     <div id="dict-loader" class="dict-loader" hidden>
       <div class="dict-loader__content">
-        <span class="dict-loader__text" id="dict-loader-text">Chargement du dictionnaire…</span>
+        <span class="dict-loader__text" id="dict-loader-text">Loading dictionary…</span>
         <div class="dict-loader__bar">
           <div class="dict-loader__progress" id="dict-loader-progress" style="width: 0%"></div>
         </div>
@@ -98,21 +99,21 @@
 
     <div id="results">
 
-      <h2>Temps de crack estimé</h2>
+      <h2>Estimated crack time</h2>
 
       <p id="hibp-badge" data-state="hidden" role="status" aria-live="polite"></p>
 
       <div class="best-attack-card best-attack-card--featured">
-        <p class="best-attack-label">Temps de crack estimé</p>
+        <p class="best-attack-label">Estimated crack time</p>
         <div class="best-attack-result">
           <strong id="best-attack-time" class="best-attack-time">—</strong>
-          <span id="best-attack-name" class="best-attack-name">Force brute</span>
+          <span id="best-attack-name" class="best-attack-name">Brute force</span>
         </div>
-        <p class="best-attack-meta">Force brute · Standard · MD5</p>
+        <p class="best-attack-meta">Brute force · Standard · MD5</p>
       </div>
 
-      <div class="profile-selector" role="group" aria-label="Profil d'attaquant">
-        <span class="profile-selector__label">Profil d'attaquant</span>
+      <div class="profile-selector" role="group" aria-label="Attacker profile">
+        <span class="profile-selector__label">Attacker profile</span>
         <div class="profile-selector__buttons">
           <button class="profile-btn" data-profile="amateur" aria-pressed="false">
             <span class="profile-btn__name">Amateur</span>
@@ -127,7 +128,7 @@
             <span class="profile-btn__gpu">~100 GPU</span>
           </button>
           <button class="profile-btn" data-profile="nation_state" aria-pressed="false">
-            <span class="profile-btn__name">État</span>
+            <span class="profile-btn__name">Nation-state</span>
             <span class="profile-btn__gpu">~10k GPU</span>
           </button>
         </div>
@@ -141,38 +142,38 @@
         <span id="profile-info-desc" class="profile-info-card__desc"></span>
       </div>
 
-      <h2>Analyse détaillée des attaques</h2>
-      <div class="table-wrapper" role="region" aria-label="Tableau des temps de crack" tabindex="0">
+      <h2>Detailed attack analysis</h2>
+      <div class="table-wrapper" role="region" aria-label="Crack time table" tabindex="0">
         <table id="results-table">
           <thead>
             <tr>
-              <th scope="col">Attaque</th>
-              <th scope="col">Algorithme</th>
-              <th scope="col">Temps estimé</th>
+              <th scope="col">Attack</th>
+              <th scope="col">Algorithm</th>
+              <th scope="col">Estimated time</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
 
-      <h2>Analyse du mot de passe</h2>
-      <div id="context-grid" class="context-grid" aria-label="Caractéristiques du mot de passe">
+      <h2>Password analysis</h2>
+      <div id="context-grid" class="context-grid" aria-label="Password characteristics">
         <div class="context-group" id="ctx-group-structure">
           <div class="context-group__title">Structure</div>
-          <div class="context-row"><dt>Longueur</dt>        <dd id="ctx-len"></dd></div>
-          <div class="context-row"><dt>Charset effectif</dt><dd id="ctx-cs"></dd></div>
-          <div class="context-row"><dt>Date détectée</dt>   <dd id="ctx-dt"></dd></div>
+          <div class="context-row"><dt>Length</dt>        <dd id="ctx-len"></dd></div>
+          <div class="context-row"><dt>Effective charset</dt><dd id="ctx-cs"></dd></div>
+          <div class="context-row"><dt>Date detected</dt>   <dd id="ctx-dt"></dd></div>
         </div>
         <div class="context-group" id="ctx-group-patterns">
           <div class="context-group__title">Patterns</div>
-          <div class="context-row"><dt>Séq. clavier</dt>   <dd id="ctx-kb"></dd></div>
-          <div class="context-row"><dt>Séq. alpha/num</dt> <dd id="ctx-seq"></dd></div>
-          <div class="context-row"><dt>Répétition</dt>     <dd id="ctx-rep"></dd></div>
+          <div class="context-row"><dt>Keyboard seq.</dt>   <dd id="ctx-kb"></dd></div>
+          <div class="context-row"><dt>Alpha/num seq.</dt> <dd id="ctx-seq"></dd></div>
+          <div class="context-row"><dt>Repetition</dt>     <dd id="ctx-rep"></dd></div>
         </div>
         <div class="context-group" id="ctx-group-dict">
-          <div class="context-group__title">Dictionnaire</div>
-          <div class="context-row"><dt>Mot dico</dt>   <dd id="ctx-dict"></dd></div>
-          <div class="context-row"><dt>Hybride</dt>    <dd id="ctx-hybrid"></dd></div>
+          <div class="context-group__title">Dictionary</div>
+          <div class="context-row"><dt>Dictionary word</dt>   <dd id="ctx-dict"></dd></div>
+          <div class="context-row"><dt>Hybrid</dt>    <dd id="ctx-hybrid"></dd></div>
           <div class="context-row"><dt>Passphrase</dt> <dd id="ctx-pass"></dd></div>
         </div>
       </div>

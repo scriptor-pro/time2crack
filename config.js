@@ -1,9 +1,21 @@
 // config.js — Centralized application state & configuration
 // Allows modules to access LANG, DICT_WORDS, etc. without global variables
 
+const SUPPORTED_LANGS = ['fr', 'en', 'es', 'pt', 'de', 'it', 'tr', 'pl', 'nl'];
+
+// The page's own language wins: /xx/ path prefix, else the authored <html lang> (root = en).
+// The stored preference only applies when the page declares nothing usable.
+function detectPageLang() {
+  const prefix = window.location.pathname.split('/').filter(Boolean)[0];
+  if (SUPPORTED_LANGS.includes(prefix)) return prefix;
+  const htmlLang = document.documentElement.lang;
+  if (SUPPORTED_LANGS.includes(htmlLang)) return htmlLang;
+  return localStorage.getItem('time2crack-lang') || 'en';
+}
+
 export const AppConfig = {
   // Language state
-  lang: localStorage.getItem('time2crack-lang') || 'fr',
+  lang: detectPageLang(),
   dictLang: null,
   dictLoading: false,
   dictWords: null,

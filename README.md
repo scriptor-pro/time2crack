@@ -32,7 +32,7 @@ npx live-server
 ```
 .
 ├── index.html              # Single HTML page (CSP-hardened)
-├── app.js                  # Main app (~3850 lines, IIFE)
+├── app.js                  # Homepage app source (ES module) → built into app.min.js
 ├── styles.css              # Dark theme, responsive design
 ├── time2crack.svg          # Logo (vectoriel)
 ├── time2crack.webp         # Logo (optimisé WebP)
@@ -190,15 +190,16 @@ Notes:
 - This removes manual drift risk between custom domain and Codeberg Pages URL.
 
 ### Code Organization (app.js)
+`app.js` is the readable source of `app.min.js`, the ES module loaded by the homepages.
+It imports the calculation engine from `core/` and shared state from `config.js`.
+After editing it, rebuild the minified file (requires esbuild):
+
+```sh
+./scripts/build-app.sh
 ```
-Lines 1–10        : Global state (LANG, DICT_WORDS, DICT_LOADING)
-Lines 14–~600     : Translations (I.en, I.fr, I.es, etc.)
-Lines ~600–~1200  : Utility functions (entropy, charset, patterns)
-Lines ~1200–~1800 : Vulnerability analysis (analyzePassword)
-Lines ~1800–~2200 : Attack time calculations (calcTTC)
-Lines ~2200–~2500 : UI rendering (updateDisplay, renderTable)
-Lines ~2500–~2700 : Initialization & event listeners
-```
+
+The source was reconstructed on 2026-10-16 from the minified build, so local variable
+names are still single letters; rename them as you touch the code.
 
 **Key principle**: Each section is self-contained. Modify independently.
 

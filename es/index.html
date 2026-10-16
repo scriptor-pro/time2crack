@@ -43,15 +43,15 @@ window.RESOURCE_BASE = (() => {
       <div class="input-group">
         <label for="pw-input" id="main-title" data-i18n="inputLabel">Ingresa una contraseña para probar</label>
         <input id="pw-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ex: Password2024!" aria-describedby="status">
-        <p class="input-hint" id="main-hint">Analyse locale, sécurisée, gratuite • Aucun mot de passe n'est transmis</p>
+        <p class="input-hint" id="main-hint">Análisis local, seguro, gratuito • Sin contraseñas transmitidas</p>
         <p class="input-hint"><small><a href="how-time2crack-works.html" id="how-it-works-link">¿Cómo funciona? →</a></small></p>
       </div>
     </div>
 
-    <!-- Barre de chargement du dictionnaire -->
+    <!-- Dictionary loading bar -->
     <div id="dict-loader" class="dict-loader" hidden="">
       <div class="dict-loader__content">
-        <span class="dict-loader__text" id="dict-loader-text">Chargement du dictionnaire…</span>
+        <span class="dict-loader__text" id="dict-loader-text">Cargando diccionario…</span>
         <div class="dict-loader__bar">
           <div class="dict-loader__progress" id="dict-loader-progress" style="width: 0%"></div>
         </div>
@@ -62,12 +62,12 @@ window.RESOURCE_BASE = (() => {
 
     <div id="results">
 
-      <h2>Temps de crack estimé</h2>
+      <h2>Tiempo estimado de descifrado</h2>
 
       <p id="hibp-badge" data-state="hidden" role="status" aria-live="polite"></p>
 
-      <div class="profile-selector" role="group" aria-label="Profil d'attaquant">
-        <span class="profile-selector__label">Profil d'attaquant</span>
+      <div class="profile-selector" role="group" aria-label="Perfil del atacante">
+        <span class="profile-selector__label">Perfil del atacante</span>
         <div class="profile-selector__buttons">
           <button class="profile-btn" data-profile="amateur" aria-pressed="false">
             <span class="profile-btn__name">Amateur</span>
@@ -82,14 +82,14 @@ window.RESOURCE_BASE = (() => {
             <span class="profile-btn__gpu">~100 GPU</span>
           </button>
           <button class="profile-btn" data-profile="nation_state" aria-pressed="false">
-            <span class="profile-btn__name">État</span>
+            <span class="profile-btn__name">Estado</span>
             <span class="profile-btn__gpu">~10k GPU</span>
           </button>
         </div>
       </div>
 
       <div class="best-attack-card">
-        <p class="best-attack-label">⚡ Attaque la plus rapide</p>
+        <p class="best-attack-label">⚡ Ataque más rápido</p>
         <p class="best-attack-result"><span id="best-attack-name"></span><strong id="best-attack-time"></strong></p>
       </div>
 
@@ -101,39 +101,39 @@ window.RESOURCE_BASE = (() => {
         <span id="profile-info-desc" class="profile-info-card__desc"></span>
       </div>
 
-      <h2>Analyse détaillée des attaques</h2>
-      <div class="table-wrapper" role="region" aria-label="Tableau des temps de crack" tabindex="0">
+      <h2>Análisis detallado de los ataques</h2>
+      <div class="table-wrapper" role="region" aria-label="Tabla de tiempos de descifrado" tabindex="0">
         <table id="results-table">
           <thead>
             <tr>
-              <th scope="col">Attaque</th>
-              <th scope="col">Algorithme</th>
-              <th scope="col">Temps estimé</th>
+              <th scope="col">Ataque</th>
+              <th scope="col">Algoritmo</th>
+              <th scope="col">Tiempo estimado</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
 
-      <h2>Analyse du mot de passe</h2>
-      <div id="context-grid" class="context-grid" aria-label="Caractéristiques du mot de passe">
+      <h2>Análisis de la contraseña</h2>
+      <div id="context-grid" class="context-grid" aria-label="Características de la contraseña">
         <div class="context-group" id="ctx-group-structure">
-          <div class="context-group__title">Structure</div>
-          <div class="context-row"><dt>Longueur</dt>        <dd id="ctx-len"></dd></div>
-          <div class="context-row"><dt>Charset effectif</dt><dd id="ctx-cs"></dd></div>
-          <div class="context-row"><dt>Date détectée</dt>   <dd id="ctx-dt"></dd></div>
+          <div class="context-group__title">Estructura</div>
+          <div class="context-row"><dt>Longitud</dt>        <dd id="ctx-len"></dd></div>
+          <div class="context-row"><dt>Juego de caracteres efectivo</dt><dd id="ctx-cs"></dd></div>
+          <div class="context-row"><dt>Fecha detectada</dt>   <dd id="ctx-dt"></dd></div>
         </div>
         <div class="context-group" id="ctx-group-patterns">
-          <div class="context-group__title">Patterns</div>
-          <div class="context-row"><dt>Séq. clavier</dt>   <dd id="ctx-kb"></dd></div>
-          <div class="context-row"><dt>Séq. alpha/num</dt> <dd id="ctx-seq"></dd></div>
-          <div class="context-row"><dt>Répétition</dt>     <dd id="ctx-rep"></dd></div>
+          <div class="context-group__title">Patrones</div>
+          <div class="context-row"><dt>Sec. de teclado</dt>   <dd id="ctx-kb"></dd></div>
+          <div class="context-row"><dt>Sec. alfanumérica</dt> <dd id="ctx-seq"></dd></div>
+          <div class="context-row"><dt>Repetición</dt>     <dd id="ctx-rep"></dd></div>
         </div>
         <div class="context-group" id="ctx-group-dict">
-          <div class="context-group__title">Dictionnaire</div>
-          <div class="context-row"><dt>Mot dico</dt>   <dd id="ctx-dict"></dd></div>
-          <div class="context-row"><dt>Hybride</dt>    <dd id="ctx-hybrid"></dd></div>
-          <div class="context-row"><dt>Passphrase</dt> <dd id="ctx-pass"></dd></div>
+          <div class="context-group__title">Diccionario</div>
+          <div class="context-row"><dt>Palabra del diccionario</dt>   <dd id="ctx-dict"></dd></div>
+          <div class="context-row"><dt>Híbrido</dt>    <dd id="ctx-hybrid"></dd></div>
+          <div class="context-row"><dt>Frase de contraseña</dt> <dd id="ctx-pass"></dd></div>
         </div>
       </div>
 

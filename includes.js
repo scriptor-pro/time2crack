@@ -519,27 +519,40 @@
     `;
   }
 
+  const FOOTER_TEXTS = {
+    fr: { tagline: 'Calcul local &middot; Une seule vérification externe (HIBP k-anonymité) &middot; Open source', follow: 'Suivez-nous sur' },
+    en: { tagline: 'Local computation &middot; A single external check (HIBP k-anonymity) &middot; Open source', follow: 'Follow us on' },
+    es: { tagline: 'Cálculo local &middot; Una única verificación externa (HIBP k-anonimato) &middot; Código abierto', follow: 'Síguenos en' },
+    pt: { tagline: 'Cálculo local &middot; Uma única verificação externa (HIBP k-anonimato) &middot; Código aberto', follow: 'Siga-nos no' },
+    de: { tagline: 'Lokale Berechnung &middot; Eine einzige externe Prüfung (HIBP k-Anonymität) &middot; Open Source', follow: 'Folgen Sie uns auf' },
+    it: { tagline: 'Calcolo locale &middot; Un solo controllo esterno (HIBP k-anonimato) &middot; Open source', follow: 'Seguici su' },
+    tr: { tagline: 'Yerel hesaplama &middot; Tek bir harici kontrol (HIBP k-anonimlik) &middot; Açık kaynak', follow: 'Bizi takip edin:' },
+    pl: { tagline: 'Obliczenia lokalne &middot; Jedna zewnętrzna weryfikacja (HIBP k-anonimowość) &middot; Open source', follow: 'Obserwuj nas na' },
+    nl: { tagline: 'Lokale berekening &middot; Eén externe controle (HIBP k-anonimiteit) &middot; Open source', follow: 'Volg ons op' }
+  };
+
   function renderSharedFooter() {
     const footer = document.getElementById('site-footer');
     if (!footer) return;
-    const { assetPrefix } = getPageContext();
+    const { assetPrefix, lang } = getPageContext();
+    const ft = FOOTER_TEXTS[lang] || FOOTER_TEXTS.fr;
 
     footer.classList.add('site-footer');
     footer.innerHTML = `
       <p>
-        Calcul local &middot; Une seule vérification externe (HIBP k-anonymité) &middot; Open source
+        ${ft.tagline}
       </p>
 
       <div class="footer-social">
-        <a href="https://www.linkedin.com/in/baudouinvanhumbeeck/" title="LinkedIn" class="footer-social__link" aria-label="Suivez-nous sur LinkedIn">
+        <a href="https://www.linkedin.com/in/baudouinvanhumbeeck/" title="LinkedIn" class="footer-social__link" aria-label="${ft.follow} LinkedIn">
           <svg class="footer-social__icon" viewBox="0 0 24 24" role="img" aria-hidden="true">
             <path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
           </svg>
         </a>
-        <a href="https://bsky.app/profile/bvh.fyi" title="Bluesky" class="footer-social__link" aria-label="Suivez-nous sur Bluesky">
+        <a href="https://bsky.app/profile/bvh.fyi" title="Bluesky" class="footer-social__link" aria-label="${ft.follow} Bluesky">
           <img src="${assetPrefix}bluesky-line.svg" alt="Bluesky" class="footer-social__icon" role="img" aria-hidden="true">
         </a>
-        <a href="https://mastodon.social/@baudouinvh" title="Mastodon" class="footer-social__link" aria-label="Suivez-nous sur Mastodon">
+        <a href="https://mastodon.social/@baudouinvh" title="Mastodon" class="footer-social__link" aria-label="${ft.follow} Mastodon">
           <img src="${assetPrefix}mastodon-line.svg" alt="Mastodon" class="footer-social__icon" role="img" aria-hidden="true">
         </a>
       </div>

@@ -405,10 +405,8 @@
     if (!header) return;
 
     const ctx = getPageContext();
-    const { assetPrefix, pagePrefix, localized, isMethodDir, texts, lang } = ctx;
-    const logoMarkup = localized
-      ? `<img src="${assetPrefix}logo.png" alt="" class="site-logo__icon" aria-hidden="true">`
-      : '';
+    const { assetPrefix, pagePrefix, isMethodDir, texts, lang } = ctx;
+    const logoMarkup = `<img src="${assetPrefix}logo.png" alt="" class="site-logo__icon" aria-hidden="true">`;
 
     header.outerHTML = `
       <header class="site-header">

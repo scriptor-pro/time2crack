@@ -245,7 +245,9 @@
     const lang = LANGS.includes(segments[0]) ? segments[0] : ROOT_PAGE_LANG;
     const localized = LANGS.includes(segments[0]);
     const isMethodDir = localized ? segments[1] === 'methode' : segments[0] === 'methode';
-    const assetPrefix = segments.length > 1 ? '../'.repeat(segments.length - 1) : '';
+    // Directory depth: "/fr/" and "/fr/index.html" are both one level deep
+    const depth = pathname.endsWith('/') ? segments.length : Math.max(segments.length - 1, 0);
+    const assetPrefix = '../'.repeat(depth);
     const pagePrefix = isMethodDir ? '../' : '';
     const texts = HEADER_TEXTS[lang] || HEADER_TEXTS.fr;
     return { lang, localized, isMethodDir, assetPrefix, pagePrefix, texts };
@@ -681,6 +683,9 @@
     // Toggle menu ouverture/fermeture
     toggle.addEventListener('click', (e) => {
       e.preventDefault();
+      // app.min.js adds its own toggle on the homepages once the dictionary has loaded;
+      // both firing would open then immediately close the menu.
+      e.stopImmediatePropagation();
       const isOpen = toggle.getAttribute('aria-expanded') === 'true';
       toggle.setAttribute('aria-expanded', String(!isOpen));
       menu.toggleAttribute('hidden');

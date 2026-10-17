@@ -154,6 +154,23 @@ test('detectDate — pas de faux positif', () => {
   assert.equal(ctx2.dt, false);
 });
 
+test('detectDate — nom de mois inclus dans un mot : pas un mois', () => {
+  // « mar » dans Marie, « mai » dans maison, « set » dans sunset, « out » dans about…
+  for (const pw of ['maison', 'sunset', 'about', 'general', 'Margaux', 'mayday', 'Pierremai']) {
+    assert.equal(analyzePatterns(pw).dt, false, pw);
+  }
+  // L'année reste détectée, mais pas le mois
+  assert.equal(analyzePatterns('Marie1987').datePattern.format, 'YYYY');
+});
+
+test('detectDate — nom de mois isolé par des chiffres, symboles ou bords', () => {
+  const cases = { 'mai': 'MonthName', 'MAI2020': 'MonthNameYYYY', 'Paris14juillet': 'DDMonthName',
+    'juin-2015': 'MonthName', 'chat.mars.1990': 'MonthName', '2003avril': 'MonthNameYYYY' };
+  for (const [pw, format] of Object.entries(cases)) {
+    assert.equal(analyzePatterns(pw).datePattern?.format, format, pw);
+  }
+});
+
 // ── Task 2 : rankKeyboard ────────────────────────────────────────────────────
 
 test('rankKeyboard — qwerty retourne rang < 50 000', () => {

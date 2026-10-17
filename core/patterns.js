@@ -61,12 +61,14 @@ const MONTH_NAMES = [
   'oca','şub','nis','haz','tem','ağu','eyl','eki','kas','ara',
 ];
 
-// Regex pré-compilée (noms triés par longueur décroissante pour éviter les sous-matches)
+// Regex pré-compilée (noms triés par longueur décroissante pour éviter les sous-matches).
+// Le mois doit être isolé : pas de lettre juste avant ni juste après, sinon « mar » serait
+// trouvé dans « Marie », « mai » dans « maison », « set » dans « sunset ».
 const MONTH_NAMES_PATTERN = new RegExp(
-  '(' + MONTH_NAMES.slice().sort((a, b) => b.length - a.length).map(m =>
+  '(?<!\\p{L})(' + MONTH_NAMES.slice().sort((a, b) => b.length - a.length).map(m =>
     m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  ).join('|') + ')',
-  'i'
+  ).join('|') + ')(?!\\p{L})',
+  'iu'
 );
 
 /**

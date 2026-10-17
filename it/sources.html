@@ -34,16 +34,14 @@ Wheeler (2016) afferma che i metri a base di entropia (NIST, OWASP) sopravvaluta
 Time2Crack segue questo approccio: stima il costo dell'attacco più conosciuto, non entropia teorica.
         </div>
 <div class="reference">
-<span class="reference-authors">Pasquini, D., Continuo, A., Durmuth, M., &amp; Buscher, M.</span> (2021).
-          <span class="reference-title">Ridurre Bias nella modellazione della forza di password reale-World per modelli basati sull'albero.</span>
-          In <span class="reference-source">Atti del 30° Simposio di Sicurezza UTILIZZATA</span> (pp. 3007-3024).
-USE associazione nazionale.
-          <span class="reference-url"><a href="https://arxiv.org/pdf/2105.14170.pdf" target="_blank">https://arxiv.org/pdf/2105.14170.pdf</a></span>
+<span class="reference-authors">Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M.</span> (2021).
+          <span class="reference-title">Reducing Bias in Modeling Real-world Password Strength via Deep Learning and Dynamic Dictionaries.</span>
+          In <span class="reference-source">Proceedings of the 30th USENIX Security Symposium</span> (pp. 821–838).
+USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/sec21-pasquini.pdf" target="_blank" rel="noopener">https://www.usenix.org/system/files/sec21-pasquini.pdf</a></span>
 </div>
 <div class="methodology-note">
-<strong>Rilevanza:</strong> Analisi critica dei pregiudizi nei modelli di forza password.
-Time2Crack utilizza Rockyou2021 (32.6M password ponderate)
-per minimizzare questo pregiudizio.
+<strong>Rilevanza:</strong> Mostra che la configurazione degli attacchi a dizionario (lista di parole e regole) distorce fortemente le stime di robustezza, e propone attacchi adattivi che imitano gli attaccanti esperti. Giustifica la modellazione di un attaccante ben configurato anziché di un'unica lista di parole.
         </div>
 </div>
  Sezione 2: Valutazione metrica 
@@ -117,6 +115,72 @@ Time2Crack corregge questo con rockyou calibrazione empirica.
 <strong>Rilevanza:</strong> Documenta il modello di attacco toggle-case in hashcat: i file di regole <code>toggle[1–5].rule</code> elencano tutte le combinazioni di 1 a 5 inversioni di maiuscole/minuscole per posizione. Conferma che l'attaccante testa prima le inversioni a posizione singola (costo più basso), poi combinazioni più ampie — giustificando un modello di costo combinatorio C(n,k) per le varianti di capitalizzazione.
         </div>
 <div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Rule-based Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=rule_based_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=rule_based_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Rilevanza:</strong> Le regole sono un piccolo linguaggio che modifica un candidato alla volta: cambiare, rimuovere o aggiungere caratteri. Il modello ibrido di Time2Crack segue questa definizione: una parola del dizionario più una breve trasformazione.
+        </div>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Hybrid Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=hybrid_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=hybrid_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Rilevanza:</strong> Un attacco ibrido unisce una parola del dizionario a una maschera (modalità 6, 7 e 12), ad esempio un anno o alcune cifre. Il suo costo è il rango della parola moltiplicato per la dimensione della maschera: Time2Crack applica questo costo alle decorazioni più lunghe di 5 caratteri.
+        </div>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Combinator Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=combinator_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=combinator_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Rilevanza:</strong> Combina due dizionari: ogni parola di una lista viene aggiunta a ogni parola dell'altra. Le password formate da più parole rientrano in questo attacco, non nell'attacco ibrido.
+        </div>
+<div class="reference">
+<span class="reference-authors">Ur, B., Segreti, S. M., Bauer, L., Christin, N., Cranor, L. F., Komanduri, S., Kurilova, D., Mazurek, M. L., Melicher, W., &amp; Shay, R.</span> (2015).
+          <span class="reference-title">Measuring Real-World Accuracies and Biases in Modeling Password Guessability.</span>
+          In <span class="reference-source">Proceedings of the 24th USENIX Security Symposium</span>.
+          USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/ur" target="_blank" rel="noopener">https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/ur</a></span>
+</div>
+<div class="methodology-note">
+<strong>Rilevanza:</strong> Confronta gli strumenti automatici (modelli di Markov, PCFG, John the Ripper e Hashcat con regole di trasformazione) con professionisti del cracking. Negli attacchi a dizionario con regole ogni parola viene trasformata singolarmente; le configurazioni predefinite sottostimano la vulnerabilità reale.
+        </div>
+<div class="reference">
+<span class="reference-authors">Rao, A., Jha, B., &amp; Kini, G.</span> (2013).
+          <span class="reference-title">Effect of Grammar on Security of Long Passwords.</span>
+          In <span class="reference-source">Proceedings of the 3rd ACM Conference on Data and Application Security and Privacy (CODASPY '13)</span> (pp. 317–324).
+          ACM.
+          <span class="reference-url"><a href="https://doi.org/10.1145/2435349.2435395" target="_blank" rel="noopener">https://doi.org/10.1145/2435349.2435395</a></span>
+</div>
+<div class="methodology-note">
+<strong>Rilevanza:</strong> La struttura grammaticale riduce lo spazio di ricerca delle password lunghe composte da più parole (di oltre il 50% nel loro modello); un attacco basato sulla grammatica ha violato il 10% di un insieme di password lunghe che gli altri strumenti non trovavano. La sola lunghezza non garantisce la robustezza.
+        </div>
+<div class="reference">
+<span class="reference-authors">Bonneau, J., &amp; Shutova, E.</span> (2012).
+          <span class="reference-title">Linguistic Properties of Multi-word Passphrases.</span>
+          In <span class="reference-source">Financial Cryptography and Data Security — Workshop on Usable Security (USEC '12)</span>, LNCS 7398 (pp. 1–12).
+          Springer.
+          <span class="reference-url"><a href="https://www.cl.cam.ac.uk/~jcb82/doc/BS12-USEC-passphrase_linguistics.pdf" target="_blank" rel="noopener">https://www.cl.cam.ac.uk/~jcb82/doc/BS12-USEC-passphrase_linguistics.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Rilevanza:</strong> Studio del sistema di passphrase di Amazon: elenchi facilmente disponibili (titoli di film e libri…) sono efficaci per indovinare le frasi, e gli utenti preferiscono semplici coppie di sostantivi. Le password composte da più parole restano vulnerabili agli attacchi a dizionario.
+        </div>
+<div class="reference">
+<span class="reference-authors">Gommans, L.</span> (2018).
+          <span class="reference-title">Probabilistic Passphrase Cracking.</span>
+          Research project report, <span class="reference-source">System and Network Engineering (OS3), University of Amsterdam</span>.
+          <span class="reference-url"><a href="https://www.os3.nl/_media/2017-2018/courses/rp1/p86_report.pdf" target="_blank" rel="noopener">https://www.os3.nl/_media/2017-2018/courses/rp1/p86_report.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Rilevanza:</strong> Confronta catene di Markov, n-grammi e un attacco ibrido a dizionario sulle passphrase con hashcat; il dizionario di frasi con regole si è rivelato il più efficace. L'unità di base è una frase intera, non una singola parola.
+        </div>
+<div class="reference">
 <span class="reference-authors">Dürmuth, M., Brostoff, S., &amp; Oprea, A.</span> (2015).
           <span class="reference-title">Il successo delle applicazioni Web nonostante la difficoltà delle regole di creazione di password.</span>
           In <span class="reference-source">Atti del 22o Simposio NDSS</span>.
@@ -134,6 +198,16 @@ ACM.
  Sezione 4: Markov e PCFG 
 <div class="section-sources" id="section-markov-pcfg">
 <h2>Modelli Markov e PCFG</h2>
+<div class="reference">
+<span class="reference-authors">Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B.</span> (2009).
+          <span class="reference-title">Password Cracking Using Probabilistic Context-Free Grammars.</span>
+          In <span class="reference-source">Proceedings of the 30th IEEE Symposium on Security and Privacy</span> (pp. 391–405).
+          IEEE.
+          <span class="reference-url"><a href="https://doi.org/10.1109/SP.2009.8" target="_blank" rel="noopener">https://doi.org/10.1109/SP.2009.8</a></span>
+</div>
+<div class="methodology-note">
+<strong>Rilevanza:</strong> Articolo fondativo della PCFG: una password viene scomposta in strutture di base (ad es. S1L3D2) i cui segmenti vengono indovinati separatamente, in ordine di probabilità decrescente. Le password a più segmenti, come D1L4S1L3S1L3S1D1, rientrano in questo modello.
+        </div>
 <div class="reference">
 <span class="reference-authors">Weir, M., Aggarwal, S., Collins, M., &amp; Stern, H.</span> (2009).
           <span class="reference-title">Testing Metrics per le politiche di creazione di password attraverso l'assunzione di grandi set di password rivelate.</span>
@@ -295,7 +369,7 @@ ACL.
         </div>
 </div>
 <div class="back-to-top">
-<p><strong>Aggiornamento:</strong> 20 maggio 2026</p>
+<p><strong>Aggiornamento:</strong> 17 ottobre 2026</p>
 <p><a href="index.html">← Torna a strumento</a></p>
 </div>
 </div>

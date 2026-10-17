@@ -34,16 +34,14 @@ Wheeler (2016 r.) stwierdza, że liczniki oparte na entropii (NIST, OWASP) znacz
 Time2Crack postępuje zgodnie z tym podejściem: oszacować koszt najbardziej znanego ataku, a nie teoretycznej entropii.
         </div>
 <div class="reference">
-<span class="reference-authors">Pasquini, D., Continuously, A., Durmuth, M., &amp; Buscher, M.</span> (2021).
-          <span class="reference-title">Redukcja Bias w Modeling Real- World Hasło Siła dla modeli opartych na drzewach.</span>
-          W <span class="reference-source">Działalność 30. sympozjum bezpieczeństwa USENIX</span> (s. 3007- 3024).
-Stowarzyszenie USENIX.
-          <span class="reference-url"><a href="https://arxiv.org/pdf/2105.14170.pdf" target="_blank">https: / / arxiv.org / pdf / 2105.14170.pdf</a></span>
+<span class="reference-authors">Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M.</span> (2021).
+          <span class="reference-title">Reducing Bias in Modeling Real-world Password Strength via Deep Learning and Dynamic Dictionaries.</span>
+          In <span class="reference-source">Proceedings of the 30th USENIX Security Symposium</span> (pp. 821–838).
+USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/sec21-pasquini.pdf" target="_blank" rel="noopener">https://www.usenix.org/system/files/sec21-pasquini.pdf</a></span>
 </div>
 <div class="methodology-note">
-<strong>Znaczenie:</strong> Krytyczna analiza uprzedzeń w modelach siły hasła.
-Time2Crack używa rockyou2021 (32.6M ważonych haseł)
-aby zminimalizować tę stronniczość.
+<strong>Znaczenie:</strong> Pokazuje, że konfiguracja ataków słownikowych (lista słów i reguły) silnie zniekształca szacunki siły haseł, i proponuje ataki adaptacyjne naśladujące doświadczonych atakujących. Uzasadnia modelowanie dobrze skonfigurowanego atakującego zamiast jednej listy słów.
         </div>
 </div>
  Sekcja 2: Ocena metryczna 
@@ -117,6 +115,72 @@ Time2Crack koryguje to kalibracją empiryczną.
 <strong>Znaczenie:</strong> Dokumentuje model ataku toggle-case w hashcat: pliki reguł <code>toggle[1–5].rule</code> wyliczają wszystkie kombinacje od 1 do 5 odwróceń wielkości liter na pozycję. Potwierdza, że atakujący najpierw testuje odwrócenia na jednej pozycji (najniższy koszt), a następnie szersze kombinacje — co uzasadnia kombinatoryczny model kosztów C(n,k) dla wariantów wielkości liter.
         </div>
 <div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Rule-based Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=rule_based_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=rule_based_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Reguły to mały język, który modyfikuje jednego kandydata naraz: zmienia, usuwa lub dodaje znaki. Model hybrydowy Time2Crack stosuje tę definicję: jedno słowo ze słownika plus krótka transformacja.
+        </div>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Hybrid Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=hybrid_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=hybrid_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Atak hybrydowy łączy słowo ze słownika z maską (tryby 6, 7 i 12), np. rokiem lub kilkoma cyframi. Jego koszt to pozycja słowa pomnożona przez rozmiar maski: Time2Crack stosuje ten koszt do dodatków dłuższych niż 5 znaków.
+        </div>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Combinator Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=combinator_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=combinator_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Łączy dwa słowniki: każde słowo z jednej listy jest doklejane do każdego słowa z drugiej. Hasła złożone z kilku słów należą do tego ataku, a nie do ataku hybrydowego.
+        </div>
+<div class="reference">
+<span class="reference-authors">Ur, B., Segreti, S. M., Bauer, L., Christin, N., Cranor, L. F., Komanduri, S., Kurilova, D., Mazurek, M. L., Melicher, W., &amp; Shay, R.</span> (2015).
+          <span class="reference-title">Measuring Real-World Accuracies and Biases in Modeling Password Guessability.</span>
+          In <span class="reference-source">Proceedings of the 24th USENIX Security Symposium</span>.
+          USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/ur" target="_blank" rel="noopener">https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/ur</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Porównuje narzędzia automatyczne (modele Markowa, PCFG, John the Ripper i Hashcat z regułami przekształceń) z profesjonalistami łamiącymi hasła. W atakach słownikowych z regułami każde słowo jest przekształcane osobno; domyślne konfiguracje zaniżają rzeczywistą podatność haseł.
+        </div>
+<div class="reference">
+<span class="reference-authors">Rao, A., Jha, B., &amp; Kini, G.</span> (2013).
+          <span class="reference-title">Effect of Grammar on Security of Long Passwords.</span>
+          In <span class="reference-source">Proceedings of the 3rd ACM Conference on Data and Application Security and Privacy (CODASPY '13)</span> (pp. 317–324).
+          ACM.
+          <span class="reference-url"><a href="https://doi.org/10.1145/2435349.2435395" target="_blank" rel="noopener">https://doi.org/10.1145/2435349.2435395</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Struktura gramatyczna zmniejsza przestrzeń przeszukiwania długich haseł złożonych z kilku słów (w ich modelu o ponad 50%); atak wykorzystujący gramatykę złamał 10% zbioru długich haseł, których nie znalazły inne narzędzia. Sama długość nie gwarantuje siły hasła.
+        </div>
+<div class="reference">
+<span class="reference-authors">Bonneau, J., &amp; Shutova, E.</span> (2012).
+          <span class="reference-title">Linguistic Properties of Multi-word Passphrases.</span>
+          In <span class="reference-source">Financial Cryptography and Data Security — Workshop on Usable Security (USEC '12)</span>, LNCS 7398 (pp. 1–12).
+          Springer.
+          <span class="reference-url"><a href="https://www.cl.cam.ac.uk/~jcb82/doc/BS12-USEC-passphrase_linguistics.pdf" target="_blank" rel="noopener">https://www.cl.cam.ac.uk/~jcb82/doc/BS12-USEC-passphrase_linguistics.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Badanie systemu fraz hasłowych Amazona: łatwo dostępne listy (tytuły filmów i książek…) skutecznie pozwalają odgadywać frazy, a użytkownicy wybierają proste pary rzeczowników. Hasła złożone z kilku słów pozostają podatne na ataki słownikowe.
+        </div>
+<div class="reference">
+<span class="reference-authors">Gommans, L.</span> (2018).
+          <span class="reference-title">Probabilistic Passphrase Cracking.</span>
+          Research project report, <span class="reference-source">System and Network Engineering (OS3), University of Amsterdam</span>.
+          <span class="reference-url"><a href="https://www.os3.nl/_media/2017-2018/courses/rp1/p86_report.pdf" target="_blank" rel="noopener">https://www.os3.nl/_media/2017-2018/courses/rp1/p86_report.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Porównuje łańcuchy Markowa, n-gramy i hybrydowy atak słownikowy na frazy hasłowe z użyciem hashcata; najskuteczniejszy okazał się słownik fraz z regułami. Jednostką bazową jest cała fraza, a nie pojedyncze słowo.
+        </div>
+<div class="reference">
 <span class="reference-authors">Dürmuth, M., Brostoff, S., &amp; Oprea, A.</span> (2015).
           <span class="reference-title">Sukces aplikacji internetowych pomimo trudności zasad tworzenia haseł.</span>
           W <span class="reference-source">Działalność 22. Sympozjum NDSS</span>.
@@ -134,6 +198,16 @@ ACM.
  Sekcja 4: Markov i PCFG 
 <div class="section-sources" id="section-markov-pcfg">
 <h2>Modele Markov i PCFG</h2>
+<div class="reference">
+<span class="reference-authors">Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B.</span> (2009).
+          <span class="reference-title">Password Cracking Using Probabilistic Context-Free Grammars.</span>
+          In <span class="reference-source">Proceedings of the 30th IEEE Symposium on Security and Privacy</span> (pp. 391–405).
+          IEEE.
+          <span class="reference-url"><a href="https://doi.org/10.1109/SP.2009.8" target="_blank" rel="noopener">https://doi.org/10.1109/SP.2009.8</a></span>
+</div>
+<div class="methodology-note">
+<strong>Znaczenie:</strong> Przełomowa praca o PCFG: hasło jest rozkładane na struktury bazowe (np. S1L3D2), których segmenty odgaduje się osobno, w kolejności malejącego prawdopodobieństwa. Hasła wielosegmentowe, takie jak D1L4S1L3S1L3S1D1, podlegają temu modelowi.
+        </div>
 <div class="reference">
 <span class="reference-authors">Weir, M., Aggarwal, S., Collins, M., &amp; Stern, H.</span> (2009).
           <span class="reference-title">Testing Metrics for Password Creation Policies by attaking large sets of Revealed Passwords.</span>
@@ -295,7 +369,7 @@ ACL.
         </div>
 </div>
 <div class="back-to-top">
-<p><strong>Aktualizacja:</strong> 20 maja 2026</p>
+<p><strong>Aktualizacja:</strong> 17 października 2026</p>
 <p><a href="index.html">← Powrót do narzędzia</a></p>
 </div>
 </div>

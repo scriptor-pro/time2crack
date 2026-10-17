@@ -34,16 +34,14 @@ Wheeler (2016) stelt dat entropie-gebaseerde meters (NIST, OWASP) de veiligheid 
 Time2Crack volgt deze aanpak: schat de kosten van de bekendste aanval, niet theoretische entropie.
         </div>
 <div class="reference">
-<span class="reference-authors">Pasquini, D., Continuously, A., Durmuth, M., &amp; Buscher, M.</span> (2021).
-          <span class="reference-title">Het verminderen van Bias in het modelleren van Real-World Password Strength voor boom-gebaseerde modellen.</span>
-          In <span class="reference-source">Werkzaamheden van het 30e USENIX Security Symposium</span> 3007
+<span class="reference-authors">Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M.</span> (2021).
+          <span class="reference-title">Reducing Bias in Modeling Real-world Password Strength via Deep Learning and Dynamic Dictionaries.</span>
+          In <span class="reference-source">Proceedings of the 30th USENIX Security Symposium</span> (pp. 821–838).
 USENIX Association.
-          <span class="reference-url"><a href="https://arxiv.org/pdf/2105.14170.pdf" target="_blank">https://arxiv.org/pdf/2105.14170.pdf</a></span>
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/sec21-pasquini.pdf" target="_blank" rel="noopener">https://www.usenix.org/system/files/sec21-pasquini.pdf</a></span>
 </div>
 <div class="methodology-note">
-<strong>Relevantie:</strong> Kritische analyse van vooroordelen in password force modellen.
-Time2Crack gebruikt rockyou2021 (32,6M gewogen wachtwoorden)
-om deze vooroordelen te minimaliseren.
+<strong>Relevantie:</strong> Toont aan dat de configuratie van woordenboekaanvallen (woordenlijst en regels) sterkte-inschattingen sterk vertekent, en stelt adaptieve aanvallen voor die ervaren aanvallers nabootsen. Onderbouwt het modelleren van een goed geconfigureerde aanvaller in plaats van één woordenlijst.
         </div>
 </div>
  Deel 2: Metricsevaluatie 
@@ -117,6 +115,72 @@ Time2Crack corrigeert dit met rock you empirische kalibratie.
 <strong>Relevantie:</strong> Documenteert het toggle-case aanvalsmodel in hashcat: de regelbestanden <code>toggle[1–5].rule</code> sommen alle combinaties op van 1 tot 5 hoofdletter/kleine-letter-omkeringen per positie. Bevestigt dat de aanvaller eerst omkeringen op één positie test (laagste kosten), daarna bredere combinaties — wat een combinatorisch kostenmodel C(n,k) voor hoofdlettervarianten rechtvaardigt.
         </div>
 <div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Rule-based Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=rule_based_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=rule_based_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Regels zijn een kleine taal die telkens één kandidaat aanpast: tekens wijzigen, verwijderen of toevoegen. Het hybride model van Time2Crack volgt deze definitie: één woordenboekwoord plus een korte transformatie.
+        </div>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Hybrid Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=hybrid_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=hybrid_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Een hybride aanval plakt een woordenboekwoord aan een masker (modi 6, 7 en 12), bijvoorbeeld een jaartal of een paar cijfers. De kosten zijn de rang van het woord maal de grootte van het masker: Time2Crack past deze kosten toe op toevoegingen van meer dan 5 tekens.
+        </div>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Combinator Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=combinator_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=combinator_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Combineert twee woordenboeken: elk woord uit de ene lijst wordt achter elk woord uit de andere geplakt. Wachtwoorden uit meerdere woorden horen bij deze aanval, niet bij de hybride aanval.
+        </div>
+<div class="reference">
+<span class="reference-authors">Ur, B., Segreti, S. M., Bauer, L., Christin, N., Cranor, L. F., Komanduri, S., Kurilova, D., Mazurek, M. L., Melicher, W., &amp; Shay, R.</span> (2015).
+          <span class="reference-title">Measuring Real-World Accuracies and Biases in Modeling Password Guessability.</span>
+          In <span class="reference-source">Proceedings of the 24th USENIX Security Symposium</span>.
+          USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/ur" target="_blank" rel="noopener">https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/ur</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Vergelijkt automatische tools (Markov-modellen, PCFG, John the Ripper en Hashcat met transformatieregels) met professionele kraakexperts. Bij woordenboekaanvallen met regels wordt elk woord afzonderlijk getransformeerd; standaardconfiguraties onderschatten de werkelijke raadbaarheid.
+        </div>
+<div class="reference">
+<span class="reference-authors">Rao, A., Jha, B., &amp; Kini, G.</span> (2013).
+          <span class="reference-title">Effect of Grammar on Security of Long Passwords.</span>
+          In <span class="reference-source">Proceedings of the 3rd ACM Conference on Data and Application Security and Privacy (CODASPY '13)</span> (pp. 317–324).
+          ACM.
+          <span class="reference-url"><a href="https://doi.org/10.1145/2435349.2435395" target="_blank" rel="noopener">https://doi.org/10.1145/2435349.2435395</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Grammaticale structuur verkleint de zoekruimte van lange wachtwoorden uit meerdere woorden (met meer dan 50% in hun model); een aanval die grammatica benut, kraakte 10% van een verzameling lange wachtwoorden die andere tools misten. Lengte alleen garandeert geen sterkte.
+        </div>
+<div class="reference">
+<span class="reference-authors">Bonneau, J., &amp; Shutova, E.</span> (2012).
+          <span class="reference-title">Linguistic Properties of Multi-word Passphrases.</span>
+          In <span class="reference-source">Financial Cryptography and Data Security — Workshop on Usable Security (USEC '12)</span>, LNCS 7398 (pp. 1–12).
+          Springer.
+          <span class="reference-url"><a href="https://www.cl.cam.ac.uk/~jcb82/doc/BS12-USEC-passphrase_linguistics.pdf" target="_blank" rel="noopener">https://www.cl.cam.ac.uk/~jcb82/doc/BS12-USEC-passphrase_linguistics.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Onderzoek naar het wachtzinsysteem van Amazon: vrij beschikbare lijsten (film- en boektitels…) zijn effectief om zinnen te raden, en gebruikers kiezen bij voorkeur eenvoudige paren zelfstandige naamwoorden. Wachtwoorden uit meerdere woorden blijven kwetsbaar voor woordenboekaanvallen.
+        </div>
+<div class="reference">
+<span class="reference-authors">Gommans, L.</span> (2018).
+          <span class="reference-title">Probabilistic Passphrase Cracking.</span>
+          Research project report, <span class="reference-source">System and Network Engineering (OS3), University of Amsterdam</span>.
+          <span class="reference-url"><a href="https://www.os3.nl/_media/2017-2018/courses/rp1/p86_report.pdf" target="_blank" rel="noopener">https://www.os3.nl/_media/2017-2018/courses/rp1/p86_report.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Vergelijkt Markov-ketens, n-grammen en een hybride woordenboekaanval op wachtzinnen met hashcat; het woordenboek van zinnen met regels bleek het effectiefst. De basiseenheid is daar een hele zin, geen los woord.
+        </div>
+<div class="reference">
 <span class="reference-authors">Dürmuth, M., Brostoff, S., &amp; Oprea, A.</span> (2015).
           <span class="reference-title">Het succes van webapplicaties ondanks de moeilijkheid van wachtwoordcreatie regels.</span>
           In <span class="reference-source">Werkzaamheden van het 22e NDSS-symposium</span>.
@@ -134,6 +198,16 @@ ACM.
  Afdeling 4: Markov en PCFG 
 <div class="section-sources" id="section-markov-pcfg">
 <h2>Modellen Markov en PCFG</h2>
+<div class="reference">
+<span class="reference-authors">Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B.</span> (2009).
+          <span class="reference-title">Password Cracking Using Probabilistic Context-Free Grammars.</span>
+          In <span class="reference-source">Proceedings of the 30th IEEE Symposium on Security and Privacy</span> (pp. 391–405).
+          IEEE.
+          <span class="reference-url"><a href="https://doi.org/10.1109/SP.2009.8" target="_blank" rel="noopener">https://doi.org/10.1109/SP.2009.8</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevantie:</strong> Baanbrekend PCFG-artikel: een wachtwoord wordt opgesplitst in basisstructuren (bijv. S1L3D2) waarvan de segmenten afzonderlijk worden geraden, in afnemende volgorde van waarschijnlijkheid. Wachtwoorden met meerdere segmenten, zoals D1L4S1L3S1L3S1D1, vallen onder dit model.
+        </div>
 <div class="reference">
 <span class="reference-authors">Weir, M., Aggarwal, S., Collins, M., &amp; Stern, H.</span> (2009).
           <span class="reference-title">Testen Metrics voor Wachtwoord Creatie Beleid door het nemen van grote verzamelingen van onthulde wachtwoorden.</span>
@@ -295,7 +369,7 @@ ACL.
         </div>
 </div>
 <div class="back-to-top">
-<p><strong>Update:</strong> 20 mei 2026</p>
+<p><strong>Update:</strong> 17 oktober 2026</p>
 <p><a href="index.html">← Terug naar gereedschap</a></p>
 </div>
 </div>

@@ -34,16 +34,14 @@ Wheeler (2016) states that entropy-based meters (NIST, OWASP) significantly over
 Time2Crack follows this approach: estimate the cost of the best known attack, not theoretical entropy.
         </div>
 <div class="reference">
-<span class="reference-authors">Pasquini, D., Continuously, A., Durmuth, M., &amp; Buscher, M.</span> (2021).
-          <span class="reference-title">Reducing Bias in Modeling Real-World Password Strength for Tree-based Models.</span>
-          In <span class="reference-source">Proceedings of the 30th USENIX Security Symposium</span> (pp. 3007–3024).
+<span class="reference-authors">Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M.</span> (2021).
+          <span class="reference-title">Reducing Bias in Modeling Real-world Password Strength via Deep Learning and Dynamic Dictionaries.</span>
+          In <span class="reference-source">Proceedings of the 30th USENIX Security Symposium</span> (pp. 821–838).
 USENIX Association.
-          <span class="reference-url"><a href="https://arxiv.org/pdf/2105.14170.pdf" target="_blank">https://arxiv.org/pdf/2105.14170.pdf</a></span>
+          <span class="reference-url"><a href="https://www.usenix.org/system/files/sec21-pasquini.pdf" target="_blank" rel="noopener">https://www.usenix.org/system/files/sec21-pasquini.pdf</a></span>
 </div>
 <div class="methodology-note">
-<strong>Relevance:</strong> Critical analysis of biases in password force models.
-Shows that dataset bias results. Time2Crack uses rockyou2021 (32.6M weighted passwords)
-to minimize this bias.
+<strong>Relevance:</strong> Shows that the configuration of dictionary attacks (wordlist and rules) strongly biases strength estimates, and proposes adaptive attacks that mimic expert attackers. Supports modelling a well-configured attacker rather than a single wordlist.
         </div>
 </div>
  Section 2: Metrics Evaluation 
@@ -117,6 +115,72 @@ Time2Crack corrects this with rockyou empirical calibration.
 <strong>Relevance:</strong> Documents the toggle-case attack model in hashcat: rules files <code>toggle[1–5].rule</code> enumerate all combinations of 1 to 5 character-position case flips. Confirms that the attacker tests single-position toggles first (lowest cost), then progressively wider combinations — justifying a combinatorial C(n,k) cost model for uppercase variants.
         </div>
 <div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Rule-based Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=rule_based_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=rule_based_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Rules are a small language that modifies one candidate at a time: changing, removing or adding characters. Time2Crack's hybrid model follows this definition: one dictionary word plus a short transformation.
+        </div>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Hybrid Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=hybrid_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=hybrid_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> A hybrid attack glues one dictionary word to a mask (modes 6, 7 and 12), such as a year or a few digits. Its cost is the word's rank multiplied by the mask size: Time2Crack applies this cost to decorations longer than 5 characters.
+        </div>
+<div class="reference">
+<span class="reference-authors">Hashcat Project</span> (2026).
+          <span class="reference-title">Combinator Attack.</span>
+          Hashcat Wiki.
+          <span class="reference-url"><a href="https://hashcat.net/wiki/doku.php?id=combinator_attack" target="_blank" rel="noopener">https://hashcat.net/wiki/doku.php?id=combinator_attack</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Combines two dictionaries: each word of one list is appended to each word of the other. Passwords made of several words belong to this attack, not to the hybrid attack.
+        </div>
+<div class="reference">
+<span class="reference-authors">Ur, B., Segreti, S. M., Bauer, L., Christin, N., Cranor, L. F., Komanduri, S., Kurilova, D., Mazurek, M. L., Melicher, W., &amp; Shay, R.</span> (2015).
+          <span class="reference-title">Measuring Real-World Accuracies and Biases in Modeling Password Guessability.</span>
+          In <span class="reference-source">Proceedings of the 24th USENIX Security Symposium</span>.
+          USENIX Association.
+          <span class="reference-url"><a href="https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/ur" target="_blank" rel="noopener">https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/ur</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Compares automated tools (Markov models, PCFG, John the Ripper and Hashcat with mangling rules) with professional crackers. In dictionary-and-rules attacks each word is transformed on its own; default configurations underestimate real-world guessability.
+        </div>
+<div class="reference">
+<span class="reference-authors">Rao, A., Jha, B., &amp; Kini, G.</span> (2013).
+          <span class="reference-title">Effect of Grammar on Security of Long Passwords.</span>
+          In <span class="reference-source">Proceedings of the 3rd ACM Conference on Data and Application Security and Privacy (CODASPY '13)</span> (pp. 317–324).
+          ACM.
+          <span class="reference-url"><a href="https://doi.org/10.1145/2435349.2435395" target="_blank" rel="noopener">https://doi.org/10.1145/2435349.2435395</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Grammatical structure shrinks the search space of long multi-word passwords (by more than 50% in their model); a grammar-aware attack cracked 10% of a long-password dataset that other tools missed. Length alone does not guarantee strength.
+        </div>
+<div class="reference">
+<span class="reference-authors">Bonneau, J., &amp; Shutova, E.</span> (2012).
+          <span class="reference-title">Linguistic Properties of Multi-word Passphrases.</span>
+          In <span class="reference-source">Financial Cryptography and Data Security — Workshop on Usable Security (USEC '12)</span>, LNCS 7398 (pp. 1–12).
+          Springer.
+          <span class="reference-url"><a href="https://www.cl.cam.ac.uk/~jcb82/doc/BS12-USEC-passphrase_linguistics.pdf" target="_blank" rel="noopener">https://www.cl.cam.ac.uk/~jcb82/doc/BS12-USEC-passphrase_linguistics.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Study of Amazon's passphrase system: readily available lists (movie and book titles…) are effective at guessing phrases, and users favour simple noun pairs. Multi-word passwords remain vulnerable to dictionary attacks.
+        </div>
+<div class="reference">
+<span class="reference-authors">Gommans, L.</span> (2018).
+          <span class="reference-title">Probabilistic Passphrase Cracking.</span>
+          Research project report, <span class="reference-source">System and Network Engineering (OS3), University of Amsterdam</span>.
+          <span class="reference-url"><a href="https://www.os3.nl/_media/2017-2018/courses/rp1/p86_report.pdf" target="_blank" rel="noopener">https://www.os3.nl/_media/2017-2018/courses/rp1/p86_report.pdf</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Compares Markov chains, n-grams and a hybrid dictionary attack on passphrases with hashcat; the phrase dictionary with rules was the most effective. Its base unit is a whole phrase, not a single word.
+        </div>
+<div class="reference">
 <span class="reference-authors">Dürmuth, M., Brostoff, S., &amp; Oprea, A.</span> (2015).
           <span class="reference-title">The Success of Web Applications despite the Difficulty of Password Creation Rules.</span>
           In <span class="reference-source">Proceedings of the 22nd NDSS Symposium</span>.
@@ -134,6 +198,16 @@ ACM.
  Section 4: Markov and PCFG 
 <div class="section-sources" id="section-markov-pcfg">
 <h2>Markov and PCFG models</h2>
+<div class="reference">
+<span class="reference-authors">Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B.</span> (2009).
+          <span class="reference-title">Password Cracking Using Probabilistic Context-Free Grammars.</span>
+          In <span class="reference-source">Proceedings of the 30th IEEE Symposium on Security and Privacy</span> (pp. 391–405).
+          IEEE.
+          <span class="reference-url"><a href="https://doi.org/10.1109/SP.2009.8" target="_blank" rel="noopener">https://doi.org/10.1109/SP.2009.8</a></span>
+</div>
+<div class="methodology-note">
+<strong>Relevance:</strong> Founding PCFG paper: a password is broken down into base structures (e.g. S1L3D2) whose segments are guessed separately, in decreasing order of probability. Multi-segment passwords such as D1L4S1L3S1L3S1D1 fall under this model.
+        </div>
 <div class="reference">
 <span class="reference-authors">Weir, M., Aggarwal, S., Collins, M., &amp; Stern, H.</span> (2009).
           <span class="reference-title">Testing Metrics for Password Creation Policies by Attaking Large Sets of Revealed Passwords.</span>
@@ -295,7 +369,7 @@ ACL.
         </div>
 </div>
 <div class="back-to-top">
-<p><strong>Update:</strong> 20 May 2026</p>
+<p><strong>Update:</strong> 17 October 2026</p>
 <p><a href="index.html">← Back to tool</a></p>
 </div>
 </div>

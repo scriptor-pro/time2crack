@@ -96,8 +96,8 @@ test('global score is never below the winning attack rank', () => {
   assert.equal(hyphen.best_attack, 'combinator');
   assert.equal(underscore.best_attack, 'combinator');
   assert.ok(hyphen.attack_rank < underscore.attack_rank);
-  assert.ok(hyphen.standard >= hyphen.attack_rank);
-  assert.ok(underscore.standard >= underscore.attack_rank);
+  assert.ok(hyphen.standard >= hyphen.attack_rank * (1 - 1e-9)); // 10^log10(x) ≈ x
+  assert.ok(underscore.standard >= underscore.attack_rank * (1 - 1e-9));
 
   // Plusieurs modèles applicables (hybride + masque) : le score global est lissé au-dessus.
   const decorated = estimate('pizza12', dictWords);

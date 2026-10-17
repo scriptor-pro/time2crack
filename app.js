@@ -40,8 +40,10 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `oui (${e})`,
       overUniverse: "> univers",
       underMs: "< 1 ms",
-      day: "j",
-      month: "mois",
+      bcryptCost: "coût",
+      dateTokens: { D: "J", M: "M", Y: "A", month: "mois" },
+      day: ["jour", "jours"],
+      month: ["mois", "mois"],
       year: ["an", "ans"],
       century: ["siècle", "siècles"],
       millennium: ["millénaire", "millénaires"],
@@ -93,8 +95,10 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `yes (${e})`,
       overUniverse: "> universe",
       underMs: "< 1 ms",
-      day: "d",
-      month: "mo",
+      bcryptCost: "cost",
+      dateTokens: { D: "D", M: "M", Y: "Y", month: "month" },
+      day: ["day", "days"],
+      month: ["month", "months"],
       year: ["year", "years"],
       century: ["century", "centuries"],
       millennium: ["millennium", "millennia"],
@@ -146,8 +150,10 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `ja (${e})`,
       overUniverse: "> universum",
       underMs: "< 1 ms",
-      day: "d",
-      month: "mnd",
+      bcryptCost: "kosten",
+      dateTokens: { D: "D", M: "M", Y: "J", month: "maand" },
+      day: ["dag", "dagen"],
+      month: ["maand", "maanden"],
       year: ["jaar", "jaren"],
       century: ["eeuw", "eeuwen"],
       millennium: ["millennium", "millennia"],
@@ -199,11 +205,13 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `tak (${e})`,
       overUniverse: "> wszechświat",
       underMs: "< 1 ms",
-      day: "d",
-      month: "mies.",
-      year: ["rok", "lata"],
-      century: ["wiek", "wieki"],
-      millennium: ["milenium", "milenium"],
+      bcryptCost: "koszt",
+      dateTokens: { D: "D", M: "M", Y: "R", month: "miesiąc" },
+      day: { one: "dzień", few: "dni", many: "dni", other: "dnia" },
+      month: { one: "miesiąc", few: "miesiące", many: "miesięcy", other: "miesiąca" },
+      year: { one: "rok", few: "lata", many: "lat", other: "roku" },
+      century: { one: "wiek", few: "wieki", many: "wieków", other: "wieku" },
+      millennium: { one: "tysiąclecie", few: "tysiąclecia", many: "tysiącleci", other: "tysiąclecia" },
       profiles: {
         amateur: { name: "Amateur", desc: "Haker hobbystyczny, 1 GPU" },
         experienced: { name: "Standard", desc: "Doświadczony atakujący, 12 GPUs (przemysł)" },
@@ -252,6 +260,8 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `evet (${e})`,
       overUniverse: "> evren",
       underMs: "< 1 ms",
+      bcryptCost: "maliyet",
+      dateTokens: { D: "G", M: "A", Y: "Y", month: "ay" },
       day: "gün",
       month: "ay",
       year: ["yıl", "yıl"],
@@ -305,8 +315,10 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `sí (${e})`,
       overUniverse: "> universo",
       underMs: "< 1 ms",
-      day: "d",
-      month: "mes",
+      bcryptCost: "coste",
+      dateTokens: { D: "D", M: "M", Y: "A", month: "mes" },
+      day: ["día", "días"],
+      month: ["mes", "meses"],
       year: ["año", "años"],
       century: ["siglo", "siglos"],
       millennium: ["milenio", "milenios"],
@@ -358,8 +370,10 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `sim (${e})`,
       overUniverse: "> universo",
       underMs: "< 1 ms",
-      day: "d",
-      month: "mês",
+      bcryptCost: "custo",
+      dateTokens: { D: "D", M: "M", Y: "A", month: "mês" },
+      day: ["dia", "dias"],
+      month: ["mês", "meses"],
       year: ["ano", "anos"],
       century: ["século", "séculos"],
       millennium: ["milênio", "milênios"],
@@ -411,8 +425,10 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `ja (${e})`,
       overUniverse: "> Universum",
       underMs: "< 1 ms",
-      day: "T",
-      month: "Mo",
+      bcryptCost: "Kosten",
+      dateTokens: { D: "T", M: "M", Y: "J", month: "Monat" },
+      day: ["Tag", "Tage"],
+      month: ["Monat", "Monate"],
       year: ["Jahr", "Jahre"],
       century: ["Jahrhundert", "Jahrhunderte"],
       millennium: ["Jahrtausend", "Jahrtausende"],
@@ -464,8 +480,10 @@ const isLangPage = /\/(fr|en|es|pt|de|it|tr|pl|nl)\//.test(window.location.pathn
       yesDate: (e) => `sì (${e})`,
       overUniverse: "> universo",
       underMs: "< 1 ms",
-      day: "g",
-      month: "mese",
+      bcryptCost: "costo",
+      dateTokens: { D: "G", M: "M", Y: "A", month: "mese" },
+      day: ["giorno", "giorni"],
+      month: ["mese", "mesi"],
       year: ["anno", "anni"],
       century: ["secolo", "secoli"],
       millennium: ["millennio", "millenni"],
@@ -653,30 +671,49 @@ const SECOND = 1,
   YEAR = 31536e3,
   CENTURY = 100 * YEAR,
   MILLENIUM = 1e3 * YEAR;
+// Forme du mot selon la langue : chaîne invariable, [singulier, pluriel] ou formes Intl.PluralRules
 function plural(e, t2) {
-  const o = parseFloat(e);
-  return "string" == typeof t2 ? t2 : o <= 1 ? t2[0] : t2[1];
+  if ("string" == typeof t2) return t2;
+  const o = new Intl.PluralRules(t().locale).select(e);
+  return Array.isArray(t2) ? ("one" === o ? t2[0] : t2[1]) : (t2[o] ?? t2.other);
+}
+// Nombre au format de la langue ; au-delà d'un million : notation scientifique (2,3 × 10⁶)
+const SUPERSCRIPT = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+function formatNumber(e, digits = 1) {
+  const o = t().locale;
+  if (e < 1e6) return e.toLocaleString(o, { maximumFractionDigits: digits });
+  const a = Math.floor(Math.log10(e)),
+    n = (e / 10 ** a).toLocaleString(o, { maximumFractionDigits: 1 });
+  return `${n} × 10${[...String(a)].map((e2) => SUPERSCRIPT[e2]).join("")}`;
 }
 function formatSeconds(e) {
   const o = t();
   if (!isFinite(e) || e > 1e30) return o.overUniverse;
   if (e < 1e-3) return o.underMs;
-  if (e < 1) return `${(1e3 * e).toFixed(0)} ms`;
-  if (e < 60) return `${e.toFixed(1)} s`;
-  if (e < 3600) return `${(e / 60).toFixed(1)} min`;
-  if (e < DAY) return `${(e / 3600).toFixed(1)} h`;
-  if (e < MONTH) return `${(e / DAY).toFixed(0)}${o.day}`;
-  if (e < YEAR) return `${(e / MONTH).toFixed(0)}${o.month}`;
-  if (e < CENTURY) {
-    const t2 = Math.round(e / YEAR);
-    return `${t2} ${plural(t2, o.year)}`;
-  }
-  if (e < MILLENIUM) {
-    const t2 = Math.round(e / CENTURY);
-    return `${t2} ${plural(t2, o.century)}`;
-  }
-  const a = Math.round(e / MILLENIUM);
-  return `${a} ${plural(a, o.millennium)}`;
+  if (e < 1) return `${formatNumber(1e3 * e, 0)} ms`;
+  if (e < 60) return `${formatNumber(e)} s`;
+  if (e < 3600) return `${formatNumber(e / 60)} min`;
+  if (e < DAY) return `${formatNumber(e / 3600)} h`;
+  // Jours et au-delà : nombre entier + unité accordée (« 8 jours », « 2 mois »)
+  const unit = (e2, t2) => {
+    const a = Math.round(e2);
+    return `${formatNumber(a, 0)} ${plural(a, t2)}`;
+  };
+  if (e < MONTH) return unit(e / DAY, o.day);
+  if (e < YEAR) return unit(e / MONTH, o.month);
+  if (e < CENTURY) return unit(e / YEAR, o.year);
+  if (e < MILLENIUM) return unit(e / CENTURY, o.century);
+  const a = e / MILLENIUM;
+  return a < 1e6 ? unit(a, o.millennium) : `${formatNumber(a)} ${plural(5, o.millennium)}`;
+}
+// Format de date détecté, dans les lettres de la langue (« DDMonthNameYYYY » → « JJ mois AAAA »)
+function formatDatePattern(e) {
+  const o = t().dateTokens;
+  return e
+    .split(/(MonthName)/)
+    .filter(Boolean)
+    .map((e2) => ("MonthName" === e2 ? o.month : e2.replace(/[DMY]/g, (e3) => o[e3])))
+    .join(" ");
 }
 function getAttackLabel(e) {
   return t().attacks[e] ?? e;
@@ -686,7 +723,7 @@ const ALGO_LABELS = {
     sha1: "SHA-1",
     sha256: "SHA-256",
     ntlm: "NTLM",
-    bcrypt: "bcrypt (coût 5)",
+    bcrypt: "bcrypt",
     argon2: "Argon2id",
   },
   ATTACK_ORDER = ["brute", "dictionary", "hybrid", "combinator", "pcfg", "markov", "mask"];
@@ -700,7 +737,7 @@ function renderContext(e) {
   }
   (a("ctx-len", String(e.len), "num"),
     a("ctx-cs", String(e.cs), "num"),
-    a("ctx-dt", e.dt ? o.yesDate(e.datePattern) : o.no, e.dt ? "warn" : "ok"),
+    a("ctx-dt", e.dt ? o.yesDate(formatDatePattern(e.datePattern?.format ?? e.datePattern)) : o.no, e.dt ? "warn" : "ok"),
     a("ctx-kb", e.kbPat ? o.yes : o.no, e.kbPat ? "warn" : "ok"),
     a("ctx-seq", e.seq ? o.yes : o.no, e.seq ? "warn" : "ok"),
     a("ctx-rep", e.rep ? o.yes : o.no, e.rep ? "warn" : "ok"),
@@ -748,7 +785,7 @@ function renderTable(e) {
         t4 > 0 && a2.classList.add("attack-label-continuation"),
         o2.appendChild(a2));
       const i2 = document.createElement("td");
-      ((i2.textContent = ALGO_LABELS[e2] ?? e2), o2.appendChild(i2));
+      ((i2.textContent = "bcrypt" === e2 ? `bcrypt (${t().bcryptCost} 5)` : (ALGO_LABELS[e2] ?? e2)), o2.appendChild(i2));
       const u = rankToSeconds(l, e2, n),
         m = document.createElement("td");
       ((m.textContent = formatSeconds(u)),

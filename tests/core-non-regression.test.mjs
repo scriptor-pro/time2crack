@@ -86,20 +86,23 @@ test('mask keeps accented letters as letters', () => {
   assert.notEqual(accentedLower.rank, null);
 });
 
-test('global score is smoother than the winning attack rank', () => {
+test('global score is never below the winning attack rank', () => {
+  // Une passphrase pure n'active que le combinator : le score global égale son rang.
+  // (Avant la correction de l'hybride, "correct_horse" était aussi compté comme
+  // "correct" + suffixe "_horse", ce qui ne correspond à aucune règle réelle.)
   const hyphen = estimate('correct-horse', dictWords);
   const underscore = estimate('correct_horse', dictWords);
 
   assert.equal(hyphen.best_attack, 'combinator');
   assert.equal(underscore.best_attack, 'combinator');
   assert.ok(hyphen.attack_rank < underscore.attack_rank);
-  assert.ok(hyphen.standard > hyphen.attack_rank);
-  assert.ok(underscore.standard > underscore.attack_rank);
+  assert.ok(hyphen.standard >= hyphen.attack_rank);
+  assert.ok(underscore.standard >= underscore.attack_rank);
 
-  const attackDelta = Math.abs(Math.log10(hyphen.attack_rank) - Math.log10(underscore.attack_rank));
-  const standardDelta = Math.abs(Math.log10(hyphen.standard) - Math.log10(underscore.standard));
-
-  assert.ok(standardDelta < attackDelta);
+  // Plusieurs modèles applicables (hybride + masque) : le score global est lissé au-dessus.
+  const decorated = estimate('pizza12', dictWords);
+  assert.equal(decorated.best_attack, 'hybrid');
+  assert.ok(decorated.standard > decorated.attack_rank);
 });
 
 import { rankKeyboard } from '../core/rank/keyboard.js';
@@ -275,6 +278,29 @@ test('rankHybrid — pAsSwOrD123 rank = 162× password123', () => {
   const toggled = rankHybrid('pAsSwOrD123', words).rank;
   assert.ok(lower !== null && toggled !== null);
   assert.equal(toggled, lower * 162);
+});
+
+// --- Hybride : un seul mot transformé (hashcat -a 0 -r, -a 6/7) ---
+
+test('rankHybrid — plusieurs mots → pas hybride (combinator / PCFG)', () => {
+  const words = new Set(['visé', 'mol', 'ran', 'chat', 'soleil']);
+  assert.equal(rankHybrid('9Visé-Mol-ran-4', words).rank, null);
+  assert.equal(rankHybrid('chat_soleil', words).rank, null);
+});
+
+test('rankHybrid — décoration courte inchangée (jeux de règles)', () => {
+  const words = new Set(['batman']);
+  const r1 = rankHybrid('batman1', words).rank;
+  const r3 = rankHybrid('batman123', words).rank;
+  assert.ok(r1 !== null && r3 !== null);
+  assert.equal(r3, r1 * 9); // 900 / 100 règles
+});
+
+test('rankHybrid — décoration longue = coût du masque, sans plafond', () => {
+  const words = new Set(['pizza']);
+  const short = rankHybrid('pizza1', words).rank;          // 100 règles
+  const long  = rankHybrid('pizza12345678', words).rank;   // masque ?d×8 = 1e8
+  assert.equal(long, (short / 100) * 1e8);
 });
 
 // --- Toggle-case : rankDictionary() ---

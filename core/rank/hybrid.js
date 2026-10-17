@@ -46,6 +46,16 @@ const RULES_BY_SUFFIX_LEN = {
   5: 8100,     // Quintuple suffix (rare, mostly untested in practice)
 };
 
+// Au-delà de 5 caractères, aucun jeu de règles réel ne contient la décoration exacte :
+// l'attaquant passe au mode hybride de hashcat (-a 6 / -a 7, mot + masque), dont le
+// coût est la taille du masque. ?d = 10 chiffres, ?s = 33 symboles, ?l = 26 lettres.
+// Source : hashcat wiki, « Hybrid Attack » et « Rule-based Attack ».
+function maskKeyspace(chars, extraLetters) {
+  let size = 26 ** extraLetters;
+  for (const c of chars) size *= /[0-9]/.test(c) ? 10 : 33;
+  return size;
+}
+
 // Détecte si le mot de passe ressemble à un mot dict + suffixe/préfixe prévisible.
 // Patterns courants : Word123, Word!, Word1!, 1Word, Word_1, W0-r-d, W0rd123, etc.
 // IMPORTANT: Handles leet-speak (@ → a, 0 → o) to find the true base word.
@@ -105,6 +115,14 @@ export function rankHybrid(password, dictWords = null) {
   // Le mot de passe est identique à sa base → ce n'est pas une mutation, c'est du dict pur
   if (base === password.toLowerCase()) return { rank: null, model: 'hybrid' };
 
+  // Lettres hors du mot de base : au-delà d'une seule (pluriel, lettre ajoutée), le reste
+  // contient d'autres mots. Une règle ou un masque transforme UN mot ; plusieurs mots
+  // relèvent du combinator (hashcat -a 1) et de PCFG (Weir et al. 2009).
+  // Ex. : "9Visé-Mol-ran-4" → base "visé", reste "-mol-ran-" → pas une attaque hybride.
+  const letterCount = (s) => (s.match(/\p{L}/gu) || []).length;
+  const extraLetters = letterCount(password) - letterCount(base);
+  if (extraLetters > 1) return { rank: null, model: 'hybrid' };
+
   // Chercher le rang dict de la base
   const dictResult = rankDictionary(base, dictWords);
   if (dictResult.rank === null) return { rank: null, model: 'hybrid' };
@@ -127,8 +145,12 @@ export function rankHybrid(password, dictWords = null) {
 
   // La complexité effective est la somme du suffixe et des substitutions internes
   const effectiveComplexity = suffixLen + leet_subs;
-  const clampedLen = Math.max(1, Math.min(effectiveComplexity, 5));
-  const rulesCount = RULES_BY_SUFFIX_LEN[clampedLen] ?? 25_000;
+  // Jusqu'à 5 transformations : jeux de règles courants. Au-delà : coût du masque, sans
+  // plafond (l'ancien plafond à 5 comptait 8 100 essais pour un suffixe de 11 caractères).
+  const nonLetters = [...password].filter((c) => !/\p{L}/u.test(c));
+  const rulesCount = effectiveComplexity <= 5
+    ? RULES_BY_SUFFIX_LEN[Math.max(1, effectiveComplexity)]
+    : Math.max(RULES_BY_SUFFIX_LEN[5], maskKeyspace(nonLetters, Math.max(0, extraLetters)));
 
   // Partie alphabétique originale (avant lowercase) pour détecter la casse réelle.
   const pwAlphaMatch = password.match(/[\p{L}]+/gu) || [];

@@ -371,8 +371,8 @@
       <div class="hero__grid">
         <figure class="hero__media">
           <picture>
-            <source media="(min-width: 1100px)" srcset="${assetPrefix}hero/time2crack-password-desktop.webp">
-            <source media="(min-width: 700px)" srcset="${assetPrefix}hero/time2crack-password-tablet.webp">
+            <!-- Affichée en 560×320 à partir de 700 px : 1x pour les écrans standards, 2x pour la haute densité -->
+            <source media="(min-width: 700px)" srcset="${assetPrefix}hero/time2crack-password-560.webp 1x, ${assetPrefix}hero/time2crack-password-1120.webp 2x">
             <img
               class="hero__image"
               src="${assetPrefix}hero/time2crack-password-mobile.webp"

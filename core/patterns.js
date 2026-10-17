@@ -349,10 +349,9 @@ function detectPassphraseConcatenated(pw, dictWords) {
  * Mot simple mal orthographié (ex: "peinttture") reste rejeté.
  */
 function detectPassphrase(pw, dictWords) {
-  // Séparateurs explicites (espace, tiret ou underscore entre mots alphabétiques)
-  // IMPORTANT: Use [ _-] to match the literal separators, NOT [ -] which is a range.
-  // [ -] matches ASCII 32-45, including unintended characters (!, ", #, $, %, etc.)
-  if (/[\p{L}]{2,}[ _-][\p{L}]{2,}/u.test(pw)) return true;
+  // Séparateurs explicites : 1 à 3 symboles entre deux mots ("a b", "a-b", "a-.b", "a - b").
+  // Les chiffres n'en font pas partie : "chat2soleil" relève de la détection par dictionnaire.
+  if (/[\p{L}]{2,}[^\p{L}0-9]{1,3}[\p{L}]{2,}/u.test(pw)) return true;
 
   // Passphrases concaténées (mots dict reconnus)
   if (detectPassphraseConcatenated(pw, dictWords)) return true;

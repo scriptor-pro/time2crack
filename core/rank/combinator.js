@@ -45,9 +45,13 @@ export function rankCombinator(password, dictWords, looksPassphrase) {
     return { rank: null, model: 'combinator' };
   }
 
-  // Séparateur principal : le caractère entre deux segments de lettres
-  const sepMatch = password.match(/[\p{L}]{2,}([ \-_.])[\p{L}]{2,}/u);
-  const sep = sepMatch ? sepMatch[1] : '';
+  // Découpage en blocs : lettres, chiffres, symboles. Le séparateur est le premier bloc de
+  // symboles d'un seul caractère situé entre deux blocs (mots ou chiffres).
+  const runs = password.match(/\p{L}+|[0-9]+|[^\p{L}0-9]+/gu) || [];
+  const isSymbols = (r) => /^[^\p{L}0-9]+$/u.test(r);
+  const interior = (i) => i > 0 && i < runs.length - 1;
+  const sepRun = runs.find((r, i) => interior(i) && isSymbols(r) && [...r].length === 1);
+  const sep = sepRun ?? '';
 
   const segments = password.match(/\p{L}+/gu) || [];
   if (segments.length < 2) return { rank: null, model: 'combinator' };
@@ -65,13 +69,16 @@ export function rankCombinator(password, dictWords, looksPassphrase) {
   }
   if (dictHits === 0) return { rank: null, model: 'combinator' };
 
-  // Décorations hors mots : chiffres (?d) et symboles autres que le séparateur (?s)
-  for (const c of password.replace(/\p{L}+/gu, '')) {
-    if (/[0-9]/.test(c)) rank *= 10;
-    else if (c !== sep) rank *= 33;
-  }
+  // Décorations : chiffres (?d) et symboles (?s). Seul le séparateur placé ENTRE deux blocs est
+  // gratuit ; un symbole en début ou en fin, ou un groupe comme "-.", se paie caractère par caractère.
+  runs.forEach((r, i) => {
+    if (/^[0-9]+$/.test(r)) rank *= 10 ** r.length;
+    else if (isSymbols(r) && !(interior(i) && r === sep)) rank *= 33 ** [...r].length;
+  });
 
-  rank *= SEPARATOR_ADJUSTMENT[sep] ?? 3.0;
+  // Coût du séparateur ; sans séparateur unique, les symboles ont déjà été comptés un par un
+  const hasSymbols = runs.some(isSymbols);
+  rank *= sep ? SEPARATOR_ADJUSTMENT[sep] ?? 3.0 : hasSymbols ? 1 : SEPARATOR_ADJUSTMENT[''];
 
   return { rank: Math.round(rank), model: 'combinator' };
 }

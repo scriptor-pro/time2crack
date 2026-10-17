@@ -303,6 +303,30 @@ test('rankHybrid — décoration longue = coût du masque, sans plafond', () => 
   assert.equal(long, (short / 100) * 1e8);
 });
 
+// --- Combinator : séparateurs ---
+
+test('combinator — plusieurs symboles entre deux mots restent une passphrase', () => {
+  const words = new Set(['bonheur']);
+  assert.equal(analyze('youpie-.bonheur-', words).looksPassphrase, true);
+  assert.notEqual(estimate('youpie-.bonheur-', words).details.combinator.rank, null);
+});
+
+test('combinator — seul le séparateur entre deux blocs est gratuit', () => {
+  const words = new Set(['bonheur']);
+  const base = estimate('youpie-bonheur', words).details.combinator.rank;
+  const trailing = estimate('youpie-bonheur-', words).details.combinator.rank;
+  const group = estimate('youpie-.bonheur-', words).details.combinator.rank;
+  assert.equal(trailing, base * 33);       // tiret final = décoration
+  assert.equal(group, base * 33 ** 3);     // "-." + "-" payés un par un
+});
+
+test('combinator — séparateur répété entre mots et chiffres gratuit', () => {
+  const words = new Set(['visé']);
+  const plain = estimate('Visé-mol-ran', words).details.combinator.rank;
+  const digits = estimate('9Visé-mol-ran-4', words).details.combinator.rank;
+  assert.equal(digits, plain * 100);       // 9 et 4 : ×10 chacun, tirets gratuits
+});
+
 // --- Toggle-case : rankDictionary() ---
 
 test('rankDictionary — mayonnaise (all-lower) rank non-null', () => {

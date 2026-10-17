@@ -804,8 +804,7 @@ function renderHIBP(e, o) {
 let currentProfile = "experienced";
 function updateProfileDisplay() {
   const e = t().profiles[currentProfile];
-  if (!e) return;
-  document.getElementById("profile-info-card");
+  if (!e || !document.getElementById("profile-info-card")) return;
   ((document.getElementById("profile-info-name").textContent = e.name),
     (document.getElementById("profile-info-gpus").textContent =
       "amateur" === currentProfile
@@ -818,22 +817,35 @@ function updateProfileDisplay() {
     (document.getElementById("profile-info-desc").textContent = e.desc));
 }
 function analyze(e) {
-  const t2 = document.getElementById("results");
-  if (!e) return void (t2.hidden = true);
+  const t2 = document.getElementById("results"),
+    quick = document.getElementById("quick-result");
+  if (!e) return (quick && (quick.hidden = true), void (t2 && (t2.hidden = true)));
   const o = performance.now(),
     a = calcCrackTime(e, { dictWords: AppConfig.dictWords, profile: currentProfile, lang: AppConfig.lang }),
     n = performance.now() - o,
     r = performance.now(),
     i = getAttackLabel(a.best_attack);
-  document.getElementById("best-attack-name").textContent = i;
   const s = a.best_attack_seconds ?? null,
-    d = null !== s ? formatSeconds(s) : "—";
-  document.getElementById("best-attack-time").textContent = d;
-  ((document.getElementById("best-attack-time").className = null !== s ? timeClass(s) : ""),
-    renderContext(a.context),
-    renderTable(a));
+    d = null !== s ? formatSeconds(s) : "—",
+    // Tant que le dictionnaire n'est pas chargé, le temps est provisoire (attaques sans dictionnaire)
+    provisional = !AppConfig.dictWords,
+    showTime = (el) => {
+      ((el.textContent = d),
+        (el.className = null !== s ? timeClass(s) : ""),
+        el.classList.toggle("is-provisional", provisional),
+        provisional ? (el.title = t().dictLoading) : el.removeAttribute("title"));
+    };
+  // Accueil : ligne « Ce mot de passe résistera : … » sous le champ
+  quick && (showTime(document.getElementById("quick-result-time")), (quick.hidden = false));
+  // Résultats en détail
+  if (t2) {
+    ((document.getElementById("best-attack-name").textContent = i),
+      showTime(document.getElementById("best-attack-time")),
+      renderContext(a.context),
+      renderTable(a),
+      (t2.hidden = false));
+  }
   const c = performance.now() - r;
-  t2.hidden = false;
   const l = n + c;
   if (
     (console.log("%c[Time2Crack PROFILER]", "color: #00A3FF; font-weight: bold;"),
@@ -863,7 +875,12 @@ function analyze(e) {
       !a.context.hybridVuln &&
       e.length > 8 &&
       (console.log(`[Time2Crack] Password looks random, lazy-loading models for ${AppConfig.lang}...`),
-      lazyLoadModels(AppConfig.lang).catch((e2) => {
+      lazyLoadModels(AppConfig.lang)
+        .then(() => {
+          // Modèles Markov/PCFG prêts : recalcul si le mot de passe n'a pas changé
+          document.getElementById("pw-input")?.value === e && analyze(e);
+        })
+        .catch((e2) => {
         console.warn("[Time2Crack] Could not load probabilistic models:", e2.message);
       }));
   }
@@ -923,23 +940,37 @@ async function init() {
     o = document.getElementById("pw-input");
   (await loadI18nJSON(), updateStaticStrings());
   const a = t();
-  ((o.disabled = true), (e.textContent = a.dictLoading));
+  // Le dictionnaire se charge en arrière-plan : le champ reste utilisable et le temps affiché est
+  // provisoire jusqu'au recalcul, dès que le dictionnaire est prêt.
+  ((e.textContent = a.dictLoading),
+    loadDictionary(AppConfig.lang).then(
+      () => {
+        const t2 = AppConfig.dictWords ? AppConfig.dictWords.size.toLocaleString(a.locale) : "0";
+        ((e.textContent = a.dictReady(t2)),
+          setTimeout(() => {
+            e.textContent = "";
+          }, 3e3),
+          o.value && analyze(o.value));
+      },
+      (t2) => {
+        ((e.textContent = a.initError(t2.message)), console.error("[Time2Crack] Dictionary loading failed:", t2));
+      },
+    ),
+    (document.documentElement.lang = AppConfig.lang),
+    updateProfileDisplay());
+  // Accueil → Résultats en détail : le mot de passe passe par la mémoire de l'onglet (sessionStorage),
+  // jamais par l'adresse. La page de résultats le lit puis l'efface aussitôt.
+  const PW_KEY = "time2crack-pw";
+  document.getElementById("quick-result-more")?.addEventListener("click", () => {
+    try {
+      o.value && sessionStorage.setItem(PW_KEY, o.value);
+    } catch {}
+  });
   try {
-    await loadDictionary(AppConfig.lang);
-    const t2 = AppConfig.dictWords ? AppConfig.dictWords.size.toLocaleString(a.locale) : "0";
-    ((e.textContent = a.dictReady(t2)),
-      setTimeout(() => {
-        e.textContent = "";
-      }, 3e3));
-  } catch (t2) {
-    throw (
-      (e.textContent = a.initError(t2.message)),
-      console.error("[Time2Crack] Dictionary loading failed:", t2),
-      (o.disabled = false),
-      t2
-    );
-  }
-  ((o.disabled = false), o.focus(), (document.documentElement.lang = AppConfig.lang), updateProfileDisplay());
+    const t2 = sessionStorage.getItem(PW_KEY);
+    null !== t2 && (sessionStorage.removeItem(PW_KEY), (o.value = t2));
+  } catch {}
+  o.focus();
   const n = document.getElementById("lang-toggle"),
     r = document.getElementById("lang-menu");
   if (n && r) {
@@ -1025,6 +1056,8 @@ async function init() {
           }, 500)))
         : renderHIBP("hidden"));
   });
+  // Mot de passe transmis : analyse + HIBP. Champ vide : rien à afficher.
+  o.value ? o.dispatchEvent(new Event("input")) : analyze("");
 }
 document.getElementById("pw-input")
   ? init().catch((e) => {

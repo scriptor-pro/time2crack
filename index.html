@@ -82,6 +82,11 @@
         />
         <p class="input-hint" id="main-hint">Local, secure, free analysis • Your password never leaves your device</p>
         <p class="input-hint"><small><a href="how-time2crack-works.html" id="how-it-works-link">How does it work? →</a></small></p>
+        <p id="hibp-badge" data-state="hidden" role="status" aria-live="polite"></p>
+        <div class="quick-result" id="quick-result" hidden>
+          <p class="quick-result__text">This password will hold out for: <strong id="quick-result-time"></strong></p>
+          <a class="quick-result__more" id="quick-result-more" href="en/results.html">Learn more →</a>
+        </div>
       </div>
     </div>
 
@@ -96,89 +101,6 @@
     </div>
 
     <p id="status" aria-live="polite"></p>
-
-    <div id="results">
-
-      <h2>Estimated crack time</h2>
-
-      <p id="hibp-badge" data-state="hidden" role="status" aria-live="polite"></p>
-
-      <div class="best-attack-card best-attack-card--featured">
-        <p class="best-attack-label">Estimated crack time</p>
-        <div class="best-attack-result">
-          <strong id="best-attack-time" class="best-attack-time">—</strong>
-          <span id="best-attack-name" class="best-attack-name">Brute force</span>
-        </div>
-        <p class="best-attack-meta">Brute force · Standard · MD5</p>
-      </div>
-
-      <div class="profile-selector" role="group" aria-label="Attacker profile">
-        <span class="profile-selector__label">Attacker profile</span>
-        <div class="profile-selector__buttons">
-          <button class="profile-btn" data-profile="amateur" aria-pressed="false">
-            <span class="profile-btn__name">Amateur</span>
-            <span class="profile-btn__gpu">1 GPU</span>
-          </button>
-          <button class="profile-btn profile-btn--active" data-profile="experienced" aria-pressed="true">
-            <span class="profile-btn__name">Standard</span>
-            <span class="profile-btn__gpu">12 GPU</span>
-          </button>
-          <button class="profile-btn" data-profile="professional" aria-pressed="false">
-            <span class="profile-btn__name">Pro</span>
-            <span class="profile-btn__gpu">~100 GPU</span>
-          </button>
-          <button class="profile-btn" data-profile="nation_state" aria-pressed="false">
-            <span class="profile-btn__name">Nation-state</span>
-            <span class="profile-btn__gpu">~10k GPU</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="profile-info-card profile-info-card--compact" id="profile-info-card" role="status" aria-live="polite">
-        <div class="profile-info-card__header">
-          <span id="profile-info-name"></span>
-          <span id="profile-info-gpus" class="profile-info-card__gpus"></span>
-        </div>
-        <span id="profile-info-desc" class="profile-info-card__desc"></span>
-      </div>
-
-      <h2>Detailed attack analysis</h2>
-      <div class="table-wrapper" role="region" aria-label="Crack time table" tabindex="0">
-        <table id="results-table">
-          <thead>
-            <tr>
-              <th scope="col">Attack</th>
-              <th scope="col">Algorithm</th>
-              <th scope="col">Estimated time</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <h2>Password analysis</h2>
-      <div id="context-grid" class="context-grid" aria-label="Password characteristics">
-        <div class="context-group" id="ctx-group-structure">
-          <div class="context-group__title">Structure</div>
-          <div class="context-row"><dt>Length</dt>        <dd id="ctx-len"></dd></div>
-          <div class="context-row"><dt>Effective charset</dt><dd id="ctx-cs"></dd></div>
-          <div class="context-row"><dt>Date detected</dt>   <dd id="ctx-dt"></dd></div>
-        </div>
-        <div class="context-group" id="ctx-group-patterns">
-          <div class="context-group__title">Patterns</div>
-          <div class="context-row"><dt>Keyboard seq.</dt>   <dd id="ctx-kb"></dd></div>
-          <div class="context-row"><dt>Alpha/num seq.</dt> <dd id="ctx-seq"></dd></div>
-          <div class="context-row"><dt>Repetition</dt>     <dd id="ctx-rep"></dd></div>
-        </div>
-        <div class="context-group" id="ctx-group-dict">
-          <div class="context-group__title">Dictionary</div>
-          <div class="context-row"><dt>Dictionary word</dt>   <dd id="ctx-dict"></dd></div>
-          <div class="context-row"><dt>Hybrid</dt>    <dd id="ctx-hybrid"></dd></div>
-          <div class="context-row"><dt>Passphrase</dt> <dd id="ctx-pass"></dd></div>
-        </div>
-      </div>
-
-    </div>
 
   </main>
 

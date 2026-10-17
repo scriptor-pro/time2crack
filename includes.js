@@ -235,6 +235,19 @@
     }
   };
 
+  // Titre de la page « Résultats en détail » (xx/results.html)
+  const RESULTS_TITLES = {
+    fr: 'Résultats en détail',
+    en: 'Detailed results',
+    es: 'Resultados detallados',
+    pt: 'Resultados detalhados',
+    de: 'Detaillierte Ergebnisse',
+    it: 'Risultati dettagliati',
+    tr: 'Ayrıntılı sonuçlar',
+    pl: 'Szczegółowe wyniki',
+    nl: 'Gedetailleerde resultaten'
+  };
+
   // Root pages declare their own language (the homepage is English, other root pages French).
   // Read it now, before app.js rewrites <html lang> from the browser language.
   const ROOT_PAGE_LANG = LANGS.includes(document.documentElement.lang) ? document.documentElement.lang : 'fr';
@@ -269,6 +282,7 @@
   // Map page to nav class
   const pageToNavClass = {
     'index.html': 'nav-home',
+    'results.html': 'nav-home',
     'generator.html': 'nav-generator',
     'about.html': 'nav-about',
     'faq.html': 'nav-faq',
@@ -337,8 +351,10 @@
     }
   }
 
+  // Accueil : titre seul (page légère). Résultats en détail : illustration + titre.
   function renderHomeHero() {
-    if (pageName !== 'index.html') return;
+    const isResults = pageName === 'results.html';
+    if (pageName !== 'index.html' && !isResults) return;
 
     const main = document.querySelector('main');
     if (!main || main.querySelector('.hero')) return;
@@ -354,6 +370,7 @@
         .hero__media picture,.hero__media img{display:block;width:100%;max-width:100%;height:auto}
         .hero__image{aspect-ratio:1344/768;object-fit:cover}
         .hero__content{width:100%;max-width:560px;align-self:center}
+        .hero--text .hero__content{max-width:none}
         .hero__title{width:100%;font-size:clamp(1.35rem,2.8vw,2rem);line-height:1.06;max-width:none}
         @media (min-width:860px){
           .hero{margin-bottom:var(--space-3)}
@@ -365,10 +382,9 @@
 
     const { assetPrefix } = ctx;
     const hero = document.createElement('section');
-    hero.className = 'hero';
+    hero.className = isResults ? 'hero' : 'hero hero--text';
     hero.setAttribute('aria-labelledby', 'hero-title');
-    hero.innerHTML = `
-      <div class="hero__grid">
+    const media = !isResults ? '' : `
         <figure class="hero__media">
           <picture>
             <!-- Affichée en 560×320 à partir de 700 px : 1x pour les écrans standards, 2x pour la haute densité -->
@@ -381,7 +397,9 @@
               fetchpriority="high"
             >
           </picture>
-        </figure>
+        </figure>`;
+    hero.innerHTML = `
+      <div class="hero__grid">${media}
         <div class="hero__content">
           <h1 class="hero__title" id="hero-title"></h1>
         </div>
@@ -390,7 +408,7 @@
 
     const heroText = HERO_TEXTS[ctx.lang] || HERO_TEXTS.fr;
     const heroTitle = hero.querySelector('#hero-title');
-    if (heroTitle) heroTitle.textContent = heroText.title;
+    if (heroTitle) heroTitle.textContent = isResults ? (RESULTS_TITLES[ctx.lang] || RESULTS_TITLES.fr) : heroText.title;
 
     const inputSection = main.querySelector('.input-section');
     if (inputSection) {

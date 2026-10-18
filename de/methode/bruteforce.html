@@ -3,7 +3,7 @@
 </head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
 <h1 style="display:none">Der Angriff der Brute Force — umfassende Operation</h1>
 <blockquote>
-Referenzdokument des ProjektsTime2Crack
+Referenzdokument des Projekts Time2Crack
 </blockquote>
 <blockquote>Empfänger: Entwickler, Sicherheitswissenschaftler, Fortgeschrittene</blockquote>
 <hr>
@@ -13,7 +13,7 @@ Referenzdokument des ProjektsTime2Crack
 <li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Math: Schlüsselraum und Entropie</a></li>
 <li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Architektur eines brutalen Angriffs moderne Kraft</a></li>
 <li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Berechnungsgeschwindigkeiten durch Hash-Algorithmus</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Erkennung des Tanks inTime2Crack</a></li>
+<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Erkennung des Tanks in Time2Crack</a></li>
 <li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Berechnung der Rißzeit: RohTime()</a></li>
 <li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Datumsreduktion festgestellt: detektierenAndReduce()</a></li>
 <li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Einschallschutz: Boden anderer Angriffe</a></li>
@@ -26,7 +26,7 @@ Referenzdokument des ProjektsTime2Crack
 <hr>
 <h2>1. Überblick</h2>
 <p>Crude Force ist der grundlegendste Angriff bei Passwort-Cracking: es besteht aus Tests <strong>systematisch alle möglichen Kombinationen</strong> Keine Intelligenz, keine heuristische — nur die rohe Rechenleistung gegen die Größe des Raumes zu reisen.</p>
-<p>InTime2CrackDie Bruttokraft spielt eine doppelte Rolle:</p>
+<p>In Time2Crack Die Bruttokraft spielt eine doppelte Rolle:</p>
 <li><strong>Modellierter Angriff</strong> Es stellt die maximale theoretische Zeit dar, die ein Angreifer setzen würde, vorausgesetzt, keine andere ausnutzbare Verwundbarkeit.</li>
 <li><strong>Boden (Monotonitätsschutz)</strong> : es dient als unteres Terminal für alle anderen Angriffe — kein spezialisierter Angriff kann legitim eine Zeit weniger anzeigen als die, die rohe Kraft auf die alphabetische Teilkette des Passworts nehmen würde.</li>
 <strong>In der Praxis</strong>, brute force ist fast nie der schnellste Angriff auf ein echtes menschliches Passwort —PCFG,MarkovAber für ein wirklich zufälliges und langes Passwort stellt es die Realität dar: Der Angreifer hat keine Wahl, sondern den Raum vollständig zu durchsuchen.
@@ -73,7 +73,7 @@ Referenzdokument des ProjektsTime2Crack
 <h3>3.2 binäre Entropie</h3>
 <p>Entropie (gemessen in Bits) ist die logarithmische Formulierung von Schlüsselraum:</p>
 <pre><code class="language-plaintext">entropie = length × log₂(charset_size)</code></pre>
-<p>InTime2Crack(Funktion) <code>entropy()</code>)</p>
+<p>In Time2Crack(Funktion) <code>entropy()</code>)</p>
 <pre><code class="language-javascript">function entropy(pw) {
   return pw.length * Math.log2(getCharset(pw).size);
 }</code></pre>
@@ -93,7 +93,7 @@ entropie = log₂(keyspace)</code></pre>
 <h3>3.3 Mathematische Hoffnung: Schlüsselraum / 2</h3>
 <p>Kreuzkraft testet nicht immer <code>keyspace</code> Integer-Kombinationen — im Durchschnitt findet es das Passwort in der Mitte, da das Ziel im Raum gleichverteilt ist.<strong>mathematische Erwartung</strong> die Zahl der Versuche ist daher:</p>
 <pre><code class="language-plaintext">tentatives_attendues = keyspace / 2</code></pre>
-<p>Das ist genau das, was Modelle <code>bruteTime()</code> inTime2Crack:</p>
+<p>Das ist genau das, was Modelle <code>bruteTime()</code> in Time2Crack:</p>
 <pre><code class="language-javascript">// "For brute force: expected value is keyspace/2 (uniform random search)"
 function bruteTime(keyspace, rate) {
   const ls = Math.log(keyspace / 2) - Math.log(rate);
@@ -157,7 +157,7 @@ https://www.hivesystems.io/password-table
 <strong>Hashcat. (2024).</strong>
 <em>Offizielle Hashcat Benchmarks v6.2.6.</em>
 http://hashcat.net/hashcat/
-→ Offizielle Geschwindigkeiten nach Algorithmus, KonstantenquelleTime2Crack
+→ Offizielle Geschwindigkeiten nach Algorithmus, Konstantenquelle Time2Crack
 <br>
 <strong>NIST SP 800-63B. (2017, aktualisiert 2024).</strong>
 <em>Digital Identity Guidelines: Authentication and Lifecycle Management.</em>
@@ -168,6 +168,6 @@ http://hashcat.net/hashcat/
 https://cheatssheetseries.owasp.org/cheatssheets/Password Storage Cheat Sheet.html
 → Empfehlungen zu bcrypt (Kosten ≥ 12), Argon2id als moderne Standards
 <hr>
-<em>ProjektdokumentTime2Crack— Letzte Aktualisierung : 2026-04-18</em>
+<em>Projektdokument Time2Crack— Letzte Aktualisierung : 2026-04-18</em>
 <em>Basierend auf der Implementierung in app.js, rohe FunktionenTime(), getCharset() und Monotonitätsschutz</em>
 </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

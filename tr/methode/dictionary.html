@@ -235,29 +235,31 @@ Hollanda (nl)kkrypt0nnnn~80 000 giriş
 <p>Wordlists koda dahil edilmez - dil değiştiğinde, ağ bütçesiyle tanışmak için talep üzerine yüklenir:</p>
 <pre><code class="language-javascript">// app.js - loadDictionary()
 async function loadDictionary(lang) {
-  if (DICT<em>lang &amp; DICT</em>WORDS) return;  // Déjà chargé
-  if (DICT<em>LOADING)
-DICT</em>PENDING<em>LANG = lang; // Dosyayı Bekliyor
-Geri dönüş;
-}
-DICT</em>LOADING = true;
-<p>Kısıt res = Beklenir<code>data/wordlists/${lang}.txt</code>);
-Sınırlı metin = res.text();</p>
-<p>// Set&lt;string&gt; for O(1) lookup
-DICT<em>WORDS = yeni Set(((Yeni Setler)
-metin.split("\n")
-.map(wken w.normalize("NFC")trim().toLowerCase())
-.filter(wlan w.long &gt;= 4)
-);
-DICT</em>LANG = Lang;
-DICT<em>LOADING = false;
-}</em></p></code></pre>
-<strong>Neden Bir Şey <code>Set</code> ??</strong> Yapı Yapısı <code>Set</code> JavaScript, O(1) görünümleri garanti eder - sözlük büyüklüğüne bakılmaksızın (50.000 veya 200.000 giriş), doğrulama doğrulama <code>DICTWORDS.has(word)</code> Aynı sürekli zaman alır. <code>Array</code> O(n) per lookup, i.e. up to 200,000 karşılaştırmas per check.
+  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
+  if (DICT_LOADING) {
+    DICT_PENDING_LANG = lang;  // load it once the current file is done
+    return;
+  }
+  DICT_LOADING = true;
+
+  const res = await fetch(`data/wordlists/${lang}.txt`);
+  const text = await res.text();
+
+  // Convert to Set&lt;string&gt; for O(1) lookup
+  DICT_WORDS = new Set(
+    text.split("\n")
+      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+      .filter(w =&gt; w.length &gt;= 4)
+  );
+  DICT_LANG = lang;
+  DICT_LOADING = false;
+}</code></pre>
+<strong>Neden Bir Şey <code>Set</code> ??</strong> Yapı Yapısı <code>Set</code> JavaScript, O(1) görünümleri garanti eder - sözlük büyüklüğüne bakılmaksızın (50.000 veya 200.000 giriş), doğrulama doğrulama <code>DICT_WORDS.has(word)</code> Aynı sürekli zaman alır. <code>Array</code> O(n) per lookup, i.e. up to 200,000 karşılaştırmas per check.
 <h3>Yükleniyor kuyruk</h3>
-<p>The The The The The The The The <code>DICT<em>PENDING</em>LANG</code> Hızlı dil değişiklikleri sırasında yarış koşullarını önlemek:</p>
+<p>The The The The The The The The <code>DICT_PENDING_LANG</code> Hızlı dil değişiklikleri sırasında yarış koşullarını önlemek:</p>
 <pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE
 ├── EN demandé : DICT<em>LOADING = false → getin başlangıcı EN
-Satın alma sırasında talep edilen DICT</em>LOADING = true → DICT<em>PENDING</em>LANG = "fr"
+Satın alma sırasında talep edilen DICT</em>LOADING = true → DICT_PENDING_LANG = "fr"
 ├── DE demandé pendant fetch EN : DICT<em>LOADING = true → DICT</em>PENDING<em>LANG = "de" (crash "fr")
 - Fetch Ends: DICT</em>LANG = "en", puis lance loadDictionary("de")
 └── Résultat : seule la dernière langue demandée est chargée</code></pre>
@@ -596,10 +598,10 @@ Online saldırılarına karşı korumalar (yönemli bağlantı girişimleri), ç
 <h3>Endüstriyel kaynaklar</h3>
 <strong>Ben de Pwned'e sahip oldum. (2024).</strong> </em>Pwned Passwords.<em> https://haveibeenpwned.com/Passwords
 <li>Basis of ~14 milyar benzersiz şifre belgelenmiş sızıntılardan</li>
-<li>Zaman2Crack tarafından gerçek zamanlı doğrulama için kullanılan anonim API</li>
+<li>Time2Crack tarafından gerçek zamanlı doğrulama için kullanılan anonim API</li>
 <strong>Hive Systems. (2025).</strong> </em>2025 Hive Systems Password Table.<em>
 <li>Benchmarks 12× RTX 4090: MD5 2,027 GH /s, NTLM 3,462 GH /s, bcrypt maliyeti 5: 2,2 MH/s</li>
-<li><strong>Zaman2Crack'de kullanılan hash oranlarının ana kaynağı</strong></li>
+<li><strong>Time2Crack'te kullanılan hash hızlarının ana kaynağı</strong></li>
 <strong>Hashcat. (2025).</strong> </em>Hashcat - Gelişmiş şifre kurtarma.<em>
 <li>GPU karşılaştırmaları için referans aracı</li>
 <li>mutasyon kurallarının belgelendirilmesi (en iyi64.rule, OneRuleToRuleThemAll)</li>

@@ -3,7 +3,7 @@
 </head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
 <h1 style="display:none">Mask Attack — Umfassende Operation</h1>
 <blockquote>
-Referenzdokument des ProjektsTime2Crack
+Referenzdokument des Projekts Time2Crack
 </blockquote>
 <blockquote>Empfänger: Entwickler, Sicherheitswissenschaftler, Fortgeschrittene</blockquote>
 <hr>
@@ -14,7 +14,7 @@ Referenzdokument des ProjektsTime2Crack
 <li><a href="mask.html#4-architecture-dune-attaque-par-masque-moderne">Architektur eines modernen Maskenangriffs</a></li>
 <li><a href="mask.html#5-syntaxe-des-masques-hashcatjtr">Mask Syntax (Hashcat/JtR)</a></li>
 <li><a href="mask.html#6-réduction-du-keyspace--principe-mathématique">Keyspace Reduktion: mathematisches Prinzip</a></li>
-<li><a href="mask.html#7-implémentation-dans-time2crack--addmaskattacks">UmsetzungTime2Crack: <code>addMaskAttacks()</code></a></li>
+<li><a href="mask.html#7-implémentation-dans-time2crack--addmaskattacks">Umsetzung Time2Crack: <code>addMaskAttacks()</code></a></li>
 <li><a href="mask.html#8-détection-de-date-et-réduction-structurelle">Datumserkennung und strukturelle Reduktion</a></li>
 <li><a href="mask.html#9-calibration-haute-fidélité">Hochsicherheitskalibrierung</a></li>
 <li><a href="mask.html#10-benchmarks-et-ordres-de-grandeur">Benchmarks und Größenordnungen</a></li>
@@ -107,8 +107,8 @@ Referenzdokument des ProjektsTime2Crack
 <code>Gain = Kfull / K_mask</code>
 <p>Je stärker die Positionsbeschränkungen (z.B. Ziffern am Ende, Kapital im Kopf) sind, desto größer ist der Gewinn.</p>
 <hr>
-<h2>7. Implementierung inTime2Crack: <code>addMaskAttacks()</code></h2>
-<p>Time2Crackdie Maskenlogik in <code>app.js</code> :</p>
+<h2>7. Implementierung in Time2Crack: <code>addMaskAttacks()</code></h2>
+<p>Time2Crack die Maskenlogik in <code>app.js</code> :</p>
 <li>Funktion: <code>addMaskAttacks(rows, full, len, cs, kbPat, seq, weak, dt, pw)</code></li>
 <li>Kategorie: <code>cat: "mask"</code></li>
 <li>Anzeige: <code>aMask</code> / Anmerkung <code>nMaskPositional</code>, <code>nKBDetected</code>, <code>nSeqDetected</code>, <code>nDateDetected</code></li>
@@ -128,7 +128,7 @@ Referenzdokument des ProjektsTime2Crack
 <p>Die Zeit wird dann von <code>budgetTime(effectiveMaskGuesses, a.rate)</code> (mit Masken-Rankfaktor und Unicode/Datum-Verarbeitung).</p>
 <hr>
 <h2>8. Datumserkennung und strukturelle Reduktion</h2>
-<p>Time2Crackeine bestimmte Datumsverarbeitung (<code>hasDate</code>, <code>detectDateAndReduce</code>)</p>
+<p>Time2Crack eine bestimmte Datumsverarbeitung (<code>hasDate</code>, <code>detectDateAndReduce</code>)</p>
 <li>Jahresnachweis <code>1600-2099</code>,</li>
 <li>Erfassung von Datumsmustern (<code>DD/MM/YYYY</code>, Trennvarianten),</li>
 <li>Ersatz eines riesigen Raumes (<code>10^dateChars</code>) durch einen plausiblen Satz (<code>~200 années</code> oder <code>~36500 dates</code>)</li>
@@ -205,11 +205,11 @@ PCFGglobale Grammatik erfassenMehr kostenaufwendig zu trainieren / zu betreiben
 <strong>Hashcat Wiki.</strong> </em>MaskAngriff (-a 3).<em> http://hashcat.net/wiki/
 <strong>Hashcat (Benchmarks).</strong> http://hashcat.net/hashcat/
 <strong>Hive Systems (Passworttabelle).</strong> https://www.hivesystems.io/password-table
-<h3>Webquellen, die in der Anmeldung genannt werdenTime2Crack</h3>
+<h3>Webquellen, die in der Anmeldung genannt werden Time2Crack</h3>
 <strong>USENIX Security 2016 (Wheeler).</strong>
 https://www.usenix.org/conference/usenixsecurity16/tech-sessions/presentation/wheeler
 <hr>
-</em>ProjektdokumentTime2Crack— Version 1.0 — 2026-04-01<em>
+</em>Projektdokument Time2Crack— Version 1.0 — 2026-04-01<em>
 </em>Quellcode: <code>app.js</code> (Funktionen) <code>addMaskAttacks</code>, <code>detectDateAndReduce</code>, <code>hasDate</code>, <code>budgetTime</code>, <code>applyHighFidelityCalibration</code>)*
 
   </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

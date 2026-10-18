@@ -19,7 +19,6 @@
 <li><a href="how-time2crack-works.html#faq">Questions fréquentes</a></li>
 </ol>
 </nav>
- Vue d'ensemble 
 <section class="doc-section" id="overview">
 <h2>Vue d'ensemble</h2>
 <p>Time2Crack répond à une question simple : <strong>« Combien de temps faudrait-il pour craquer ce mot de passe ? »</strong></p>
@@ -40,7 +39,6 @@ RÉSULTAT (ex: "2 jours sur GPU NTLM")
         L'innovation clé est la séparation stricte entre <strong>Rang</strong> (nombre de tentatives) et <strong>Temps</strong> (conversion basée sur vitesse GPU). Cela permet de modifier les algorithmes d'attaque ou les vitesses GPU indépendamment.
       </div>
 </section>
- Flux de calcul 
 <section class="doc-section" id="flux">
 <h2>Flux de calcul principal</h2>
 <div class="diagram">
@@ -77,7 +75,6 @@ calcCrackTime(password, options)  [core/calc.js]
 </div>
 <p><strong>Avantage</strong> : Modifier l'algorithme d'une attaque ne touche jamais à la logique de temps. Changer la vitesse GPU ne touche jamais aux attaques.</p>
 </section>
- Étape 1 
 <section class="doc-section" id="step1">
 <h2>Étape 1 : Analyse du mot de passe</h2>
 <h3>Qu'est-ce qu'on analyse ?</h3>
@@ -120,7 +117,6 @@ calcCrackTime(password, options)  [core/calc.js]
 <h4><span class="emoji-marker">8️⃣</span> Phrase</h4>
 <p>Détecte plusieurs mots concaténés : <code>correcthorsebatterystaple</code> → <code>[correct] + [horse] + [battery] + [staple]</code></p>
 </section>
- Étape 2 
 <section class="doc-section" id="step2">
 <h2>Étape 2 : Estimation du rang (nombre de tentatives)</h2>
 <h3>Concept fondamental</h3>
@@ -151,7 +147,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
       </pre>
 </div>
 </section>
- Étape 3 
 <section class="doc-section" id="step3">
 <h2>Étape 3 : Conversion en temps</h2>
 <h3>Le concept</h3>
@@ -217,7 +212,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
 </div>
 </section>
- Les 7 attaques 
 <section class="doc-section" id="attacks">
 <h2>Les 7 attaques implémentées</h2>
 <h3><span class="emoji-marker">1️⃣</span> Brute Force</h3>
@@ -260,7 +254,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <p><strong>Très efficace pour</strong> : passphrases (4+ mots)</p>
 <p><small><a href="methode/combinator.html">En savoir plus sur Combinator Attack →</a></small></p>
 </section>
- Algorithmes 
 <section class="doc-section" id="algorithms">
 <h2>Les 6 algorithmes de hachage</h2>
 <h3>Pourquoi 6 ?</h3>
@@ -304,7 +297,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
         Les algorithmes modernes sont <strong>intentionnellement lents</strong>. C'est une feature, pas un bug! MD5 est rapide (mauvais), bcrypt est lent (excellent), Argon2id est encore plus lent (meilleur).
       </div>
 </section>
- Profils 
 <section class="doc-section" id="profiles">
 <h2>Les profils d'attaquant</h2>
 <h3>Concept</h3>
@@ -359,7 +351,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <p><strong>Enseignement</strong> : Même un mot de passe "fort" peut être craqué en millisecondes par un état-nation!</p>
 </section>
- Exemple 
 <section class="doc-section" id="example">
 <h2>Exemple concret : Tr0ub4dor&amp;3</h2>
 <p>C'est le mot de passe du film <strong>"Correct Horse Battery Staple"</strong> (xkcd). Voyons ce que Time2Crack fait :</p>
@@ -399,7 +390,6 @@ Combinator   : ∞</pre>
 <li>📊 Excellent exemple de comment le choix d'algorithme change tout</li>
 </ul>
 </section>
- FAQ 
 <section class="doc-section" id="faq">
 <h2>Questions fréquentes</h2>
 <h3>Q: Time2Crack teste-t-il réellement le mot de passe ?</h3>
@@ -436,7 +426,6 @@ Combinator   : ∞</pre>
 <li><strong>MFA</strong> : Activer authentification 2FA si possible</li>
 </ul>
 </section>
- Conclusion 
 <section class="doc-section">
 <h2>Conclusion</h2>
 <p><strong>Time2Crack fonctionne en 3 étapes immuables</strong> :</p>

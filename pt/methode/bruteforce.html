@@ -93,7 +93,7 @@ entropie = log₂(keyspace)</code></pre>
 <h3>3. 3 Esperança Matemática: Espaço de Chaves / 2</h3>
 <p>A força bruta nem sempre é testada <code>keyspace</code> Combinações inteiras — em média, ela encontra a senha no meio do caminho, já que o alvo é distribuído equiprobavelmente no espaço.<strong>expectativa matemática</strong> O número de tentativas é, portanto:</p>
 <pre><code class="language-plaintext">tentatives_attendues = keyspace / 2</code></pre>
-<p>Isto é exatamente o que modelos <code>bruteTime()</code> No Tempo2Crack:</p>
+<p>É exatamente isto que <code>bruteTime()</code> modela no Time2Crack:</p>
 <pre><code class="language-javascript">// "For brute force: expected value is keyspace/2 (uniform random search)"
 function bruteTime(keyspace, rate) {
   const ls = Math.log(keyspace / 2) - Math.log(rate);

@@ -15,7 +15,7 @@ Documento de referência do projeto Time2Crack
 <li><a href="dictionary.html#5-les-corpus-de-mots-de-passe-réels">O corpus de senhas reais</a></li>
 <li><a href="dictionary.html#6-la-vérification-k-anonymat-hibp--une-attaque-en-temps-réel">K-Anonymity HIBP verificação: um ataque em tempo real</a></li>
 <li><a href="dictionary.html#7-les-wordlists-linguistiques-de-time2crack">Listas de Palavras de Idioma Time2Crack</a></li>
-<li><a href="dictionary.html#8-détection-dictionnaire-dans-time2crack--isdictword">Detecção do Dicionário no Tempo2Crack: <code>isDictWord()</code></a></li>
+<li><a href="dictionary.html#8-détection-dictionnaire-dans-time2crack--isdictword">Detecção do dicionário no Time2Crack: <code>isDictWord()</code></a></li>
 <li><a href="dictionary.html#9-de-leetification--comment-lattaquant-décode-les-substitutions">Desleetificação: como o atacante descodifica substituições</a></li>
 <li><a href="dictionary.html#10-calcul-du-temps-de-cracking--adddictionaryattacks">Cálculo do tempo de fissuração: <code>addDictionaryAttacks()</code></a></li>
 <li><a href="dictionary.html#11-calibration-haute-fidélité--applyhighfidelitycalibration">Calibração de alta fidelidade: <code>applyHighFidelityCalibration()</code></a></li>
@@ -235,24 +235,26 @@ Países Baixos (nl)kkrypt0nn~80 000 entradas
 <p>Listas de palavras não estão incluídas no código – são carregadas a pedido ao mudar de idioma, para atender ao orçamento da rede:</p>
 <pre><code class="language-javascript">// app.js - loadDictionary()
 async function loadDictionary(lang) {
-  if (DICT<em>lang &amp; DICT</em>WORDS) return;  // Déjà chargé
-  if (DICT<em>LUGAR) {
-DICT</em>PENDING<em>LANG = lang; // Arquivo de espera
-Retorno;
-}
-DICT</em>LOADING = true;
-<p>const res = aguarde a busca(<code>data/wordlists/${lang}.txt</code>);
-const text = aguarde res.text();</p>
-<p>// Converter para Set&lt;string&gt; para pesquisa O(1)
-DICT<em>MENÇÃO = novo conjunto (
-text.split("\n")
-.map( w =&gt; w.normalize("NFC").trim().toLowerCase()
-.filtro(w =&gt; w.comprimento &gt;= 4)
-);
-DICT</em>LANG = Lang;
-DICT<em>CARGAMENTO = falso;
-}</em></p></code></pre>
-<strong>Porquê? <code>Set</code> ?</strong> Estrutura <code>Set</code> JavaScript garante O(1) buscas — independentemente do tamanho do dicionário (50.000 ou 200.000 entradas), verificação <code>DICTWORDS.has(word)</code> leva o mesmo tempo constante. <code>Array</code> Seria necessário O(n) por exame, ou seja, até 200.000 comparações por verificação.
+  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
+  if (DICT_LOADING) {
+    DICT_PENDING_LANG = lang;  // load it once the current file is done
+    return;
+  }
+  DICT_LOADING = true;
+
+  const res = await fetch(`data/wordlists/${lang}.txt`);
+  const text = await res.text();
+
+  // Convert to Set&lt;string&gt; for O(1) lookup
+  DICT_WORDS = new Set(
+    text.split("\n")
+      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+      .filter(w =&gt; w.length &gt;= 4)
+  );
+  DICT_LANG = lang;
+  DICT_LOADING = false;
+}</code></pre>
+<strong>Porquê? <code>Set</code> ?</strong> Estrutura <code>Set</code> JavaScript garante O(1) buscas — independentemente do tamanho do dicionário (50.000 ou 200.000 entradas), verificação <code>DICT_WORDS.has(word)</code> leva o mesmo tempo constante. <code>Array</code> Seria necessário O(n) por exame, ou seja, até 200.000 comparações por verificação.
 <h3>Carregando fila</h3>
 <p>A <code>DICT<em>PEDIDOS</em>LANG</code> evita as condições raciais durante as rápidas alterações linguísticas:</p>
 <pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE

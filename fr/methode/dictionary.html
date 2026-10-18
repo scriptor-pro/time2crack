@@ -235,29 +235,31 @@ Néerlandais (nl)kkrypt0nn~80 000 entrées
 <p>Les wordlists ne sont pas intégrées dans le code — elles sont chargées à la demande lors du changement de langue, pour respecter le budget réseau :</p>
 <pre><code class="language-javascript">// app.js - loadDictionary()
 async function loadDictionary(lang) {
-  if (DICT<em>LANG === lang &amp;&amp; DICT</em>WORDS) return;  // Déjà chargé
-  if (DICT<em>LOADING) {
-    DICT</em>PENDING<em>LANG = lang;  // File d'attente
+  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
+  if (DICT_LOADING) {
+    DICT_PENDING_LANG = lang;  // load it once the current file is done
     return;
   }
-  DICT</em>LOADING = true;
-<p>const res = await fetch(<code>data/wordlists/${lang}.txt</code>);
-  const text = await res.text();</p>
-<p>// Conversion en Set&lt;string&gt; pour O(1) lookup
-  DICT<em>WORDS = new Set(
+  DICT_LOADING = true;
+
+  const res = await fetch(`data/wordlists/${lang}.txt`);
+  const text = await res.text();
+
+  // Convert to Set&lt;string&gt; for O(1) lookup
+  DICT_WORDS = new Set(
     text.split("\n")
-        .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
-        .filter(w =&gt; w.length &gt;= 4)
+      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+      .filter(w =&gt; w.length &gt;= 4)
   );
-  DICT</em>LANG = lang;
-  DICT<em>LOADING = false;
-}</em></p></code></pre>
-<strong>Pourquoi un <code>Set</code> ?</strong> La structure <code>Set</code> en JavaScript garantit des lookups en O(1) — quelle que soit la taille du dictionnaire (50 000 ou 200 000 entrées), la vérification <code>DICTWORDS.has(word)</code> prend le même temps constant. Un <code>Array</code> necessiterait O(n) par lookup, soit jusqu'à 200 000 comparaisons par vérification.
+  DICT_LANG = lang;
+  DICT_LOADING = false;
+}</code></pre>
+<strong>Pourquoi un <code>Set</code> ?</strong> La structure <code>Set</code> en JavaScript garantit des lookups en O(1) — quelle que soit la taille du dictionnaire (50 000 ou 200 000 entrées), la vérification <code>DICT_WORDS.has(word)</code> prend le même temps constant. Un <code>Array</code> necessiterait O(n) par lookup, soit jusqu'à 200 000 comparaisons par vérification.
 <h3>7.3 File d'attente de chargement</h3>
-<p>Le mécanisme de <code>DICT<em>PENDING</em>LANG</code> évite les race conditions lors de changements rapides de langue :</p>
+<p>Le mécanisme de <code>DICT_PENDING_LANG</code> évite les race conditions lors de changements rapides de langue :</p>
 <pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE
 ├── EN demandé : DICT<em>LOADING = false → début du fetch EN
-├── FR demandé pendant fetch EN : DICT</em>LOADING = true → DICT<em>PENDING</em>LANG = "fr"
+├── FR demandé pendant fetch EN : DICT</em>LOADING = true → DICT_PENDING_LANG = "fr"
 ├── DE demandé pendant fetch EN : DICT<em>LOADING = true → DICT</em>PENDING<em>LANG = "de" (écrase "fr")
 ├── Fetch EN termine : DICT</em>LANG = "en", puis lance loadDictionary("de")
 └── Résultat : seule la dernière langue demandée est chargée</code></pre>

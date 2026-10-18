@@ -19,7 +19,6 @@
 <li><a href="how-time2crack-works.html#faq">Preguntas frecuentes</a></li>
 </ol>
 </nav>
- Sinopsis 
 <section class="doc-section" id="overview">
 <h2>Sinopsis</h2>
 <p>Time2Crack responde a una pregunta simple: <strong>"¿Cuánto tardaría en romper esta contraseña?"</strong></p>
@@ -40,7 +39,6 @@ RESULT (por ejemplo, "2 días en GPU NTLM")
         La innovación clave es la separación estricta entre <strong>Rank</strong> (número de intentos) y <strong>Hora</strong> Esto permite modificar algoritmos de ataque o velocidades GPU de forma independiente.
       </div>
 </section>
- Flujo de cálculo 
 <section class="doc-section" id="flux">
 <h2>Flujo de cálculo principal</h2>
 <div class="diagram">
@@ -77,7 +75,6 @@ Promoción
 </div>
 <p><strong>Ventajas</strong> : Cambiar el algoritmo de un ataque nunca afecta la lógica del tiempo. Cambiar la velocidad de la GPU nunca afecta los ataques.</p>
 </section>
- Paso 1 
 <section class="doc-section" id="step1">
 <h2>Paso 1: Análisis de contraseña</h2>
 <h3>¿Qué estamos analizando?</h3>
@@ -120,7 +117,6 @@ Promoción
 <h4><span class="emoji-marker">8</span> Frase</h4>
 <p>Detecta varias palabras concatenadas: <code>correcthorsebatterystaple</code> → <code>[correct] + [horse] + [battery] + [staple]</code></p>
 </section>
- Paso 2 
 <section class="doc-section" id="step2">
 <h2>Paso 2: Estimaciones de los puestos (número de intentos)</h2>
 <h3>Concepto básico</h3>
@@ -151,7 +147,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
       </pre>
 </div>
 </section>
- Paso 3 
 <section class="doc-section" id="step3">
 <h2>Paso 3: Conversión al tiempo</h2>
 <h3>El concepto</h3>
@@ -217,7 +212,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
 </div>
 </section>
- Los 7 ataques 
 <section class="doc-section" id="attacks">
 <h2>Los 7 ataques aplicados</h2>
 <h3><span class="emoji-marker">1</span> Fuerza bruta</h3>
@@ -260,7 +254,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <p><strong>Muy eficaz para</strong> : passphrases (4+ palabras)</p>
 <p><small><a href="methode/combinator.html">Más información sobre el ataque combinado →</a></small></p>
 </section>
- Algoritmos 
 <section class="doc-section" id="algorithms">
 <h2>Los 6 algoritmos de hash</h2>
 <h3>¿Por qué seis?</h3>
@@ -304,7 +297,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
         Los algoritmos modernos son <strong>intencionalmente lento</strong>Es una característica, no un error! MD5 es rápido (bad), la bcripta es lenta (excelente), Argon2id es incluso más lento (mejor).
       </div>
 </section>
- Perfiles 
 <section class="doc-section" id="profiles">
 <h2>Perfiles de atacante</h2>
 <h3>Concepto</h3>
@@ -359,7 +351,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <p><strong>Educación</strong> : Incluso una contraseña "fuerte" se puede romper en milisegundos por un estado nacional!</p>
 </section>
- Ejemplo 
 <section class="doc-section" id="example">
 <h2>Ejemplo concreto: Tr0ub4dor</h2>
 <p>Es la contraseña de la película. <strong>"Batería de caballos corridos"</strong> Veamos qué hace Time2Crack:</p>
@@ -399,7 +390,6 @@ Combinator   : ∞</pre>
 <li></li>
 </ul>
 </section>
- FAQ 
 <section class="doc-section" id="faq">
 <h2>Preguntas frecuentes</h2>
 <h3>P: ¿En realidad, Time2Crack prueba la contraseña?</h3>
@@ -436,7 +426,6 @@ Combinator   : ∞</pre>
 <li><strong>MFA</strong> : Activar la autenticación 2FA si es posible</li>
 </ul>
 </section>
- Conclusión 
 <section class="doc-section">
 <h2>Conclusión</h2>
 <p><strong>Time2Crack trabaja en 3 pasos inmutables</strong> :</p>

@@ -3,7 +3,7 @@
 </head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
 <h1 style="display:none">AngriffMarkov(probabilistisch) — Umfassender Betrieb</h1>
 <blockquote>
-Referenzdokument des ProjektsTime2Crack
+Referenzdokument des Projekts Time2Crack
 </blockquote>
 <blockquote>Empfänger: Entwickler, Sicherheitswissenschaftler, Fortgeschrittene</blockquote>
 <hr>
@@ -17,7 +17,7 @@ Referenzdokument des ProjektsTime2Crack
 <li><a href="markov.html#7-réduction-de-lespace-de-recherche--la-clé-de-lefficacité">Reducing Research Space: Der Schlüssel zu Effektivität</a></li>
 <li><a href="markov.html#8-variantes-et-implémentations-notables">Notable Variationen und Implementierungen</a></li>
 <li><a href="markov.html#9-comportement-face-à-différents-types-de-mots-de-passe">Verhalten gegen verschiedene Arten von Passwörtern</a></li>
-<li><a href="markov.html#10-intégration-dans-time2crack--modélisation-et-paramètres">Integration inTime2CrackModellierung und Parameter</a></li>
+<li><a href="markov.html#10-intégration-dans-time2crack--modélisation-et-paramètres">Integration in Time2Crack Modellierung und Parameter</a></li>
 <li><a href="markov.html#11-comparaison-avec-les-autres-attaques-probabilistes">Vergleich mit anderen probabilistischen Angriffen</a></li>
 <li><a href="markov.html#12-limites-de-lattaque-markov">AngriffsbeschränkungenMarkov</a></li>
 <li><a href="markov.html#13-défenses-efficaces">Effektive Verteidigung</a></li>
@@ -178,7 +178,7 @@ MarkovOrdnung 5 (typischer Mensch)~4 × 107 ~<strong>~150 million×</strong>
 <li>Charakterübergänge folgen den Zwängen der Tastaturtopologie</li>
 <li>Von jedem Schlüssel sind nur 4-8 unmittelbare Nachbarn relevant</li>
 <li>Ein ModellMarkovin corpus einschließlich dieser Muster erreicht eine Verringerung <strong>99,7 %</strong> (vs 99.4% für allgemeine menschliche Worte)</li>
-<p>InTime2CrackDiese Unterscheidung ist nicht mehr eine feste Ebene.MarkovV2 umfasst <code>kbPat</code> als Signal in einem Rangschätzer (<code>markovExpectedGuesses</code>) dann kontinuierlich zwischen "menschlichen" und "randomähnlichen" Regimen interpolieren.</p>
+<p>In Time2Crack Diese Unterscheidung ist nicht mehr eine feste Ebene.MarkovV2 umfasst <code>kbPat</code> als Signal in einem Rangschätzer (<code>markovExpectedGuesses</code>) dann kontinuierlich zwischen "menschlichen" und "randomähnlichen" Regimen interpolieren.</p>
 <hr>
 <h2>8. Notable Variationen und Implementierungen</h2>
 <h3>8.1 OMEN (offenMarkovSchätzung der nächsten Passwörter)</h3>
@@ -262,9 +262,9 @@ MarkovOrdnung 5 (typischer Mensch)~4 × 107 ~<strong>~150 million×</strong>
 <li>Aber für lange Passphrasen (4+ Wörter), der Raum der Kandidaten bestellt vonMarkovwird sie nur erreichen, nachdem alle typischen kurzen Passwörter erschöpft sind</li>
 <li>Angriff <strong>Kombinieren</strong> in der Regel wirksamer alsMarkovauf Passphrasen</li>
 <hr>
-<h2>10. Integration inTime2CrackModellierung und Parameter</h2>
+<h2>10. Integration in Time2Crack Modellierung und Parameter</h2>
 <h3>Allgemeine Berechnungslogik (v2)</h3>
-<p>Time2Crackjetzt ModellMarkovin <strong>erwartete Rendite</strong> (rank-basiert) anstatt mit festen Reduktionsfaktoren.</p>
+<p>Time2Crack jetzt ModellMarkovin <strong>erwartete Rendite</strong> (rank-basiert) anstatt mit festen Reduktionsfaktoren.</p>
 <p>Berechnungslinie:</p>
 <li>Unicode-Tokenisierung in Segmenten <code>L</code>/<code>D</code>/<code>S</code>,</li>
 <li>Schätzung eines menschlichen Ranges über Skelett + Form + Zeichenreihen,</li>
@@ -285,7 +285,7 @@ MarkovOrdnung 5 (typischer Mensch)~4 × 107 ~<strong>~150 million×</strong>
 <li><code>randomRank</code> (Fläche in der Nähe von rohem, gebunden).</li>
 <p>Zufälliges Gewicht ist eine kontinuierliche Funktion der Länge, des Tanks und der Festigkeit menschlicher Signale, wodurch künstliche Diskontinuitäten vermieden werden.</p>
 <h3>10.4 Confidence and applicability score</h3>
-<p>Das Scoring-ModellTime2Crack(Funktion) <code>annotateScenarioApplicability()</code>) ZuweisungenMarkov:</p>
+<p>Das Scoring-Modell Time2Crack(Funktion) <code>annotateScenarioApplicability()</code>) ZuweisungenMarkov:</p>
 <strong>Grundvertrauen</strong> : 0,75 (Linie 4800)
 Interpretation: Der AngriffMarkovals <strong>mäßig zuverlässig</strong> — zuverlässiger als die neurale Schätzung (0.7) oder PRINCE (0.7), weniger als das Wörterbuch (0,9) oder die Nuttabellen (0,95).
 <strong>Bewertung der Anwendbarkeit</strong> (Zeile 4873-4874):
@@ -301,7 +301,7 @@ Jedes Signal des "menschlichen Charakters" des Passworts erhöht die offensichtl
 <h3>10.5 Einstellen HF</h3>
 <p>mitMarkovv2 sind die Struktursignale bereits in den geschätzten Rang integriert. Die HF-Einstellung ist daher neutral fürMarkovum Doppelzählung zu vermeiden.</p>
 <h3>10.6 Priorität in der Krawatte</h3>
-<p>Wenn mehrere Angriffe ähnliche Zeiten geben (&lt; 1ms Differenz),Time2Crackwählt die relevanteste nach semanischer Priorität aus:</p>
+<p>Wenn mehrere Angriffe ähnliche Zeiten geben (&lt; 1ms Differenz),Time2Crack wählt die relevanteste nach semanischer Priorität aus:</p>
 <pre><code class="language-javascript">const tieBreakPriority = {
   // ...
   markov: 8,    // Statistical n-gram — broad coverage
@@ -325,7 +325,7 @@ AbmessungenMarkovPCFG
 <strong>Begrenzung</strong>erfasst keine globalen StrukturenLokale Übergänge nicht erfassen
 <strong>Ergänzung</strong>Ideal für reine WorteIdeal für Password123
 <strong>Optimales Beispiel</strong>"Sunshine"Sonnenschein #93
-<strong>BestellungTime2Crack</strong>Markov= 8,PCFG= 6PCFGgenauer, wenn die Struktur erkannt wird
+<strong>Bestellung Time2Crack</strong>Markov= 8,PCFG= 6PCFGgenauer, wenn die Struktur erkannt wird
 <h3>11.2Markovvs Regelbasierter Angriff</h3>
 AbmessungenMarkovRegelmäßig
 -------------------------
@@ -391,7 +391,7 @@ AbmessungenMarkov(Ordner 5)Neuronales Netzwerk
 <strong>Dürmuth, M., Angelstorf, F., Horsch, J., Nürnberger, S., &amp; Rüegge, A. (2015).</strong>
 OMEN: Schnelleres Passwort-Guessing mit einer BestellungMarkovEnumerator.
 <em>Engineering Secure Software und Systeme (ESSoS 2015)</em>, LNCS 8978, S. 119-132.
-→ Hauptreferenz für die probabilistische KalibrierungMarkovverwendet inTime2Crack(RockYou 14M, Order 5)
+→ Hauptreferenz für die probabilistische KalibrierungMarkovverwendet in Time2Crack(RockYou 14M, Order 5)
 <strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong>
 Eine Studie über probabilistische Passwort-Modelle.
 <em>IEEE Symposium über Sicherheit und Datenschutz (S&amp;P 2014)</em>.
@@ -411,7 +411,7 @@ Reduzierung von Bias in der Modellierung von Real-World-Passwortstärke über De
 <strong>Hitaj, B., Gasti, P., Ateniese, G., &amp; Perez-Cruz, F. (2019).</strong>
 PassGAN: Ein Deep Learning Approach für Passwort-Guessing.
 <em>ACNS 2019</em>.
-→ Neural NachfolgerMarkov, Vergleichspunkt fürTime2Crack <code>descNeural</code>
+→ Neural NachfolgerMarkov, Vergleichspunkt für Time2Crack <code>descNeural</code>
 <h3>Open Source Implementierungen</h3>
 <strong>OMEN</strong> https://github.com/RUB-SysSec/OMEN
 <strong>John TheRipper (Modus)Markov)</strong> http://www.openwall.com/john/doc/MARKOV.shtml
@@ -421,11 +421,11 @@ PassGAN: Ein Deep Learning Approach für Passwort-Guessing.
 <strong>RockYou (2009)</strong> : 14,3M Passwörter aus dem RockYou Social Network Fehler
 <strong>Habe ich gesungen</strong> https://haveibeenpwned.com — ~14 Mrd. aggregierte Anmeldeinformationen (Troy Hunt)
 <strong>Sekundarbereich</strong> : https://github.com/danielmiessler/SecLists — Referenzwörterbücher und Wortlisten
-<h3>Webquellen, die in der Anmeldung genannt werdenTime2Crack</h3>
+<h3>Webquellen, die in der Anmeldung genannt werden Time2Crack</h3>
 <strong>Springer (Kapitel)Markov/probabilistische Rißbildung).</strong>
 https://link.springer.com/chapter/10.1007/978-3-319-24174-67
 → Verwandte Quelle in <code>descMarkov</code> (app.js) zur effektiven Verringerung des Forschungsraums durch statistische Priorisierung.
 <hr>
-<em>ProjektdokumentTime2Crack— Letzte Aktualisierung : 2026-04-01</em>
+<em>Projektdokument Time2Crack— Letzte Aktualisierung : 2026-04-01</em>
 <em>Basierend auf der Implementierung in app.js (Markovv2 rang-basiert) und akademische Publikationen zitiert</em>
 </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

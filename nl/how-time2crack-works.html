@@ -19,7 +19,6 @@
 <li><a href="how-time2crack-works.html#faq">Veelgestelde vragen</a></li>
 </ol>
 </nav>
- Overzicht 
 <section class="doc-section" id="overview">
 <h2>Overzicht</h2>
 <p>Time2Crack beantwoordt een eenvoudige vraag: <strong>Hoe lang duurt het om dit wachtwoord te kraken?</strong></p>
@@ -40,7 +39,6 @@ Als gevolg daarvan (bv. "2 dagen op GPU NTLM")
         De belangrijkste innovatie is de strikte scheiding tussen <strong>Rang</strong> (aantal pogingen) en <strong>Tijd</strong> Dit maakt het mogelijk om aanvalsalgoritmen of GPU snelheden onafhankelijk te wijzigen.
       </div>
 </section>
- Berekeningsstroom 
 <section class="doc-section" id="flux">
 <h2>Voornaamste berekeningsstroom</h2>
 <div class="diagram">
@@ -77,7 +75,6 @@ Promotie
 </div>
 <p><strong>Voordeel</strong> : Het veranderen van het algoritme van een aanval heeft nooit invloed op de logica van de tijd.</p>
 </section>
- Stap 1 
 <section class="doc-section" id="step1">
 <h2>Stap 1: Wachtwoordanalyse</h2>
 <h3>Wat analyseren we?</h3>
@@ -120,7 +117,6 @@ Promotie
 <h4><span class="emoji-marker">8</span> Uitdrukking</h4>
 <p>Detecteert verschillende samengevoegde woorden: <code>correcthorsebatterystaple</code> → <code>[correct] + [horse] + [battery] + [staple]</code></p>
 </section>
- Stap 2 
 <section class="doc-section" id="step2">
 <h2>Stap 2: Rangschatting (aantal pogingen)</h2>
 <h3>Basisconcept</h3>
@@ -151,7 +147,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
       </pre>
 </div>
 </section>
- Stap 3 
 <section class="doc-section" id="step3">
 <h2>Stap 3: Conversie naar tijd</h2>
 <h3>Het concept</h3>
@@ -217,7 +212,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
 </div>
 </section>
- De 7 aanvallen 
 <section class="doc-section" id="attacks">
 <h2>De 7 uitgevoerde aanvallen</h2>
 <h3><span class="emoji-marker">1</span> Brutokracht</h3>
@@ -260,7 +254,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <p><strong>Zeer effectief voor</strong> : wachtwoordzinnen (4+ woorden)</p>
 <p><small><a href="methode/combinator.html">Meer informatie over Combiner Attack →</a></small></p>
 </section>
- Algoritmen 
 <section class="doc-section" id="algorithms">
 <h2>De 6 hash algoritmen</h2>
 <h3>Waarom zes?</h3>
@@ -304,7 +297,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
         Moderne algoritmen zijn <strong>opzettelijk langzaam</strong>Het is een functie, geen bug! MD5 is snel (slecht), bcrypt is traag (uitstekend), Argon2id is nog langzamer (beste).
       </div>
 </section>
- Profielen 
 <section class="doc-section" id="profiles">
 <h2>Aanvalsprofielen</h2>
 <h3>Onderwerp</h3>
@@ -359,7 +351,6 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <p><strong>Onderwijs</strong> : Zelfs een "sterk" wachtwoord kan worden gekraakt in milliseconden door een natie-staat!</p>
 </section>
- Voorbeeld 
 <section class="doc-section" id="example">
 <h2>Concrete voorbeeld: Tr0ub4dor&amp;3</h2>
 <p>Het is het filmwachtwoord. <strong>"Correct Horse Battery Nieten"</strong> Eens kijken wat Time2Crack doet:</p>
@@ -399,7 +390,6 @@ Combinator   : ∞</pre>
 <li></li>
 </ul>
 </section>
- Veelgestelde vragen 
 <section class="doc-section" id="faq">
 <h2>Veelgestelde vragen</h2>
 <h3>V: Test Time2Crack het wachtwoord eigenlijk?</h3>
@@ -436,7 +426,6 @@ Combinator   : ∞</pre>
 <li><strong>MVO</strong> : 2FA-authenticatie inschakelen indien mogelijk</li>
 </ul>
 </section>
- Conclusie 
 <section class="doc-section">
 <h2>Conclusie</h2>
 <p><strong>Time2Crack werkt in 3 onveranderlijke stappen</strong> :</p>

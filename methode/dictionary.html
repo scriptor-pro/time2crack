@@ -236,29 +236,31 @@ Netherlands (nl)kkrypt0nn~80 000 entries
 <p>Wordlists are not included in the code — they are loaded on request when changing language, to meet the network budget:</p>
 <pre><code class="language-javascript">// app.js - loadDictionary()
 async function loadDictionary(lang) {
-  if (DICT<em>lang &amp; DICT</em>WORDS) return;  // Déjà chargé
-  if (DICT<em>LOADING) {
-DICT</em>PENDING<em>LANG = lang; // Waiting file
-return;
-}
-DICT</em>LOADING = true;
-<p>const res = await fetch(<code>data/wordlists/${lang}.txt</code>);
-const text = await res.text();</p>
-<p>// Convert to Set&lt;string&gt; for O(1) lookup
-DICT<em>WORDS = new Set(
-text.split("\n")
-.map(w =&gt; w.normalize("NFC").trim().toLowerCase())
-.filter(w =&gt; w.length &gt;= 4)
-);
-DICT</em>LANG = Lang;
-DICT<em>LOADING = false;
-}</em></p></code></pre>
-<strong>Why a <code>Set</code> ?</strong> Structure <code>Set</code> JavaScript guarantees O(1) lookups — regardless of dictionary size (50,000 or 200,000 entries), verification <code>DICTWORDS.has(word)</code> takes the same constant time. <code>Array</code> would require O(n) per lookup, i.e. up to 200,000 comparisons per check.
+  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
+  if (DICT_LOADING) {
+    DICT_PENDING_LANG = lang;  // load it once the current file is done
+    return;
+  }
+  DICT_LOADING = true;
+
+  const res = await fetch(`data/wordlists/${lang}.txt`);
+  const text = await res.text();
+
+  // Convert to Set&lt;string&gt; for O(1) lookup
+  DICT_WORDS = new Set(
+    text.split("\n")
+      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+      .filter(w =&gt; w.length &gt;= 4)
+  );
+  DICT_LANG = lang;
+  DICT_LOADING = false;
+}</code></pre>
+<strong>Why a <code>Set</code> ?</strong> Structure <code>Set</code> JavaScript guarantees O(1) lookups — regardless of dictionary size (50,000 or 200,000 entries), verification <code>DICT_WORDS.has(word)</code> takes the same constant time. <code>Array</code> would require O(n) per lookup, i.e. up to 200,000 comparisons per check.
 <h3>Loading queue</h3>
-<p>The <code>DICT<em>PENDING</em>LANG</code> avoids race conditions during rapid language changes:</p>
+<p>The <code>DICT_PENDING_LANG</code> avoids race conditions during rapid language changes:</p>
 <pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE
 ├── EN demandé : DICT<em>LOADING = false → start of the fetch EN
-FR requested during fetch EN : DICT</em>LOADING = true → DICT<em>PENDING</em>LANG = "fr"
+FR requested during fetch EN : DICT</em>LOADING = true → DICT_PENDING_LANG = "fr"
 ├── DE demandé pendant fetch EN : DICT<em>LOADING = true → DICT</em>PENDING<em>LANG = "de" (crash "fr")
 - Fetch Ends: DICT</em>LANG = "en", puis lance loadDictionary("de")
 └── Résultat : seule la dernière langue demandée est chargée</code></pre>

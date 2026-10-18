@@ -235,24 +235,26 @@ Países Bajos nl)kkrypt0nn~80 000 entries
 <p>Las listas de palabras no están incluidas en el código — se cargan bajo petición al cambiar el idioma, para cubrir el presupuesto de la red:</p>
 <pre><code class="language-javascript">// app.js - loadDictionary()
 async function loadDictionary(lang) {
-  if (DICT<em>lang &amp;quot; DICT &amp;quot;</em>WORDS) return;  // Déjà chargé
-  if (DICT<em>LOADING) {
-DICT</em>PENDING<em>LANG = lang; // Archivo de espera
-retorno;
-}
-DICT</em>LOADING = true;
-<p>const res = await fetch(<code>data/wordlists/${lang}.txt</code>);
-const text = await res.text();</p>
-<p>// Convertir en Establecer referencias clave para la búsqueda O(1)
-DICT<em>WORDS = nuevo Set(
-texto.split("\n")
-.map(w = título w.normalize("NFC").trim().toLowerCase())
-.filter(w = título w.length
-);
-DICT</em>LANG = Lang;
-DICT<em>LOADING = false;
-}</em></p></code></pre>
-<strong>¿Por qué? <code>Set</code> ?</strong> Estructura <code>Set</code> JavaScript garantiza las revisiones O(1), independientemente del tamaño del diccionario (50.000 o 200.000 entradas), verificación <code>DICTWORDS.has(word)</code> toma el mismo tiempo constante. <code>Array</code> requeriría O(n) por consulta, es decir, hasta 200.000 comparaciones por cheque.
+  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
+  if (DICT_LOADING) {
+    DICT_PENDING_LANG = lang;  // load it once the current file is done
+    return;
+  }
+  DICT_LOADING = true;
+
+  const res = await fetch(`data/wordlists/${lang}.txt`);
+  const text = await res.text();
+
+  // Convert to Set&lt;string&gt; for O(1) lookup
+  DICT_WORDS = new Set(
+    text.split("\n")
+      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+      .filter(w =&gt; w.length &gt;= 4)
+  );
+  DICT_LANG = lang;
+  DICT_LOADING = false;
+}</code></pre>
+<strong>¿Por qué? <code>Set</code> ?</strong> Estructura <code>Set</code> JavaScript garantiza las revisiones O(1), independientemente del tamaño del diccionario (50.000 o 200.000 entradas), verificación <code>DICT_WORDS.has(word)</code> toma el mismo tiempo constante. <code>Array</code> requeriría O(n) por consulta, es decir, hasta 200.000 comparaciones por cheque.
 <h3>Carga de cola</h3>
 <p>El <code>DICT<em>FIN</em>LANG</code> evita las condiciones de raza durante los cambios rápidos en el idioma:</p>
 <pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE

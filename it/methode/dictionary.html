@@ -235,24 +235,26 @@ Paesi Bassikkrypt0nn~ 80 000 voci
 <p>Le liste di parole non sono incluse nel codice — sono caricate su richiesta durante la modifica del linguaggio, per soddisfare il budget della rete:</p>
 <pre><code class="language-javascript">// app.js - loadDictionary()
 async function loadDictionary(lang) {
-  if (DICT<em>lang &amp; DICT</em>WORDS) return;  // Déjà chargé
-  if (DICT<em>LOADING:
-DICT</em>PENDING<em>LANG = lang; // file di attesa
-ritorno;
-#
-DICT</em>LOADING = true;
-<p>const res = aspetta fetch(<code>data/wordlists/${lang}.txt</code>);
-const text = attendere res.text();</p>
-<p>// Convertire in Impostare l'abbronzatura &gt; per la ricerca O(1)
-DICT<em>WORDS = nuovo set(
-text.split("\n")
-.map(w =&gt; w.normalize("NFC").trim().toLowerCase()
-.filter(w =&gt; w.length &gt;= 4)
-);
-DICT</em>LANG = Lang;
-DICT<em>LOADING = falso;
-#</em></p></code></pre>
-<strong>Perché <code>Set</code> ?</strong> Struttura <code>Set</code> JavaScript garantisce O(1) lookups — indipendentemente dalla dimensione del dizionario (50.000 o 200.000 voci), verifica <code>DICTWORDS.has(word)</code> prende lo stesso tempo costante. <code>Array</code> richiederebbe O(n) per ricerca, cioè fino a 200.000 confronti per controllo.
+  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
+  if (DICT_LOADING) {
+    DICT_PENDING_LANG = lang;  // load it once the current file is done
+    return;
+  }
+  DICT_LOADING = true;
+
+  const res = await fetch(`data/wordlists/${lang}.txt`);
+  const text = await res.text();
+
+  // Convert to Set&lt;string&gt; for O(1) lookup
+  DICT_WORDS = new Set(
+    text.split("\n")
+      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+      .filter(w =&gt; w.length &gt;= 4)
+  );
+  DICT_LANG = lang;
+  DICT_LOADING = false;
+}</code></pre>
+<strong>Perché <code>Set</code> ?</strong> Struttura <code>Set</code> JavaScript garantisce O(1) lookups — indipendentemente dalla dimensione del dizionario (50.000 o 200.000 voci), verifica <code>DICT_WORDS.has(word)</code> prende lo stesso tempo costante. <code>Array</code> richiederebbe O(n) per ricerca, cioè fino a 200.000 confronti per controllo.
 <h3>Caricamento della coda</h3>
 <p>The <code>DICT<em>FINE</em>LANG</code> evita le condizioni di gara durante i rapidi cambiamenti linguistici:</p>
 <pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE

@@ -235,24 +235,26 @@ Nederland (nl)kkrypt0nn~80 000 vermeldingen
 <p>Wordlists zijn niet opgenomen in de code </p>
 <pre><code class="language-javascript">// app.js - loadDictionary()
 async function loadDictionary(lang) {
-  if (DICT<em>Lang &amp; DICT</em>WORDS) return;  // Déjà chargé
-  if (DICT<em>LADING) {
-DICT</em>PENDING<em>LANG = lang; // Wachtbestand
-terugkeer;
-}
-DICT</em>LOADING = true;
-<p>const res = wacht op fetch(<code>data/wordlists/${lang}.txt</code>);
-const tekst = wacht res.text();</p>
-<p>// Converteren naar Set&lt;string&gt; voor O(1) opzoeken
-DICT<em>VERMELDING = nieuwe verzameling(
-text.split("\n")
-.map(w =&gt; w.normalize("NFC").trim().toLowerCase())
-.filter(w =&gt; w.lengte &gt;= 4)
-);
-DICT</em>LANG = Lang;
-DICT<em>LOADING = vals;
-}</em></p></code></pre>
-<strong>Waarom een <code>Set</code> ?</strong> Structuur <code>Set</code> JavaScript garandeert O(1) lookups, ongeacht de grootte van het woordenboek (50.000 of 200.000 inzendingen), verificatie <code>DICTWORDS.has(word)</code> Het duurt even lang. <code>Array</code> per lookup, d.w.z. tot 200.000 vergelijkingen per controle.
+  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
+  if (DICT_LOADING) {
+    DICT_PENDING_LANG = lang;  // load it once the current file is done
+    return;
+  }
+  DICT_LOADING = true;
+
+  const res = await fetch(`data/wordlists/${lang}.txt`);
+  const text = await res.text();
+
+  // Convert to Set&lt;string&gt; for O(1) lookup
+  DICT_WORDS = new Set(
+    text.split("\n")
+      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+      .filter(w =&gt; w.length &gt;= 4)
+  );
+  DICT_LANG = lang;
+  DICT_LOADING = false;
+}</code></pre>
+<strong>Waarom een <code>Set</code> ?</strong> Structuur <code>Set</code> JavaScript garandeert O(1) lookups, ongeacht de grootte van het woordenboek (50.000 of 200.000 inzendingen), verificatie <code>DICT_WORDS.has(word)</code> Het duurt even lang. <code>Array</code> per lookup, d.w.z. tot 200.000 vergelijkingen per controle.
 <h3>Wachtrij wordt geladen</h3>
 <p>De <code>DICT<em>HUNG</em>LANG</code> Vermijdt raceomstandigheden tijdens snelle taalveranderingen:</p>
 <pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE

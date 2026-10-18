@@ -235,24 +235,26 @@ Niderlandy (nl)kkrypt0nn~ 80 000 wpisów
 <p>Listy wordlist nie są zawarte w kodzie - są ładowane na życzenie przy zmianie języka, aby spełnić budżet sieci:</p>
 <pre><code class="language-javascript">// app.js - loadDictionary()
 async function loadDictionary(lang) {
-  if (DICT<em>lang &amp; DICT</em>WORDS) return;  // Déjà chargé
-  if (DICT<em>/
-DICT</em>PENDING<em>LANG = lang; / / oczekujący plik
-powrót;
-¶
-DICT</em>LOADING = true;
-<p>const res = czekać fetch (<code>data/wordlists/${lang}.txt</code>);
-const text = wait res.text ();</p>
-<p>/ / Convert to Set &lt; string &gt; for O (1) lookup
-DICT<em>WORDS = nowy zestaw (
-text.split ("\ n")
-.map (w = &gt; w.normalize ("NFC") .trim () .toLowerCase ())
-.filter (w = &gt; w.długość &gt; = 4)
-);
-DICT</em>LANG = Lang;
-DICT<em>LOADING = false;
-¶</em></p></code></pre>
-<strong>Dlaczego <code>Set</code> ?</strong> Struktura <code>Set</code> JavaScript gwarantuje O (1) przeglądanie - niezależnie od rozmiaru słownika (50 000 lub 200 000 wpisów), weryfikacja <code>DICTWORDS.has(word)</code> ma ten sam stały czas. <code>Array</code> wymagałoby O (n) na kontrolę, tj. do 200 000 porównań na kontrolę.
+  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
+  if (DICT_LOADING) {
+    DICT_PENDING_LANG = lang;  // load it once the current file is done
+    return;
+  }
+  DICT_LOADING = true;
+
+  const res = await fetch(`data/wordlists/${lang}.txt`);
+  const text = await res.text();
+
+  // Convert to Set&lt;string&gt; for O(1) lookup
+  DICT_WORDS = new Set(
+    text.split("\n")
+      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
+      .filter(w =&gt; w.length &gt;= 4)
+  );
+  DICT_LANG = lang;
+  DICT_LOADING = false;
+}</code></pre>
+<strong>Dlaczego <code>Set</code> ?</strong> Struktura <code>Set</code> JavaScript gwarantuje O (1) przeglądanie - niezależnie od rozmiaru słownika (50 000 lub 200 000 wpisów), weryfikacja <code>DICT_WORDS.has(word)</code> ma ten sam stały czas. <code>Array</code> wymagałoby O (n) na kontrolę, tj. do 200 000 porównań na kontrolę.
 <h3>Wczytywanie kolejki</h3>
 <p>W <code>DICT<em>PRACA</em>LANG</code> unika warunków wyścigu podczas szybkich zmian językowych:</p>
 <pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE

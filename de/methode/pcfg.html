@@ -3,7 +3,7 @@
 </head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
 <h1 style="display:none">AngriffPCFG— Umfassender Betrieb</h1>
 <blockquote>
-Referenzdokument des ProjektsTime2Crack
+Referenzdokument des Projekts Time2Crack
 </blockquote>
 <blockquote>Empfänger: Entwickler, Sicherheitswissenschaftler, Fortgeschrittene</blockquote>
 <hr>
@@ -14,7 +14,7 @@ Referenzdokument des ProjektsTime2Crack
 <li><a href="pcfg.html#4-apprentissage-du-modèle-pcfg">ModellbildungPCFG</a></li>
 <li><a href="pcfg.html#5-génération-ordonnée-des-candidats">Ordentliche Kandidatgeneration</a></li>
 <li><a href="pcfg.html#6-pourquoi-pcfg-casse-des-secrets-à-entropie-apparente-élevée">Warum?PCFGbricht Geheimnisse mit hoher scheinbarer Entropie</a></li>
-<li><a href="pcfg.html#7-implémentation-dans-time2crack--addpcfgattacks">UmsetzungTime2Crack: <code>addPCFGAttacks()</code></a></li>
+<li><a href="pcfg.html#7-implémentation-dans-time2crack--addpcfgattacks">Umsetzung Time2Crack: <code>addPCFGAttacks()</code></a></li>
 <li><a href="pcfg.html#8-fonction-pcfgkeyspace-et-hypothèses">Funktion <code>pcfgKeyspace()</code> und Annahmen</a></li>
 <li><a href="pcfg.html#9-gestion-numérique--soft-cap-remplacement-du-cap-dur">Digitales Management: Soft-Cap (Ersatz von Hard-Cap)</a></li>
 <li><a href="pcfg.html#10-calibration-haute-fidélité">Hochsicherheitskalibrierung</a></li>
@@ -42,8 +42,8 @@ Referenzdokument des ProjektsTime2Crack
 <p>PCFGDiese Priorisierung ist die Hauptquelle ihrer Wirksamkeit.</p>
 <h2>6. Warum?PCFGbricht Geheimnisse mit hoher scheinbarer Entropie</h2>
 <p>Eine Kette kann in der Rohentropie stark erscheinen, während sie sehr vorhersehbar strukturell ist (Wort + Ziffern + Symbol).PCFGdiese Vorhersehbarkeit ausnutzen.</p>
-<h2>7. Implementierung inTime2Crack: <code>addPCFGAttacks()</code></h2>
-<p>Time2CrackBudget berechnen <code>pcfgKeyspace(pw)</code> dann in die Zeit mit <code>budgetTime(...)</code>.</p>
+<h2>7. Implementierung in Time2Crack: <code>addPCFGAttacks()</code></h2>
+<p>Time2Crack Budget berechnen <code>pcfgKeyspace(pw)</code> dann in die Zeit mit <code>budgetTime(...)</code>.</p>
 <p>Kategorie: <code>cat: "pcfg"</code>, Anmerkung: <code>nPCFGDetected</code>.</p>
 <h2>8. Funktion <code>pcfgKeyspace()</code> und Annahmen</h2>
 <p>Das interne Modell nähert sich den lexischen, numerischen und symbolischen Dimensionen und begrenzt dann den Schlüsselraum, um im interaktiven Einsatz realistisch zu bleiben.</p>
@@ -54,7 +54,7 @@ Referenzdokument des ProjektsTime2Crack
 <li>Strukturvariationsfaktor.</li>
 <p>Der HaushaltsplanPCFGwird dann über <code>budgetTime(pcfgGuesses, rate)</code>.</p>
 <h2>9. Digitales Management: Soft Cap (Ersatz von Hartkappe)</h2>
-<p>Time2Crackjetzt nutzt <strong>weiche Kappe</strong> um künstliche Schalen zu vermeiden, die durch eine einzige harte Position verursacht werden.</p>
+<p>Time2Crack jetzt nutzt <strong>weiche Kappe</strong> um künstliche Schalen zu vermeiden, die durch eine einzige harte Position verursacht werden.</p>
 <h3>9.1 Ehemaliger Ansatz (hard copy)</h3>
 <p>Ein <code>Math.min(..., cap)</code> alle Werte über der Überschrift in der gleichen Konstante zerkleinert, wodurch die Hierarchie zwischen "schwierigen" und "sehr schwierigen" Fällen entfernt wird.</p>
 <h3>9.2 Neuer Ansatz (weicher Kurs)</h3>

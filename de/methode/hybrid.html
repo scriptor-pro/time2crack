@@ -3,7 +3,7 @@
 </head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
 <h1 style="display:none">Hybrider Angriff — Umfassende Operation</h1>
 <blockquote>
-Referenzdokument des ProjektsTime2Crack
+Referenzdokument des Projekts Time2Crack
 </blockquote>
 <blockquote>Empfänger: Entwickler, Sicherheitswissenschaftler, Fortgeschrittene</blockquote>
 <hr>
@@ -16,7 +16,7 @@ Referenzdokument des ProjektsTime2Crack
 <li><a href="hybrid.html#6-règles-best64--le-jeu-de-référence">Best64 Regeln: das Referenzspiel</a></li>
 <li><a href="hybrid.html#7-taxonomie-complète-des-transformations">Vollständige Taxonomie der Transformationen</a></li>
 <li><a href="hybrid.html#8-priorisation-par-fréquence--le-cœur-de-lefficacité">Frequenzpriorität: das Herz der Effizienz</a></li>
-<li><a href="hybrid.html#9-implémentation-dans-time2crack--addhybridattacks">UmsetzungTime2Crack: <code>addHybridAttacks()</code></a></li>
+<li><a href="hybrid.html#9-implémentation-dans-time2crack--addhybridattacks">Umsetzung Time2Crack: <code>addHybridAttacks()</code></a></li>
 <li><a href="hybrid.html#10-les-trois-keyspaces-hybrides-et-leur-justification">Die drei Hybrid-Schlüsselräume und ihre Rechtfertigung</a></li>
 <li><a href="hybrid.html#11-calibration-haute-fidélité">Hochsicherheitskalibrierung</a></li>
 <li><a href="hybrid.html#12-relation-avec-les-attaques-dérivées">Beziehung zu abgeleiteten Angriffen</a></li>
@@ -30,7 +30,7 @@ Referenzdokument des ProjektsTime2Crack
 <p>Hybrid-Angriff ist die Rißmethode, die kombiniert <strong>ein Wörterbuchwortliste</strong> mit <strong>eine Reihe von Transformationsregeln</strong>Anstatt jedes Wort im Wörterbuch zu testen, wie es ist (reiner Wörterbuch-Angriff), erzeugt es auf der Fliege alle plausiblen Varianten jedes Wortes — Kapitalisierungen, Charaktersubstitutionen, Präfix/Suffix-Additionen, Inversionen — und testet sie systematisch.</p>
 <strong>Warum ist es so effektiv?</strong> Die Menschen wählen "Passwort" nicht als Passwort, sie wählen "Password1", "p@ssw0rd", "PASSWORD123" oder "Passwort!". Diese Varianten scheinen stärker zu sein, weil sie nicht in der rohen Wörterbuchliste sind – aber sie gehören zu den ersten, die von jedem modernen Hybrid-Cracking-Tool erzeugt werden.
 <p>Hybrid-Angriff ist historisch die verantwortliche Methode für die Mehrheit der realen "mittleren" Passwort-Crackings - diejenigen, die stark scheinen, ohne stark zu sein. <strong>die ersten 8 bis 10 Regeln, die auf ein aktuelles Wort angewendet werden, genügen, um das mittlere Passwort zu knacken</strong> Bevölkerung.</p>
-<p>InTime2CrackDer Hybridangriff modelliert:
+<p>In Time2Crack Der Hybridangriff modelliert:
 </p><li>Die Erkennung, dass das Passwort von einem Wörterbuchwort abgeleitet wird oder</li>
 <li>Schätzung der Anzahl der Kandidaten sollte ein Angreifer testen, bevor die genaue Variante gefunden werden</li>
 <li>Berechnung der entsprechenden Zeit nach dem Ziel Hash-Algorithmus</li><p></p>
@@ -112,7 +112,7 @@ Mehrere Kombinationen"Passwort" → "P@ssw0rd1"<code>c s a @ s o 0 $1</code>
 <li>Passwort123 ($12$3)</li>
 ...
 <li>p@ssW0rd! (Kombinationskomplex)</li></code></pre>
-<p>"password" ist das häufigste Wort → seine Derivate werden zuerst getestet. "papillon" ist weniger häufig → seine Derivate werden viel später getestet. Diese Priorisierung ist der zentrale Mechanismus, der die drei verschiedenen Schlüsselbereiche inTime2Crack.</p>
+<p>"password" ist das häufigste Wort → seine Derivate werden zuerst getestet. "papillon" ist weniger häufig → seine Derivate werden viel später getestet. Diese Priorisierung ist der zentrale Mechanismus, der die drei verschiedenen Schlüsselbereiche in Time2Crack.</p>
 <hr>
 <h2>4. Architektur eines modernen Hybridangriffs</h2>
 <h3>4.1 Allgemeine Pipeline</h3>
@@ -152,7 +152,7 @@ Wenn Spiel: FINDED — log(candidate, hash, rule)</p>
 <strong>Modus -a 7 (Maske + Wortliste)</strong> : inverse — maskiertes Präfix + Wort.
 <pre><code class="language-bash">hashcat -a 7 -m 0 hashes.txt ?d?d wordlist.txt
 <h1 style="display:none">Test "00sunshine", "01sunshine", ..., "99sunshine"</h1></code></pre>
-<p>Time2Crackvor allem Modell der Modus <code>-a 0</code> (Überweisungsregeln), die die überwiegende Mehrheit der tatsächlich dokumentierten Hybridangriffe abdeckt.</p>
+<p>Time2Crack vor allem Modell der Modus <code>-a 0</code> (Überweisungsregeln), die die überwiegende Mehrheit der tatsächlich dokumentierten Hybridangriffe abdeckt.</p>
 <h3>4.3 Reihenfolge der Kandidaten und Priorisierungsstrategie</h3>
 <p>Die Reihenfolge, in der Kandidaten getestet werden, ist kritisch.</p>
 <strong>Strategiewort-first</strong> (default hashcat): Alle Regeln werden auf W1 angewendet, bevor Sie auf W2 wechseln.
@@ -317,18 +317,18 @@ TOP100"password1", "P@ssword"~450–500
 Gemeinsames Dikt (top-10k)"Sunshine1", "Sunshine!"5 000–15 000
 Weniger häufig"Paillon2024"~50 000–200,000
 Ohne Wörterbuch"Xk7#mP9q"N/A (unanwendbarer Hybrid)
-<p>Diese Messungen sind die direkte Grundlage derTime2Crack:
+<p>Diese Messungen sind die direkte Grundlage der Time2Crack:
 </p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
 const HYBRID<em>KEYSPACE</em>DICT = 8<em>000; // Ma et al. 2014 — median current diktator
 HYBRID</em>KEYSPACE<em>FULL = 128e6; // Gosney 2012 — best64 × 2M erschöpfende Worte</em></code></pre><p></p>
 <h3>8.3 Bedingungen, die für den Hybriden erforderlich sind</h3>
-<p>Hybrid-Angriff erfordert das Passwort zu sein <strong>aus einem Wörterbuchwort strukturell abnehmbar</strong>.Time2Crackerkennt diese Bedingung über <code>hybridVuln</code> :</p>
+<p>Hybrid-Angriff erfordert das Passwort zu sein <strong>aus einem Wörterbuchwort strukturell abnehmbar</strong>.Time2Crack erkennt diese Bedingung über <code>hybridVuln</code> :</p>
 <pre><code class="language-javascript">const hybridVuln = dictWord || (common &amp;&amp; /[a-z]/i.test(pw));</code></pre>
 <li><code>dictWord = true</code> : das Passwort ist oder leitet von einer Sprachwortliste</li>
 <li><code>common &amp;&amp; lettre</code> : das Passwort erscheint in COMMON (HIBP top-400) und enthält Buchstaben — so fast sicher abgeleitet von einem Wort</li>
 <p>wenn <code>dictWord</code> weder <code>hybridVuln</code> are true — das Passwort enthält keine nachweisbare Wörterbuchwurzel — hybrid attack returns <code>null</code> Ein rein zufälliges Passwort wie "xK9#mQ7@" ist nicht anfällig für Hybriden.</p>
 <hr>
-<h2>9. Implementierung inTime2Crack: <code>addHybridAttacks()</code></h2>
+<h2>9. Implementierung in Time2Crack: <code>addHybridAttacks()</code></h2>
 <h3>9.1 Vollständiger annotierter Code</h3>
 <pre><code class="language-javascript">function addHybridAttacks(rows, hybridVuln, weak, common, dictWord) {
   if (hybridVuln || weak) {
@@ -416,7 +416,7 @@ wenn (l.includes(w) &amp;&amp;w.length &gt;=4) die Rückkehr wahr ist;
 <hr>
 <h2>11. Hochsicherheitskalibrierung</h2>
 <h3>11.1 Rolle des hohen Treuemodus</h3>
-<p>Wenn High Loyalty Modus (HF) aktiviert istTime2Crack, wird ein zusätzlicher Multiplikator auf die berechneten Zeiten angewendet, um die Genauigkeit zu verfeinern. Bei Hybridangriff berücksichtigt dieser Multiplikator Faktoren, die nicht von den grundlegenden Schlüsselbereichen erfasst werden.</p>
+<p>Wenn High Loyalty Modus (HF) aktiviert ist Time2Crack, wird ein zusätzlicher Multiplikator auf die berechneten Zeiten angewendet, um die Genauigkeit zu verfeinern. Bei Hybridangriff berücksichtigt dieser Multiplikator Faktoren, die nicht von den grundlegenden Schlüsselbereichen erfasst werden.</p>
 <h3>HF-Multiplikatoren für Hybrid</h3>
 <p>In <code>applyHighFidelityCalibration()</code> :</p>
 <pre><code class="language-javascript">case "hybrid":
@@ -449,7 +449,7 @@ AnwendungsbereichPasswort = exaktes WortPasswort abgeleitet von einem Wort
 Vulnerables Beispiel"sunshine" (exakt)"Sunshine1!", "sunsh1ne"
 Resistentes Beispiel"Sunshine1""xK9#mQ7@" (keine Wurzel)
 <h3>12.2Hybride vs Regelbasierte</h3>
-<p>Der regelbasierte AngriffTime2Crackist konzeptuell ähnlich, aber mit einem viel breiteren Satz von Regeln:</p>
+<p>Der regelbasierte Angriff Time2Crack ist konzeptuell ähnlich, aber mit einem viel breiteren Satz von Regeln:</p>
 <pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000; // vs 128M für Vollhybrid</em></code></pre>
 <p>Der Unterschied: der best64 Modell-Hybrid (64 Regeln, Fokus auf gemeinsame menschliche Transformationen). Die regelbasierten Angriffsmodelle breitere Spiele wie d3ad0ne (34k Regeln) oder OneRuleToRuleThemAll (52k Regeln), verwendet, wenn best64 scheitert.</p>
 <h3>12.3Hybride vsPCFG</h3>
@@ -481,7 +481,7 @@ Argon2id800 H/s0,625 s10 %44 Stunden
 <strong>Lesung</strong> : Für MD5 und NTLM wird sogar der FULL-Schlüsselraum (128M-Kandidaten) in wenigen Dutzend Mikrosekunden gekrackt. Der Hash-Algorithmus ist für gemeinsame Wörter fast irrelevant.
 <strong>Argon2id</strong> ist der einzige Algorithmus, der auch bei gemeinsamen Wörtern deutlich widersteht: 0,625 Sekunden für ein COMMON-Wort, 10 Sekunden für einen DiktWord. Diese Zeiten bleiben kurz im absoluten Wert, stellen aber eine Verlangsamung von x10^12 vs MD5 dar - große Angriffe wirtschaftlich unbrauchbar.
 <h3>13.2 Auswirkung des Angriffsprofils</h3>
-<p>Time2Crackbietet zwei Profile (Experienced 12 GPU, Professional 100 GPU). Für den Hybriden ist die Profildifferenz direkt proportional:</p>
+<p>Time2Crack bietet zwei Profile (Experienced 12 GPU, Professional 100 GPU). Für den Hybriden ist die Profildifferenz direkt proportional:</p>
 ProfilGPUsMultiplikatorFULL bcrypt
 ---------------------------------
 Erfahrene12× RTX 40901 ×31 min
@@ -530,12 +530,12 @@ Beruf~100 GPU~8×~4 min
 <strong>Abhängigkeit von der Qualität der Wortliste</strong> : Wenn das Grundwort nicht in der Wortliste ist, kann der Hybrid nicht funktionieren. Ein Passwort auf Basis eines sehr spezialisierten Begriffs (neologism, obskurer technischer Begriff, Wort einer seltenen Sprache) kann widerstehen, wenn es von allen gemeinsamen Wortlisten fehlt.
 <strong>unvollständige Erfassung von Transformationen</strong> : sogar OneRuleToRuleThemAll mit 52k Regeln deckt nicht 100% der vorstellbaren Transformationen ab. Einige sehr seltene Transformationen (Base64 Teilcodierungen, erfundene Muster) entkommen den Regeln.
 <strong>Kombinationsexplosion mit langen Wortlisten</strong> Bei 2.000 GH/s (MD5) dauert es ~250 Sekunden – aber mit bcrypt (69 kH/s), ~230.000 Jahre. Die Skalierbarkeit des Hybrids wird durch die Länge der Wortliste und die Langsamkeit des Hash-Algorithmus eingeschränkt.
-<h3>15.2 Was?Time2Cracknicht erfasst</h3>
-<strong>Inhaltsverzeichnis</strong> : ein Angreifer, der ein bestimmtes Unternehmen anvisiert, wird eine Wortliste mit dem Namen des Unternehmens erstellen, Produkte, Mitarbeiternamen, Geschäftsbedingungen. "Renault2024!" würde sofort von einem Angreifer auf Renault gespalten werden — aberTime2Crackdiesen Kontext nicht modelliert (dies ist die Rolle des "Targeted OSINT"-Angriffs).
-<strong>Multipass-Verbundregeln</strong> Einige Passwörter widerstehen am besten64, geben aber Wege zu Zwei-Pass-Regeln (ca. eine Regel, dann eine andere Regel auf das Ergebnis anwenden).Time2Cracknur Modell ein Regelpass.
+<h3>15.2 Was?Time2Crack nicht erfasst</h3>
+<strong>Inhaltsverzeichnis</strong> : ein Angreifer, der ein bestimmtes Unternehmen anvisiert, wird eine Wortliste mit dem Namen des Unternehmens erstellen, Produkte, Mitarbeiternamen, Geschäftsbedingungen. "Renault2024!" würde sofort von einem Angreifer auf Renault gespalten werden — aber Time2Crack diesen Kontext nicht modelliert (dies ist die Rolle des "Targeted OSINT"-Angriffs).
+<strong>Multipass-Verbundregeln</strong> Einige Passwörter widerstehen am besten64, geben aber Wege zu Zwei-Pass-Regeln (ca. eine Regel, dann eine andere Regel auf das Ergebnis anwenden).Time2Crack nur Modell ein Regelpass.
 <strong>Cache-Effekte und Erinnerung</strong> : hashcat unterhält eine Tabelle von Kandidaten, die bereits getestet wurden, um Duplikate zu vermeiden, die den Lauf in der Praxis beschleunigen.Time2Crack(Konservierungsmittel).
 <h3>15.3 Fälle, in denen der Hybrid überschätzt wird</h3>
-<p>Time2Crackkann Hybridgeschwindigkeit in zwei Fällen überschätzen:</p>
+<p>Time2Crack kann Hybridgeschwindigkeit in zwei Fällen überschätzen:</p>
 <li><strong>Lange Passwörter</strong> Als Wörterbuch wird ein 20-Charakter-Passwort basierend auf einem Wortwörterbuch ("Unverständlichkeiten1!") erkannt, aber Hybrid-Tools filtern in der Regel zu lange Kandidaten. Der reale Schlüsselraum ist vielleicht 10× größer.</li>
 <li><strong>Sprachen mit reicher Morphologie</strong> Türkisch, Finnisch, Ungarisch haben komplexere Wortlisten. "Güneş2024" kann unter Radargeräten passieren, wenn die türkische Wortliste nicht alle morphologischen Formen umfasst.</li>
 <hr>
@@ -589,7 +589,7 @@ IEEE Symposium über Sicherheit und Datenschutz (S&amp;P), 2009.
 <strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014)</strong>
 </em>Eine Studie über probabilistische Passwortmodelle<em>
 IEEE Symposium über Sicherheit und Datenschutz (S&amp;P), 2014.
-— <strong>Direkte Referenzstudie</strong> fürTime2Crack: empirische Messung der medianen Positionen (500 für Top-100, 2000–15000 für aktuelles Dikt) in einem Hybrid-Scan, der mit der Wahrscheinlichkeit auf 10M reale Passwörter bestellt wird.
+— <strong>Direkte Referenzstudie</strong> für Time2Crack: empirische Messung der medianen Positionen (500 für Top-100, 2000–15000 für aktuelles Dikt) in einem Hybrid-Scan, der mit der Wahrscheinlichkeit auf 10M reale Passwörter bestellt wird.
 <strong>Durmuth, M., Chaabane, A., Perito, D., &amp; Castelluccia, C. (2015)</strong>
 </em>Wenn Datenschutzsitzungen Sicherheit: Leveraging personenbezogene Daten für das Passwort-Tracking<em>
 ESORICS 2015.
@@ -635,7 +635,7 @@ http://hashcat.net/hashcat/
 <strong>Sekundarbereich</strong> (Daniel Miessler, 2012–präsent)
 https://github.com/danielmiessler/SecLists
 — Sammlung von Wortlisten nach Sprache, Domäne, Thema.Time2Crack.
-<h3>Webquellen, die in der Anmeldung genannt werdenTime2Crack</h3>
+<h3>Webquellen, die in der Anmeldung genannt werden Time2Crack</h3>
 <strong>Chick3nman (Hashcat Benchmarks/Regeln).</strong>
 http://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb4222fd
 — Verwandte Quelle <code>descHybrid</code> (app.js) für die Größenordnung der angewandten Mutationsregeln.
@@ -643,7 +643,7 @@ http://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb4222fd
 https://ieeexplore.ieee.org/document/6956583
 — Verwandte Quelle <code>descHybrid</code> (app.js) über die empirische Wirksamkeit mutierter Passwörter.
 <hr>
-</em>Im Rahmen des Projekts generiertes DokumentTime2Crack— 2026<em>
+</em>Im Rahmen des Projekts generiertes Dokument Time2Crack— 2026<em>
 </em>Siehe auch: BRUTEFORCE<em>ATTACK</em>AUSSCHUSS<em>ATTACK</em>AUSSCHUSS<em>ATTACK</em>AUSGABEN
 
   </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

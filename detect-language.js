@@ -30,10 +30,13 @@
     return;
   }
 
+  // Same page in the target language (generator.html → fr/generator.html), query and anchor kept
+  const target = (lang) => `${basePath}${lang}/${pathname.slice(basePath.length)}${window.location.search}${window.location.hash}`;
+
   // Check if user has a saved language preference
   const savedLang = localStorage.getItem(STORAGE_KEY);
   if (savedLang && SUPPORTED_LANGS.includes(savedLang) && savedLang !== DEFAULT_LANG) {
-    window.location.href = `${basePath}${savedLang}/`;
+    window.location.href = target(savedLang);
     return;
   }
 
@@ -46,6 +49,6 @@
   // If supported and not default, redirect
   if (primaryLang && SUPPORTED_LANGS.includes(primaryLang) && primaryLang !== DEFAULT_LANG) {
     localStorage.setItem(STORAGE_KEY, primaryLang);
-    window.location.href = `${basePath}${primaryLang}/`;
+    window.location.href = target(primaryLang);
   }
 })();

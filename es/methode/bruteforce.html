@@ -27,9 +27,9 @@ Documento de referencia del proyecto Time2Crack
 <h3>2.1 Origen</h3>
 <p>La fuerza prima precede al ordenador: el principio de probar todas las combinaciones posibles se utiliza desde las primeras máquinas de encriptación mecánica (Enigma durante la Segunda Guerra Mundial).La bomba de Alan Turing fue, en un sentido amplio, un dispositivo de fuerza cruda obligado por una hipótesis de cunas.</p>
 <p>Con el advenimiento de las computadoras, la fuerza de contraseña unix fue formalizada entre los años 70 y 1980:</p>
-<table>
-<tbody><tr><td>Año</td><td>Evento</td></tr>
-<tr><td>---</td><td>--------------</td></tr>
+<table class="about-table">
+<thead><tr><th>Año</th><th>Evento</th></tr></thead>
+<tbody>
 <tr><td>1979</td><td>Morris &amp; Thompson: Primer artículo académico sobre seguridad de contraseñas Unix, con análisis de fuerza en /etc/passwd</td></tr>
 <tr><td>1988</td><td>Morris Worm: primera hazaña de masa usando, entre otras cosas, un diccionario y contraseña de fuerza cruda</td></tr>
 <tr><td>1993</td><td>Crack 5.0 (Alec Muffett): primera herramienta pública de cracking por fuerza cruda en Unix</td></tr>
@@ -52,15 +52,15 @@ Documento de referencia del proyecto Time2Crack
 <p>Keyspace (keyspace) es el número total de posibles contraseñas para una longitud y tanque dados:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
 <p>Ejemplos:</p>
-<table>
-<tbody><tr><td>Charset</td><td>Tamaño</td><td>Duración</td><td>Keyspace</td><td>Valoración</td></tr>
-<tr><td>--------</td><td>---</td><td>---------</td><td>---------</td><td>---------</td></tr>
-<tr><td>dígitos individuales</td><td>10</td><td>8</td><td>108 = 100 millones</td><td>~108</td></tr>
-<tr><td>Minuscules alone</td><td>26</td><td>8</td><td>268 millones</td><td>~2 × 1011</td></tr>
-<tr><td>Alphanumeric</td><td>62</td><td>8</td><td>628 millones</td><td>~2 × 1014</td></tr>
-<tr><td>Full ASCII</td><td>95</td><td>8</td><td>958 millones</td><td>~6 × 1015</td></tr>
-<tr><td>Full ASCII</td><td>95</td><td>12</td><td>9512 - 5.4 × 1023</td><td>~5 × 1023</td></tr>
-<tr><td>Full ASCII</td><td>95</td><td>16</td><td>9516 - 4.4 × 1031</td><td>~4 × 1031</td></tr>
+<table class="about-table">
+<thead><tr><th>Conjunto de caracteres</th><th>Tamaño</th><th>Longitud</th><th>Espacio de claves</th><th>Orden de magnitud</th></tr></thead>
+<tbody>
+<tr><td>Solo dígitos</td><td>10</td><td>8</td><td>10⁸ = 100.000.000</td><td>~10⁸</td></tr>
+<tr><td>Solo minúsculas</td><td>26</td><td>8</td><td>26⁸ ≈ 2,1 × 10¹¹</td><td>~2 × 10¹¹</td></tr>
+<tr><td>Alfanumérico</td><td>62</td><td>8</td><td>62⁸ ≈ 2,2 × 10¹⁴</td><td>~2 × 10¹⁴</td></tr>
+<tr><td>ASCII completo</td><td>95</td><td>8</td><td>95⁸ ≈ 6,6 × 10¹⁵</td><td>~7 × 10¹⁵</td></tr>
+<tr><td>ASCII completo</td><td>95</td><td>12</td><td>95¹² ≈ 5,4 × 10²³</td><td>~5 × 10²³</td></tr>
+<tr><td>ASCII completo</td><td>95</td><td>16</td><td>95¹⁶ ≈ 4,4 × 10³¹</td><td>~4 × 10³¹</td></tr>
 </tbody></table>
 <h3>3.2 binario entropy</h3>
 <p>La entropía (medida en bits) es la formulación logarítmica del espacio clave:</p>
@@ -73,14 +73,14 @@ Documento de referencia del proyecto Time2Crack
 <pre><code class="language-plaintext">keyspace = 2^entropie
 entropie = log₂(keyspace)</code></pre>
 <strong>Ejemplos concretos</strong> :
-<table>
-<tbody><tr><td>Contraseña</td><td>Charset</td><td>Duración</td><td>Entropy</td><td>Keyspace</td></tr>
-<tr><td>----------------</td><td>--------</td><td>---------</td><td>---------</td><td>---------</td></tr>
-<tr><td>"12345678"</td><td>10 (digits)</td><td>8</td><td>26.6 bits</td><td>108</td></tr>
-<tr><td>"palabra"</td><td>26 (más bajo)</td><td>8</td><td>37,6 bits</td><td>268</td></tr>
-<tr><td>Contraseña1</td><td>62 (alfanum)</td><td>9</td><td>53.6 bits</td><td>629</td></tr>
-<tr><td>"¡P@ssw0rd!"</td><td>95 (lleno de ASCII)</td><td>9</td><td>59,3 bits</td><td>959</td></tr>
-<tr><td>xQz7@mK9#2pL</td><td>95 (lleno de ASCII)</td><td>12</td><td>79 bits</td><td>9512</td></tr>
+<table class="about-table">
+<thead><tr><th>Contraseña</th><th>Conjunto</th><th>Longitud</th><th>Entropía</th><th>Espacio de claves</th></tr></thead>
+<tbody>
+<tr><td><code>12345678</code></td><td>10 (dígitos)</td><td>8</td><td>26,6 bits</td><td>10⁸</td></tr>
+<tr><td><code>password</code></td><td>26 (minúsculas)</td><td>8</td><td>37,6 bits</td><td>26⁸</td></tr>
+<tr><td><code>Password1</code></td><td>62 (alfanumérico)</td><td>9</td><td>53,6 bits</td><td>62⁹</td></tr>
+<tr><td><code>P@ssw0rd!</code></td><td>95 (ASCII completo)</td><td>9</td><td>59,1 bits</td><td>95⁹</td></tr>
+<tr><td><code>xQz7@mK9#2pL</code></td><td>95 (ASCII completo)</td><td>12</td><td>79 bits</td><td>95¹²</td></tr>
 </tbody></table>
 <h3>3.3 Esperanza Matemática: Keyspace / 2</h3>
 <p>La fuerza bruta no siempre prueba <code>keyspace</code> Combinaciones enteros, en promedio, encuentra la contraseña a mitad de camino, ya que el objetivo está distribuido equitativamente en el espacio.<strong>expectativa matemática</strong> por lo tanto, el número de intentos es:</p>
@@ -106,9 +106,9 @@ function bruteTime(keyspace, rate) {
 </ul>
 <h3>14.2 lado servidor: algoritmos resistentes</h3>
 <p>La elección del algoritmo hash multiplica o divide el tiempo de fuerza cruda por factores hasta <strong>varios millones</strong> :</p>
-<table>
-<tbody><tr><td>Recomendación</td><td>Algoritm</td><td>Razón</td></tr>
-<tr><td>.</td><td>-----------</td><td>---</td></tr>
+<table class="about-table">
+<thead><tr><th>Recomendación</th><th>Algoritmo</th><th>Razón</th></tr></thead>
+<tbody>
 <tr><td>Recomendado</td><td>Argon2id</td><td>Memory-hard, resistente a GPU</td></tr>
 <tr><td>Recomendado</td><td>bcrypt (cost ≥ 12)</td><td>Intencionalmente lento, salado</td></tr>
 <tr><td>Aceptable</td><td>scrypt</td><td>Memoria dura pero menos estandarizada</td></tr>

@@ -27,9 +27,9 @@ Document de référence pour le projet Time2Crack
 <h3>2.1 Origines</h3>
 <p>La force brute précède l'informatique : le principe de tester toutes les combinaisons possibles est utilisé depuis les premières machines de chiffrement mécaniques (Enigma pendant la Seconde Guerre mondiale). La bombe d'Alan Turing était, dans un sens large, un dispositif de force brute contrainte par une hypothèse de cribs.</p>
 <p>Avec l'avènement des ordinateurs, la force brute sur mots de passe Unix a été formalisée dès les années 1970–1980 :</p>
-<table>
-<tbody><tr><td>Année</td><td>Événement</td></tr>
-<tr><td>-------</td><td>-----------</td></tr>
+<table class="about-table">
+<thead><tr><th>Année</th><th>Événement</th></tr></thead>
+<tbody>
 <tr><td>1979</td><td>Morris &amp; Thompson : premier article académique sur la sécurité des mots de passe Unix, avec analyse de force brute sur /etc/passwd</td></tr>
 <tr><td>1988</td><td>Worm de Morris : premier exploit de masse utilisant entre autres un crack de mots de passe par dictionnaire et force brute</td></tr>
 <tr><td>1993</td><td>Crack 5.0 (Alec Muffett) : premier outil public de cracking par force brute sur Unix</td></tr>
@@ -52,13 +52,13 @@ Document de référence pour le projet Time2Crack
 <p>Le keyspace (espace de clés) est le nombre total de mots de passe possibles pour une longueur et un charset donnés :</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
 <p>Exemples :</p>
-<table>
-<tbody><tr><td>Charset</td><td>Taille</td><td>Longueur</td><td>Keyspace</td><td>Notation</td></tr>
-<tr><td>---------</td><td>--------</td><td>----------</td><td>----------</td><td>----------</td></tr>
-<tr><td>Chiffres seuls</td><td>10</td><td>8</td><td>10⁸ = 100 000 000</td><td>~10⁸</td></tr>
-<tr><td>Minuscules seules</td><td>26</td><td>8</td><td>26⁸ ≈ 208 milliards</td><td>~2 × 10¹¹</td></tr>
-<tr><td>Alphanumérique</td><td>62</td><td>8</td><td>62⁸ ≈ 218 000 milliards</td><td>~2 × 10¹⁴</td></tr>
-<tr><td>ASCII complet</td><td>95</td><td>8</td><td>95⁸ ≈ 6 634 milliards de milliards</td><td>~6 × 10¹⁵</td></tr>
+<table class="about-table">
+<thead><tr><th>Charset</th><th>Taille</th><th>Longueur</th><th>Keyspace</th><th>Ordre de grandeur</th></tr></thead>
+<tbody>
+<tr><td>Chiffres seuls</td><td>10</td><td>8</td><td>10⁸ = 100 000 000</td><td>~10⁸</td></tr>
+<tr><td>Minuscules seules</td><td>26</td><td>8</td><td>26⁸ ≈ 2,1 × 10¹¹</td><td>~2 × 10¹¹</td></tr>
+<tr><td>Alphanumérique</td><td>62</td><td>8</td><td>62⁸ ≈ 2,2 × 10¹⁴</td><td>~2 × 10¹⁴</td></tr>
+<tr><td>ASCII complet</td><td>95</td><td>8</td><td>95⁸ ≈ 6,6 × 10¹⁵</td><td>~7 × 10¹⁵</td></tr>
 <tr><td>ASCII complet</td><td>95</td><td>12</td><td>95¹² ≈ 5,4 × 10²³</td><td>~5 × 10²³</td></tr>
 <tr><td>ASCII complet</td><td>95</td><td>16</td><td>95¹⁶ ≈ 4,4 × 10³¹</td><td>~4 × 10³¹</td></tr>
 </tbody></table>
@@ -73,14 +73,14 @@ Document de référence pour le projet Time2Crack
 <pre><code class="language-plaintext">keyspace = 2^entropie
 entropie = log₂(keyspace)</code></pre>
 <strong>Exemples concrets</strong> :
-<table>
-<tbody><tr><td>Mot de passe</td><td>Charset</td><td>Longueur</td><td>Entropie</td><td>Keyspace</td></tr>
-<tr><td>-------------</td><td>---------</td><td>----------</td><td>----------</td><td>----------</td></tr>
-<tr><td>"12345678"</td><td>10 (digits)</td><td>8</td><td>26,6 bits</td><td>10⁸</td></tr>
-<tr><td>"password"</td><td>26 (lower)</td><td>8</td><td>37,6 bits</td><td>26⁸</td></tr>
-<tr><td>"Password1"</td><td>62 (alphanum)</td><td>9</td><td>53,6 bits</td><td>62⁹</td></tr>
-<tr><td>"P@ssw0rd!"</td><td>95 (full ASCII)</td><td>9</td><td>59,3 bits</td><td>95⁹</td></tr>
-<tr><td>"xQz7@mK9#2pL"</td><td>95 (full ASCII)</td><td>12</td><td>79 bits</td><td>95¹²</td></tr>
+<table class="about-table">
+<thead><tr><th>Mot de passe</th><th>Charset</th><th>Longueur</th><th>Entropie</th><th>Keyspace</th></tr></thead>
+<tbody>
+<tr><td><code>12345678</code></td><td>10 (chiffres)</td><td>8</td><td>26,6 bits</td><td>10⁸</td></tr>
+<tr><td><code>password</code></td><td>26 (minuscules)</td><td>8</td><td>37,6 bits</td><td>26⁸</td></tr>
+<tr><td><code>Password1</code></td><td>62 (alphanumérique)</td><td>9</td><td>53,6 bits</td><td>62⁹</td></tr>
+<tr><td><code>P@ssw0rd!</code></td><td>95 (ASCII complet)</td><td>9</td><td>59,1 bits</td><td>95⁹</td></tr>
+<tr><td><code>xQz7@mK9#2pL</code></td><td>95 (ASCII complet)</td><td>12</td><td>79 bits</td><td>95¹²</td></tr>
 </tbody></table>
 <h3>3.3 L'espérance mathématique : keyspace / 2</h3>
 <p>Une force brute ne teste pas toujours les <code>keyspace</code> combinaisons en entier — en moyenne, elle trouve le mot de passe à mi-chemin, car la cible est équiprobablement répartie dans l'espace. L'<strong>espérance mathématique</strong> du nombre de tentatives est donc :</p>
@@ -106,9 +106,9 @@ function bruteTime(keyspace, rate) {
 </ul>
 <h3>14.2 Côté serveur : algorithmes résistants</h3>
 <p>Le choix de l'algorithme de hachage multiplie ou divise le temps de force brute par des facteurs allant jusqu'à <strong>plusieurs millions</strong> :</p>
-<table>
-<tbody><tr><td>Recommandation</td><td>Algorithme</td><td>Raison</td></tr>
-<tr><td>---------------</td><td>------------</td><td>--------</td></tr>
+<table class="about-table">
+<thead><tr><th>Recommandation</th><th>Algorithme</th><th>Raison</th></tr></thead>
+<tbody>
 <tr><td>✅ Recommandé</td><td>Argon2id</td><td>Memory-hard, résistant aux GPU</td></tr>
 <tr><td>✅ Recommandé</td><td>bcrypt (cost ≥ 12)</td><td>Intentionnellement lent, salé</td></tr>
 <tr><td>⚠️ Acceptable</td><td>scrypt</td><td>Memory-hard mais moins standardisé</td></tr>

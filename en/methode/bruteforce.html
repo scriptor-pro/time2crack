@@ -27,9 +27,9 @@ Project reference document Time2Crack
 <h3>2.1 Origins</h3>
 <p>The raw force precedes the computer: the principle of testing all possible combinations is used since the first mechanical encryption machines (Enigma during the Second World War). The bomb of Alan Turing was, in a broad sense, a device of raw force forced by a hypothesis of cribs.</p>
 <p>With the advent of computers, the unix password force was formalized from the 1970s to the 1980s:</p>
-<table>
-<tbody><tr><td>Year</td><td>Event</td></tr>
-<tr><td>-------</td><td>------------</td></tr>
+<table class="about-table">
+<thead><tr><th>Year</th><th>Event</th></tr></thead>
+<tbody>
 <tr><td>1979</td><td>Morris &amp; Thompson: First academic article on Unix password security, with raw force analysis on /etc/passwd</td></tr>
 <tr><td>1988</td><td>Morris Worm: first mass feat using, among other things, a dictionary and raw force password crack</td></tr>
 <tr><td>1993</td><td>Crack 5.0 (Alec Muffett): first public cracking tool by raw force on Unix</td></tr>
@@ -52,15 +52,15 @@ Project reference document Time2Crack
 <p>Keyspace (keyspace) is the total number of possible passwords for a given length and tank:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
 <p>Examples:</p>
-<table>
-<tbody><tr><td>Charset</td><td>Size</td><td>Length</td><td>Keyspace</td><td>Rating</td></tr>
-<tr><td>----------</td><td>--------</td><td>-----------</td><td>-----------</td><td>-----------</td></tr>
-<tr><td>Single digits</td><td>10</td><td>8</td><td>108 = 100,000,000</td><td>~108</td></tr>
-<tr><td>Minuscules alone</td><td>26</td><td>8</td><td>268 million</td><td>~2 × 1011</td></tr>
-<tr><td>Alphanumeric</td><td>62</td><td>8</td><td>628 million</td><td>~2 × 1014</td></tr>
-<tr><td>Full ASCII</td><td>95</td><td>8</td><td>958 billion</td><td>~6 × 1015</td></tr>
-<tr><td>Full ASCII</td><td>95</td><td>12</td><td>9512 - 5.4 × 1023</td><td>~5 × 1023</td></tr>
-<tr><td>Full ASCII</td><td>95</td><td>16</td><td>9516 - 4.4 × 1031</td><td>~4 × 1031</td></tr>
+<table class="about-table">
+<thead><tr><th>Charset</th><th>Size</th><th>Length</th><th>Keyspace</th><th>Order of magnitude</th></tr></thead>
+<tbody>
+<tr><td>Digits only</td><td>10</td><td>8</td><td>10⁸ = 100,000,000</td><td>~10⁸</td></tr>
+<tr><td>Lowercase only</td><td>26</td><td>8</td><td>26⁸ ≈ 2.1 × 10¹¹</td><td>~2 × 10¹¹</td></tr>
+<tr><td>Alphanumeric</td><td>62</td><td>8</td><td>62⁸ ≈ 2.2 × 10¹⁴</td><td>~2 × 10¹⁴</td></tr>
+<tr><td>Full ASCII</td><td>95</td><td>8</td><td>95⁸ ≈ 6.6 × 10¹⁵</td><td>~7 × 10¹⁵</td></tr>
+<tr><td>Full ASCII</td><td>95</td><td>12</td><td>95¹² ≈ 5.4 × 10²³</td><td>~5 × 10²³</td></tr>
+<tr><td>Full ASCII</td><td>95</td><td>16</td><td>95¹⁶ ≈ 4.4 × 10³¹</td><td>~4 × 10³¹</td></tr>
 </tbody></table>
 <h3>3.2 binary entropy</h3>
 <p>Entropy (measured in bits) is the logarithmic formulation of keyspace:</p>
@@ -73,14 +73,14 @@ Project reference document Time2Crack
 <pre><code class="language-plaintext">keyspace = 2^entropie
 entropie = log₂(keyspace)</code></pre>
 <strong>Concrete examples</strong> :
-<table>
-<tbody><tr><td>Password</td><td>Charset</td><td>Length</td><td>Entropy</td><td>Keyspace</td></tr>
-<tr><td>--------------</td><td>----------</td><td>-----------</td><td>-----------</td><td>-----------</td></tr>
-<tr><td>"12345678"</td><td>10 (digits)</td><td>8</td><td>26.6 bits</td><td>108</td></tr>
-<tr><td>"password"</td><td>26 (lower)</td><td>8</td><td>37.6 bits</td><td>268</td></tr>
-<tr><td>Password1</td><td>62 (alphanum)</td><td>9</td><td>53.6 bits</td><td>629</td></tr>
-<tr><td>"P@ssw0rd!"</td><td>95 (full ASCII)</td><td>9</td><td>59.3 bits</td><td>959</td></tr>
-<tr><td>xQz7@mK9#2pL</td><td>95 (full ASCII)</td><td>12</td><td>79 bits</td><td>9512</td></tr>
+<table class="about-table">
+<thead><tr><th>Password</th><th>Charset</th><th>Length</th><th>Entropy</th><th>Keyspace</th></tr></thead>
+<tbody>
+<tr><td><code>12345678</code></td><td>10 (digits)</td><td>8</td><td>26.6 bits</td><td>10⁸</td></tr>
+<tr><td><code>password</code></td><td>26 (lowercase)</td><td>8</td><td>37.6 bits</td><td>26⁸</td></tr>
+<tr><td><code>Password1</code></td><td>62 (alphanumeric)</td><td>9</td><td>53.6 bits</td><td>62⁹</td></tr>
+<tr><td><code>P@ssw0rd!</code></td><td>95 (full ASCII)</td><td>9</td><td>59.1 bits</td><td>95⁹</td></tr>
+<tr><td><code>xQz7@mK9#2pL</code></td><td>95 (full ASCII)</td><td>12</td><td>79 bits</td><td>95¹²</td></tr>
 </tbody></table>
 <h3>3.3 Mathematical Hope: Keyspace / 2</h3>
 <p>Crude force does not always test <code>keyspace</code> Integer combinations — on average, it finds the password midway, as the target is equiprobably distributed in space.<strong>mathematical expectation</strong> the number of attempts is therefore:</p>
@@ -106,9 +106,9 @@ function bruteTime(keyspace, rate) {
 </ul>
 <h3>14.2 Server side: resistant algorithms</h3>
 <p>The choice of the hash algorithm multiplies or divides the raw force time by factors up to <strong>several million</strong> :</p>
-<table>
-<tbody><tr><td>Recommendation</td><td>Algorithm</td><td>Reason</td></tr>
-<tr><td>----------------</td><td>-------------</td><td>--------</td></tr>
+<table class="about-table">
+<thead><tr><th>Recommendation</th><th>Algorithm</th><th>Reason</th></tr></thead>
+<tbody>
 <tr><td>Recommended</td><td>Argon2id</td><td>Memory-hard, GPU resistant</td></tr>
 <tr><td>Recommended</td><td>bcrypt (cost ≥ 12)</td><td>Intentionally slow, salty</td></tr>
 <tr><td>Acceptable</td><td>scrypt</td><td>Memory-hard but less standardized</td></tr>

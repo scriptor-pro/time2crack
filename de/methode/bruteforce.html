@@ -27,9 +27,9 @@ Referenzdokument des Projekts Time2Crack
 <h3>2.1 Ursprung</h3>
 <p>Die Rohkraft vor dem Computer: Das Prinzip der Prüfung aller möglichen Kombinationen wird seit den ersten mechanischen Verschlüsselungsmaschinen (Enigma während des Zweiten Weltkrieges) verwendet. Die Bombe von Alan Turing war in einem weiten Sinne ein Gerät der Rohkraft, die durch eine Hypothese von Krippen erzwungen wurde.</p>
 <p>Mit dem Aufkommen von Computern wurde die unix-Passwortkraft von den 1970er bis 1980er Jahren formalisiert:</p>
-<table>
-<tbody><tr><td>Jahr</td><td>Veranstaltung</td></tr>
-<tr><td>-----</td><td>---------</td></tr>
+<table class="about-table">
+<thead><tr><th>Jahr</th><th>Ereignis</th></tr></thead>
+<tbody>
 <tr><td>1979</td><td>Morris &amp; Thompson: Erster akademischer Artikel über Unix-Passwortsicherheit, mit Rohkraftanalyse auf /etc/passwd</td></tr>
 <tr><td>1988</td><td>Morris Worm: erste Masse feat unter anderem ein Wörterbuch und rohe Kraft Passwort Riß</td></tr>
 <tr><td>1993</td><td>Crack 5.0 (Alec Muffett): erstes öffentliches Rißwerkzeug durch Rohkraft auf Unix</td></tr>
@@ -52,15 +52,15 @@ Referenzdokument des Projekts Time2Crack
 <p>Keyspace (keyspace) ist die Gesamtzahl der möglichen Passwörter für eine bestimmte Länge und Tank:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
 <p>Beispiele:</p>
-<table>
-<tbody><tr><td>Charleroi</td><td>Größe</td><td>Länge</td><td>Schlüsselbereich</td><td>Bewertung</td></tr>
-<tr><td>--------</td><td>------</td><td>---------</td><td>---------</td><td>---------</td></tr>
-<tr><td>Einzelziffern</td><td>10.</td><td>8)</td><td>108 = 100,000,000</td><td>~108 ~</td></tr>
-<tr><td>Minuscules alleine</td><td>26</td><td>8)</td><td>268 Mio.</td><td>~2 × 1011 ~</td></tr>
-<tr><td>Alphanumerisch</td><td>ANHANG</td><td>8)</td><td>628 Mio.</td><td>~2 × 1014 ~</td></tr>
-<tr><td>Vollständiges ASCII</td><td>ANHANG</td><td>8)</td><td>958 Milliarden</td><td>~6 × 1015 ~</td></tr>
-<tr><td>Vollständiges ASCII</td><td>ANHANG</td><td>12</td><td>9512 - 5.4 × 1023</td><td>~5 × 1023 ~</td></tr>
-<tr><td>Vollständiges ASCII</td><td>ANHANG</td><td>ANHANG</td><td>9516 — 4.4 × 1031</td><td>~4 × 1031 ~</td></tr>
+<table class="about-table">
+<thead><tr><th>Zeichensatz</th><th>Größe</th><th>Länge</th><th>Schlüsselraum</th><th>Größenordnung</th></tr></thead>
+<tbody>
+<tr><td>Nur Ziffern</td><td>10</td><td>8</td><td>10⁸ = 100.000.000</td><td>~10⁸</td></tr>
+<tr><td>Nur Kleinbuchstaben</td><td>26</td><td>8</td><td>26⁸ ≈ 2,1 × 10¹¹</td><td>~2 × 10¹¹</td></tr>
+<tr><td>Alphanumerisch</td><td>62</td><td>8</td><td>62⁸ ≈ 2,2 × 10¹⁴</td><td>~2 × 10¹⁴</td></tr>
+<tr><td>Vollständiges ASCII</td><td>95</td><td>8</td><td>95⁸ ≈ 6,6 × 10¹⁵</td><td>~7 × 10¹⁵</td></tr>
+<tr><td>Vollständiges ASCII</td><td>95</td><td>12</td><td>95¹² ≈ 5,4 × 10²³</td><td>~5 × 10²³</td></tr>
+<tr><td>Vollständiges ASCII</td><td>95</td><td>16</td><td>95¹⁶ ≈ 4,4 × 10³¹</td><td>~4 × 10³¹</td></tr>
 </tbody></table>
 <h3>3.2 binäre Entropie</h3>
 <p>Entropie (gemessen in Bits) ist die logarithmische Formulierung von Schlüsselraum:</p>
@@ -73,14 +73,14 @@ Referenzdokument des Projekts Time2Crack
 <pre><code class="language-plaintext">keyspace = 2^entropie
 entropie = log₂(keyspace)</code></pre>
 <strong>Detaillierte Beispiele</strong> :
-<table>
-<tbody><tr><td>Passwort vergessen?</td><td>Charleroi</td><td>Länge</td><td>Entropie</td><td>Schlüsselbereich</td></tr>
-<tr><td>-----------</td><td>--------</td><td>---------</td><td>---------</td><td>---------</td></tr>
-<tr><td>"12345678"</td><td>10 (Ziffer)</td><td>8)</td><td>26.6 Bits</td><td>ANHANG</td></tr>
-<tr><td>"Passwort"</td><td>26 (unter)</td><td>8)</td><td>37,6 Bit</td><td>268</td></tr>
-<tr><td>Passwort vergessen?</td><td>62 (Alphanum)</td><td>ANHANG</td><td>53.6 Bits</td><td>629</td></tr>
-<tr><td>"P@ssw0rd!"</td><td>95 (vollständig ASCII)</td><td>ANHANG</td><td>59,3 Bits</td><td>959</td></tr>
-<tr><td>xQz7@mK9</td><td>95 (vollständig ASCII)</td><td>12</td><td>79 Bit</td><td>ANHANG</td></tr>
+<table class="about-table">
+<thead><tr><th>Passwort</th><th>Zeichensatz</th><th>Länge</th><th>Entropie</th><th>Schlüsselraum</th></tr></thead>
+<tbody>
+<tr><td><code>12345678</code></td><td>10 (Ziffern)</td><td>8</td><td>26,6 Bit</td><td>10⁸</td></tr>
+<tr><td><code>password</code></td><td>26 (Kleinbuchstaben)</td><td>8</td><td>37,6 Bit</td><td>26⁸</td></tr>
+<tr><td><code>Password1</code></td><td>62 (alphanumerisch)</td><td>9</td><td>53,6 Bit</td><td>62⁹</td></tr>
+<tr><td><code>P@ssw0rd!</code></td><td>95 (vollständiges ASCII)</td><td>9</td><td>59,1 Bit</td><td>95⁹</td></tr>
+<tr><td><code>xQz7@mK9#2pL</code></td><td>95 (vollständiges ASCII)</td><td>12</td><td>79 Bit</td><td>95¹²</td></tr>
 </tbody></table>
 <h3>3.3 Mathematische Hoffnung: Schlüsselraum / 2</h3>
 <p>Kreuzkraft testet nicht immer <code>keyspace</code> Integer-Kombinationen — im Durchschnitt findet es das Passwort in der Mitte, da das Ziel im Raum gleichverteilt ist.<strong>mathematische Erwartung</strong> die Zahl der Versuche ist daher:</p>
@@ -106,9 +106,9 @@ function bruteTime(keyspace, rate) {
 </ul>
 <h3>14.2 Serverseite: widerstandsfähige Algorithmen</h3>
 <p>Die Wahl des Hash-Algorithmus multipliziert oder teilt die Rohkraftzeit durch Faktoren bis zu <strong>mehrere Millionen</strong> :</p>
-<table>
-<tbody><tr><td>Empfehlung</td><td>Algorithmen</td><td>Begründung</td></tr>
-<tr><td>------------</td><td>----------</td><td>------</td></tr>
+<table class="about-table">
+<thead><tr><th>Empfehlung</th><th>Algorithmus</th><th>Begründung</th></tr></thead>
+<tbody>
 <tr><td>Empfohlen</td><td>Argon2id</td><td>Memory-hart, GPU-beständig</td></tr>
 <tr><td>Empfohlen</td><td>bcrypt (Kosten ≥ 12)</td><td>Vorsichtig langsam, salzig</td></tr>
 <tr><td>Akzeptabel</td><td>Scrypt</td><td>Speicherhart, aber weniger standardisiert</td></tr>

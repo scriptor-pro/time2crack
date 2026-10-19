@@ -7,31 +7,23 @@ Documento de referência do projeto Time2Crack
 </blockquote>
 <blockquote>Destinatários: desenvolvedores, pesquisadores de segurança, usuários avançados</blockquote>
 <hr>
-<h2>Índice</h2>
-<li><a href="bruteforce.html#1-vue-densemble">Visão geral</a></li>
-<li><a href="bruteforce.html#2-contexte-historique-et-académique">Formação histórica e académica</a></li>
-<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Matemática: Espaço de teclas e entropia</a></li>
-<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Arquitetura de um ataque brutal força moderna</a></li>
-<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Velocidades de cálculo por algoritmo de hash</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Detecção de tanques em Time2Crack</a></li>
-<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Cálculo do tempo de fissuração: rawTime()</a></li>
-<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Redução de data detectada: detectDateAndReduce()</a></li>
-<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Proteção de monotonicidade: piso de outros ataques</a></li>
-<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">Calibração da IC e o papel da força bruta</a></li>
-<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Comparação com outros ataques</a></li>
-<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Limitações teóricas e práticas</a></li>
-<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">Que força bruta não diz</a></li>
-<li><a href="bruteforce.html#14-défenses-efficaces">Defesas eficazes</a></li>
-<li><a href="bruteforce.html#15-références-bibliographiques">Referências</a></li>
+<h2 id="contents">Índice</h2>
+<ol>
+<li><a href="#overview">Visão geral</a></li>
+<li><a href="#history">Formação histórica e académica</a></li>
+<li><a href="#keyspace">Matemática: Espaço de teclas e entropia</a></li>
+<li><a href="#defences">Defesas eficazes</a></li>
+<li><a href="#references">Referências</a></li>
+</ol>
 <hr>
-<h2>Resumo</h2>
+<h2 id="overview">1. Resumo</h2>
 <p>Força bruta é o ataque mais fundamental na quebra de senha: consiste em testes <strong>sistematicamente todas as combinações possíveis</strong> Nenhuma inteligência, nenhuma heurística — apenas o poder de computação bruto contra o tamanho do espaço para viajar.</p>
 <p>No Time2Crack, força bruta desempenha um duplo papel:</p>
 <li><strong>Ataque modelado</strong> Representa o tempo teórico máximo que um atacante colocaria, assumindo nenhuma outra vulnerabilidade explorável.</li>
 <li><strong>Piso (guarda de monotonicidade)</strong> : serve como um terminal inferior para todos os outros ataques — nenhum ataque especializado pode legitimamente exibir um tempo menor do que aquele que tomaria força bruta na sub-cadeia alfabética da senha.</li>
 <strong>Na prática</strong>, força bruta é quase nunca o ataque mais rápido em uma senha humana real — PCFG, Markov ou ataque híbrido será mais eficaz. Mas para uma senha verdadeiramente aleatória e longa, representa a realidade: o atacante não tem escolha a não ser navegar o espaço exaustivamente.
 <hr>
-<h2>2. Antecedentes históricos e acadêmicos</h2>
+<h2 id="history">2. Antecedentes históricos e acadêmicos</h2>
 <h3>2.1 Origens</h3>
 <p>A força bruta precede o computador: o princípio de testar todas as combinações possíveis é usado desde as primeiras máquinas de criptografia mecânica (Enigma durante a Segunda Guerra Mundial). A bomba de Alan Turing foi, em sentido amplo, um dispositivo de força bruta forçado por uma hipótese de berços.</p>
 <p>Com o advento dos computadores, a força de senha unix foi formalizada da década de 1970 à década de 1980:</p>
@@ -55,7 +47,7 @@ Documento de referência do projeto Time2Crack
 <li><strong>Sprengers, M. (2011)</strong> : tese da Universidade de Radboud sobre cracking GPU, formalização matemática</li>
 </ul>
 <hr>
-<h2>3. Bases matemáticas: keyspace e entropia</h2>
+<h2 id="keyspace">3. Bases matemáticas: keyspace e entropia</h2>
 <h3>3.1 Espaço de teclas</h3>
 <p>Keyspace (keyspace) é o número total de senhas possíveis para um determinado comprimento e tanque:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
@@ -101,7 +93,7 @@ function bruteTime(keyspace, rate) {
 }</code></pre>
 <p>Esta divisão por 2 é correta sob a suposição de que o atacante viaja o espaço linearmente (não repetitivo). <code>keyspace/2</code> Tentativas.</p>
 <hr>
-<h2>14. Defesas eficazes</h2>
+<h2 id="defences">4. Defesas eficazes</h2>
 <h3>14.1 Lado do usuário: comprimento e aleatoriedade</h3>
 <p>A força bruta é derrotada por dois fatores combinados:</p>
 <strong>Comprimento</strong> : cada caractere adicional multiplica o espaço de chaves por <code>charset_size</code>De 8 a 12 caracteres (charset 95) multiplica o espaço de teclas por <strong>954 - 81 milhões</strong>.
@@ -124,7 +116,7 @@ function bruteTime(keyspace, rate) {
 <tr><td>Perigoso</td><td>MD5, SHA-1, NTLM</td><td>Não salgado, extremamente rápido</td></tr>
 </tbody></table>
 <hr>
-<h2>15. Referências bibliográficas</h2>
+<h2 id="references">5. Referências bibliográficas</h2>
 <h3>Acadêmicos</h3>
 <strong>Morris, R., &amp; Thompson, K. (1979).</strong>
 Segurança da senha: Um histórico de casos.

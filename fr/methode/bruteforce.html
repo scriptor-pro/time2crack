@@ -7,31 +7,23 @@ Document de référence pour le projet Time2Crack
 </blockquote>
 <blockquote>Destinataires : développeurs, chercheurs en sécurité, utilisateurs avancés</blockquote>
 <hr>
-<h2>Table des matières</h2>
-<li><a href="bruteforce.html#1-vue-densemble">Vue d'ensemble</a></li>
-<li><a href="bruteforce.html#2-contexte-historique-et-académique">Contexte historique et académique</a></li>
-<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Fondements mathématiques : keyspace et entropie</a></li>
-<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Architecture d'une attaque brute force moderne</a></li>
-<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Vitesses de calcul par algorithme de hachage</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Détection du charset dans Time2Crack</a></li>
-<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Calcul du temps de cracking : bruteTime()</a></li>
-<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Réduction par date détectée : detectDateAndReduce()</a></li>
-<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Le monotonicity guard : plancher des autres attaques</a></li>
-<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">Calibration HF et rôle de la force brute</a></li>
-<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Comparaison avec les autres attaques</a></li>
-<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Limites théoriques et pratiques</a></li>
-<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">Ce que la force brute ne dit pas</a></li>
-<li><a href="bruteforce.html#14-défenses-efficaces">Défenses efficaces</a></li>
-<li><a href="bruteforce.html#15-références-bibliographiques">Références bibliographiques</a></li>
+<h2 id="contents">Table des matières</h2>
+<ol>
+<li><a href="#overview">Vue d'ensemble</a></li>
+<li><a href="#history">Contexte historique et académique</a></li>
+<li><a href="#keyspace">Fondements mathématiques : keyspace et entropie</a></li>
+<li><a href="#defences">Défenses efficaces</a></li>
+<li><a href="#references">Références bibliographiques</a></li>
+</ol>
 <hr>
-<h2>1. Vue d'ensemble</h2>
+<h2 id="overview">1. Vue d'ensemble</h2>
 <p>La force brute est l'attaque la plus fondamentale en cracking de mots de passe : elle consiste à tester <strong>systématiquement toutes les combinaisons possibles</strong> de caractères, dans l'ordre, jusqu'à trouver la bonne. Aucune intelligence, aucune heuristique — uniquement la puissance de calcul brute contre la taille de l'espace à parcourir.</p>
 <p>Dans Time2Crack, la force brute joue un double rôle :</p>
 <li><strong>Attaque modélisée</strong> : elle représente le temps théorique maximal qu'un attaquant mettrait, en supposant aucune autre vulnérabilité exploitable.</li>
 <li><strong>Plancher (monotonicity guard)</strong> : elle sert de borne inférieure pour toutes les autres attaques — aucune attaque spécialisée ne peut légitimement afficher un temps inférieur à celui que prendrait la force brute sur la sous-chaîne alphabétique du mot de passe.</li>
 <strong>En pratique</strong>, la force brute n'est presque jamais l'attaque la plus rapide sur un mot de passe humain réel — PCFG, Markov ou l'attaque hybride seront plus efficaces. Mais pour un mot de passe véritablement aléatoire et long, elle représente la réalité : l'attaquant n'a d'autre choix que de parcourir l'espace exhaustivement.
 <hr>
-<h2>2. Contexte historique et académique</h2>
+<h2 id="history">2. Contexte historique et académique</h2>
 <h3>2.1 Origines</h3>
 <p>La force brute précède l'informatique : le principe de tester toutes les combinaisons possibles est utilisé depuis les premières machines de chiffrement mécaniques (Enigma pendant la Seconde Guerre mondiale). La bombe d'Alan Turing était, dans un sens large, un dispositif de force brute contrainte par une hypothèse de cribs.</p>
 <p>Avec l'avènement des ordinateurs, la force brute sur mots de passe Unix a été formalisée dès les années 1970–1980 :</p>
@@ -55,7 +47,7 @@ Document de référence pour le projet Time2Crack
 <li><strong>Sprengers, M. (2011)</strong> : thèse de Radboud University sur le cracking GPU, formalisation mathématique</li>
 </ul>
 <hr>
-<h2>3. Fondements mathématiques : keyspace et entropie</h2>
+<h2 id="keyspace">3. Fondements mathématiques : keyspace et entropie</h2>
 <h3>3.1 Le keyspace</h3>
 <p>Le keyspace (espace de clés) est le nombre total de mots de passe possibles pour une longueur et un charset donnés :</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
@@ -101,7 +93,7 @@ function bruteTime(keyspace, rate) {
 }</code></pre>
 <p>Cette division par 2 est correcte sous l'hypothèse que l'attaquant parcourt l'espace de façon linéaire (non-répétitive). Elle implique qu'un attaquant a 50% de chances de trouver le mot de passe en moins de <code>keyspace/2</code> tentatives.</p>
 <hr>
-<h2>14. Défenses efficaces</h2>
+<h2 id="defences">4. Défenses efficaces</h2>
 <h3>14.1 Côté utilisateur : la longueur et l'aléatoire</h3>
 <p>La force brute est vaincu par deux facteurs combinés :</p>
 <strong>Longueur</strong> : chaque caractère supplémentaire multiplie le keyspace par <code>charset_size</code>. Passer de 8 à 12 caractères (charset 95) multiplie le keyspace par <strong>95⁴ ≈ 81 millions</strong>.
@@ -124,7 +116,7 @@ function bruteTime(keyspace, rate) {
 <tr><td>❌ Dangereux</td><td>MD5, SHA-1, NTLM</td><td>Non salés, extrêmement rapides</td></tr>
 </tbody></table>
 <hr>
-<h2>15. Références bibliographiques</h2>
+<h2 id="references">5. Références bibliographiques</h2>
 <h3>Académiques</h3>
 <strong>Morris, R., &amp; Thompson, K. (1979).</strong>
 Password security: A case history.

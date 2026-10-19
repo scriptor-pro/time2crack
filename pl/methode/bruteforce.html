@@ -7,31 +7,23 @@ Dokument referencyjny projektu Time2Crack
 </blockquote>
 <blockquote>Odbiorcy: deweloperzy, badacze bezpieczeństwa, zaawansowani użytkownicy</blockquote>
 <hr>
-<h2>Spis treści</h2>
-<li><a href="bruteforce.html#1-vue-densemble">Przegląd</a></li>
-<li><a href="bruteforce.html#2-contexte-historique-et-académique">Tło historyczne i akademickie</a></li>
-<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Matematyka: Klawiatura i entropia</a></li>
-<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Architektura brutalnego ataku nowoczesnej siły</a></li>
-<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Prędkość obliczeniowa według algorytmu haszu</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Wykrywanie cystern w Time2Crack</a></li>
-<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Obliczanie czasu krakingu: rawTime ()</a></li>
-<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Wykryto redukcję daty: detectDateAndReduce ()</a></li>
-<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Ochrona przed monotonicznością: podłoga innych ataków</a></li>
-<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">Kalibracja HF i rola siły brutto</a></li>
-<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Porównanie z innymi atakami</a></li>
-<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Teoretyczne i praktyczne ograniczenia</a></li>
-<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">Jaka brutalna siła nie mówi</a></li>
-<li><a href="bruteforce.html#14-défenses-efficaces">Skuteczna obrona</a></li>
-<li><a href="bruteforce.html#15-références-bibliographiques">Odniesienia</a></li>
+<h2 id="contents">Spis treści</h2>
+<ol>
+<li><a href="#overview">Przegląd</a></li>
+<li><a href="#history">Tło historyczne i akademickie</a></li>
+<li><a href="#keyspace">Matematyka: Klawiatura i entropia</a></li>
+<li><a href="#defences">Skuteczna obrona</a></li>
+<li><a href="#references">Odniesienia</a></li>
+</ol>
 <hr>
-<h2>1. Przegląd</h2>
+<h2 id="overview">1. Przegląd</h2>
 <p>Surowa siła jest najbardziej podstawowym atakiem w łamaniu haseł: polega na testowaniu <strong>systematycznie wszystkie możliwe kombinacje</strong> Brak inteligencji, brak heuryzmu - tylko surowa moc obliczeniowa przeciw wielkości przestrzeni do podróży.</p>
 <p>W Time2Crack brutalna siła odgrywa podwójną rolę:</p>
 <li><strong>Atak wzorcowy</strong> To oznacza maksymalny teoretyczny czas, jaki napastnik umieściłby, zakładając, że nie będzie innej podatności.</li>
 <li><strong>Podłoga (osłona monotoniczna)</strong> : służy jako dolny terminal dla wszystkich innych ataków - żaden wyspecjalizowany atak nie może legalnie wyświetlić czasu mniej niż ten, który miałby surową siłę na alfabetycznym podłańcuchu hasła.</li>
 <strong>W praktyce</strong>, Surowa siła jest prawie nigdy najszybszy atak na prawdziwe ludzkie hasło - PCFG, Markov lub atak hybrydowy będzie bardziej skuteczne. Ale dla naprawdę losowe i długie hasło, to reprezentuje rzeczywistość: napastnik nie ma wyboru, ale przeglądać przestrzeń wyczerpująco.
 <hr>
-<h2>2. Tło historyczne i akademickie</h2>
+<h2 id="history">2. Tło historyczne i akademickie</h2>
 <h3>2.1 Początki</h3>
 <p>Surowa siła poprzedza komputer: zasada testowania wszystkich możliwych kombinacji jest stosowana od czasu pierwszej mechanicznej maszyny szyfrującej (Enigma podczas II wojny światowej). Bomba Alana Turinga była, w szerokim znaczeniu, urządzeniem surowej siły wymuszonym hipotezą kołysek.</p>
 <p>Wraz z pojawieniem się komputerów, siła hasła unix została sformalizowana od lat 70. do 80.:</p>
@@ -55,7 +47,7 @@ Dokument referencyjny projektu Time2Crack
 <li><strong>Sfengers, M. (2011)</strong> : Teza Uniwersytetu Radboud na temat łamania GPU, formalizacja matematyczna</li>
 </ul>
 <hr>
-<h2>3. Podstawy matematyki: keyspace i entropia</h2>
+<h2 id="keyspace">3. Podstawy matematyki: keyspace i entropia</h2>
 <h3>3.1 Klawiatura</h3>
 <p>Keyspace (keyspace) to całkowita liczba możliwych haseł dla danej długości i zbiornika:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
@@ -101,7 +93,7 @@ function bruteTime(keyspace, rate) {
 }</code></pre>
 <p>Podział przez 2 jest poprawny przy założeniu, że napastnik podróżuje liniowo (niepowtarzalny). <code>keyspace/2</code> Próby.</p>
 <hr>
-<h2>14. Skuteczna obrona</h2>
+<h2 id="defences">4. Skuteczna obrona</h2>
 <h3>14.1 Strona użytkownika: długość i losowość</h3>
 <p>Siła brutto zostaje pokonana przez dwa czynniki:</p>
 <strong>Długość</strong> : każdy dodatkowy znak mnoży przestrzeń klawiszy przez <code>charset_size</code>Od 8 do 12 znaków (charset 95) mnoży przestrzeń klawiszy przez <strong>954 - 81 mln</strong>.
@@ -124,7 +116,7 @@ function bruteTime(keyspace, rate) {
 <tr><td>Niebezpieczne</td><td>MD5, SHA-1, NTLM</td><td>Niesłony, bardzo szybki</td></tr>
 </tbody></table>
 <hr>
-<h2>15. Odniesienia bibliograficzne</h2>
+<h2 id="references">5. Odniesienia bibliograficzne</h2>
 <h3>Akademika</h3>
 <strong>Morris, R., &amp; Thompson, K. (1979).</strong>
 Bezpieczeństwo haseł: Historia spraw.

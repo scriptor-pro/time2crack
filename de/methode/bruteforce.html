@@ -7,31 +7,23 @@ Referenzdokument des Projekts Time2Crack
 </blockquote>
 <blockquote>Empfänger: Entwickler, Sicherheitswissenschaftler, Fortgeschrittene</blockquote>
 <hr>
-<h2>Inhalt</h2>
-<li><a href="bruteforce.html#1-vue-densemble">Überblick</a></li>
-<li><a href="bruteforce.html#2-contexte-historique-et-académique">Historischer und akademischer Hintergrund</a></li>
-<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Math: Schlüsselraum und Entropie</a></li>
-<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Architektur eines brutalen Angriffs moderne Kraft</a></li>
-<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Berechnungsgeschwindigkeiten durch Hash-Algorithmus</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Erkennung des Tanks in Time2Crack</a></li>
-<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Berechnung der Rißzeit: RohTime()</a></li>
-<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Datumsreduktion festgestellt: detektierenAndReduce()</a></li>
-<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Einschallschutz: Boden anderer Angriffe</a></li>
-<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">HF-Kalibrierung und die Rolle der Bruttokraft</a></li>
-<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Vergleich mit anderen Angriffen</a></li>
-<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Theoretische und praktische Einschränkungen</a></li>
-<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">Welche brutale Kraft sagt nicht</a></li>
-<li><a href="bruteforce.html#14-défenses-efficaces">Effektive Verteidigung</a></li>
-<li><a href="bruteforce.html#15-références-bibliographiques">Referenzen</a></li>
+<h2 id="contents">Inhalt</h2>
+<ol>
+<li><a href="#overview">Überblick</a></li>
+<li><a href="#history">Historischer und akademischer Hintergrund</a></li>
+<li><a href="#keyspace">Math: Schlüsselraum und Entropie</a></li>
+<li><a href="#defences">Effektive Verteidigung</a></li>
+<li><a href="#references">Referenzen</a></li>
+</ol>
 <hr>
-<h2>1. Überblick</h2>
+<h2 id="overview">1. Überblick</h2>
 <p>Crude Force ist der grundlegendste Angriff bei Passwort-Cracking: es besteht aus Tests <strong>systematisch alle möglichen Kombinationen</strong> Keine Intelligenz, keine heuristische — nur die rohe Rechenleistung gegen die Größe des Raumes zu reisen.</p>
 <p>In Time2Crack Die Bruttokraft spielt eine doppelte Rolle:</p>
 <li><strong>Modellierter Angriff</strong> Es stellt die maximale theoretische Zeit dar, die ein Angreifer setzen würde, vorausgesetzt, keine andere ausnutzbare Verwundbarkeit.</li>
 <li><strong>Boden (Monotonitätsschutz)</strong> : es dient als unteres Terminal für alle anderen Angriffe — kein spezialisierter Angriff kann legitim eine Zeit weniger anzeigen als die, die rohe Kraft auf die alphabetische Teilkette des Passworts nehmen würde.</li>
 <strong>In der Praxis</strong>, brute force ist fast nie der schnellste Angriff auf ein echtes menschliches Passwort —PCFG,MarkovAber für ein wirklich zufälliges und langes Passwort stellt es die Realität dar: Der Angreifer hat keine Wahl, sondern den Raum vollständig zu durchsuchen.
 <hr>
-<h2>2. Historischer und akademischer Hintergrund</h2>
+<h2 id="history">2. Historischer und akademischer Hintergrund</h2>
 <h3>2.1 Ursprung</h3>
 <p>Die Rohkraft vor dem Computer: Das Prinzip der Prüfung aller möglichen Kombinationen wird seit den ersten mechanischen Verschlüsselungsmaschinen (Enigma während des Zweiten Weltkrieges) verwendet. Die Bombe von Alan Turing war in einem weiten Sinne ein Gerät der Rohkraft, die durch eine Hypothese von Krippen erzwungen wurde.</p>
 <p>Mit dem Aufkommen von Computern wurde die unix-Passwortkraft von den 1970er bis 1980er Jahren formalisiert:</p>
@@ -55,7 +47,7 @@ Referenzdokument des Projekts Time2Crack
 <li><strong>(2011)</strong> : Radboud Universität Dissertation über GPU-Cracking, mathematische Formalisierung</li>
 </ul>
 <hr>
-<h2>3. Mathe Grundlagen: Schlüsselraum und Entropie</h2>
+<h2 id="keyspace">3. Mathe Grundlagen: Schlüsselraum und Entropie</h2>
 <h3>3.1 Schlüsselbereich</h3>
 <p>Keyspace (keyspace) ist die Gesamtzahl der möglichen Passwörter für eine bestimmte Länge und Tank:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
@@ -101,7 +93,7 @@ function bruteTime(keyspace, rate) {
 }</code></pre>
 <p>Diese Teilung um 2 ist unter der Annahme richtig, dass der Angreifer den Raum linear (nicht-repetitiv) fährt. <code>keyspace/2</code> Versuche.</p>
 <hr>
-<h2>14. Wirksame Verteidigung</h2>
+<h2 id="defences">4. Wirksame Verteidigung</h2>
 <h3>14.1 Benutzerseite: Länge und Zufall</h3>
 <p>Die Bruttokraft wird durch zwei kombinierte Faktoren besiegt:</p>
 <strong>Länge</strong> : jedes zusätzliche Zeichen multipliziert den Schlüsselraum durch <code>charset_size</code>Von 8 bis 12 Zeichen (charset 95) multipliziert den Schlüsselraum durch <strong>954 - 81 Mio</strong>.
@@ -124,7 +116,7 @@ function bruteTime(keyspace, rate) {
 <tr><td>Gefährlich</td><td>MD5, SHA-1, NTLM</td><td>Nicht salzig, extrem schnell</td></tr>
 </tbody></table>
 <hr>
-<h2>15. Bibliographische Referenzen</h2>
+<h2 id="references">5. Bibliographische Referenzen</h2>
 <h3>Wissenschaft</h3>
 <strong>Morris, R., &amp; Thompson, K. (1979).</strong>
 Passwort-Sicherheit: Eine Fallgeschichte.

@@ -8,31 +8,23 @@ Project reference document Time2Crack
 </blockquote>
 <blockquote>Recipients: developers, security researchers, advanced users</blockquote>
 <hr>
-<h2>Contents</h2>
-<li><a href="bruteforce.html#1-vue-densemble">Overview</a></li>
-<li><a href="bruteforce.html#2-contexte-historique-et-académique">Historical and academic background</a></li>
-<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Math: Keyspace and entropy</a></li>
-<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Architecture of a brutal attack modern force</a></li>
-<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Calculation speeds by hash algorithm</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Tanket detection in Time2Crack</a></li>
-<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Calculation of cracking time: rawTime()</a></li>
-<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Date reduction detected: detectDateAndReduce()</a></li>
-<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Monotonicity guard: floor of other attacks</a></li>
-<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">HF calibration and the role of gross force</a></li>
-<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Comparison with other attacks</a></li>
-<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Theoretical and practical limitations</a></li>
-<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">What brute force does not say</a></li>
-<li><a href="bruteforce.html#14-défenses-efficaces">Effective defences</a></li>
-<li><a href="bruteforce.html#15-références-bibliographiques">References</a></li>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#history">Historical and academic background</a></li>
+<li><a href="#keyspace">Math: Keyspace and entropy</a></li>
+<li><a href="#defences">Effective defences</a></li>
+<li><a href="#references">References</a></li>
+</ol>
 <hr>
-<h2>1. Overview</h2>
+<h2 id="overview">1. Overview</h2>
 <p>Crude force is the most fundamental attack in password cracking: it consists of testing <strong>systematically all possible combinations</strong> No intelligence, no heuristic — only the raw computing power against the size of the space to travel.</p>
 <p>In Time2Crack, brute force plays a double role:</p>
 <li><strong>Modeled attack</strong> It represents the maximum theoretical time that an attacker would put, assuming no other exploitable vulnerability.</li>
 <li><strong>Floor (monotonicity guard)</strong> : it serves as a lower terminal for all other attacks — no specialized attack can legitimately display a time less than that which would take raw force on the alphabetical sub-chain of the password.</li>
 <strong>In practice</strong>, raw force is almost never the fastest attack on a real human password — PCFG, Markov or hybrid attack will be more effective. But for a truly random and long password, it represents reality: the attacker has no choice but to browse the space exhaustively.
 <hr>
-<h2>2. Historical and academic background</h2>
+<h2 id="history">2. Historical and academic background</h2>
 <h3>2.1 Origins</h3>
 <p>The raw force precedes the computer: the principle of testing all possible combinations is used since the first mechanical encryption machines (Enigma during the Second World War). The bomb of Alan Turing was, in a broad sense, a device of raw force forced by a hypothesis of cribs.</p>
 <p>With the advent of computers, the unix password force was formalized from the 1970s to the 1980s:</p>
@@ -56,7 +48,7 @@ Project reference document Time2Crack
 <li><strong>Sprengers, M. (2011)</strong> : Radboud University thesis on GPU cracking, mathematical formalization</li>
 </ul>
 <hr>
-<h2>3. Math bases: keyspace and entropy</h2>
+<h2 id="keyspace">3. Math bases: keyspace and entropy</h2>
 <h3>3.1 Keyspace</h3>
 <p>Keyspace (keyspace) is the total number of possible passwords for a given length and tank:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
@@ -102,7 +94,7 @@ function bruteTime(keyspace, rate) {
 }</code></pre>
 <p>This division by 2 is correct under the assumption that the attacker travels the space linearly (non-repetitive). <code>keyspace/2</code> Attempts.</p>
 <hr>
-<h2>14. Effective defences</h2>
+<h2 id="defences">4. Effective defences</h2>
 <h3>14.1 User side: length and randomity</h3>
 <p>Gross force is defeated by two combined factors:</p>
 <strong>Length</strong> : each additional character multiplies the keyspace by <code>charset_size</code>From 8 to 12 characters (charset 95) multiplies the keyspace by <strong>954 - 81 million</strong>.
@@ -125,7 +117,7 @@ function bruteTime(keyspace, rate) {
 <tr><td>Dangerous</td><td>MD5, SHA-1, NTLM</td><td>Non salty, extremely fast</td></tr>
 </tbody></table>
 <hr>
-<h2>15. Bibliographic references</h2>
+<h2 id="references">5. Bibliographic references</h2>
 <h3>Academics</h3>
 <strong>Morris, R., &amp; Thompson, K. (1979).</strong>
 Password security: A case history.

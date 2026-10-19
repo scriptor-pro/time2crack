@@ -7,31 +7,23 @@ Projectreferentiedocument Time2Crack
 </blockquote>
 <blockquote>Ontvangers: ontwikkelaars, security onderzoekers, geavanceerde gebruikers</blockquote>
 <hr>
-<h2>Inhoud</h2>
-<li><a href="bruteforce.html#1-vue-densemble">Overzicht</a></li>
-<li><a href="bruteforce.html#2-contexte-historique-et-académique">Historische en academische achtergrond</a></li>
-<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Wiskunde: sleutelruimte en entropie</a></li>
-<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Architectuur van een brute aanval moderne kracht</a></li>
-<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Berekeningssnelheden door hash-algoritme</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Tanketdetectie in Time2Crack</a></li>
-<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Berekening van de kraaktijd: rawTime()</a></li>
-<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Datumreductie gedetecteerd: detectDateAndReduce()</a></li>
-<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Monotone bewaker: vloer van andere aanvallen</a></li>
-<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">HF-kalibratie en de rol van de brutokracht</a></li>
-<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Vergelijking met andere aanvallen</a></li>
-<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Theoretische en praktische beperkingen</a></li>
-<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">Wat brute kracht zegt niet</a></li>
-<li><a href="bruteforce.html#14-défenses-efficaces">Doeltreffende verdediging</a></li>
-<li><a href="bruteforce.html#15-références-bibliographiques">Referenties</a></li>
+<h2 id="contents">Inhoud</h2>
+<ol>
+<li><a href="#overview">Overzicht</a></li>
+<li><a href="#history">Historische en academische achtergrond</a></li>
+<li><a href="#keyspace">Wiskunde: sleutelruimte en entropie</a></li>
+<li><a href="#defences">Doeltreffende verdediging</a></li>
+<li><a href="#references">Referenties</a></li>
+</ol>
 <hr>
-<h2>1. Overzicht</h2>
+<h2 id="overview">1. Overzicht</h2>
 <p>Ruwe kracht is de meest fundamentele aanval in het kraken van wachtwoorden: het bestaat uit testen <strong>systematisch alle mogelijke combinaties</strong> Geen intelligentie, geen heuristische alleen de ruwe rekenkracht tegen de grootte van de ruimte om te reizen.</p>
 <p>In Time2Crack speelt brute kracht een dubbele rol:</p>
 <li><strong>Gemodelleerde aanval</strong> Het is de maximale theoretische tijd die een aanvaller zou stellen, aangenomen dat er geen andere uitbuitende kwetsbaarheid is.</li>
 <li><strong>Vloer (monotoneity guard)</strong> : het dient als een lagere terminal voor alle andere aanvallen </li>
 <strong>In de praktijk</strong>, ruwe kracht is bijna nooit de snelste aanval op een echt menselijk wachtwoord . PCFG , Markov of hybride aanval zal effectiever zijn . Maar voor een echt willekeurige en lange wachtwoord , het vertegenwoordigt de realiteit: de aanvaller heeft geen andere keuze dan om de ruimte uitputtend bladeren .
 <hr>
-<h2>2. Historische en academische achtergrond</h2>
+<h2 id="history">2. Historische en academische achtergrond</h2>
 <h3>2.1 Oorsprong</h3>
 <p>De ruwe kracht gaat vooraf aan de computer: het principe van het testen van alle mogelijke combinaties wordt gebruikt sinds de eerste mechanische encryptie machines (Enigma tijdens de Tweede Wereldoorlog). De bom van Alan Turing was in brede zin een apparaat van ruwe kracht gedwongen door een hypothese van wieg.</p>
 <p>Met de komst van computers werd de unix password force geformaliseerd van de jaren zeventig tot de jaren tachtig:</p>
@@ -55,7 +47,7 @@ Projectreferentiedocument Time2Crack
 <li><strong>Sprengers, M. (2011)</strong> : Radboud University thesis over GPU kraken, wiskundige formalisatie</li>
 </ul>
 <hr>
-<h2>3. Wiskundebases: sleutelruimte en entropie</h2>
+<h2 id="keyspace">3. Wiskundebases: sleutelruimte en entropie</h2>
 <h3>3.1 Sleutelruimte</h3>
 <p>Keyspace (keyspace) is het totale aantal mogelijke wachtwoorden voor een bepaalde lengte en tank:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
@@ -101,7 +93,7 @@ function bruteTime(keyspace, rate) {
 }</code></pre>
 <p>Deze verdeling door 2 is correct onder de veronderstelling dat de aanvaller de ruimte lineair (niet-repeterend) reist. <code>keyspace/2</code> Pogingen.</p>
 <hr>
-<h2>14. Doeltreffende verdediging</h2>
+<h2 id="defences">4. Doeltreffende verdediging</h2>
 <h3>14.1 Gebruikerszijde: lengte en willekeur</h3>
 <p>De brutokracht wordt door twee gecombineerde factoren tegengehouden:</p>
 <strong>Lengte</strong> : elk extra teken vermenigvuldigt de keyspace door <code>charset_size</code>Van 8 tot 12 tekens (charset 95) vermenigvuldigt de keyspace door <strong>954 - 81 miljoen</strong>.
@@ -124,7 +116,7 @@ function bruteTime(keyspace, rate) {
 <tr><td>Gevaarlijk</td><td>MD5, SHA-1, NTLM</td><td>Niet zout, extreem snel</td></tr>
 </tbody></table>
 <hr>
-<h2>15. Bibliografische referenties</h2>
+<h2 id="references">5. Bibliografische referenties</h2>
 <h3>Academici</h3>
 <strong>Morris, R., &amp; Thompson, K. (1979).</strong>
 Wachtwoordbeveiliging: een dossiergeschiedenis.

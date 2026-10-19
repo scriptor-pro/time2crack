@@ -7,31 +7,23 @@ Documento di riferimento del progetto Time2Crack
 </blockquote>
 <blockquote>Recipienti: sviluppatori, ricercatori di sicurezza, utenti avanzati</blockquote>
 <hr>
-<h2>Contenuto</h2>
-<li><a href="bruteforce.html#1-vue-densemble">Panoramica</a></li>
-<li><a href="bruteforce.html#2-contexte-historique-et-académique">Sfondo storico e accademico</a></li>
-<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Matematica: Keyspace e entropia</a></li>
-<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Architettura di un attacco brutale forza moderna</a></li>
-<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Velocità di calcolo dell'algoritmo di hash</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Rilevamento Tanket in Time2Crack</a></li>
-<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Calcolo del tempo di cracking: rawTime()</a></li>
-<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Riduzione della data rilevata: rilevaDateAndReduce()</a></li>
-<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Guardia monotonicia: pavimento di altri attacchi</a></li>
-<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">Calibrazione HF e ruolo della forza lorda</a></li>
-<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Confronto con altri attacchi</a></li>
-<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Limitazioni teoretiche e pratiche</a></li>
-<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">Che forza bruta non dice</a></li>
-<li><a href="bruteforce.html#14-défenses-efficaces">Efficace difesa</a></li>
-<li><a href="bruteforce.html#15-références-bibliographiques">Referenze</a></li>
+<h2 id="contents">Contenuto</h2>
+<ol>
+<li><a href="#overview">Panoramica</a></li>
+<li><a href="#history">Sfondo storico e accademico</a></li>
+<li><a href="#keyspace">Matematica: Keyspace e entropia</a></li>
+<li><a href="#defences">Efficace difesa</a></li>
+<li><a href="#references">Referenze</a></li>
+</ol>
 <hr>
-<h2>1. Panoramica</h2>
+<h2 id="overview">1. Panoramica</h2>
 <p>La forza cruda è l'attacco più fondamentale in cracking password: si compone di test <strong>sistematicamente tutte le combinazioni possibili</strong> Nessuna intelligenza, nessuna euristica — solo la potenza di calcolo raw contro le dimensioni dello spazio per viaggiare.</p>
 <p>Nel Time2Crack, la forza bruta gioca un duplice ruolo:</p>
 <li><strong>Attacco modellato</strong> Rappresenta il tempo teorico massimo che un aggressore avrebbe messo, assumendo nessun'altra vulnerabilità sfruttabile.</li>
 <li><strong>Piano (monotonicity guard)</strong> : serve come terminale più basso per tutti gli altri attacchi — nessun attacco specializzato può legittimamente mostrare un tempo inferiore a quello che prenderebbe la forza cruda sul sottocatena alfabetico della password.</li>
 <strong>In pratica</strong>, la forza cruda non è quasi mai l'attacco più veloce su una vera password umana — PCFG, Markov o attacco ibrido sarà più efficace. Ma per una password veramente casuale e lunga, rappresenta la realtà: l'attaccante non ha altra scelta che navigare lo spazio esaustivamente.
 <hr>
-<h2>2. Sfondo storico e accademico</h2>
+<h2 id="history">2. Sfondo storico e accademico</h2>
 <h3>2.1 Origini</h3>
 <p>La forza cruda precede il computer: il principio di testare tutte le possibili combinazioni viene utilizzato fin dalle prime macchine di crittografia meccanica (Enigma durante la seconda guerra mondiale). La bomba di Alan Turing era, in senso lato, un dispositivo di forza cruda forzato da un'ipotesi di presepi.</p>
 <p>Con l'avvento dei computer, la forza password unix è stata formalizzata dagli anni '70 agli anni '80:</p>
@@ -55,7 +47,7 @@ Documento di riferimento del progetto Time2Crack
 <li><strong>Diffamazione, M. (2011)</strong> : Tesi di Radboud University su cracking GPU, formalizzazione matematica</li>
 </ul>
 <hr>
-<h2>3. Basi matematiche: keyspace e entropia</h2>
+<h2 id="keyspace">3. Basi matematiche: keyspace e entropia</h2>
 <h3>3.1 Spazio chiave</h3>
 <p>Keyspace (keyspace) è il numero totale di possibili password per una data lunghezza e serbatoio:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
@@ -101,7 +93,7 @@ function bruteTime(keyspace, rate) {
 }</code></pre>
 <p>Questa divisione di 2 è corretta secondo l'ipotesi che l'attaccante viaggi lo spazio linearmente (non ripetitivo). <code>keyspace/2</code> Tentativi.</p>
 <hr>
-<h2>14. Efficace difesa</h2>
+<h2 id="defences">4. Efficace difesa</h2>
 <h3>14.1 lato utente: lunghezza e casualità</h3>
 <p>La forza lorda è sconfitta da due fattori combinati:</p>
 <strong>Lunghezza</strong> : ogni carattere aggiuntivo moltiplica lo spazio chiave per <code>charset_size</code>Da 8 a 12 caratteri (charset 95) moltiplica lo spazio chiave per <strong>954 - 81 milioni</strong>.
@@ -124,7 +116,7 @@ function bruteTime(keyspace, rate) {
 <tr><td>Pericoloso</td><td>MD5, SHA-1, NTLM</td><td>Non salato, estremamente veloce</td></tr>
 </tbody></table>
 <hr>
-<h2>15. Riferimenti biblici</h2>
+<h2 id="references">5. Riferimenti bibliografici</h2>
 <h3>Accademica</h3>
 <strong>Morris, R., &amp; Thompson, K. (1979).</strong>
 Sicurezza della password: Una storia del caso.

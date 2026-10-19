@@ -7,31 +7,23 @@ Project reference document Time2Crack
 </blockquote>
 <blockquote>Recipients: geliştiricileri, güvenlik araştırmacıları, gelişmiş kullanıcılar</blockquote>
 <hr>
-<h2>İçerikler</h2>
-<li><a href="bruteforce.html#1-vue-densemble">Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış</a></li>
-<li><a href="bruteforce.html#2-contexte-historique-et-académique">Tarihsel ve akademik arka plan</a></li>
-<li><a href="bruteforce.html#3-fondements-mathématiques--keyspace-et-entropie">Matematik: Keyspace ve Entropi</a></li>
-<li><a href="bruteforce.html#4-architecture-dune-attaque-brute-force-moderne">Acı bir saldırı modern kuvvet mimarisi</a></li>
-<li><a href="bruteforce.html#5-vitesses-de-calcul-par-algorithme-de-hachage">Haveh algoritması ile hesaplama hızları</a></li>
-<li><a href="bruteforce.html#6-détection-du-charset-dans-time2crack">Time2Crack</a></li>
-<li><a href="bruteforce.html#7-calcul-du-temps-de-cracking--brutetime">Kırılma süresini hesaplamak: hamTime()</a></li>
-<li><a href="bruteforce.html#8-réduction-par-date-détectée--detectdateandreduce">Tarih azaltımı tespit edildi: detectDateAndReduce()</a></li>
-<li><a href="bruteforce.html#9-le-monotonicity-guard--plancher-des-autres-attaques">Monotonicity guard: Diğer saldırıların zemini</a></li>
-<li><a href="bruteforce.html#10-calibration-hf-et-rôle-de-la-force-brute">HF kalibrasyonu ve brüt kuvvetin rolü</a></li>
-<li><a href="bruteforce.html#11-comparaison-avec-les-autres-attaques">Diğer saldırılara karşı karşılaştırma</a></li>
-<li><a href="bruteforce.html#12-limites-théoriques-et-pratiques">Teorik ve pratik kısıtlamalar</a></li>
-<li><a href="bruteforce.html#13-ce-que-la-force-brute-ne-dit-pas">What brute force does not say</a></li>
-<li><a href="bruteforce.html#14-défenses-efficaces">Etkili savunmalar</a></li>
-<li><a href="bruteforce.html#15-références-bibliographiques">Referanslar Referanslar</a></li>
+<h2 id="contents">İçerikler</h2>
+<ol>
+<li><a href="#overview">Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış</a></li>
+<li><a href="#history">Tarihsel ve akademik arka plan</a></li>
+<li><a href="#keyspace">Matematik: Keyspace ve Entropi</a></li>
+<li><a href="#defences">Etkili savunmalar</a></li>
+<li><a href="#references">Referanslar Referanslar</a></li>
+</ol>
 <hr>
-<h2>1. Genel bakış</h2>
+<h2 id="overview">1. Genel bakış</h2>
 <p>Crude kuvveti şifre çatlaklarındaki en temel saldırıdır: testlerden oluşur <strong>Tüm olası kombinasyonlar</strong> Hiçbir istihbarat, hiçbir heuristic - sadece uzayın büyüklüğüne karşı ham bilgisayar gücü seyahat etmek.</p>
 <p>Time2Crack'de, brute kuvveti çift bir rol oynar:</p>
 <li><strong>Modellenmiş saldırı</strong> Bir saldırganın koyduğu en yüksek teorik zamanı temsil eder, başka bir sömürülü kırılganlığı varsayar.</li>
 <li><strong>Kat (monotonicity guard)</strong> : Tüm diğer saldırılar için daha düşük bir terminal olarak hizmet eder - uzman bir saldırı meşru olarak şifrenin alfabetik alt zinciri üzerinde ham kuvvet alacağından daha az bir zaman gösteremez.</li>
 <strong>pratikte</strong>Çiğ kuvvet neredeyse hiçbir zaman gerçek bir insan parolasına en hızlı saldırı değildir - PCFG, Markov veya hibrit saldırı daha etkili olacaktır. Ama gerçekten rastgele ve uzun bir şifre için, gerçekliğini temsil eder: saldırganın uzay egzozunu izlemesi için hiçbir seçeneği yoktur.
 <hr>
-<h2>2. Tarihsel ve akademik arka plan</h2>
+<h2 id="history">2. Tarihsel ve akademik arka plan</h2>
 <h3>2.1 Origins</h3>
 <p>Çiğ kuvvet bilgisayardan önce gelir: test prensibi tüm olası kombinasyonlar ilk mekanik şifreleme makineleri (İkinci Dünya Savaşı sırasında enigma). Alan Turing bombası, büyük bir anlamda, beşli bir hipotezle zorlanan bir ham güç cihazıydı.</p>
 <p>Bilgisayarların gelişiyle, altı şifre kuvveti 1970'lerden 1980'lere kadar resmileştirildi:</p>
@@ -55,7 +47,7 @@ Project reference document Time2Crack
 <li><strong>Sprengers, M. (2011)</strong> : Radboud University tezi GPU çatlakları, matematiksel formalizasyon</li>
 </ul>
 <hr>
-<h2>3. Matematik üsleri: anahtar uzay ve entropi</h2>
+<h2 id="keyspace">3. Matematik üsleri: anahtar uzay ve entropi</h2>
 <h3>3.1 Keyspace</h3>
 <p>Keyspace (keyspace) belirli bir uzunluk ve tank için olası şifrelerin toplam sayısıdır:</p>
 <pre><code class="language-plaintext">keyspace = charset_size ^ length</code></pre>
@@ -101,7 +93,7 @@ function bruteTime(keyspace, rate) {
 }</code></pre>
 <p>Bu bölüm 2 tarafından doğru, saldırganın uzay lineer olarak seyahat ettiğinin varsayımı altında (kahramansız). <code>keyspace/2</code> Deneyler.</p>
 <hr>
-<h2>14. Etkili savunma</h2>
+<h2 id="defences">4. Etkili savunma</h2>
 <h3>14.1 Kullanıcı tarafı: uzun ve rastgelelik</h3>
 <p>Gross kuvveti iki birleşik faktör tarafından yenilir:</p>
 <strong>Uzunluk uzunluğu</strong> : Her ek karakter anahtar alanı anahtar alana çok fazla ayırır <code>charset_size</code>8'den 12 karaktere kadar (yaklaşık 95) anahtar alanı anahtar boşlukları çok fazla <strong>954 - 81 milyon</strong>.
@@ -124,7 +116,7 @@ function bruteTime(keyspace, rate) {
 <tr><td>Tehlikeli Tehlikeli Tehlikeli</td><td>MD5, SHA-1, NTLM</td><td>tuz, son derece hızlı</td></tr>
 </tbody></table>
 <hr>
-<h2>15. Bibliografik referanslar</h2>
+<h2 id="references">5. Bibliografik referanslar</h2>
 <h3>Akademik Akademik</h3>
 <strong>Morris, R., &amp; Thompson, K. (1979).</strong>
 Şifre güvenliği: Bir vaka tarihi.

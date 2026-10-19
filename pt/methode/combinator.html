@@ -7,37 +7,39 @@ Documento de referência do projeto Time2Crack
 </blockquote>
 <blockquote>Destinatários: desenvolvedores, pesquisadores de segurança, usuários avançados</blockquote>
 <hr>
-<h2>Índice</h2>
-<li><a href="combinator.html#1-vue-densemble">Visão geral</a></li>
-<li><a href="combinator.html#2-contexte-historique-et-académique">Formação histórica e académica</a></li>
-<li><a href="combinator.html#3-fondements--concaténation-de-tokens-probables">Fundações: concatenação de prováveis fichas</a></li>
-<li><a href="combinator.html#4-architecture-dune-attaque-combinator-moderne">Arquitetura de um ataque combinador moderno</a></li>
-<li><a href="combinator.html#5-combinator-vs-passphrase-robuste">Combinador vs frase- senha robusta</a></li>
-<li><a href="combinator.html#6-implémentation-dans-time2crack--addcombinatorattacks">Implementação no Time2Crack: <code>addCombinatorAttacks()</code></a></li>
-<li><a href="combinator.html#7-keyspace-combinator-dans-time2crack">Combinador de espaço de chave no Time2Crack</a></li>
-<li><a href="combinator.html#8-calibration-et-priorisation">Calibração e priorização</a></li>
-<li><a href="combinator.html#9-benchmarks-et-ordres-de-grandeur">Benchmarks e ordens de grandeza</a></li>
-<li><a href="combinator.html#10-exemples-concrets">Exemplos concretos</a></li>
-<li><a href="combinator.html#11-limites-de-lattaque-combinator">Limites de Ataque Combinador</a></li>
-<li><a href="combinator.html#12-défenses-efficaces">Defesas eficazes</a></li>
-<li><a href="combinator.html#13-références-bibliographiques">Referências</a></li>
+<h2 id="contents">Índice</h2>
+<ol>
+<li><a href="#overview">Visão geral</a></li>
+<li><a href="#history">Formação histórica e académica</a></li>
+<li><a href="#principle">Fundações: concatenação de prováveis fichas</a></li>
+<li><a href="#architecture">Arquitetura de um ataque combinador moderno</a></li>
+<li><a href="#passphrase">Combinador vs frase- senha robusta</a></li>
+<li><a href="#implementation">Implementação no Time2Crack: <code>addCombinatorAttacks()</code></a></li>
+<li><a href="#keyspace">Combinador de espaço de chave no Time2Crack</a></li>
+<li><a href="#calibration">Calibração e priorização</a></li>
+<li><a href="#benchmarks">Benchmarks e ordens de grandeza</a></li>
+<li><a href="#examples">Exemplos concretos</a></li>
+<li><a href="#limits">Limites de Ataque Combinador</a></li>
+<li><a href="#defences">Defesas eficazes</a></li>
+<li><a href="#references">Referências</a></li>
+</ol>
 <hr>
-<h2>Resumo</h2>
+<h2 id="overview">1. Resumo</h2>
 <p>O ataque combinado concateno das entradas do dicionário para produzir candidatos compostos (<code>mot1+mot2</code>, às vezes com variantes). Ele especificamente visa frases curtas de palavras comuns.</p>
-<h2>2. Antecedentes históricos e acadêmicos</h2>
+<h2 id="history">2. Antecedentes históricos e acadêmicos</h2>
 <p>Listas de palavras de vazamentos têm mostrado que grande parte das frases-passe humanas curtas dependem de palavras comuns combinadas. Os motores combinadores tornaram-se tijolos padrão de campanhas de hashcat.</p>
-<h2>3. Fundações: concatenação de prováveis fichas</h2>
+<h2 id="principle">3. Fundações: concatenação de prováveis fichas</h2>
 <p>Se A e B são dois conjuntos de palavras, o espaço nominal é <code>|A| * |B|</code>O ganho vem da densidade probabilística: combinações humanas frequentes são testadas precocemente.</p>
-<h2>4. Arquitetura de um ataque combinador moderno</h2>
+<h2 id="architecture">4. Arquitetura de um ataque combinador moderno</h2>
 <pre><code class="language-text">1) Sélection de listes (mots courants, prénoms, contexte)
 2) Tri par fréquence
 3) Concaténation ordonnée (A+B, parfois B+A)
 4) Ajout optionnel de règles simples
 5) Test hash GPU</code></pre>
-<h2>5. Combinador vs. senha robusta</h2>
+<h2 id="passphrase">5. Combinador vs. senha robusta</h2>
 <p>Duas palavras concatenadas comuns permanecem vulneráveis.</p>
 <p>Uma frase-passe robusta combina várias palavras raras e não correlacionadas, idealmente geradas aleatoriamente.</p>
-<h2>6. Implementação no Time2Crack: <code>addCombinatorAttacks()</code></h2>
+<h2 id="implementation">6. Implementação no Time2Crack: <code>addCombinatorAttacks()</code></h2>
 <p>Activação quando:</p>
 <ul>
 <li><code>looksPassphrase</code>,</li>
@@ -45,26 +47,26 @@ Documento de referência do projeto Time2Crack
 <li>ou <code>common</code>,</li>
 <li>ou <code>weak</code>.</li>
 <p>Categoria: <code>cat: "combi"</code>, nota: <code>nPassphrase</code> ou <code>nNotPassphrase</code>.</p>
-<h2>7. Combinador de Keyspace no Time2Crack</h2>
+<h2 id="keyspace">7. Combinador de Keyspace no Time2Crack</h2>
 <p>O modelo utiliza <code>COMBI_KEYSPACE</code> e <code>budgetTime(...)</code>, com ramo específico para certos casos comuns.</p>
-<h2>8. Calibração e priorização</h2>
+<h2 id="calibration">8. Calibração e priorização</h2>
 <p>Em alta fidelidade, a categoria combinadora é favorecida quando a estrutura da frase-passe é detectada.</p>
-<h2>9. Benchmarks e ordens de magnitude</h2>
+<h2 id="benchmarks">9. Benchmarks e ordens de magnitude</h2>
 <p>No hash rápido, combinações frequentes podem ser testadas muito rapidamente.</p>
 <p>No lento KDF, o custo de cada tentativa retarda o ataque, mas não remove a vulnerabilidade estrutural.</p>
-<h2>10. Exemplos práticos</h2>
+<h2 id="examples">10. Exemplos práticos</h2>
 <li><code>bluesky</code> : Apresentação combinatória.</li>
 <li><code>horsebattery</code> : expor palavras tão frequentes.</li>
 <li><code>fjord-nectar-lotus-amber</code> : claramente mais resistente.</li>
-<h2>11. Limitações do Ataque Combinador</h2>
+<h2 id="limits">11. Limitações do Ataque Combinador</h2>
 <li>baixo desempenho em segredos não lexicais,</li>
 <li>dependência dos dicionários originais,</li>
 <li>rendimento decrescente em frases-passe longas e raras.</li>
-<h2>12. Defesas eficazes</h2>
+<h2 id="defences">12. Defesas eficazes</h2>
 <li>Longas passagens de palavras raras.</li>
 <li>Geração aleatória via gestor.</li>
 <li>Moderno KDF + MFA.</li>
-<h2>13. Referências</h2>
+<h2 id="references">13. Referências</h2>
 <li>Hashcat Wiki. https://hashcat.net/wiki/</li>
 <li>Weir et al. (2009). IEEE S&amp;P.</li>
 <li>Literatura recente sobre frases-passe e modelos probabilísticos (ver Time2Crack docs).</li>

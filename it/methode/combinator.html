@@ -7,37 +7,39 @@ Documento di riferimento del progetto Time2Crack
 </blockquote>
 <blockquote>Recipienti: sviluppatori, ricercatori di sicurezza, utenti avanzati</blockquote>
 <hr>
-<h2>Contenuto</h2>
-<li><a href="combinator.html#1-vue-densemble">Panoramica</a></li>
-<li><a href="combinator.html#2-contexte-historique-et-académique">Sfondo storico e accademico</a></li>
-<li><a href="combinator.html#3-fondements--concaténation-de-tokens-probables">Fondazioni: concatenazione di token probabili</a></li>
-<li><a href="combinator.html#4-architecture-dune-attaque-combinator-moderne">Architettura di un moderno attacco combinatore</a></li>
-<li><a href="combinator.html#5-combinator-vs-passphrase-robuste">Combinatore vs passphrase robusto</a></li>
-<li><a href="combinator.html#6-implémentation-dans-time2crack--addcombinatorattacks">Attuazione in Time2Crack: <code>addCombinatorAttacks()</code></a></li>
-<li><a href="combinator.html#7-keyspace-combinator-dans-time2crack">Keyspace combinatore in Time2Crack</a></li>
-<li><a href="combinator.html#8-calibration-et-priorisation">Calibrazione e priorità</a></li>
-<li><a href="combinator.html#9-benchmarks-et-ordres-de-grandeur">Benchmarks e ordini di grandezza</a></li>
-<li><a href="combinator.html#10-exemples-concrets">Esempi concreti</a></li>
-<li><a href="combinator.html#11-limites-de-lattaque-combinator">Limiti di attacco combinato</a></li>
-<li><a href="combinator.html#12-défenses-efficaces">Efficace difesa</a></li>
-<li><a href="combinator.html#13-références-bibliographiques">Referenze</a></li>
+<h2 id="contents">Contenuto</h2>
+<ol>
+<li><a href="#overview">Panoramica</a></li>
+<li><a href="#history">Sfondo storico e accademico</a></li>
+<li><a href="#principle">Fondazioni: concatenazione di token probabili</a></li>
+<li><a href="#architecture">Architettura di un moderno attacco combinatore</a></li>
+<li><a href="#passphrase">Combinatore vs passphrase robusto</a></li>
+<li><a href="#implementation">Attuazione in Time2Crack: <code>addCombinatorAttacks()</code></a></li>
+<li><a href="#keyspace">Keyspace combinatore in Time2Crack</a></li>
+<li><a href="#calibration">Calibrazione e priorità</a></li>
+<li><a href="#benchmarks">Benchmarks e ordini di grandezza</a></li>
+<li><a href="#examples">Esempi concreti</a></li>
+<li><a href="#limits">Limiti di attacco combinato</a></li>
+<li><a href="#defences">Efficace difesa</a></li>
+<li><a href="#references">Referenze</a></li>
+</ol>
 <hr>
-<h2>1. Panoramica</h2>
+<h2 id="overview">1. Panoramica</h2>
 <p>L'attacco combinatore concatenoso delle voci del dizionario per produrre candidati composti (<code>mot1+mot2</code>, a volte con varianti). Essa mira specificamente a brevi passifrae di parole comuni.</p>
-<h2>2. Sfondo storico e accademico</h2>
+<h2 id="history">2. Sfondo storico e accademico</h2>
 <p>Le liste di parole di perdite hanno dimostrato che gran parte delle brevi passfrae umane si basano su parole comuni combinate.</p>
-<h2>3. Fondazioni: concatenazione di token probabili</h2>
+<h2 id="principle">3. Fondazioni: concatenazione di token probabili</h2>
 <p>Se A e B sono due serie di parole, lo spazio nominale è <code>|A| * |B|</code>Il guadagno deriva dalla densità probabilistica: le frequenti combinazioni umane vengono testate in anticipo.</p>
-<h2>4. Architettura di un moderno attacco combinatore</h2>
+<h2 id="architecture">4. Architettura di un moderno attacco combinatore</h2>
 <pre><code class="language-text">1) Sélection de listes (mots courants, prénoms, contexte)
 2) Tri par fréquence
 3) Concaténation ordonnée (A+B, parfois B+A)
 4) Ajout optionnel de règles simples
 5) Test hash GPU</code></pre>
-<h2>5. Combinatore vs. passphrase robusto</h2>
+<h2 id="passphrase">5. Combinatore vs. passphrase robusto</h2>
 <p>Due parole comuni concatenate rimangono vulnerabili.</p>
 <p>Un robusto passphrase combina diverse parole rare e non correlate, idealmente generate casualmente.</p>
-<h2>6. Attuazione in Time2Crack: <code>addCombinatorAttacks()</code></h2>
+<h2 id="implementation">6. Attuazione in Time2Crack: <code>addCombinatorAttacks()</code></h2>
 <p>Attivazione quando:</p>
 <ul>
 <li><code>looksPassphrase</code>♪</li>
@@ -45,26 +47,26 @@ Documento di riferimento del progetto Time2Crack
 <li>o <code>common</code>♪</li>
 <li>o <code>weak</code>.</li>
 <p>Categoria: <code>cat: "combi"</code>, nota: <code>nPassphrase</code> o <code>nNotPassphrase</code>.</p>
-<h2>7. combinatore Keyspace in Time2Crack</h2>
+<h2 id="keyspace">7. combinatore Keyspace in Time2Crack</h2>
 <p>Il modello utilizza <code>COMBI_KEYSPACE</code> e <code>budgetTime(...)</code>, con ramo specifico per alcuni casi comuni.</p>
-<h2>8. Calibrazione e priorità</h2>
+<h2 id="calibration">8. Calibrazione e priorità</h2>
 <p>In alta fedeltà, la categoria combinatore è favorita quando viene rilevata la struttura passphrase.</p>
-<h2>9. Benchmarks e ordini di grandezza</h2>
+<h2 id="benchmarks">9. Benchmarks e ordini di grandezza</h2>
 <p>Su hash veloce, le combinazioni frequenti possono essere testate molto rapidamente.</p>
 <p>Su KDF lento, il costo di ogni tentativo rallenta l'attacco ma non rimuove la vulnerabilità strutturale.</p>
-<h2>10. Esempi pratici</h2>
+<h2 id="examples">10. Esempi pratici</h2>
 <li><code>bluesky</code> : Presentazione combinatore.</li>
 <li><code>horsebattery</code> : esporre parole così frequenti.</li>
 <li><code>fjord-nectar-lotus-amber</code> : chiaramente più resistente.</li>
-<h2>11. Limitazioni dell'attacco combinatore</h2>
+<h2 id="limits">11. Limitazioni dell'attacco combinatore</h2>
 <li>basse prestazioni su segreti non-lexical,</li>
 <li>dipendenza dai dizionari originali,</li>
 <li>rendimento decrescente su passfrae lunghe e rare.</li>
-<h2>12. Efficace difesa</h2>
+<h2 id="defences">12. Efficace difesa</h2>
 <li>Passi lunghi di parole rare.</li>
 <li>Generazione casuale tramite manager.</li>
 <li>Moderno KDF + MFA.</li>
-<h2>13. Referenze</h2>
+<h2 id="references">13. Referenze</h2>
 <li>Hashcat Wiki. https://hashcat.net/wiki/</li>
 <li>Weir et al. (2009).</li>
 <li>Letteratura recente su passphrases e modelli probabilistici (vedi Time2Crack docs).</li>

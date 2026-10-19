@@ -1,637 +1,532 @@
 <!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sözlük — Saldırı yöntemleri — Time2Crack</title><link rel="preload" href="../../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href="../../style.min.css" rel="stylesheet"></noscript><script src="../../detect-language.js"></script><meta name="description" content="Seçilmiş kelime listelerinden ve yaygın varyantlardan parolaları deneyin. Gizli bilgi bilinen kelimelere dayanıyorsa hızlıdır."><meta name="robots" content="index,follow"><meta name="theme-color" content="#2563EB"><meta property="og:title" content="Sözlük — Saldırı yöntemleri — Time2Crack"><meta property="og:description" content="Seçilmiş kelime listelerinden ve yaygın varyantlardan parolaları deneyin. Gizli bilgi bilinen kelimelere dayanıyorsa hızlıdır."><meta property="og:image" content="https://time2crack.eu/favicon.ico"><meta property="og:type" content="article"><meta property="og:url" content="https://time2crack.eu/tr/methode/dictionary.html"><meta property="og:site_name" content="Time2Crack"><meta property="og:locale" content="tr_TR"><meta property="og:locale:alternate" content="fr_FR"><meta property="og:locale:alternate" content="en_US"><meta property="og:locale:alternate" content="es_ES"><meta property="og:locale:alternate" content="pt_PT"><meta property="og:locale:alternate" content="de_DE"><meta property="og:locale:alternate" content="it_IT"><meta property="og:locale:alternate" content="pl_PL"><meta property="og:locale:alternate" content="nl_NL"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Sözlük — Saldırı yöntemleri — Time2Crack"><meta name="twitter:description" content="Seçilmiş kelime listelerinden ve yaygın varyantlardan parolaları deneyin. Gizli bilgi bilinen kelimelere dayanıyorsa hızlıdır."><meta name="twitter:image" content="https://time2crack.eu/favicon.ico"><link rel="canonical" href="dictionary.html"><link rel="alternate" hreflang="fr" href="https://time2crack.eu/fr/methode/dictionary.html"><link rel="alternate" hreflang="en" href="https://time2crack.eu/en/methode/dictionary.html"><link rel="alternate" hreflang="es" href="https://time2crack.eu/es/methode/dictionary.html"><link rel="alternate" hreflang="pt" href="https://time2crack.eu/pt/methode/dictionary.html"><link rel="alternate" hreflang="de" href="https://time2crack.eu/de/methode/dictionary.html"><link rel="alternate" hreflang="it" href="https://time2crack.eu/it/methode/dictionary.html"><link rel="alternate" hreflang="tr" href="https://time2crack.eu/tr/methode/dictionary.html"><link rel="alternate" hreflang="pl" href="https://time2crack.eu/pl/methode/dictionary.html"><link rel="alternate" hreflang="nl" href="https://time2crack.eu/nl/methode/dictionary.html"><script src="https://umami.bvh.fyi/script.js" data-website-id="9dc12516-0356-4a70-b4e6-1539babbf7f7" defer></script>
 </head><body><header id="site-header"></header><div id="method-lang-selector" class="lang-selector method-lang-selector" style="display:flex;justify-content:flex-end;margin:1rem 0 2rem;"></div><main>
-<h1 style="display:none">Sözlük saldırısı – Kapsamlı Operasyon</h1>
+<h1 style="display:none">Sözlük saldırısı — Ayrıntılı işleyiş</h1>
 <blockquote>
-Project reference document Time2Crack
+Time2Crack projesi başvuru belgesi
 </blockquote>
-<blockquote>Recipients: geliştiricileri, güvenlik araştırmacıları, gelişmiş kullanıcılar</blockquote>
+<blockquote>Hedef kitle: geliştiriciler, güvenlik araştırmacıları, ileri düzey kullanıcılar</blockquote>
 <hr>
-<h2>İçerikler</h2>
-<li><a href="dictionary.html#1-vue-densemble">Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış</a></li>
-<li><a href="dictionary.html#2-contexte-historique-et-académique">Tarihsel ve akademik arka plan</a></li>
-<li><a href="dictionary.html#3-fondements-conceptuels--pourquoi-les-dictionnaires-fonctionnent">Kavramsal temeller: Neden sözlükler çalışma</a></li>
-<li><a href="dictionary.html#4-architecture-dune-attaque-dictionnaire-moderne">Modern bir sözlük saldırısının mimarisi</a></li>
-<li><a href="dictionary.html#5-les-corpus-de-mots-de-passe-réels">Gerçek şifrelerin korpusu</a></li>
-<li><a href="dictionary.html#6-la-vérification-k-anonymat-hibp--une-attaque-en-temps-réel">K-Anonymity HIBP doğrulama: Gerçek zamanlı bir saldırı</a></li>
-<li><a href="dictionary.html#7-les-wordlists-linguistiques-de-time2crack">Time2Crack Language Wordlists</a></li>
-<li><a href="dictionary.html#8-détection-dictionnaire-dans-time2crack--isdictword">Time2Crack'de Çeviri: <code>isDictWord()</code></a></li>
-<li><a href="dictionary.html#9-de-leetification--comment-lattaquant-décode-les-substitutions">De-leetification: saldırgan decodes substitutions</a></li>
-<li><a href="dictionary.html#10-calcul-du-temps-de-cracking--adddictionaryattacks">Kırılma süresini hesaplamak: <code>addDictionaryAttacks()</code></a></li>
-<li><a href="dictionary.html#11-calibration-haute-fidélité--applyhighfidelitycalibration">Yüksek sadakat kalibrasyonu: <code>applyHighFidelityCalibration()</code></a></li>
-<li><a href="dictionary.html#12-probabilité-dapplicabilité-et-score-de-confiance">Örnekleme ve güven puanı</a></li>
-<li><a href="dictionary.html#13-bloom-filter-rockyou--détection-locale-des-mots-de-passe-répandus">Bloom filtre RockYou: yaygın şifrelerin yerel tespiti</a></li>
-<li><a href="dictionary.html#14-comparaison-avec-les-attaques-dérivées">Türlü saldırıların karşılaştırması</a></li>
-<li><a href="dictionary.html#15-limites-de-lattaque-dictionnaire">Saldırı sözlüğü</a></li>
-<li><a href="dictionary.html#16-défenses-efficaces">Etkili savunmalar</a></li>
-<li><a href="dictionary.html#17-références-bibliographiques">Referanslar Referanslar</a></li>
+<h2 id="contents">İçindekiler</h2>
+<ol>
+<li><a href="#overview">Genel bakış</a></li>
+<li><a href="#history">Tarihsel ve akademik arka plan</a></li>
+<li><a href="#foundations">Sözlükler neden işe yarar</a></li>
+<li><a href="#architecture">Modern bir sözlük saldırısının yapısı</a></li>
+<li><a href="#corpora">Gerçek şifre derlemleri</a></li>
+<li><a href="#hibp">HIBP kontrolü (k-anonimlik)</a></li>
+<li><a href="#wordlists">Time2Crack'in dil sözcük listeleri</a></li>
+<li><a href="#rank">Sözlük sırası: <code>rankDictionary()</code></a></li>
+<li><a href="#deleet">Leet çözümleme</a></li>
+<li><a href="#time">Sıradan kırılma süresine</a></li>
+<li><a href="#comparison">Türetilmiş saldırılarla karşılaştırma</a></li>
+<li><a href="#limits">Sözlük saldırısının sınırları</a></li>
+<li><a href="#defences">Etkili savunmalar</a></li>
+<li><a href="#references">Kaynaklar</a></li>
+</ol>
 <hr>
-<h2>1. Genel bakış</h2>
-<p>Sözlük saldırısı, en eski şifre çatlakları yöntemi, en basit kavramsal olarak ve istatistiksel olarak en etkili gerçek insan şifrelerinin çoğunluğu üzerinde test etmektir. prensibi test etmektir, olasılık sıralaması, adayların önceden belirlenmiş bir listesi - ham güç olarak tüm olası kombinasyonlar.</p>
-<strong>Neden korkunç etkili</strong> İnsanlar şifrelerini rastgele seçmez.Veri sızıntılarının Decadesleri, şifrelerin gerçek dağılımının son derece yoğun olduğunu ortaya çıkarır: en yaygın 1.000 şifre, tüm online hesapların yaklaşık 5 ila% 10'unu temsil eder.En yaygın 1 milyon kapak 40 ila 60.
-<p>Time2Crack, sözlük saldırı modelleri iki ayrı ama tamamlayıcı mekanizmalar:</p>
-<li><strong>HIBP doğrulama</strong> (Pwnedildim: Şifrenin -14 milyar eşsiz kimliklerin tarihsel veri sızıntılarından silinmesi. Eğer şifre varsa, bir saldırgan bunu ikinci bir parçada keşfedecektir.</li>
-<li><strong>Dil Bilgisi</strong> Ortak bir dil kelimesi - "sun" veya "sunshine" - HIBP'de olmasa bile savunmasızdır.</li>
-<p>Bu iki algılama bağımsız ve tamamlayıcıdır: HiBP tam uzlaşma bilgilerini kapsar, kelime listesi henüz sızdırılmamış olan ortak kelimeleri kapsar.</p>
-<hr>
-<h2>2. Tarihsel ve akademik arka plan</h2>
-<h3>2.1 Origins</h3>
-<p>Sözcü saldırı, bilgisayar güvenliğinin modern çağından önce gelir. İlk Unix sistemleri açık dilde parolaları depoladı <code>/etc/passwd</code>Dosyanın erişilebilir olduğu kadar herhangi bir sözlük saldırısı yapmak.</p>
-<strong>Chronology ofroads</strong> :
-YılEvent Event Event
-- ►- !!!
-1979 1979 1979Morris &amp; Thompson: İlk akademik makale Unix şifre güvenliği üzerinde. Şifrenin 1/3'ünün ortak İngilizce kelimeleri seçmediğini görün
-1988 1988 1988Morris Worm: kısmen 432 kelime sözlüğü + host /usr/share/dict/words
-1993 1993 1993 1993 1993 1993Crack 5.0 (Alec Muffett): İlk kamu sözlüğü Unix üzerinde saldırı aracı, mutasyon kuralları içerir
-2000 2000 2000 2000John the Ripper: hashcat kuralları (wordlist + kurallar modu) ile birleştirilmiş kelime listelerini popülerleştiriyor
-2009 2009 2009RockYou sızıntı: 14.3 milyon açık şifre insan seçimlerinin gerçek dağıtımını ortaya koyuyor
-2012 2012 2012I Been Pwned (Troy Hunt): İlk kamu denetim hizmeti uzlaşmak için
-2013 2013 2013 2013Adobe molası: 153 milyon hesap – üst şifreler, belirsiz hashs üzerinde bile frekans analizi ile tanımlanabilir
-2016Hashcat açık kaynak v3.0: GPU'daki kelime listelerinin büyük optimizasyonu (MD5: 2 TH /s on 8 GPU küme)
-2019 2019 2019 2019Koleksiyon #1-5: 2.7 milyar giriş / kelime çiftleri derlenmiş, halka açık dağıtılmış
-2024HIBP v8: -14 milyar eşsiz şifre indekslendi
-<h3>2.2</h3>
-<p>Bazı sızıntılar, insan şifrelerinin gerçek dağıtımını ortaya koyan sözlüğün görünümünü değiştirdi:</p>
-<strong>RockYou (2009)</strong> Bir geliştirici, standart dilde 14.3 milyon şifre depoladı.
+<h2 id="overview">1. Genel bakış</h2>
+<p>Sözlük saldırısı, şifre kırmanın en eski, anlaşılması en kolay ve gerçek insan şifrelerine karşı istatistiksel olarak en etkili yöntemidir. Kaba kuvvet gibi tüm olası kombinasyonları sırayla denemek yerine, önceden hazırlanmış bir aday listesini — «sözlüğü» — olasılığı azalan sırayla dener.</p>
+<p><strong>Neden bu kadar iyi çalışır.</strong> İnsanlar şifrelerini rastgele seçmez. Onlarca yıllık veri sızıntıları, gerçek şifrelerin son derece yoğunlaştığını gösteriyor: RockYou sızıntısında yalnızca <code>123456</code> şifresini 290.731 hesap kullanıyordu, yani toplamın yaklaşık %2'si. İyi kurulmuş bir sözlük saldırısı bu adayları önce dener ve onları saniyenin çok küçük bir bölümünde bulur; kaba kuvvetin ise yıllara ihtiyacı olurdu.</p>
+<p>Time2Crack birbirinden bağımsız iki mekanizma kullanır:</p>
 <ul>
-<li>Şifre #1 ("123456") 290,731 hesabı temsil etti (2)</li>
+<li><strong>Sözlük sırası</strong>, yerel olarak hesaplanır: şifre, belki leetspeak ile gizlenmiş olarak en yaygın şifrelerden biri mi, yoksa seçilen dilin sözlüğündeki bir sözcük mü? Sonuç tablosunda gösterilen kırılma süreleri bu sıradan hesaplanır.</li>
+<li><strong>Have I Been Pwned (HIBP) kontrolü</strong>: tam olarak bu şifre daha önce bir veri sızıntısında ortaya çıktı mı? Yanıt, sonuçların üstünde ayrı bir rozette gösterilir.</li>
 </ul>
-<li>İlk 10 şifreyi kapladı - hesapların% 5'i</li>
-<li>İlk 1.000: - hesapların% 20'si</li>
-<li>Dağıtım bir güç kanununu takip eder – insanların “aynıyı düşünmesini” onaylayın</li>
-<strong>LinkedIn (2012)</strong> - 6.5 milyon dolarlık SHA-1.
-<strong>Adobe (2013)</strong> - 153 milyon hesap.
-<strong>I Been Pwned (2013-günüm)</strong> - Halk sızıntılarının progresyonu, Troy Hunt'ın dünya çapında kullanılan bir referans üssü oluşturmasına izin veriyor.
-<h3>2.3 Words Attack için Referans Benchmarks</h3>
-<p>Bir RTX 4090 hızında test edilen 200.000 giriş listesi:</p>
-AlgorithmHız Hız Hız Hız200k aday için zaman
-- !!!►- !!!
-MD5168.9 GH /s~1,2 nanosaniye
-SHA-150.86 GH /s~3.9 nanosaniye
-SHA-25622.68 GH /s~8.8 nanosaniye
-NTLM288.5 GH /s-0,7 nanosaniye
-bcrypt (cost 5)184 kH /s~1.09 ikinci
-Argon2id~67 H /s~50 dakika
-<p>Sözlük saldırısı bu nedenle MD5, SHA-1 ve NTLM için neredeyse anındadır - ve küçük listelerde bile çok hızlı kalır.</p>
+<p>İkisi birbirini tamamlar: HIBP daha önce sızmış şifreleri bilir, sözcük listeleri ise henüz sızmamış sıradan sözcükleri kapsar.</p>
 <hr>
-<h2>3. Kavramsal temeller: Neden sözlük işleri</h2>
-<h3>3.1 İnsan Şifrelerinin Güç Yasası</h3>
-<p>Tüm ampirik çalışmalar aynı gözleme yakınlaşır: insan şifrelerinin dağılımı üniforma değildir - takip eder <strong>Güç yasası</strong> (Zipf) Bazı şifreler seçimin disproportionate bir kısmını yoğunlaştırır.</p>
-<strong>Formally</strong> : Tüm şifreler frekansı azaltarak sınıflandırılırsa, sıralama parolasının frekansı <em>r</em> orantılıdır. <em>^ (-α)</em> ile birlikte <em>α 1.5 ila 2</em> Korpus'a göre.
-<p>Doğrudan sonuç: <strong>En yaygın 10 şifre</strong> Sadece 10 adayı test eden bir saldırgan, 20'de başarılı olma şansına sahiptir - istatistiksel olarak, üretilen gürültü miktarı için büyük.</p>
-<h3>3.2 Şifre Yaratılışında Bilişsel Bias</h3>
-<p>İnsanlar rastgele seçim yapmazlar. Şifrelerini öngörülebilir hale getiren sezgiselleri sistematik olarak uygularlar:</p>
-<li><strong>Memory Bias</strong> : Hatırlamak kolay kelimeler (ortak isimler, ilk isimler, popüler kültür koşulları) aşırı temsil edilir</li>
-<li><strong>Kullanılabilirlik Bias</strong> Şifre hemen çevreyi yansıtıyor (domestic hayvan adı, spor takımı, seri karakter)</li>
-<li><strong>Predictable substitution önyargılar</strong> : "e" → "3", "a" → "@", "o" → "0" - kullanıcı, şifrenin güçlü olduğuna inanıyor, ancak bu kurumlar tam olarak saldırganın yapmaya çalıştığı ilk şeydir.</li>
-<li><strong>Tamam Bias</strong> Bir kelimenin sonunda bir sayı veya sembolün eklenmesi (password1, güneş!)</li>
-<li><strong>Kültürel önyargı</strong> Yaygın şifreler kullanıcının dili ve kültürü ile bağlantılıdır ("Soleil123", Almanya'da "Sommer123").</li>
-<h3>3.3 Listelerde zaten "password" kavramı</h3>
-<p>Bir şifre iki farklı nedenden ötürü bir saldırı listesinde olabilir:</p>
-<strong>Sebep 1 - O HIBP'de</strong> Son bir sızıntıda tam teşhir edilmiştir. saldırganın tahmin etmesi gerekmez - bir tane tarafından bilinen kimlikleri test eder, frekans siparişinde.Eğer hedef sunucu haçlı kabul ederse, bitti.
-<strong>Sebep 2 - Bir dilsel kelime listesinde</strong> Şifre sıradan bir kelime kelimesidir. Hiç kaçmıyor olsa bile, tüm saldırı kelime listelerindedir, çünkü açık bir adaydır. "Paillon" HiBP'de olmayabilir, ancak Fransız kelime listesinde ciddi bir çatlaklar aracı değildir.
-<p>Bu iki vaka farklı bir doğanın saldırılarına karşılık gelir, farklı hızlarla - ve bu tam olarak Time2Crack modellerinin ne olduğudır.</p>
+<h2 id="history">2. Tarihsel ve akademik arka plan</h2>
+<h3>2.1 Kökenler</h3>
+<p>Sözlük saldırısı modern bilgisayar güvenliğinden daha eskidir. İlk Unix sistemleri şifre özetlerini herkesin okuyabildiği <code>/etc/passwd</code> dosyasında saklıyordu: bu dosyayı okuyabilen herkes bir sözcük listesini tüm hesaplara karşı deneyebiliyordu.</p>
+<table class="about-table">
+<thead><tr><th>Yıl</th><th>Olay</th></tr></thead>
+<tbody>
+<tr><td>1979</td><td>Morris ve Thompson, Unix şifre güvenliği üzerine ilk akademik makaleyi yayımlar; incelenen şifrelerin büyük bölümü yaygın sözcükler veya adlardır.</td></tr>
+<tr><td>1988</td><td>Morris solucanı kısmen, içine gömülü 432 sözcüklük bir listeyle ve ardından sistem sözlüğü <code>/usr/share/dict/words</code> ile şifre tahmin ederek yayılır.</td></tr>
+<tr><td>1991</td><td>Crack (Alec Muffett): sözcük dönüştürme kurallarıyla, yaygın olarak kullanılan ilk Unix şifre kırıcısı.</td></tr>
+<tr><td>1996</td><td>John the Ripper, «sözcük listesi + kurallar» modunu yaygınlaştırır.</td></tr>
+<tr><td>2009</td><td>RockYou sızıntısı: düz metin olarak saklanan 32 milyon hesap (14,3 milyon farklı şifre), insanların şifrelerini gerçekte nasıl seçtiğini ortaya koyar.</td></tr>
+<tr><td>2013</td><td>Troy Hunt, Have I Been Pwned'i başlatır. Aynı yıl Adobe sızıntısı, şifreleri tuzsuz olarak şifrelenmiş 153 milyon hesabı açığa çıkarır; bu yüzden aynı şifreler ayırt edilebiliyordu.</td></tr>
+<tr><td>2015</td><td>Hashcat açık kaynak olur; GPU üzerinde sözlük saldırıları herkesin erişimine girer.</td></tr>
+<tr><td>2019</td><td>«Collection #1–5»: önceki sızıntılardan derlenmiş milyarlarca e-posta/şifre çifti herkese açık olarak dolaşır.</td></tr>
+</tbody>
+</table>
+<h3>2.2 Belirleyici sızıntılar</h3>
+<p>Bazı sızıntılar, insan şifrelerinin gerçek dağılımını ortaya koyarak sözlük saldırısını değiştirdi:</p>
+<ul>
+<li><strong>RockYou (2009)</strong>: düz metin olarak 14,3 milyon farklı şifre. 1 numaralı şifreyi (<code>123456</code>) 290.731 hesap kullanıyordu, toplamın yaklaşık %2'si.</li>
+<li><strong>LinkedIn (2012)</strong>: önce tuzsuz 6,5 milyon SHA-1 özeti yayımlandı; sonradan sızıntının yaklaşık 117 milyon hesabı etkilediği anlaşıldı.</li>
+<li><strong>Adobe (2013)</strong>: 153 milyon hesap; düz metin olarak saklanan şifre ipuçları en yaygın şifrelerin tahmin edilmesine yardımcı oldu.</li>
+<li><strong>Have I Been Pwned (2013'ten bugüne)</strong>: herkese açık sızıntıların sürekli güncellenen bir derlemesi, bugün dünya çapında bir başvuru kaynağı.</li>
+</ul>
+<h3>2.3 Bir sözlük saldırısı ne kadar hızlıdır?</h3>
+<p>Time2Crack'in kullandığı hızlarla (12× RTX 5090, varsayılan «Standart» profil) denenen 1 milyon sözcüklük bir liste:</p>
+<table class="about-table">
+<thead><tr><th>Algoritma</th><th>Hız</th><th>1 milyon aday için süre</th></tr></thead>
+<tbody>
+<tr><td>NTLM</td><td>4.674 GH/s</td><td>0,21 mikrosaniye</td></tr>
+<tr><td>MD5</td><td>2.737 GH/s</td><td>0,37 mikrosaniye</td></tr>
+<tr><td>SHA-1</td><td>824 GH/s</td><td>1,2 mikrosaniye</td></tr>
+<tr><td>SHA-256</td><td>367 GH/s</td><td>2,7 mikrosaniye</td></tr>
+<tr><td>bcrypt (maliyet 5)</td><td>2.760 kH/s</td><td>0,36 saniye</td></tr>
+<tr><td>Argon2id</td><td>1.000 H/s</td><td>yaklaşık 17 dakika</td></tr>
+</tbody>
+</table>
+<p>Sözlük saldırısı bu nedenle hızlı özet fonksiyonlarına (MD5, SHA-1, NTLM) karşı anında sonuç verir ve bcrypt'e karşı bile hızlı kalır.</p>
 <hr>
-<h2>4 Modern bir sözlük saldırısının mimarisi</h2>
-<h3>4.1 Genel boru hattı</h3>
-<p>Modern bir sözlük saldırısı birkaç aşamada gerçekleşir:</p>
-<pre><code class="language-plaintext">Phase 1 : Constitution de la wordlist
-    ├── Mots de passe fuités (HIBP, RockYou, Collections)
-    ├── Wordlists linguistiques (dictionnaires, prénoms, lieux)
-    ├── Wordlists thématiques (sport, pop culture, tech, religion)
-    └── Wordlists contextuelles (domaine de l'entreprise cible, noms d'employés)
-<p>2. Aşama 2: Wordlist Preprocessing
-- Sık sık (en büyük olasılıkla ilk)
-- Deduplication (aynı adayı iki kez değil)
-- Uzunluk filtrasyon (hedef uzunluğu + ±2)
-- Standardizasyon (düşük, Unicode NFC)</p>
-<p>Aşama 3: Candidate Hashs
-Her aday için kelime listesinde:
-hash<em>aday = hash</em>Algo (w)
-Promosyon │ eğer varsa<em>Aday== hashh</em>Hedef: FINDED
-- Hız: RTX 4090'da MD5 için 168 GH /s</p>
-<p>Aşama 4: Sonuçlar Analizi
-Çevik şifreler Raporu, kapsama istatistikleri</p></code></pre>
-<h3>4.2 Donanım optimizasyonu</h3>
-<p>Modern sözlük saldırıları GPU üzerinde çok paraleldir:</p>
-<li><strong>Hashcat</strong> (reference aracı): GPU'nun CUDA çekirdeklerini milyarlarca paralelleştirmek için kullanır</li>
-<li><strong>Vector Boru Hattı</strong> : RTX 4090'da, tek bir SIMD talimat 8 ila 16 MD5 paralellik hesaplar</li>
-<li><strong>GPU önbelli</strong> : Kelime listesi VRAM'da bellek gecikmesini en aza indirmek için yüklenir</li>
-<li><strong>Batching Batching</strong> : Adaylar, akışı en üst seviyeye çıkarmak için GPU'ya gönderilir</li>
-<p>Bir kelime listesi için 14 milyar giriş (HIBP büyüklüğü) 12× RTX 4090:
-</p><li>MD5: 14e9 / (168.9e9 × 12) <strong>6.9 saniye</strong></li>
-<li>bcrypt 5 maliyeti: 14e9 / (184000 × 12) <strong>6,337 yıl</strong></li><p></p>
-<p>MD5 ile bcrypt arasındaki büyüklüğün 9 siparişinin bu farkı neden hash algoritmasının seçiminin kritik olduğunu açıklıyor.</p>
-<h3>4.3 Adayların Test siparişi</h3>
-<p>Kelime listesi alfabetik sırayla test edilmez - bu <strong>olasılık azaltılabilir</strong> :</p>
-<li>En yaygın kaçış şifreleri (RockYou top 100)</li>
-<li>Common multi-fault şifreleri (HIBP önceliği listesi)</li>
-<li>Hedef dilinin ortak sözleri</li>
-<li>Doğru isimler (ilk isimler, şehirler, ünlüler)</li>
-<li>Hedefle ilgili tematik terimler</li>
-<li>Variations and conjugations</li>
-<p>Bu tür, şifrenin "düşü" olup, ilk milisaniyelerde bulunulmasını sağlar - ne olursa olsun hız.</p>
+<h2 id="foundations">3. Sözlükler neden işe yarar</h2>
+<h3>3.1 İnsan şifrelerinin kuvvet yasası</h3>
+<p>Ampirik çalışmaların hepsi aynı sonuca varır: insan şifreleri düzgün dağılmaz. Bir <strong>kuvvet yasasına</strong> (Zipf yasası) uyarlar: birkaç şifre, seçimlerin orantısız büyük bir bölümünü toplar.</p>
+<p><strong>Biçimsel olarak</strong>: şifreler azalan sıklığa göre sıralandığında, <em>r</em> sırasındaki şifrenin sıklığı yaklaşık olarak <em>r</em><sup>−s</sup> ile orantılıdır; burada <em>s</em> üssü derleme göre değişir (Wang ve ark., 2017).</p>
+<p>Doğrudan sonuç: yalnızca en yaygın 10 şifreyi deneyen bir saldırganın, belirli bir hesapta başarılı olma şansı zaten yaklaşık 20'de 1'dir.</p>
+<h3>3.2 Şifre oluştururken bilişsel yanlılıklar</h3>
+<p>İnsanlar şifre oluştururken öngörülebilir alışkanlıklar izler:</p>
+<ul>
+<li><strong>Akılda kalıcılık</strong>: hatırlaması kolay sözcükler (yaygın adlar, kişi adları, popüler kültür) aşırı temsil edilir.</li>
+<li><strong>Erişilebilirlik</strong>: şifre yakın çevreyi yansıtır (evcil hayvanın adı, tutulan takım, sevilen karakter).</li>
+<li><strong>Öngörülebilir değiştirmeler</strong>: e → 3, a → @, o → 0. Kullanıcı şifresinin güçlendiğini sanır, ama saldırganın ilk denediği değiştirmeler tam olarak bunlardır.</li>
+<li><strong>Sona ekleme</strong>: bir sözcüğün sonuna bir rakam ya da simge (<code>password1</code>, <code>kelebek!</code>).</li>
+<li><strong>Dil ve kültür</strong>: yaygın şifreler kullanıcının diline bağlıdır (Fransa'da <code>Soleil123</code>, Almanya'da <code>Sommer123</code>).</li>
+</ul>
+<h3>3.3 «Listelerde» olmanın iki yolu</h3>
+<p>Bir şifre bir saldırı listesinde iki farklı nedenle yer alabilir:</p>
+<ul>
+<li><strong>Daha önce sızmıştır.</strong> Tam olarak bu şifre geçmişteki bir sızıntıda ortaya çıkmıştır. Saldırganın tahmin etmesine gerek yoktur: bilinen şifreleri sıklık sırasına göre dener.</li>
+<li><strong>Sıradan bir sözcüktür.</strong> Hiç sızmamış olsa bile, apaçık bir aday olduğu için her saldırı listesinde bulunur. <code>kelebek</code> gibi bir sözcük HIBP'de olmayabilir, ama ciddi her kırma aracının Türkçe listesinde vardır.</li>
+</ul>
+<p>Bu iki durum, aşağıda anlatılan iki Time2Crack mekanizmasına karşılık gelir.</p>
 <hr>
-<h2>5. Gerçek şifrelerin korpusu</h2>
-<h3>5.1 (HIBP)</h3>
-<strong>Boyut Boyutu</strong> -14 milyar eşsiz şifre (2024)
-<strong>Kaynak Kaynağı</strong> : 2013 yılından beri kamu sızıntılarının birleştirilmesi.
-<strong>Format Format</strong> : SHA-1 görünüşe göre sıralandı
-<strong>Public access</strong> : k anonim API, savunucuları için mevcut full hash indir
-<p>HiBP küresel referanstır çünkü:
-</p><li>Neredeyse tüm büyük kamu sızıntılarını kapsar</li>
-<li>Kargalar frekans tarafından sıralanır - en yaygın şifreler ilk önce test edilir</li>
-<li>Aktif olarak korunur (yeni sızıntılar sürekli eklenir)</li><p></p>
-<p>Tam HIBP çöpe sahip bir saldırgan ilk olarak frekans siparişinde ~14 milyar adayı test edebilir. Olmayan algoritmalar için (MD5, SHA-1), bu liste tüm gerçek online şifrelerin% 50'sini kapsar.</p>
-<h3>5.2 RockYou (2009) – Korpus</h3>
-<strong>Boyut Boyutu</strong> 14.3 milyon açık şifre
-<strong>Anahtar özellikleri</strong> :
-Rank Rank Rank Rank Rank RankŞifre ŞifreOccurrencesKorpus %
-- ►---- ►---- ►---- ►
-1 1 1123456290 7312.03%
-2 21234579% 0,5
-3 312345678976 790% 0.54%
-4 4 4şifre şifre şifre59 4620.42%
-5 5iloveyou49 9520.35%
-Top 10– –-650,000~4.5%
-Top 100– –~1 200 0008.4%
-Top 1 000– –~2 500 000 000~17.5%
-Top 10.000– –~4 500 000~31.5%
-<strong>Eğitim Eğitimi</strong> Sadece 10.000 adayı test edin (100 μs MD5 hız) uzlaşmalar - MD5 koruma hesabının veri tabanının% 31'i.
-<h3>5.3 Özel kelime listeleri</h3>
-<strong>SecLists</strong> (Daniel Miessler): 4 GB kelime listelerinin açık kaynak koleksiyonu:
-<li>Şifreler (RockYou, üst şifreler çeşitli sızıntılar)</li>
-<li>Mevcut kullanımlar</li>
-<li>Şifreler dil tarafından sıralanır</li>
-<li>Teknik terimler, ürün isimleri, ünlüler</li>
-<strong>Kaonashi</strong> : 1.3 milyar giriş kelime listesi kamu sızıntılarından bu yana derlenmiş
-<strong>Crackstation</strong> : Tüm Wikipedia sözlüklerinden gelen kelimeler dahil 1.5 milyar giriş
-<strong>Weakpass</strong> : ~8 milyar tek gerçek şifre girişi
-<p>Bu korpuslar halka açık olarak indirilebilir - onların varlığı saldırgan güvenliğin kurulmuş bir gerçeğidir.</p>
+<h2 id="architecture">4. Modern bir sözlük saldırısının yapısı</h2>
+<h3>4.1 Genel akış</h3>
+<p>Modern bir sözlük saldırısı dört aşamada ilerler:</p>
+<pre><code class="language-plaintext">Aşama 1: sözcük listesini oluşturmak
+    ├── Sızmış şifreler (HIBP, RockYou, derlemeler)
+    ├── Dil listeleri (sözlükler, kişi adları, yer adları)
+    ├── Tematik listeler (spor, popüler kültür, teknoloji, din)
+    └── Hedefli listeler (şirketin alan adı, çalışan adları)
+
+Aşama 2: listeyi hazırlamak
+    ├── Sıklığa göre sıralamak (en olasılar önce)
+    ├── Yinelenenleri kaldırmak
+    ├── Uzunluğa göre süzmek (hedef uzunluk ± 2)
+    └── Normalleştirmek (küçük harf, Unicode NFC)
+
+Aşama 3: özetini almak ve karşılaştırmak
+    listedeki her w adayı için:
+        hash(w) == hedef_özet ise: bulundu
+    (MD5 için GPU'da saniyede milyarlarca aday)
+
+Aşama 4: rapor
+    └── Kırılan şifreler, kapsama istatistikleri</code></pre>
+<h3>4.2 Donanım optimizasyonları</h3>
+<p>Modern sözlük saldırıları GPU'larda büyük ölçüde paralel çalışır:</p>
+<ul>
+<li><strong>Hashcat</strong> (başvuru aracı), saniyede milyarlarca özet hesaplamak için binlerce GPU çekirdeği kullanır.</li>
+<li><strong>Toplu işleme</strong>: adaylar GPU'ya milyonluk gruplar halinde gönderilir, böylece GPU sürekli meşgul kalır.</li>
+<li><strong>GPU üzerinde kurallar</strong>: dönüştürme kuralları doğrudan GPU'da uygulanır; böylece kısa bir sözcük listesi, saklanması gerekmeden milyarlarca aday üretir.</li>
+</ul>
+<p>12× RTX 5090 üzerinde 1 milyar sızmış şifrelik bir liste için:</p>
+<ul>
+<li>MD5: 10<sup>9</sup> / 2.737 × 10<sup>9</sup> ≈ <strong>0,4 milisaniye</strong></li>
+<li>bcrypt (maliyet 5): 10<sup>9</sup> / 2.760.000 ≈ <strong>6 dakika</strong></li>
+</ul>
+<p>MD5 ile bcrypt arasındaki yaklaşık altı büyüklük basamağı fark, özet algoritması seçiminin ne kadar önemli olduğunu gösterir.</p>
+<h3>4.3 Adayların sırası</h3>
+<p>Liste alfabetik sırayla değil, <strong>azalan olasılığa göre</strong> denenir:</p>
+<ol>
+<li>En yaygın sızmış şifreler (RockYou'nun ilk 100'ü)</li>
+<li>Birçok sızıntıda yer alan şifreler (HIBP sıklığına göre sıralı)</li>
+<li>Hedef dilin yaygın sözcükleri</li>
+<li>Özel adlar (kişi adları, şehirler, ünlüler)</li>
+<li>Hedefle ilgili terimler</li>
+<li>Varyantlar ve çekimli biçimler</li>
+</ol>
+<p>Bu sırayla zayıf bir şifre, özet hızı ne olursa olsun ilk milisaniyelerde bulunur.</p>
 <hr>
-<h2>6. K-Anonymity Verification HIBP: Gerçek Zamanlı Saldırı</h2>
-<h3>6.1 Protokolü k anonim</h3>
-<p>Time2Crack, bir saldırganın HIBP veritabanı ile ne yapacağını tam olarak tekrarlayan gerçek zamanlı bir HIBP kontrol içerir - ancak asla parolayı düz dilde veya tam hash ile iletmez.</p>
-<p>K-anonymity protokolü aşağıdaki gibi çalışır:</p>
-<pre><code class="language-plaintext">1. Calculer SHA-1(password)      → par exemple "CBFDAC6008F9CAB4083784CBD1874F76618D2A97"
-<li>Sadece HIBP API'ye ilk 5 karakter gönderin: "CBFDA"</li>
-<li>API, "CBFDA" ile başlayan TÜM SHA-1 eklerini döndürür (yaklaşık 400-600 hashes)</li>
-<li>Arama yerel olarak eğer geri kalanlar ise (C6008F9CAB4083784CBD1874F76618D2A97) listededir.</li>
-<li>Eğer bulunursa: şifre uzlaşmaz sayılır (HIBP aynı zamanda sızıntı sayısını döndürür)</li></code></pre>
-<strong>Gizlilik Garantisi</strong> HIBP sunucusu asla tam hash'ı görmez (bu yüzden şifreyi tanımlayamaz), açık şifreyi yalnız bırakın. Son hesaplama yerel olarak yapılır.
-<strong>Bu saldırı için ne anlama geliyor</strong> : HIBP yüksek bir sayıyla bir maç döndürürse (örneğin 9,547,236 "123456" için görünüşler), bu, HIBP veritabanı testi ile bir saldırganın onu listedeki çok yüksek bir pozisyonda bulduğu anlamına gelir - nanosaniyelerin bir kısmında.
-<h3>6.2 Time2Crack'de Uygulama (app.js)</h3>
-<p>HIBP check, asynchronous and non-blocking. şifre hemen yerel yöntemler tarafından analiz edilir ve HIBP kontrolü sonucu tamamlar:</p>
-<pre><code class="language-javascript">// Pseudo-code simplifié
+<h2 id="corpora">5. Gerçek şifre derlemleri</h2>
+<h3>5.1 Have I Been Pwned (HIBP)</h3>
+<ul>
+<li><strong>Boyut</strong>: 14 milyardan fazla ele geçirilmiş hesaptan gelen, bir milyardan fazla farklı şifre</li>
+<li><strong>Kaynak</strong>: 2013'ten bu yana herkese açık sızıntıların derlemesi</li>
+<li><strong>Biçim</strong>: her şifrenin kaç kez görüldüğüyle birlikte SHA-1 (ve NTLM) özetleri</li>
+<li><strong>Erişim</strong>: k-anonimlikli API; savunucular listenin tamamını indirebilir</li>
+</ul>
+<p>HIBP dünya çapında başvuru kaynağıdır, çünkü neredeyse tüm büyük açık sızıntıları kapsar, her şifrenin sıklığını belirtir ve etkin biçimde güncellenir. Listenin tamamına sahip bir saldırgan önce en sık şifreleri deneyebilir.</p>
+<h3>5.2 RockYou (2009): temel derlem</h3>
+<p>Düz metin olarak 14,3 milyon farklı şifre. Listenin başı:</p>
+<table class="about-table">
+<thead><tr><th>Sıra</th><th>Şifre</th><th>Hesap</th><th>Pay</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><code>123456</code></td><td>290.731</td><td>%2,03</td></tr>
+<tr><td>2</td><td><code>12345</code></td><td>79.078</td><td>%0,55</td></tr>
+<tr><td>3</td><td><code>123456789</code></td><td>76.790</td><td>%0,54</td></tr>
+<tr><td>4</td><td><code>password</code></td><td>59.462</td><td>%0,42</td></tr>
+<tr><td>5</td><td><code>iloveyou</code></td><td>49.952</td><td>%0,35</td></tr>
+</tbody>
+</table>
+<p><strong>Akılda tutulacak</strong>: MD5'e karşı birkaç nanosaniyede denenen bir avuç aday, sızmış bir veritabanındaki hesapların ölçülebilir bir bölümünü ele geçirmeye yeter.</p>
+<h3>5.3 Uzmanlaşmış liste koleksiyonları</h3>
+<ul>
+<li><strong>SecLists</strong> (Daniel Miessler): güvenlik testleri için açık kaynaklı bir liste koleksiyonu — sızmış şifreler, dillere göre şifreler, teknik terimler, adlar.</li>
+<li><strong>CrackStation</strong>: birçok dilde Vikipedi'deki tüm sözcükler dahil yaklaşık 1,5 milyar girdi.</li>
+<li><strong>Weakpass</strong>: gerçek sızmış şifrelerden oluşan çok büyük derlemeler.</li>
+</ul>
+<p>Bu derlemler herkese açık olarak indirilebilir: varlıkları saldırı odaklı güvenlikte yerleşik bir gerçektir.</p>
+<hr>
+<h2 id="hibp">6. HIBP kontrolü (k-anonimlik)</h2>
+<h3>6.1 k-anonimlik protokolü</h3>
+<p>Time2Crack şifreyi HIBP'de kontrol ederken onu da, tam özetini de asla göndermez. Protokol şöyle işler:</p>
+<pre><code class="language-plaintext">1. SHA-1(şifre) hesaplanır
+     → ör. CBFDAC6008F9CAB4083784CBD1874F76618D2A97
+2. HIBP API'sine yalnızca ilk 5 karakter gönderilir
+     → GET https://api.pwnedpasswords.com/range/CBFDA
+3. API bu önekle başlayan tüm özet soneklerini döndürür
+     (sahte girdilerle tamamlanmış birkaç yüz satır)
+4. Özetin geri kalanı yanıt içinde yerel olarak aranır
+     → C6008F9CAB4083784CBD1874F76618D2A97
+5. Bulundu: şifre sızmış, HIBP kaç kez olduğunu bildirir
+   Bulunamadı: şifre HIBP'de yok</code></pre>
+<p><strong>Gizlilik güvencesi</strong>: HIBP sunucusu yalnızca yüzlerce şifrenin paylaştığı 5 karakterlik bir önek görür. Hangi şifrenin kontrol edildiğini bilemez. Karşılaştırma tarayıcıda yapılır.</p>
+<h3>6.2 Time2Crack'teki uygulama</h3>
+<p>Kontrol, son tuş vuruşundan yarım saniye sonra, yerel analizle paralel olarak başlar:</p>
+<pre><code class="language-javascript">// app.js - checkHIBP()
 async function checkHIBP(password) {
-  const sha1 = await sha1Hash(password);
-  const prefix = sha1.substring(0, 5);   // 5 premiers chars
-  const suffix = sha1.substring(5);       // reste du hash
-<p>Sınırlı yanıt = bekleme ((()
-    <code>https://api.pwnedpasswords.com/range/${prefix}</code>
-  );
-Sınırlı hatlar = yanıt bekliyor.text();</p>
-<p>(Sekiz hattı) için
-[hashSuffix, sayı] = line.split ()
-If (hashSuffix.toLowerCase() = suffix.toLowerCase())
-Geri dönüş parseInt (saygı); // sızıntı sayısı
-}
-}
-iade 0; // bulunamadı
-}</p></code></pre>
-<strong>HIBP performans verileri</strong> :
-<li>Tipik API latency: 50-200 ms (network)</li>
-<li>Suf eklerinin hacmi geri döndü: ~400-600 per query</li>
-<li>Yanlış pozitif: 0 (SHA-1 deterministic)</li>
-<li>Yanlış negatif: 0 (Eğer HiBP’de olursa, her zaman geri döndü)</li>
-<h3>6.3 Kont HIBP</h3>
-<p>HiBP tarafından iade edilen sayı, bu tam şifrenin indekslenmiş sızıntılarda ortaya çıktığını gösteriyor:</p>
-KontYorumCrack zamanı (MD5, 12× RTX 4090)
-- ►-- !!!
-&gt; 1 000 000 000Top 100 World&lt; 1 nanosaniye
-10.000-1,000,000Çok yaygın&lt; 10 nanosaniye
-1 000-10 000Common Common Common Common Common&lt; 100 nanosaniye
-100-1,000Uncommon ama bilinen&lt; 1 mikrosaniye
-1–100Nadir ama uzlaşmacı&lt; 10 mikrosaniye
-<p>1'in bir sayısı bile (kullanıcı sadece bir kez ortaya çıktı) bir kırılganlığa işaret ediyor: Bir saldırgan bu hesabı özellikle hedef alıyorsa ve sorudaki sızıntının kimliklerine sahip olacak, onu bulacak.</p>
+  const sha1 = await sha1Hex(password);   // uppercase hex SHA-1
+  const prefix = sha1.slice(0, 5);        // sent to the API
+  const suffix = sha1.slice(5);           // never leaves the browser
+
+  const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
+    headers: { "Add-Padding": "true" },   // hide the real size of the response
+  });
+  if (!res.ok) return null;               // API unavailable
+
+  const text = await res.text();
+  for (const line of text.split("\n")) {
+    const [hashSuffix, count] = line.trim().split(":");
+    if (hashSuffix === suffix) return parseInt(count, 10); // number of leaks
+  }
+  return 0;                               // not found
+}</code></pre>
+<p>Sonuç bir rozette görünür: «N kez bulundu», «bulunamadı» ya da API yanıt vermediğinde «kullanılamıyor». Yerel olarak hesaplanan kırılma sürelerini değiştirmez.</p>
+<h3>6.3 HIBP sayacını okumak</h3>
+<p>Sayaç, tam olarak bu şifrenin dizinlenmiş sızıntılarda kaç kez görüldüğünü gösterir:</p>
+<table class="about-table">
+<thead><tr><th>Sayaç</th><th>Anlamı</th></tr></thead>
+<tbody>
+<tr><td>1.000.000'dan fazla</td><td>Dünyada en çok kullanılan şifrelerden biri: her saldırgan ilk onu dener</td></tr>
+<tr><td>10.000 ile 1.000.000 arası</td><td>Çok yaygın</td></tr>
+<tr><td>1.000 ile 10.000 arası</td><td>Yaygın</td></tr>
+<tr><td>100 ile 1.000 arası</td><td>Az yaygın ama bilinen</td></tr>
+<tr><td>1 ile 100 arası</td><td>Nadir, ama ele geçirilmiş</td></tr>
+</tbody>
+</table>
+<p>Sayacın 1 olması bile bir uyarıdır: şifre saldırganların elindeki listelerdedir ve sızdığı hesabı hedef alan herkes onu deneyecektir.</p>
 <hr>
-<h2>7. Time2Crack Language Wordlists</h2>
-<h3>7.1 Neden dil kelime listeleri HIBP'ye ek olarak</h3>
-<p>HiBP tam uzlaşma bilgilerini kapsar - ancak ortak kelimeler henüz tükenmez. Bir frankophone kullanıcısı, bir şifre olarak "ephemeral"i seçen bir kullanıcı HiBP'de olmayabilir (söz anglophone kimliklerinde olası değildir), ancak bir frankofon sistemini hedef alan herhangi bir saldırıcunun Fransızca kelime listesindedir.</p>
-<p>Time2Crack'in dil kelime listeleri bu boşluğu kaplar:</p>
-Dil DiliKaynak KaynağıTahmin edilen boyut
---- ►--- ►-
-İngilizce İngilizce İngilizce EnglishSecLists Wikipedia EN~200,000 giriş
-Fransız (fr)SecLists Wikipedia EN~150.000 giriş
-İspanyolca İspanyolca İspanyolcaSecLists Wikipedia ES~150.000 giriş
-Portekiz (pt)SecLists Wikipedia PT1.000 giriş
-Alman Alman AlmanDinle Wikipedia DE~180.000 giriş
-Türkçe (tr)SecLists Wikipedia TR~100,000 girişi
-İtalyan (it)kkrypt0nnnn~100,000 girişi
-Polonya (pl)kkrypt0nnnn~80 000 giriş
-Hollanda (nl)kkrypt0nnnn~80 000 giriş
-<strong>Uygulanan Filtreleme</strong> Sadece ≥ 4 karakterin sözleri korunmuştur ( 1-3 karakter gerçekçi bir şifre olmak için çok kısadır ve onların dahil edilmesi listeyi ek değer olmadan şişirecektir).
-<h3>7.2 Lazy yükleme</h3>
-<p>Wordlists koda dahil edilmez - dil değiştiğinde, ağ bütçesiyle tanışmak için talep üzerine yüklenir:</p>
-<pre><code class="language-javascript">// app.js - loadDictionary()
-async function loadDictionary(lang) {
-  if (DICT_LANG === lang &amp;&amp; DICT_WORDS) return;  // already loaded
-  if (DICT_LOADING) {
-    DICT_PENDING_LANG = lang;  // load it once the current file is done
+<h2 id="wordlists">7. Time2Crack'in dil sözcük listeleri</h2>
+<h3>7.1 HIBP'ye ek olarak neden dil listeleri</h3>
+<p>HIBP daha önce sızmış şifreleri kapsar, henüz sızmamış sıradan sözcükleri değil. <code>şemsiye</code> şifresini seçen biri HIBP'de olmayabilir, ama bu sözcük Türkçe konuşan kullanıcıları hedef alan her saldırganın Türkçe listesinde vardır. Time2Crack'in dil listeleri bu boşluğu doldurur:</p>
+<table class="about-table">
+<thead><tr><th>Dil</th><th>Dosya</th><th>Sözcük</th></tr></thead>
+<tbody>
+<tr><td>İngilizce</td><td><code>en.txt.gz</code></td><td>748.957</td></tr>
+<tr><td>Fransızca</td><td><code>fr.txt.gz</code></td><td>550.235</td></tr>
+<tr><td>İspanyolca</td><td><code>es.txt.gz</code></td><td>284.833</td></tr>
+<tr><td>Portekizce</td><td><code>pt.txt.gz</code></td><td>507.720</td></tr>
+<tr><td>Almanca</td><td><code>de.txt.gz</code></td><td>2.009.880</td></tr>
+<tr><td>İtalyanca</td><td><code>it.txt.gz</code></td><td>3.252.670</td></tr>
+<tr><td>Felemenkçe</td><td><code>nl.txt.gz</code></td><td>2.678.322</td></tr>
+<tr><td>Lehçe</td><td><code>pl.txt.gz</code></td><td>3.670.705</td></tr>
+<tr><td>Türkçe</td><td><code>tr.txt.gz</code></td><td>400.443</td></tr>
+<tr><td><strong>Toplam</strong></td><td></td><td><strong>14.103.765</strong></td></tr>
+</tbody>
+</table>
+<p>İlk sürümler SecLists'in Vikipedi sözcük listelerinden ve kkrypt0nn listelerinden geliyordu; o zamandan beri genişletildiler. Yükleme sırasında her satırdaki boşluklar temizlenir, satır küçük harfe çevrilir ve 3 karakterden kısa sözcükler atılır.</p>
+<h3>7.2 İsteğe bağlı yükleme</h3>
+<p>Sözcük listeleri koda dahil değildir. Yalnızca seçilen dilin listesi, ilk kez gerektiğinde, gzip dosyası olarak indirilir:</p>
+<pre><code class="language-javascript">// app.js - loadDictionary() (simplified: progress bar updates removed)
+async function loadDictionary(lang = AppConfig.lang) {
+  // Already loaded for this language
+  if (AppConfig.dictWords !== null &amp;&amp; AppConfig.dictLang === lang) return;
+
+  // 1. Local cache (IndexedDB)
+  const cached = await cacheGet(`dict_${lang}`);
+  if (cached) {
+    AppConfig.setDictionary(new Set(cached), lang);
     return;
   }
-  DICT_LOADING = true;
 
-  const res = await fetch(`data/wordlists/${lang}.txt`);
-  const text = await res.text();
+  // 2. Download the compressed list
+  const res = await fetch(`${basePath}data/wordlists/${lang}.txt.gz`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const buffer = await res.arrayBuffer();
 
-  // Convert to Set&lt;string&gt; for O(1) lookup
-  DICT_WORDS = new Set(
-    text.split("\n")
-      .map(w =&gt; w.normalize("NFC").trim().toLowerCase())
-      .filter(w =&gt; w.length &gt;= 4)
-  );
-  DICT_LANG = lang;
-  DICT_LOADING = false;
-}</code></pre>
-<strong>Neden Bir Şey <code>Set</code> ??</strong> Yapı Yapısı <code>Set</code> JavaScript, O(1) görünümleri garanti eder - sözlük büyüklüğüne bakılmaksızın (50.000 veya 200.000 giriş), doğrulama doğrulama <code>DICT_WORDS.has(word)</code> Aynı sürekli zaman alır. <code>Array</code> O(n) per lookup, i.e. up to 200,000 karşılaştırmas per check.
-<h3>Yükleniyor kuyruk</h3>
-<p>The The The The The The The The <code>DICT_PENDING_LANG</code> Hızlı dil değişiklikleri sırasında yarış koşullarını önlemek:</p>
-<pre><code class="language-plaintext">Scénario : l'utilisateur switche rapidement EN → FR → DE
-├── EN demandé : DICT<em>LOADING = false → getin başlangıcı EN
-Satın alma sırasında talep edilen DICT</em>LOADING = true → DICT_PENDING_LANG = "fr"
-├── DE demandé pendant fetch EN : DICT<em>LOADING = true → DICT</em>PENDING<em>LANG = "de" (crash "fr")
-- Fetch Ends: DICT</em>LANG = "en", puis lance loadDictionary("de")
-└── Résultat : seule la dernière langue demandée est chargée</code></pre>
-<p>Bu davranış kasıtlıdır: Son zamanlarda istenen dil yüklenir, tüm orta diller değil.</p>
-<hr>
-<h2>8. Time2Crack içinde Sözlük: <code>isDictWord()</code></h2>
-<h3>8.1. Tespit işlemi</h3>
-<p>fonksiyon <code>isDictWord(pw)</code> Bir şifrenin mevcut bir sözlüğe ait olup olmadığını belirler:</p>
-<pre><code class="language-javascript">// app.js - ligne 2181
-function isDictWord(pw) {
-  if (!DICT<em>(WORDS) sahte geri döner;
-<p>// Standardizasyon: NFC + Lowercase
-l = pw.normalize("NFC")toLowerCase();</p>
-<p>// Doğrudan doğrulama
-Eğer (DICT)</p></em>WORDS.has(l) || DICT<em>WORDS.has(deLeet(pw) gerçek geri döndü;
-<p>// Morpholojik varyasyonlar
-Cont deleetWord = deLeet(pw);
-Karşılaştırmalar = getMorphVariations (deleetWord);</p>
-<p>Çünkü (konst varyasyonu) {
-Eğer (DICT)</p></em>WORDS.has(variation)) return true;
+  // 3. Decompress in the browser (plain .txt if DecompressionStream is missing)
+  let text;
+  try {
+    text = await new Response(
+      ReadableStream.from([new Uint8Array(buffer)])
+        .pipeThrough(new DecompressionStream("gzip"))
+    ).text();
+  } catch {
+    text = await (await fetch(`${basePath}data/wordlists/${lang}.txt`)).text();
   }
-<p>Sahte geri dönüş;
-}</p></code></pre>
-<strong>3 katman algılama hattı</strong> :
-<li><strong>Doğrudan yazışma</strong> : Sözlükteki standart şifre, olduğu gibi mi?</li>
-<li>"sun" → doğrudan hit</li>
-<li>"SOLEIL" → "sun" → hit</li>
-<li><strong>After-leetification yazışma</strong> Şifre standart ayrıcalıklar içeriyor mu?</li>
-<li>"s0l3il" → deLeet → "sun" → hit</li>
-<li>"p@sw0rd" → deLeet → "password" → hit</li>
-<li><strong>Morpholojik varyasyonlar</strong> : Bilinen morfolojik bir değişken midir?</li>
-<li>"sun" → "sun"un çoğu varyasyonu</li>
-<li>"passwords" → "password" → hit</li>
-<h3>8.2 Unicode Standardizasyon (NFC)</h3>
-<p>Standartlaştırma <code>normalize("NFC")</code> aksanlı karakterlerin sürekli tedavi edilmesini sağlar:
-</p><li>"e" tek bir nokta kodu (U+00E9) veya "e" + aksan (U+0065 + U+0301) olarak Unicode'da temsil edilebilir.</li>
-<li>Standartlaştırma olmadan, "coffee" ve "coffee" (farklı kodlamalar) eşleşmeyecekti</li><p></p>
-<p>Bu standartlaşma hem sözlüğü hem de kontrol ederken uygulanır - aksan dilleri için doğru yazışmalar sağlar (FR, ES, DE, PT vs.).</p>
-<h3>8.3 kırılganlık üzerindeki etkisi tespit edildi</h3>
-<p>When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When When <code>isDictWord()</code> Go back back back <code>true</code>Birkaç saldırı uygulanabilir:
-</p><li><strong>Sözlük saldırısı</strong> Kendi: güven puanı 0.85 (vs 0 yok)</li>
-<li><strong>Hibrit saldırı</strong> : <code>hybridVuln = true</code> → sözlük temelinde test edilen 1000 mutasyon</li>
-<li><strong>PCFG saldırısı</strong> : Artan güven puanı (lexical base detect)</li>
-<li><strong>Morpholojik saldırı</strong> : morfolojik değişken tespit edilirse yüksek öncelik</li><p></p>
-<hr>
-<h2>9. De-leetification: saldırgan decodes substitutions</h2>
-<h3>9.1 Leetspeak ve sınırlamaları koruma olarak</h3>
-<p>Leetspeak (veya "1337 konuşma") görsel benzer sayılar veya sembollerle mektupların değiştirilmesi uygulamasıdır: <code>a→@</code>, <code>e→3</code>, <code>i→1</code> veya <code>!</code>, <code>o→0</code>, <code>s→$</code>. Kullanıcılar bunu "güçlü" ortak kelimeler için kullanır.</p>
-<strong>Örnek Örnek Örnek Örnek Örnek Örnek Örnek</strong> "password" → "p@$w0rd"
-<p>Gerçek: Bu alt kurumlardır <strong>Uygulanan ilk kurallar</strong> Herhangi bir sözlükte mutasyon kuralları ile saldırıya uğrarlar. yetkili bir saldırgana karşı gerçek bir savunma oluştururlar.</p>
-<h3>9.2 Uygulamanın uygulanması <code>deLeet()</code> Time2Crack</h3>
-<pre><code class="language-javascript">// app.js - ligne 3622
-const LEET<em>BASE = {
-A: ["@", "4"]
-E: ["3"]
-O: ["0"]
-s: ["$", "5"]
-T: ["+", "7"]
-["#"]
-["9"]
-=
-<p>LeetWith(pw, oneMap)
-r = pw.normalize("NFC")toLowerCase();
-(Resimler, geri dönüşler)</p></em>BASE))
-    for (const c of reps) r = r.split(c).join(ch);
-  // Appliquer la résolution ambiguë (i ou l) en dernier
-  for (const [ch, reps] of Object.entries(oneMap))
-    for (const c of reps) r = r.split(c).join(ch);
-  return r;
-}
-<p>Leet(pw) işlevi
-// Belirsizlik: "1" veya "l" olabilir
-I = deLeetWith(pw, { i: "1!", l: "
-L = deLeetWith(pw, { l: "1", i: "!"</p>
-<p>// Eğer sözlük yüklenirse, bu maçları tercih edin
-Eğer (DICT)<em>WORDS)
-Eğer (DICT)</em>WORDS.has (L ile)L ile geri döndü;
-Eğer (DICT)<em>WORDS.has(WithI) I ile geri döndü;
-}</em></p>
-<p>// Aksi takdirde: en az kalan sayılarla değişkeni tercih edin
-I = (WithI.match (/\d/g)
-s.)
-Geri dönüş sayısal L &lt; = sayısal I? withL: withI;
-}</p></code></pre>
-<h3>9.3 Belirsizlik Yönetimi "1" → "i" veya "l"</h3>
-<p>Alt kurum "1" belirsizdir: "1" "i" (örneğin "1nfo" → "info" veya "l" (as in "p1ayer" → "player") Time2Crack bu belirsizliği çözebilir:</p>
-<li>Her iki çeşidi de test edin ("WithI" ve "WithL")</li>
-<li>Eğer sözlük yüklenirse, bir sözlük maçı veren değişkeni tercih edin</li>
-<li>Bir sözlük olmadan, en az ikamet edilen sayıları terk eden varyantları tercih edin (asism: complete de-leetification is more likely)</li>
-<strong>Örnek Örnek Örnek Örnek Örnek Örnek Örnek</strong> :
-<li>"b1ue" → withI = "biue" (törüntüde değil),L = "mavi" (in dict) → "mavi" döndürür</li>
-<li>"f1le" → withI = "file" (in dict) withL = "flle" (görünmezde değil) → "file" döndürür</li>
-<h3>9.4 Kurumlar kaplı değildir (aslında)</h3>
-<p>Time2Crack, LIABASE modellerinin ötesinde nadir veya belirsiz alt yerleri kapsamaz.Bu bir tasarım seçimidir: çok fazla vakayı kapsayan sahte pozitifleri artırmak (şu anda bir kelime olarak bir şifreyi tespit etmek).</p>
-<hr>
-<h2>10. Yoğun zaman hesaplaması: <code>addDictionaryAttacks()</code></h2>
-<h3>Hesaplama mantığı</h3>
-<pre><code class="language-javascript">// app.js - ligne 3848
-function addDictionaryAttacks(rows, common, weak, dictWord) {
-  for (const a of ALGOS) {
-    let sec;
-    if (weak)     sec = 100 / a.rate;     // Top ~100 entrées
-    else if (common) sec = 10000 / a.rate; // HIBP priority list ~10k
-    else if (dictWord) sec = 200000 / a.rate; // Scan wordlist complète ~200k mots
-    else sec = null;                        // Non applicable
-<p>Not = zayıf mı? t("nWeakPassword")
-: yaygın ? t("nInLeaks")
-: dictWord? t(nDictHit)
-T(nAbsentLeaks);</p>
-<p>satırlar.push({ atk: t("aDict") hash: a.name, spleen: a.rate, sec, not, kedi: "dict"
-}
-}</p></code></pre>
-<h3>10.2 Üç kırılganlık seviyesi</h3>
-<strong>Seviye 1 - Ultra-weak</strong> (<code>weak = true</code>) : ~100 / spleen
-Şifre dünyanın En Top 100 ("password", "123456", "qwerty"...) Bu 100 öncelikli adayın ilk geçişte olduğunu test ediyor. MD5: 100 / 168.9e9 <strong>0.6 nanosaniye</strong>.
-<strong>Seviye 2 - Common Common</strong> (<code>common = true</code>) : ~ 10 000 / spleen
-Şifre, ~10.000 en sık şifrenin referans HIBP listesindedir. Bu adaylar ilk mikrosaniyede test edilir. MD5: 10.000 / 168,9e9 <strong>59 nanosaniye</strong>.
-<strong>Seviye 3 - DictWord</strong> (<code>dictWord = true</code>) : ~200,000 / spleen
-Şifre şu anki dil sözlüğünden bir kelimedir (yerel kelime listesi -50k-200k girişler). Kelime listesinin tam taraması neredeyse hızlı algoritmaları için anındadır. MD5 için: 200 000 / 168,9e9 <strong>1.18 mikrosaniye</strong>.
-<strong>Seviye 4 - Geçerli Değil</strong> (<code>sec = null</code>) : Şifre ne ultra-weak, ne de ortak, ne de mevcut sözlerden gelen bir kelime geçerli değildir - diğer saldırılar (gross kuvveti, Markov, PCFG) ana tehdit haline gelir.
-<h3>10.3 Neden bu sayılar (100, 10.000, 200.000)?</h3>
-<p>Bu değerler gerçek verilere kalibre edilir:</p>
-<li><strong>100 100 100 100</strong> İlk 100 RockYou şifresi, korpus'un% 10'unu temsil eder. Tüm ciddi araçlar onları öncelikli olarak test eder.</li>
-<li><strong>10 000 000</strong> : HiBP, frekans tarafından ~14 milyar girişini bir tür. En iyi 10.000 kullanımdaki gerçek şifrelerin yaklaşık% 30-40'ı kapsar. Herhangi bir yetkili saldırgan bu alt setle başlar.</li>
-<li><strong>200 000 000</strong> : Filtreden sonra tam bir dil kelime listesinin tipik boyutu. Bu, hafızadaki makul yük kapasitesi aşmadan bir dilin mevcut kelimeyi kapsamak yeterlidir.</li>
-<strong>Referans</strong> Weir et al. (2009), sözlüğün iyi sipariş edilen bir saldırıda ilk 200.000 girişimde bulunduğunu gösteriyor. Ur et al. (2012), ortak şifrelerin ilk 10.000 denemede bulunduğunu doğrulamaktadır.
-<h3>10.4 Tamam sayısal örnek</h3>
-<p>"sun" şifresi için (şimdi Fransız kelimesi, tespit edilen gibi <code>dictWord</code>)</p>
-AlgorithmHız (12× RTX 4090)Formula Formula Formula FormulaZaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman
-- !!!- !!!►- ►
-NTLM3,462 GH /s200 000 / 3 462e9<strong>57.8 picoiyes</strong>
-MD52 027 GH /s200 000 / 2 027e9<strong>98.7 picosans</strong>
-SHA-1610 GH /s200 000 / 610e9<strong>327.9 picoiyes</strong>
-SHA-256272 GH /s200 000 / 272e9<strong>735 picoiyes</strong>
-bcrypt (cost 5)2.2 MH /200 000 / 2 200 000<strong>90.9 milisaniye</strong>
-Argon2id800 H /s200 000 / 800<strong>250 saniye</strong>
-<p>Argon2id için bile, 250 saniye 5 dakikadan daha az - Fransızca sözlüğünden basit bir kelime için.</p>
-<hr>
-<h2>11. Yüksek sadakat kalibrasyonu: <code>applyHighFidelityCalibration()</code></h2>
-<h3>11.1 Neden ek kalibrasyon?</h3>
-<p>brüt hesaplama <code>addDictionaryAttacks()</code> “En kötü durumda” bir tahmin verir - saldırgan tüm kelime listesini üniformalı olarak test ederse. <strong>Muhtarya tarafından sipariş edilen</strong> : En yaygın şifreler ilk gelir.</p>
-<p>Yüksek sadakat kalibrasyonu, ampirik gözlemlere dayanan düzeltici bir multiplier uygular:</p>
-<pre><code class="language-javascript">// app.js - ligne 4442
-case "dict":
-  // Ur et al. 2012 : mots communs trouvés dans les 100-10k premiers essais
-  // Weir 2009 : mots dict trouvés dans les 200k premiers essais (scan ordonné)
-  m <em>= context.common? 0.15: context.dictWord? 0,5: 1.0;
-Bölüm;</em></code></pre>
-<strong>Multiplier <code>common</code> (0.15)</strong> : Eğer şifre ortak öncelik listesinde ise, listenin yüzde 15'inde ortalama olarak bulunur – bu - 10.000 listedeki 1.500 testtir. Zaman, 0.15 → 6.7 × üniforması ile çarpılır.
-<strong>Multiplier <code>dictWord</code> (0.5)</strong> : Ortak bir sözlük kelimesi iyi sipariş edilen bir listenin ortalama orta vadede bulunur. Multiplier 0,5 → üniformalı taramadan daha hızlı.
-<h3>11.2 Kalibrasyonun Akademik Kaynakları</h3>
-<li><strong>Ur et al. (2012)</strong> - Parolanız Nasıl Ölçür?<em> (USENIX Security): Gerçek korpus'taki şifrelerin dağılımının analizi: vakaların% 95'inde ilk 10.000 denemede bulundu.</em></li>
-<li><strong>Weir et al. (2009)</strong> - Şifre Probabilistic Context-Free Grammars Kullanımı<em> (IEEE S&amp;P): Bir siparişli saldırının ilk 200.000 denemesinde Saf söz kelimeler bulunur.</em></li>
-<hr>
-<h2>12. Uygunluk ve güven puanının aslilığı</h2>
-<h3>12.1 Scoring sistemi</h3>
-<p>Time2Crack sadece bir zaman hesaplamaz - aynı zamanda sözlük saldırısının aslında çok faktörlü bir puanlama sistemi aracılığıyla en hızlı saldırı olduğunu da değerlendirmektedir:</p>
-<pre><code class="language-javascript">// Score d'applicabilité (0-1)
-case "dict":
-  return context.common ? 0.99 : context.dictWord ? 0.85 : 0;</code></pre>
-<li><strong>0.99</strong> if if if if if if if if if if if <code>common</code> Şifre HIBP'de → sözlük saldırısı maksimum güven ile uygulanır.</li>
-<li><strong>0.85</strong> if if if if if if if if if if if <code>dictWord</code> Sadece: yüksek olasılık. Bir sözlük kelimesi kırılgandır, ancak bir saldırganın doğru dil kelime listesine sahip olması gerekir.</li>
-<li><strong>0 0 0 0</strong> Aksi takdirde: Sözel saldırı uygulanmaz (gösterilen lexical vulnerabilities tespit edilmez).</li>
-<h3>12.2 Kanıt puanı</h3>
-<p>Applicability puanı ile paralel olarak, gözlemlenen sinyalleri kaydeder:</p>
-<pre><code class="language-javascript">case "dict":
-  return Number(!!context.common) + Number(!!context.dictWord);
-  // 0 : aucun signal
-  // 1 : un signal (common OU dictWord)
-  // 2 : deux signaux (common ET dictWord)</code></pre>
-<p>2'nin kanıt puanı (her iki HIBP ve dil sözlüğü) 0.08'in son güvenini artırır (2 × 0.04).</p>
-<h3>12.3 Final Güven Puanı</h3>
-<pre><code class="language-javascript">const base = confidenceBase["dict"] || 0.6;  // confiance de base
-const evidenceBoost = Math.min(0.12, row.evidenceScore  0.04);
-const speculativePenalty = speculativeCats.has("dict") ? 0.08 : 0;  // dict n'est pas spéculatif
-<p>Doğruluk = Math.max (0, Math.min (1,
-Math.max (applicability, base) + kanıtlarBoost - spesifikPenalty
-)</p></code></pre>
-<p>Bir şifre için <code>common</code> ile birlikte <code>dictWord</code> Ayrıca tespit edildi:
-</p><li><code>applicability = 0.99</code></li>
-<li><code>evidenceBoost = min(0.12, 2 × 0.04) = 0.08</code></li>
-<li><code>confidence = min(1, max(0.99, 0.6) + 0.08) = min(1, 1.07) = 1.0</code></li><p></p>
-<p>Maksimum güven: Sözcü saldırı, belirsiz bir şekilde birincil saldırıdır.</p>
-<hr>
-<h2>13. Bloom filtre RockYou: yaygın şifrelerin yerel tespiti</h2>
-<h3>13.1 Arka plan</h3>
-<p>HIBP doğrulamanın yanı sıra (bir ağ çağrısı gerektiriyor), Time2Crack bir araya getiriyor <strong>çiçekli filtre</strong> Bir çiçekli filtre, elementleri depolamadan bir sete ait bir yanlış pozitif olasılığı ile test etmenizi sağlayan bir olasılıktır.</p>
-<h3>13.2 çiçekli filtrenin Faydaları</h3>
-KriterleriHIBP k- anonimBloom filtre yerel yerel
-►----- *
-Coverage~14 milyar~14 milyon (RockYou)
-Latency50-200 ms (network)&lt;1 ms (yerel)
-GizlilikK- anonimlik (5 SHA-1 tankları)% 100 yerel, hiçbir şey bulayamıyor
-Yanlış pozitif% 0% 0-%1%
-Boyut BoyutuAPI API API API~2-5 MB (bloom filtresi ikili)
-<h3>13.3 Çiftin Operasyonu</h3>
-<pre><code class="language-javascript">// app.js - ligne 1962
-function bloomHas(filter, word) {
-  if (!filter) return false;
-  const { bitArray, m, k } = filter;
-  const w = word.toLowerCase();
-<p>// Double-hashing: h1 ve h2 iki bağımsız hash işlevleridir
-K1 = fnv1a32 (w, 2166136261); // FNV1a standart tohum ile standart tohum
-{2 = fnv1a32 (w, 0x811c9dc5); // FNV1a alternatif tohumla</p>
-<p>(le i = 0; i &lt; k; i++)
-eksi = (h1 + (i) <em> (h2) &gt;&gt;&gt; (0))% m; // k pozisyonları biraz dizi
-Cont byteIdx = Math.floor (pos / 8);
-BirazIdx = % 8;</em></p>
-<p>// Eğer biraz 0 ise: kelime DEFINITLY yok
-Eğer (bitArray[baytIdx) ve (1 &lt;&lt; bitIdx) = 0) geri dönüş false;
-}
-// Tüm bitler 1'dedir: kelime PROBABLY hediyedir ( FP'nin% 1'i ile)
-Doğru geri dönüş;
-}</p></code></pre>
-<p>FNV1a Double-hashing, biraz dizideki pozisyonların üniformasını sağlar, minimizleme çarpışmaları ve false pozitif oranı% 1'e yakın tutar.</p>
-<h3>13.4 Yük ve ikili format</h3>
-<p>Çiçekler filtre depolanır <code>data/rockyou.bloom</code> - ikili bir dosya ile:
-</p><li><strong>Header</strong> [Kaçlar): Sihirli sayı (0x424c4f = "BLOO") sürüm, m (bit dizi büyüklüğü), k (sabit işlevlerin sayısı), n ( elementlerin sayısı)</li>
-<li><strong>Payload</strong> : biraz dizi (m/8 bytes)</li><p></p>
-<p>Yük, kullanıcı tarafından manuel olarak tetiklenir (button in the UI), sayfa yüklemesinde otomatik olarak değil - ilk performansı korumak için.</p>
-<hr>
-<h2>Türlü saldırıların 14. Karşılaştırma</h2>
-<p>"pure" sözlük saldırısı, tüm ortak bir kök paylaştığı bir saldırının ilkidir: bir lexical wordlist. Time2Crack 7 çevrimdışı çatlakları uygular (gross güç, sözcü, hibrit, maske, PCFG, Markov, ssper), her bir şifreyi farklı bir açıdan saldırır.</p>
-<h3>14.1 Dictionary vs Hybrid</h3>
-KriterleriSözlükHybrid (dict+rules)
-►---- ►- !!!
-Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday AdaySözlüklerKelimeler + ~1000 mutasyonlar kelime başına
-Keyspace200.000 aday~200 milyon aday
-Cracked örnekler"password", "sun""P@sw0rd!", "s0l3il2024"
-Relative speed1000× daha hızlıÇok daha geniş kapsama alanı
-Uygulayırsa eğerListede tam kelimeBir dict kelimeden elde edilen şifre
-<p>Hibrit saldırı saf sözlüğün durduğu yerde başlar: Her kelimeyi listeden alır ve sistematik mutasyon kuralları uygular (hashcat "best64.rule" akılda).</p>
-<h3>14.2 Dictionary vs PCFG</h3>
-KriterleriSözlükPCFGGG
-►---- ►- ►
-Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model Model ModelAdayların sabit listesiOlasılıksal yapı grameri
-Kuvvet GücüDoğru kelimelerWord+Digits yapıları, Cap+lower+sym
-Örnek Örnek Örnek Örnek Örnek Örnek Örnek"password" →"Password123" → ✓ (yapı tespit)
-CoverageBilinen Kelime Kelime Kelime KelimesiGenric insan yapıları
-<p>"Password123" gibi bir şifre, bir sözlükte (gerçek kelime "Password123" olarak listelenebilir) ancak yapıyı tanıyan PCFG tarafından çok hızlı bir şekilde kırılabilir [Majuscule][minuscules][digits].</p>
-<h3>14.3 Markov</h3>
-KriterleriSözlükMarkov
-►---- ►--- ►
-Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday Aday AdayPre-compiled listesiStatik model tarafından oluşturulan Fly-
-CoverageBilinen Kelime Kelime Kelime KelimesiHerhangi bir olası "insan" dizisi
-Avantaj avantajlarıTam kelimeler üzerinde çok hızlıBilinmeyen kelime kelimeler
-Örnek Örnek Örnek Örnek Örnek Örnek Örnek"sunshine" →"sunsh1ne" potansiyel olarak ✓
-<p>Markov, şifrenin herhangi bir listede olmadan insan kelimesi gibi göründüğünü kapsar.</p>
-<h3>14.4 Dictionary vs Credential Thingsing</h3>
-KriterleriSözlükCredential Thingsing
-►---- ►- !!!
-Objektif HedefBir hashBelirli bir giriş test edin
-MechanismHash local computationUzaktan bağlantı deneme girişimleri
-Kaynak KaynağıGenric WordlistPair Giriş/password sızıntıları
-Savunma Savunma SavunmaGüçlü hash algoritmasıLimit, MFA, IP bloke
-<p>Credential thingsing bir hash saldırmaz - doğrudan uzaktan hizmetler üzerinde giriş / anahtar kelime çiftlerine çalışır. Bu, çatlaklardan kavramsal olarak farklıdır, ancak aynı veri kaynağını paylaşır (HIBP/fail).</p>
-<hr>
-<h2>15. Saldırı Sözlüğü</h2>
-<h3>15.1 Intrinsic limitleri</h3>
-<strong>1. Bilinen kelime sadece sadece sadece</strong>
-Mevcut herhangi bir kelimeyi benzemeyen ve HiBP'de olmayan icat edilmiş bir şifre, saf sözcü saldırıya karşı şüphelidir. "Xqz7mK9pL" asla bir kelime listesinde olmayacaktır.
-<strong>2. Dil kapsamı</strong>
-Fransızca konuşan bir kullanıcıyı Fransız kelime listesi olmadan hedef alan bir saldırgan, "ephemeral", "grenouille" veya standart İngilizce kelime listelerinde olmayan "bricolage" kelimeleri özleyecek.
-<strong>3. Yeni şifreler</strong>
-Sadece yaratılmış bir haçlı ve asla HiBP'de olmayacak - çok yaygın olsa bile, bunu bulmak için bir sonraki sızıntıya kadar beklemek zorunda kalacak.
-<strong>4. Çok uzun şifreler</strong>
-Uzun bir icat edilen cümleden oluşan bir şifre ("MaGrandeAventure2024SousLesEtoiles") hiçbir kelime listesinde olmayacak - her kelime ayrı ayrı alındığında, diğer saldırılar tarafından tedavi edilen bu fikir (Combinator, PRINCE).
-<h3>15.2 What Time2Crack's Hesapion Model Değil</h3>
-<strong>Context Wordlists</strong> Belirli bir sektör hedefleyen bir saldırgan, oyun platformları için uygun kelime listeleri inşa edecektir. Time2Crack genel kelime listelerini kullanır.
-<strong>Kombi kuvvet Wordlists</strong> : CeWL (Müşteri Listesi Jeneratör) gibi araçlar, özel bir kelime listesi oluşturmak için hedef web sitesinden terim çıkarabilir. Bu hedefleme seviyesi modellemez.
-<strong>Son sızıntılar henüz HIBP'de değil</strong> Şu an arasında bir sızıntı meydana gelir ve HIBP'ye entegrasyonu, kamu API'si aracılığıyla erişilemeyen özel forumlarda yapılan uzlaşmalar.
-<strong>Hash algoritmaları kaplı değil</strong> Time2Crack modelleri 6 algoritmaları (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id) SHA-512, scrypt veya PBKDF2 gibi Algoritmalar farklı profillere sahiptir.
-<hr>
-<h2>16. Etkili Savunmalar</h2>
-<h3>16.1 Sözcü saldırıya karşı koruyan şey</h3>
-<strong>Modern hash algoritması (bcrypt, Argon2id)</strong>
-Bu, sunucu tarafında en etkili savunmadır.
-<li>MD5: ~1 mikrosaniyede çatlaklar</li>
-<li>bcrypt 12'ye mal oldu: çatlaklar <strong>35 saat 35 saat</strong></li>
-<li>Argon2id (recommended parametreler): çatlaklar içinde <strong>Yıllar yıllar yıllar yıllar yıllar</strong></li>
-<p>MD5 ve Argon2id arasındaki 10+ büyüklüğün farkı, Argon2id tarafından korunan pratikte sözel şifre "sun" bağışıklıkını yapar - saldırganın Fransız bir kelime olduğunu biliyorsa bile.</p>
-<strong>Hesap başına tek tuz</strong>
-Bir tuz, önceden hesaplanan masa saldırılarını ve saldırganları her hesap için bireysel olarak yeniden hesaplamak için engeller. Hedeflenen kelime listesini korumaz ( saldırgan hala tuzla 200.000 kelime test edebilir), ancak büyük veritabanlarında büyük saldırıları geçersiz kılar.
-<strong>Şifre uzunluğu</strong>
-Tek bir sözlük kelimesinin şifresi (8-10 karakter) kırılgandır. 4-5 kelimeden oluşan bir geçiştir ("cheval-lumière-forest-voyage") saf sözlüğe dayanıklıdır, ancak Combinator saldırıya karşı değildir - bu nedenle uzunluğun ve rastgeleliğin önemi.
-<strong>Rastgele olarak oluşturulan şifreler</strong>
-Gerçek çözüm: uzun rastgele şifre üreten bir şifre yöneticisi kullanın (20+ her tür karakter). Bu şifreler asla herhangi bir sözlükte olmayacak.
-<strong>Çok faktörlü doğrulama (MFA)</strong>
-MFA, çatlakları çevrimdışı engellemez (tahdit geri kazanılır ve çevrimdışı kırılır), ancak haçlı şeylere karşı koruma sağlar (bağlantılı kimliklere bağlanmak için).
-<strong>Limitleme ve anomalileri tespit etmek</strong>
-Online saldırılarına karşı korumalar (yönemli bağlantı girişimleri), çalınan hashlerin çevrimdışı çatlaklarına karşı değil.
-<h3>16.2 Ne korumuyor</h3>
-<strong>Basit leet substitutions</strong> : "password" → "p@ssw0rd" - bölüm 9.
-<strong>Sonunda sayıları eklendi</strong> : "password" → "password1" - ilk kurallar arasında test edilmiştir.
-<strong>İlk ödeme</strong> : "password" → "Password" - standart sermayeleştirme kuralı.
-<strong>Şekiller ve semboller eğer kelime tanınabilir</strong> "sunshine!", temel kurallarla "sunshine" içeren herhangi bir kelime listesindedir.
-<strong>Kompleksi uzun süre olmadan uygulanmış</strong> "P@s1w" karmaşık kriterleri karşılar (maj, min, sayı, sembolü) ancak "korrecthorsebaterystaple"dan daha kısa ve daha öngörülebilirdir.
-<h3>16.3 Pratik Tavsiye</h3>
-<li><strong>Bir şifre yöneticisi kullanın</strong> (Bitwarden, 1Password, KeePass) - rastgele şifreler üretir, sadece master şifresini hatırlamak zorundasınız.</li>
-<li><strong>Enable MFA her yerde</strong> - Şifre uzlaşmaz olsa bile, saldırgan bağlanamaz.</li>
-<li><strong>HIBP'yi düzenli olarak kontrol edin</strong> - e-postasının bilinen sızıntıları olup olmadığını.</li>
-<li><strong>Asla bir şifreyi yeniden kullanmayın</strong> – credential thingsing, haç servislerini yeniden kullanır.</li>
-<li><strong>Memorizable şifreler için</strong> : 5+ kelime geçer <strong>rastgele rastgele rastgele</strong> (Not "horse-correct-battery-agre-violet" değil, kelimeler gerçekten çok çizilir).</li>
-<hr>
-<h2>17. Referanslar</h2>
-<h3>birincil kaynaklar (academik çalışmalar)</h3>
-<strong>Morris, R., &amp; Thompson, K. (1979).</strong> Şifre güvenliği: Bir vaka tarihi.<em> ACM, 22(11), 594-597.
-<li>Unix şifre dağıtımının ilk akademik analizi</li>
-<li>~1/3 şifrenin ortak İngilizce kelimeler olduğunu tanır</li>
-<strong>Klein, D.V. (1990).</strong> </em>Viskiyi dengelemek: Bir anket ve gelişmeler, şifre güvenliği.<em> UNIX Security Symposium Proceedings, 5-14.
-<li>15,000 Unix şifresi kırıldı: Birkaç saat içinde yüzde 25 kırıldı</li>
-<li>İlk kelime listeleri ve mutasyon kuralları</li>
-<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong> </em>Şifre olasılıksal bağlamsız gramer kullanarak kırılır.<em> IEEE Güvenlik ve Gizlilik Sempozyumu.
-<li>PCFG saldırısı ve saf sözcü saldırı ile karşılaştırıldığında temel referans</li>
-<li>Sözlüğün kelimelerinin bir siparişli saldırının ilk 200.000 denemesinde bulunulmasını belirler</li>
-<li><strong>In Time2Crack</strong> Sözel saldırının HF kalibrasyonu için (multiplier 0,5)</li>
-<strong>Ur, B., Kelley, P. G., Komanduri, S., Lee, J., Maase, M., Shay, R., Vaniea, K., Bauer, L., &amp; Cranor, L. F. (2012).</strong> </em>Parolanız Nasıl Ölçür? Güç Ölçümlerinin Kripto Kullanıcı Seçimi Üzerine Etkisi.<em> 21st USENIX Güvenlik Sempozyumu.
-<li>Gerçek korpusta ortak kelimelerin dağılımının analizi</li>
-<li>İlk 100-10 000 denemesinde bulunan ortak kelimeler</li>
-<li><strong>In Time2Crack</strong> HF kalibrasyon için <code>common ? 0.15</code> (top 10k seviyesi)</li>
-<strong>Bonneau, J (2012).</strong> </em>Şarkının bilimi: 70 milyon şifrenin anonim bir korpusunu analiz edin.<em> IEEE Güvenlik ve Gizlilik Sempozyumu.
-<li>70 milyon anonim Yahoo şifresi Çalışması</li>
-<li>Şifrenin gerçek dağılımını sayısallaştırır, güç kanununu doğrular</li>
-<li>Çarpıcı şeylerin etkinliğini ölçmek (2-5% hit oranı gerçek hesaplarda)</li>
-<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong> </em>Olasılıksal şifre modellerinin incelenmesi.<em> IEEE Güvenlik ve Gizlilik Sempozyumu.
-<li>Olasılıksal modellerin karşılaştırması (dictionary, Markov, PCFG) gerçek korpusta</li>
-<li>En İyi64.rule, sözcü kelimeler için ortalama olarak% 40 azaltıldı</li>
-<li><strong>In Time2Crack</strong> Hibrit saldırının HF kalibrasyonu</li>
-<strong>Wheeler, D.L. (2016).</strong> </em>zxcvbn: Low-budget şifre gücü tahmin.<em> 25. USENIX Güvenlik Sempozyumu, 157-173.
-<li>Kuvvet tahmin sistemi kelime listeleri ve desenleri kullanarak</li>
-<li>Şifre yaratımında bilişsel önyargıların analizi</li>
-<li>Kelime listelerinin brüt güçle ilgili etkinliğini ölçül</li>
-<strong>Pasquini, D., Cian soğutuculia, M., Ateniese, G., &amp; Bernaschi, M. (2021).</strong> </em>Gerçek dünya şifre gücünü derin öğrenme ve dinamik sözlükler aracılığıyla modellemede önyargıyı azaltmak.<em> 30. USENIX Güvenlik Sempozyumu.
-<li>Gerçek saldırılar için tahmin modelleri değerlendirme</li>
-<li>Sözlüklerin ortak insan şifreleri için en etkili araç olduğunu onaylar</li>
-<h3>Endüstriyel kaynaklar</h3>
-<strong>Ben de Pwned'e sahip oldum. (2024).</strong> </em>Pwned Passwords.<em> https://haveibeenpwned.com/Passwords
-<li>Basis of ~14 milyar benzersiz şifre belgelenmiş sızıntılardan</li>
-<li>Time2Crack tarafından gerçek zamanlı doğrulama için kullanılan anonim API</li>
-<strong>Hive Systems. (2025).</strong> </em>2025 Hive Systems Password Table.<em>
-<li>Benchmarks 12× RTX 4090: MD5 2,027 GH /s, NTLM 3,462 GH /s, bcrypt maliyeti 5: 2,2 MH/s</li>
-<li><strong>Time2Crack'te kullanılan hash hızlarının ana kaynağı</strong></li>
-<strong>Hashcat. (2025).</strong> </em>Hashcat - Gelişmiş şifre kurtarma.<em>
-<li>GPU karşılaştırmaları için referans aracı</li>
-<li>mutasyon kurallarının belgelendirilmesi (en iyi64.rule, OneRuleToRuleThemAll)</li>
-<strong>Gosney, J (2012).</strong> </em>Lee ve al. ve Probabilistic Password Cracking.<em> Şifrelercon işlemleri.
-<li>İlk halka açık olarak çok-GPU kriterlerini belgeledi</li>
-<li>Kural tabanlı saldırıların kalibrasyonu için referans</li>
-<strong>Miessler, D. (2024).</strong> </em>SecLists - Güvenlik değerlendirmeleri sırasında kullanılan birçok liste koleksiyonu.<em> GitHub.
-<li>Time2Crack'de kullanılan Wikipedia dil kelime listelerinin kaynağı</li>
-<li>İngilizce, Fransızca, İspanyolca, Portekiz, Almanca, Türkçe</li>
-<h3>Orta kaynaklar (context)</h3>
-<strong>Troy Hunt. (2013).</strong> </em>Giriş 306 Milyon Freely Downloadable Pwned Passwords.<em> Troyhunt.com.
-<li>HIBP servisinin ilk kurulması ve k-anonymity protokolünin açıklaması</li>
-<strong>Thomas, K., et al. (2019).</strong> </em>Hesapları şifre molası ile zorlanan şeylerden korumak.<em> 28. USENIX Güvenlik Sempozyumu.
-<li>Google/Stanford uzlaşmalı kimliklerin korunması üzerine çalışıyor</li>
-<li>Bir gizlilik mekanizması olarak k-anonymity etkinliğini doğrular</li>
-<strong>Wang, D., Cheng, H., Wang, P., Huang, X., &amp; Jian, G. (2016).</strong> </em>Zipf'in şifreleri yasası.<em> IEEE Transactions on Information Forensics and Security, 12(11), 2775-2791.
-<li>Güç yasasının şifre dağıtımında resmileştirilmesi</li>
-<li>Zipf dağıtımının tüm bilinen büyük korpusta olduğunu onaylar</li>
-<h3>Web kaynakları Time2Crack uygulamasında atıfta bulundu</h3>
-<strong>IEEE Xplore (dikal referans).</strong>
-https://iee blastre.ieee.org/document/6234435
-<li>İlgili kaynak <code>descDict</code> (app.js) üst sözlüklerin kapsamı için.</li>
-<strong>HIBP API aralığı (k- anonimlik).</strong>
-https://api.pwnedpasswords.com/range /
-<li>Endpoint aslında Time2Crack tarafından k-anonymity doğrulama için kullanılır (sha1 ek talep).</li>
-<strong>HIBP kodda desen çağır.</strong>
-https://api.pwnedpasswords.com/range/${prefix}
-<li>URL'nin tam formu belge kodu örneklerinde (interpolated SHA-1 ek).</li>
-<hr>
-</em>Time2Crack Project için üretilen doküman - Version 1.0 - 2026-04-01<em>
-</em>Kaynak kodu: <code>app.js</code> (işlevler) <code>addDictionaryAttacks</code>, <code>isDictWord</code>, <code>deLeet</code>, <code>loadDictionary</code>, <code>applyHighFidelityCalibration</code>, <code>bloomHas</code>)*
 
+  // 4. Normalise, filter, index
+  const words = text.split("\n")
+    .map(w =&gt; w.trim().toLowerCase())
+    .filter(w =&gt; w.length &gt;= 3);
+  AppConfig.setDictionary(new Set(words), lang);
+
+  // 5. Keep it for the next visit
+  await cachePut(`dict_${lang}`, words);
+}</code></pre>
+<p><strong>Neden bir <code>Set</code>?</strong> JavaScript'teki bir <code>Set</code>, liste 285.000 sözcük (İspanyolca) de içerse 3,7 milyon (Lehçe) de içerse <code>dictWords.has(word)</code> sorusunu sabit sürede yanıtlar. Bir <code>Array</code> ile her arama, sözcük başına bir karşılaştırma gerektirebilirdi.</p>
+<h3>7.3 Yerel önbellek (IndexedDB)</h3>
+<p>Hazırlanan liste, tarayıcının IndexedDB'sine <code>dict_&lt;dil&gt;</code> anahtarıyla kaydedilir. Bir sonraki ziyarette yeniden indirilip açılmak yerine önbellekten okunur:</p>
+<pre><code class="language-plaintext">İlk ziyaret                          Sonraki ziyaretler
+-----------                          ------------------
+fetch tr.txt.gz                      cacheGet("dict_tr")
+  └── gunzip (DecompressionStream)     └── new Set(words)
+        └── trim / küçük harf / ≥ 3          └── hazır
+              └── new Set(words)
+                    └── cachePut("dict_tr")
+                          └── hazır</code></pre>
+<p>Şifre tarayıcıdan asla çıkmaz: liste Time2Crack sunucusundan indirilir ve karşılaştırma yerel olarak yapılır.</p>
+<hr>
+<h2 id="rank">8. Sözlük sırası: <code>rankDictionary()</code></h2>
+<h3>8.1 İlke: önce bir sıra, sonra bir süre</h3>
+<p>Time2Crack yalnızca «bu bir sözlük sözcüğü mü?» diye sormaz, «bir sözlük saldırısı onu kaç denemeden sonra bulurdu?» diye sorar. Bu deneme sayısı <strong>sıradır</strong> (rank). <code>rankDictionary()</code> fonksiyonu (<code>core/rank/dictionary.js</code> dosyası) bu sırayı döndürür, saldırı uygulanamıyorsa <code>null</code> döndürür:</p>
+<pre><code class="language-javascript">// core/rank/dictionary.js - rankDictionary()
+export function rankDictionary(password, dictWords = null) {
+  const lower = password.toLowerCase();
+  const deleeted = deleet(password);
+  const alpha = password.replace(/[^a-zA-Z]/g, "");
+  const uCost = uppercaseCost(alpha);        // capital letters, see 8.3
+
+  // 1. In the top passwords as is?
+  const topIdx = TOP_PASSWORDS.indexOf(lower);
+  if (topIdx !== -1) return { rank: (topIdx + 1) * uCost, model: "dictionary" };
+
+  // 2. De-leeted form in the top passwords?
+  const deIdx = TOP_PASSWORDS.indexOf(deleeted);
+  if (deIdx !== -1) return { rank: (deIdx + 1) * 10 * uCost, model: "dictionary" };
+
+  // 3. In the wordlist of the selected language?
+  if (dictWords instanceof Set) {
+    if (dictWords.has(lower) || dictWords.has(deleeted)) {
+      const mid = Math.floor(dictWords.size / 2);
+      if (passwordLength(password) &gt;= 9) {
+        // a long word may also be split into shorter words, see 8.4
+        const compound = rankGermanCompound(password, dictWords);
+        if (compound &amp;&amp; compound.rank &lt; mid)
+          return { rank: compound.rank * uCost, model: "dictionary" };
+      }
+      return { rank: mid * uCost, model: "dictionary" };
+    }
+
+    // 4. Compound made of several dictionary words?
+    const compound = rankGermanCompound(password, dictWords);
+    if (compound) return { rank: compound.rank * uCost, model: "dictionary" };
+  }
+
+  // Not found: the dictionary attack does not apply
+  return { rank: null, model: "dictionary" };
+}</code></pre>
+<h3>8.2 Dört düzey</h3>
+<table class="about-table">
+<thead><tr><th>Düzey</th><th>Kural</th><th>Örnek</th><th>Sıra</th></tr></thead>
+<tbody>
+<tr><td>1. En yaygın şifreler</td><td>En yaygın 105 şifrelik bir listedeki konum (RockYou, HIBP)</td><td><code>password</code></td><td>2</td></tr>
+<tr><td>2. Leetspeak varyantı</td><td>Leet'i çözülmüş biçimin konumu × 10</td><td><code>p@ssw0rd</code></td><td>20</td></tr>
+<tr><td>3. Dil listesi</td><td>Liste boyutunun yarısı</td><td><code>soleil</code> (Fransızca)</td><td>275.117</td></tr>
+<tr><td>4. Bileşik sözcük</td><td>Bkz. 8.4</td><td><code>apfelbaumkuchen</code> (Almanca)</td><td>21.129</td></tr>
+</tbody>
+</table>
+<p><strong>Neden listenin yarısı?</strong> Sözcük listeleri sıklığa göre sıralı değildir: bir sözcüğün dosyadaki konumu, saldırganın onu ne zaman deneyeceği hakkında hiçbir şey söylemez. Listeyi baştan sona tarayan bir saldırgan, belirli bir sözcüğü ortalama olarak yolun yarısında bulur.</p>
+<h3>8.3 Büyük harfler</h3>
+<p>Saldırgan önce küçük harfli sözcüklerle başlar, sonra büyük harfli varyantları dener. Sıra, şifrenin yazımına ulaşmak için gereken varyant sayısıyla çarpılır (<code>uppercaseCost()</code> fonksiyonu, zxcvbn ile aynı yöntem):</p>
+<table class="about-table">
+<thead><tr><th>Yazım</th><th>Çarpan</th><th>Örnek</th><th>Sıra</th></tr></thead>
+<tbody>
+<tr><td>Tamamı küçük harf</td><td>× 1</td><td><code>soleil</code></td><td>275.117</td></tr>
+<tr><td>Yalnızca ilk harf büyük</td><td>× 2</td><td><code>Soleil</code></td><td>550.234</td></tr>
+<tr><td>Yalnızca son harf büyük</td><td>× 2</td><td><code>soleiL</code></td><td>550.234</td></tr>
+<tr><td>Tamamı büyük harf</td><td>× 2</td><td><code>PASSWORD</code></td><td>4</td></tr>
+<tr><td>Diğer her karışım</td><td>i = 1 … min(büyük, küçük) için C(n, i) toplamı</td><td><code>PaSsWoRd</code></td><td>324</td></tr>
+</tbody>
+</table>
+<h3>8.4 Bileşik sözcükler</h3>
+<p>Almanca (ve Felemenkçe) sözcükleri birbirine ekler: <code>Apfelbaumkuchen</code> = <code>Apfel</code> + <code>Baum</code> + <code>Kuchen</code>. Böyle bir sözcük çoğu zaman listede yoktur, ama saldırgan onu daha kısa sözcükleri birleştirerek kurabilir. Time2Crack, Almancanın olağan bağlantı harflerine (<code>-s-</code>, <code>-es-</code>, <code>-n-</code>, <code>-en-</code>, <code>-er-</code>, <code>-e-</code>) izin vererek şifreyi listedeki 2 ila 4 sözcüğe bölmeye çalışır. Bu durumda sıra, şifrenin maske sırasının 0,25 (2 sözcük), 0,16 (3 sözcük) veya 0,10 (4 sözcük) ile, son parça yaygın bir sonek olduğunda da (<code>-heit</code>, <code>-ung</code>, <code>-haus</code>…) 0,75 ile çarpımıdır.</p>
+<p>Bölme, listede bulunan uzun sözcüklerde de (9 karakter ve üzeri) denenir ve daha düşük bir sıra verirse korunur: <code>Sonnenblume</code>, Almanca listenin yarısı (1.004.940) yerine 42.680 sırasını alır.</p>
+<hr>
+<h2 id="deleet">9. Leet çözümleme</h2>
+<h3>9.1 Leetspeak koruma sağlamaz</h3>
+<p>Leetspeak harfleri benzer görünen rakamlar veya simgelerle değiştirir: a → @, e → 3, i → 1, o → 0, s → $. Sıradan bir sözcüğü «güçlendirmek» için kullanılır: <code>password</code> → <code>p@$$w0rd</code>.</p>
+<p>Gerçekte bu değiştirmeler, kırma araçlarının uyguladığı ilk kurallar arasındadır. Yetkin bir saldırganı yavaşlatmazlar.</p>
+<h3>9.2 <code>deleet()</code> fonksiyonu</h3>
+<pre><code class="language-javascript">// core/rank/dictionary.js - deleet()
+function deleet(pw) {
+  return pw
+    .toLowerCase()
+    .replace(/0/g, "o")
+    .replace(/1/g, "i")
+    .replace(/3/g, "e")
+    .replace(/4/g, "a")
+    .replace(/5/g, "s")
+    .replace(/7/g, "t")
+    .replace(/8/g, "b")
+    .replace(/@/g, "a")
+    .replace(/\$/g, "s")
+    .replace(/!/g, "i");
+}</code></pre>
+<p>Şifre hem yazıldığı haliyle hem de leet'i çözülmüş biçimiyle aranır. En yaygın şifreler arasında leet'i çözülmüş biçim 10 kat daha pahalıdır (saldırganın varyantları denemesi gerekir): <code>p@ssw0rd</code> → 2 yerine 20. Dil listesinde ise yalın sözcükle aynı maliyettedir.</p>
+<h3>9.3 Çözülmeyenler</h3>
+<ul>
+<li>Her karakterin tek bir karşılığı vardır: <code>1</code> her zaman <code>i</code> olur, asla <code>l</code> olmaz; bu yüzden <code>p1ayer</code>, <code>player</code> olarak tanınmaz.</li>
+<li>Daha seyrek değiştirmeler (<code>+</code> → t, <code>9</code> → g, <code>#</code> → h) çözülmez.</li>
+<li>Ardından rakam veya simge gelen bir sözcük (<code>kelebek2024</code>, <code>kelebek!</code>) bir sözlük eşleşmesi değildir: onu <a href="hybrid.html">hibrit saldırı</a> ele alır.</li>
+</ul>
+<hr>
+<h2 id="time">10. Sıradan kırılma süresine</h2>
+<p>Sıra, saldırganın özet hızına bölünerek saniyeye çevrilir:</p>
+<pre><code class="language-javascript">// core/time.js - rankToSeconds()
+export function rankToSeconds(rank, algo, profile = "experienced") {
+  const baseRate = HASH_RATES[algo];   // guesses per second, 12× RTX 5090
+  if (!baseRate) throw new Error(`Unknown algorithm: ${algo}`);
+  const multiplier = ATTACKER_MULTIPLIERS[profile] ?? 1;
+  return rank / (baseRate * multiplier);
+}</code></pre>
+<p>Varsayılan profille <code>soleil</code> (Fransızca liste, sıra 275.117) için örnek:</p>
+<table class="about-table">
+<thead><tr><th>Algoritma</th><th>Hız (12× RTX 5090)</th><th>Hesap</th><th>Süre</th></tr></thead>
+<tbody>
+<tr><td>NTLM</td><td>4.674 GH/s</td><td>275.117 / 4.674 × 10<sup>9</sup></td><td><strong>59 nanosaniye</strong></td></tr>
+<tr><td>MD5</td><td>2.737 GH/s</td><td>275.117 / 2.737 × 10<sup>9</sup></td><td><strong>101 nanosaniye</strong></td></tr>
+<tr><td>SHA-1</td><td>824 GH/s</td><td>275.117 / 824 × 10<sup>9</sup></td><td><strong>334 nanosaniye</strong></td></tr>
+<tr><td>SHA-256</td><td>367 GH/s</td><td>275.117 / 367 × 10<sup>9</sup></td><td><strong>750 nanosaniye</strong></td></tr>
+<tr><td>bcrypt (maliyet 5)</td><td>2.760 kH/s</td><td>275.117 / 2.760.000</td><td><strong>0,1 saniye</strong></td></tr>
+<tr><td>Argon2id</td><td>1.000 H/s</td><td>275.117 / 1.000</td><td><strong>4 dakika 35 saniye</strong></td></tr>
+</tbody>
+</table>
+<p>Argon2id ile bile sıradan bir Fransızca sözcük 5 dakikadan kısa sürede kırılır. Saldırgan profili hızları değiştirir: tek bir GPU'dan («Amatör» profili) yaklaşık 10.000 GPU'ya («Devlet» profili) kadar. Diğer tüm modellerde olduğu gibi, sözlük sırası aynı şifrenin kaba kuvvet sırasını hiçbir zaman aşamaz.</p>
+<hr>
+<h2 id="comparison">11. Türetilmiş saldırılarla karşılaştırma</h2>
+<p>«Saf» sözlük saldırısı, hepsi bir sözcük listesinden yola çıkan bir saldırı ailesinin ilkidir. Time2Crack dokuz model hesaplar (kaba kuvvet, sözlük, hibrit, maske, PCFG, Markov, birleştirici, klavye desenleri, tarihler); her biri şifreye farklı bir açıdan saldırır.</p>
+<h3>11.1 Sözlük ve hibrit</h3>
+<table class="about-table">
+<thead><tr><th>Ölçüt</th><th>Sözlük</th><th>Hibrit (sözlük + kurallar)</th></tr></thead>
+<tbody>
+<tr><td>Adaylar</td><td>Listedeki sözcükler, olduğu gibi</td><td>Her sözcük ve dönüşümleri (rakamlar, simgeler, büyük harfler…)</td></tr>
+<tr><td>Kırılan örnekler</td><td><code>password</code>, <code>kelebek</code></td><td><code>P@ssw0rd!</code>, <code>kelebek2024</code></td></tr>
+<tr><td>Hız</td><td>Daha az aday, dolayısıyla daha hızlı</td><td>Çok daha geniş kapsam</td></tr>
+<tr><td>Uygulandığı durum</td><td>Sözcüğün tam hali listede</td><td>Şifre listedeki bir sözcükten türetilmiş</td></tr>
+</tbody>
+</table>
+<p><a href="hybrid.html">Hibrit saldırı</a>, saf sözlüğün bittiği yerde başlar: listedeki her sözcüğe sistematik dönüştürme kuralları uygular (hashcat'in <code>best64.rule</code> kural dosyası anlayışıyla).</p>
+<h3>11.2 Sözlük ve PCFG</h3>
+<table class="about-table">
+<thead><tr><th>Ölçüt</th><th>Sözlük</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td>Model</td><td>Sabit aday listesi</td><td>Şifre yapılarının olasılıksal dilbilgisi</td></tr>
+<tr><td>Güçlü yanı</td><td>Tam sözcükler</td><td>Sözcük + rakam, büyük harf + küçük harfler + simge gibi yapılar</td></tr>
+<tr><td>Örnek</td><td><code>password</code> ✓</td><td><code>Password123</code> ✓ (yapı tanındı)</td></tr>
+</tbody>
+</table>
+<p><code>Password123</code> kendi başına bir sözlük sözcüğü değildir, ama <a href="pcfg.html">PCFG</a> [büyük harf][küçük harfler][rakamlar] yapısını tanır ve onu çok hızlı kırar.</p>
+<h3>11.3 Sözlük ve Markov</h3>
+<table class="about-table">
+<thead><tr><th>Ölçüt</th><th>Sözlük</th><th>Markov</th></tr></thead>
+<tbody>
+<tr><td>Adaylar</td><td>Önceden hazırlanmış liste</td><td>İstatistiksel bir modelle anında üretilir</td></tr>
+<tr><td>Kapsam</td><td>Bilinen sözcük dağarcığı</td><td>«İnsana benzeyen» her dizi</td></tr>
+<tr><td>Avantaj</td><td>Tam sözcüklerde çok hızlı</td><td>Listelerde olmayan sözcükleri de kapsar</td></tr>
+</tbody>
+</table>
+<p><a href="markov.html">Markov</a>, hiçbir listede olmadan insan sözcüklerine benzeyen şifreleri kapsar.</p>
+<h3>11.4 Sözlük ve kimlik bilgisi doldurma</h3>
+<table class="about-table">
+<thead><tr><th>Ölçüt</th><th>Sözlük</th><th>Kimlik bilgisi doldurma (credential stuffing)</th></tr></thead>
+<tbody>
+<tr><td>Amaç</td><td>Bir özeti kırmak</td><td>Bir hesaba giriş yapmak</td></tr>
+<tr><td>Mekanizma</td><td>Yerel özet hesaplama</td><td>Uzaktan giriş denemeleri</td></tr>
+<tr><td>Kaynak</td><td>Genel sözcük listesi</td><td>Sızmış e-posta/şifre çiftleri</td></tr>
+<tr><td>Savunma</td><td>Yavaş özet algoritması</td><td>Deneme sınırlama, MFA, IP engelleme</td></tr>
+</tbody>
+</table>
+<p>Kimlik bilgisi doldurma bir özete saldırmaz: sızmış e-posta/şifre çiftlerini doğrudan çevrimiçi hizmetlerde dener. Farklı bir saldırıdır, ama aynı verileri kullanır (HIBP'nin dizinlediği türden sızıntılar). Time2Crack bu saldırıyı modellemez.</p>
+<hr>
+<h2 id="limits">12. Sözlük saldırısının sınırları</h2>
+<h3>12.1 Doğal sınırlar</h3>
+<ul>
+<li><strong>Yalnızca bilinen sözcükler.</strong> Var olan hiçbir sözcüğe benzemeyen ve hiç sızmamış uydurma bir şifre, saf sözlük saldırısından kaçar: <code>Xqz7mK9pL</code> hiçbir listede yoktur.</li>
+<li><strong>Dil kapsamı.</strong> Türkçe konuşan kullanıcıları Türkçe liste olmadan hedef alan bir saldırgan, <code>şemsiye</code> veya <code>güneş</code> gibi sözcükleri kaçırır.</li>
+<li><strong>Yeni şifreler.</strong> Hiç sızmamış bir şifre, yaygın olsa bile HIBP'de yoktur.</li>
+<li><strong>Uzun parolalar.</strong> <code>YildizlarAltindaBuyukMaceram</code> hiçbir listede yoktur, her sözcüğü sıradan olsa bile. Parola cümleleri başka saldırıların konusudur (birleştirici, PRINCE).</li>
+</ul>
+<h3>12.2 Time2Crack'in modellemedikleri</h3>
+<ul>
+<li><strong>Hedefli listeler</strong>: belirli bir sektörü hedefleyen bir saldırgan özel listeler hazırlar (bir hastane için tıp terimleri, bir oyun platformu için oyuncu argosu). CeWL gibi araçlar hedefin web sitesindeki sözcükleri çıkarır. Time2Crack genel listeler kullanır.</li>
+<li><strong>Yeni sızıntılar</strong>: bir sızıntı ile HIBP'ye eklenmesi arasında şifreler, herkese açık API'de görünmeden özel olarak dolaşır.</li>
+<li><strong>Diğer özet algoritmaları</strong>: Time2Crack altı algoritmayı modeller (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id). SHA-512, scrypt veya PBKDF2'nin profilleri farklıdır.</li>
+<li><strong>Sözcük sıklığı</strong>: dil listesindeki her sözcük, çok yaygın da olsa çok nadir de olsa aynı sırayı (listenin yarısı) alır.</li>
+</ul>
+<hr>
+<h2 id="defences">13. Etkili savunmalar</h2>
+<h3>13.1 Neler korur</h3>
+<p><strong>Yavaş bir özet algoritması (bcrypt, Argon2id).</strong> Sunucu tarafındaki en etkili savunmadır: her deneme daha pahalıya mal olur. <code>soleil</code> için (sıra 275.117):</p>
+<ul>
+<li>MD5: yaklaşık 0,1 mikrosaniye</li>
+<li>bcrypt maliyet 12 (maliyet 5'ten 128 kat yavaş): yaklaşık 13 saniye</li>
+<li>Argon2id: yaklaşık 5 dakika</li>
+</ul>
+<p>Yavaş bir özet saldırganı yavaşlatır, ama bir sözlük sözcüğünü kurtarmaz: liste düpedüz çok kısadır.</p>
+<p><strong>Her hesap için benzersiz bir tuz.</strong> Önceden hesaplanmış tabloları (rainbow table) işe yaramaz hale getirir ve saldırganı hesap hesap çalışmaya zorlar. Tek bir hesaba yönelik sözcük listesi saldırısını engellemez.</p>
+<p><strong>Uzunluk ve rastgelelik.</strong> Tek bir sözlük sözcüğü her zaman savunmasızdır. 4 veya 5 sözcüklük bir parola cümlesi saf sözlük saldırısına dayanır, ama sözcükler öngörülebilirse birleştirici saldırıya dayanamaz: sözcükler rastgele seçilmelidir.</p>
+<p><strong>Rastgele üretilmiş şifreler.</strong> Asıl çözüm: uzun ve rastgele şifreler (20 karakter veya daha fazla) üreten bir şifre yöneticisi. Bu şifreler hiçbir sözlükte yoktur.</p>
+<p><strong>Çok faktörlü kimlik doğrulama (MFA).</strong> Çalınan özetlerin çevrimdışı kırılmasını engellemez, ama saldırganın kırılmış bir şifreyle giriş yapmasını engeller.</p>
+<p><strong>Deneme sınırlama ve anormallik tespiti.</strong> Çevrimiçi denemelere karşı korur, çalınan özetlerin çevrimdışı kırılmasına karşı korumaz.</p>
+<h3>13.2 Neler korumaz</h3>
+<ul>
+<li><strong>Leetspeak değiştirmeleri</strong>: <code>password</code> → <code>p@ssw0rd</code> (bkz. bölüm 9).</li>
+<li><strong>Sona eklenen bir rakam</strong>: <code>password</code> → <code>password1</code>, ilk denenen kurallardan biri.</li>
+<li><strong>Büyük ilk harf</strong>: <code>password</code> → <code>Password</code>, standart bir kural (sıra × 2).</li>
+<li><strong>Tanınabilir bir sözcüğün etrafındaki rakam ve simgeler</strong>: <code>kelebek!</code> en basit kurallarla bulunur.</li>
+<li><strong>Uzunluksuz karmaşıklık</strong>: <code>P@s1w</code> olağan kuralları karşılar (büyük harf, küçük harf, rakam, simge), ama <code>correcthorsebatterystaple</code>'dan daha kısa ve daha öngörülebilirdir.</li>
+</ul>
+<h3>13.3 Pratik öneriler</h3>
+<ul>
+<li><strong>Bir şifre yöneticisi kullanın</strong> (Bitwarden, 1Password, KeePass): rastgele şifreler üretir, siz yalnızca ana şifreyi hatırlarsınız.</li>
+<li><strong>MFA'yı her yerde etkinleştirin</strong>: bir şifre sızsa bile saldırgan giriş yapamaz.</li>
+<li><strong>HIBP'yi düzenli olarak kontrol edin</strong>, e-posta adresinizin bilinen sızıntılarda yer alıp almadığını öğrenmek için.</li>
+<li><strong>Bir şifreyi asla yeniden kullanmayın</strong>: kimlik bilgisi doldurma, hizmetler arasında yeniden kullanımdan yararlanır.</li>
+<li><strong>Hatırlamanız gereken şifreler için</strong>: <strong>rastgele çekilmiş</strong> (zarla veya bir üreteçle), sizin seçmediğiniz 5 veya daha fazla sözcükten oluşan bir parola cümlesi.</li>
+</ul>
+<hr>
+<h2 id="references">14. Kaynaklar</h2>
+<h3>Akademik kaynaklar</h3>
+<ul>
+<li><strong>Morris, R., &amp; Thompson, K. (1979).</strong> <em>Password security: A case history.</em> Communications of the ACM, 22(11), 594–597. Unix şifrelerinin ilk akademik analizi.</li>
+<li><strong>Klein, D. V. (1990).</strong> <em>Foiling the cracker: A survey of, and improvements to, password security.</em> Proceedings of the 2nd USENIX Security Workshop. 15.000 Unix şifresinin yaklaşık dörtte biri sözcük listeleri ve kurallarla kırıldı.</li>
+<li><strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong> <em>Password cracking using probabilistic context-free grammars.</em> IEEE Symposium on Security and Privacy. Sözlük saldırılarıyla karşılaştırmalı, PCFG'nin temel makalesi.</li>
+<li><strong>Ur, B., et al. (2012).</strong> <em>How does your password measure up? The effect of strength meters on password creation.</em> 21st USENIX Security Symposium.</li>
+<li><strong>Bonneau, J. (2012).</strong> <em>The science of guessing: Analyzing an anonymized corpus of 70 million passwords.</em> IEEE Symposium on Security and Privacy. Şifrelerin gerçek dağılımını ölçer.</li>
+<li><strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong> <em>A study of probabilistic password models.</em> IEEE Symposium on Security and Privacy. Sözlük, Markov ve PCFG modellerini gerçek derlemler üzerinde karşılaştırır.</li>
+<li><strong>Wheeler, D. L. (2016).</strong> <em>zxcvbn: Low-budget password strength estimation.</em> 25th USENIX Security Symposium, 157–173. Bölüm 8.3'te kullanılan büyük harf maliyetinin kaynağı.</li>
+<li><strong>Wang, D., Cheng, H., Wang, P., Huang, X., &amp; Jian, G. (2017).</strong> <em>Zipf's law in passwords.</em> IEEE Transactions on Information Forensics and Security, 12(11), 2776–2791.</li>
+<li><strong>Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M. (2021).</strong> <em>Reducing bias in modeling real-world password strength via deep learning and dynamic dictionaries.</em> 30th USENIX Security Symposium.</li>
+</ul>
+<h3>Sektör kaynakları</h3>
+<ul>
+<li><strong>Have I Been Pwned.</strong> <em>Pwned Passwords.</em> https://haveibeenpwned.com/Passwords. Time2Crack'in kullandığı k-anonimlikli API.</li>
+<li><strong>Hive Systems (2025).</strong> <em>Password table.</em> RTX 4090 ölçümleri; Time2Crack bunları RTX 5090'a uyarlar (hızlı özetler için +%35, bcrypt ve Argon2id için +%25).</li>
+<li><strong>Hashcat.</strong> <em>Advanced password recovery.</em> https://hashcat.net. GPU ölçümleri ve dönüştürme kuralları (<code>best64.rule</code>) için başvuru aracı.</li>
+<li><strong>Miessler, D.</strong> <em>SecLists.</em> GitHub. Time2Crack'in ilk dil listelerinin kaynağı.</li>
+</ul>
+<h3>Arka plan</h3>
+<ul>
+<li><strong>Hunt, T. (2017).</strong> <em>Introducing 306 million freely downloadable Pwned Passwords.</em> troyhunt.com.</li>
+<li><strong>Thomas, K., et al. (2019).</strong> <em>Protecting accounts from credential stuffing with password breach alerting.</em> 28th USENIX Security Symposium. k-anonimliğin gizliliği koruduğunu gösterir.</li>
+</ul>
+<hr>
+<p><em>Kaynak kod: <code>core/rank/dictionary.js</code> (<code>rankDictionary</code>, <code>deleet</code>), <code>core/rank/uppercase.js</code> (<code>uppercaseCost</code>), <code>core/time.js</code> (<code>rankToSeconds</code>), <code>app.js</code> (<code>loadDictionary</code>, <code>checkHIBP</code>).</em></p>
   </main><footer id="site-footer"></footer><script src="../../includes.js"></script><script src="../../method-lang.js"></script></body></html>

@@ -141,15 +141,15 @@ Document de référence pour le projet Time2Crack
 <p>Intuition : ces signaux augmentent la probabilité d'un classement précoce dans la file de masques testés.</p>
 <hr>
 <h2>10. Benchmarks et ordres de grandeur</h2>
-<p>Ordres de grandeur (profil 12x RTX 4090) :</p>
+<p>Ordres de grandeur (profil 12x RTX 5090) :</p>
 AlgorithmeDébit approxTemps pour 1e9 candidats
 ------:---:
-MD5~2.03 TH/s~0.0005 s
-SHA-1~610 GH/s~0.0016 s
-SHA-256~272 GH/s~0.0037 s
-NTLM~3.46 TH/s~0.0003 s
-bcrypt (cost 10)~69 kH/s~4.0 h
-Argon2id~800 H/s~14.5 jours
+MD5~2.63 TH/s~0.00038 s
+SHA-1~837 GH/s~0.0012 s
+SHA-256~332 GH/s~0.0030 s
+NTLM~4.08 TH/s~0.00025 s
+bcrypt (cost 10)~114 kH/s~2.4 h
+Argon2id~1 000 H/s~11.6 jours
 <p>Lecture :</p>
 <li>sur hash rapides, le masque est foudroyant,</li>
 <li>sur hash lents, il reste très dangereux sur patterns fréquents mais le coût devient concret.</li>

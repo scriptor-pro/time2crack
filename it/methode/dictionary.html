@@ -64,11 +64,11 @@ Documento di riferimento del progetto Time2Crack
 <table class="about-table">
 <thead><tr><th>Algoritmo</th><th>Velocità</th><th>Tempo per 1 milione di candidati</th></tr></thead>
 <tbody>
-<tr><td>NTLM</td><td>4.674 GH/s</td><td>0,21 microsecondi</td></tr>
-<tr><td>MD5</td><td>2.737 GH/s</td><td>0,37 microsecondi</td></tr>
-<tr><td>SHA-1</td><td>824 GH/s</td><td>1,2 microsecondi</td></tr>
-<tr><td>SHA-256</td><td>367 GH/s</td><td>2,7 microsecondi</td></tr>
-<tr><td>bcrypt (costo 5)</td><td>2.760 kH/s</td><td>0,36 secondi</td></tr>
+<tr><td>NTLM</td><td>4.081 GH/s</td><td>0,25 microsecondi</td></tr>
+<tr><td>MD5</td><td>2.634 GH/s</td><td>0,38 microsecondi</td></tr>
+<tr><td>SHA-1</td><td>837 GH/s</td><td>1,2 microsecondi</td></tr>
+<tr><td>SHA-256</td><td>332 GH/s</td><td>3,0 microsecondi</td></tr>
+<tr><td>bcrypt (costo 5)</td><td>3.658 kH/s</td><td>0,27 secondi</td></tr>
 <tr><td>Argon2id</td><td>1.000 H/s</td><td>circa 17 minuti</td></tr>
 </tbody>
 </table>
@@ -127,8 +127,8 @@ Fase 4: resoconto
 </ul>
 <p>Per un elenco di 1 miliardo di password trapelate su 12× RTX 5090:</p>
 <ul>
-<li>MD5: 10<sup>9</sup> / 2.737 × 10<sup>9</sup> ≈ <strong>0,4 millisecondi</strong></li>
-<li>bcrypt (costo 5): 10<sup>9</sup> / 2.760.000 ≈ <strong>6 minuti</strong></li>
+<li>MD5: 10<sup>9</sup> / 2.634 × 10<sup>9</sup> ≈ <strong>0,4 millisecondi</strong></li>
+<li>bcrypt (costo 5): 10<sup>9</sup> / 3.658.000 ≈ <strong>5 minuti</strong></li>
 </ul>
 <p>Questo scarto di circa sei ordini di grandezza tra MD5 e bcrypt mostra quanto conti la scelta dell'algoritmo di hash.</p>
 <h3>4.3 L'ordine dei candidati</h3>
@@ -400,11 +400,11 @@ export function rankToSeconds(rank, algo, profile = "experienced") {
 <table class="about-table">
 <thead><tr><th>Algoritmo</th><th>Velocità (12× RTX 5090)</th><th>Calcolo</th><th>Tempo</th></tr></thead>
 <tbody>
-<tr><td>NTLM</td><td>4.674 GH/s</td><td>275.117 / 4.674 × 10<sup>9</sup></td><td><strong>59 nanosecondi</strong></td></tr>
-<tr><td>MD5</td><td>2.737 GH/s</td><td>275.117 / 2.737 × 10<sup>9</sup></td><td><strong>101 nanosecondi</strong></td></tr>
-<tr><td>SHA-1</td><td>824 GH/s</td><td>275.117 / 824 × 10<sup>9</sup></td><td><strong>334 nanosecondi</strong></td></tr>
-<tr><td>SHA-256</td><td>367 GH/s</td><td>275.117 / 367 × 10<sup>9</sup></td><td><strong>750 nanosecondi</strong></td></tr>
-<tr><td>bcrypt (costo 5)</td><td>2.760 kH/s</td><td>275.117 / 2.760.000</td><td><strong>0,1 secondi</strong></td></tr>
+<tr><td>NTLM</td><td>4.081 GH/s</td><td>275.117 / 4.081 × 10<sup>9</sup></td><td><strong>67 nanosecondi</strong></td></tr>
+<tr><td>MD5</td><td>2.634 GH/s</td><td>275.117 / 2.634 × 10<sup>9</sup></td><td><strong>104 nanosecondi</strong></td></tr>
+<tr><td>SHA-1</td><td>837 GH/s</td><td>275.117 / 837 × 10<sup>9</sup></td><td><strong>329 nanosecondi</strong></td></tr>
+<tr><td>SHA-256</td><td>332 GH/s</td><td>275.117 / 332 × 10<sup>9</sup></td><td><strong>829 nanosecondi</strong></td></tr>
+<tr><td>bcrypt (costo 5)</td><td>3.658 kH/s</td><td>275.117 / 3.658.000</td><td><strong>0,08 secondi</strong></td></tr>
 <tr><td>Argon2id</td><td>1.000 H/s</td><td>275.117 / 1.000</td><td><strong>4 minuti 35 secondi</strong></td></tr>
 </tbody>
 </table>
@@ -518,7 +518,7 @@ export function rankToSeconds(rank, algo, profile = "experienced") {
 <h3>Fonti del settore</h3>
 <ul>
 <li><strong>Have I Been Pwned.</strong> <em>Pwned Passwords.</em> https://haveibeenpwned.com/Passwords. L'API con k-anonimato usata da Time2Crack.</li>
-<li><strong>Hive Systems (2025).</strong> <em>Password table.</em> Misure su RTX 4090; Time2Crack le estrapola alla RTX 5090 (+35% per gli hash veloci, +25% per bcrypt e Argon2id).</li>
+<li><strong>Hive Systems (2025).</strong> <em>Password table.</em> Edizione 2025 basata su 12× RTX 5090. Time2Crack usa benchmark hashcat misurati sulla RTX 5090 (Specops 2026, forum hashcat.net); Argon2id resta una stima.</li>
 <li><strong>Hashcat.</strong> <em>Advanced password recovery.</em> https://hashcat.net. Strumento di riferimento per le misure su GPU e le regole di trasformazione (<code>best64.rule</code>).</li>
 <li><strong>Miessler, D.</strong> <em>SecLists.</em> GitHub. Fonte dei primi elenchi per lingua di Time2Crack.</li>
 </ul>

@@ -137,7 +137,7 @@ Promotionele wachtrij │<em>van de</em>candidates.push(candidate)
 of: (w1, regel 1), (w2, regel 1)... volgens strategie</p>
 <p>Fase 4: Haching en vergelijking (GPU)
 - - Verzenden door batch van ~10M kandidaten naar de GPU
-- Parallelle berekening van hashs (SIMD, 168 GH/s voor MD5)
+- Parallelle berekening van hashs (SIMD, 219 GH/s voor MD5)
 - Vergelijking met target hash(es)
 Als dit overeenkomt: FINDED </p>
 <p>Fase 5: Rapportage
@@ -401,18 +401,18 @@ indien (l.includes(w) &amp;&amp;w.length &gt;= 4) return true;
 <h3>10.1 HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500</h3>
 <strong>Achtergrond</strong> Het wachtwoord is in GEMEENSCHAPPELIJK de hardgecodeerde lijst HIPP top-~400. Dit zijn enkele van de meest voorkomende wachtwoorden in de wereld ("wachtwoord," "letmein," "sunshine," "iloveyou" ...).
 <strong>Rechtvaardiging</strong> Ma et al. (2014) empirisch gemeten dat de mediane positie van een top-1000 wachtwoord in een hybride lijst gesorteerd op waarschijnlijkheid ~450 kandidaten is. Het getal 500 is een enigszins conservatieve schatting om tot ~400 rang te dekken.
-<strong>Interpretatie</strong> : een aanvaller die best64 toepast op een woordenlijst gesorteerd op frequentietests gemiddeld 500 kandidaten voor het vinden van het wachtwoord. Bij 2000 GH/s (MD5, 12× RTX 4090), 500 kandidaten = <strong>0,25 picoseconden</strong>- Bijna onmiddellijk.
-<strong>Voorbeeld</strong> : "Sunshine1" → "sunshine" is in GEMEENSCHAPPELIJK → HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500 → <code>budgetTime(500, 2027e9)</code> 0,25 nanoseconden.
+<strong>Interpretatie</strong> : een aanvaller die best64 toepast op een woordenlijst gesorteerd op frequentietests gemiddeld 500 kandidaten voor het vinden van het wachtwoord. Bij 2600 GH/s (MD5, 12× RTX 5090), 500 kandidaten = <strong>0,19 ns</strong>- Bijna onmiddellijk.
+<strong>Voorbeeld</strong> : "Sunshine1" → "sunshine" is in GEMEENSCHAPPELIJK → HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500 → <code>budgetTime(500, 2634e9)</code> 0,19 ns.
 <h3>10.2 HYBRID<em>KEYSPACE</em>DICT = 8.000</h3>
 <strong>Achtergrond</strong> Het wachtwoord is afgeleid van een woord uit de taalwoordenlijst, maar niet van GEMEENSCHAPPELIJK. Dit zijn gewone woordenschat woorden ("zon," "berg," "paillon"...) met transformaties.
 <strong>Rechtvaardiging</strong> Ma et al. (2014) meet een mediane positie van 2000 tot 15.000 afhankelijk van de populariteit van het woord in RockYou. De empirische mediaan is ~ 8000. Deze sleutelruimte weerspiegelt dat de aanvaller het woord en zijn varianten test na het vermoeien van de meer voorkomende kandidaten.
-<strong>Interpretatie</strong> : 8.000 kandidaten bij 2.000 GH/s (MD5) = <strong>4 nanoseconden</strong>Voor bcrypt (69 kH/s): 8.000 / 69 000 <strong>0,12 seconden</strong>.
-<strong>Voorbeeld</strong> : "Soleil2024" → "zon" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8000 → een paar nanoseconden op MD5, 0,12s op bcrypt.
+<strong>Interpretatie</strong> : 8.000 kandidaten bij 2.600 GH/s (MD5) = <strong>3,0 ns</strong>Voor bcrypt (114 kH/s): 8.000 / 114 000 <strong>0,07 seconden</strong>.
+<strong>Voorbeeld</strong> : "Soleil2024" → "zon" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8000 → een paar nanoseconden op MD5, 0,07s op bcrypt.
 <h3>10.3 HYBRID<em>KEYSPACE</em>FULL = 128.000.000</h3>
 <strong>Achtergrond</strong> : <code>hybridVuln</code> is waar (wachtwoord heeft een woordenboekstructuur) maar geen van beide <code>common</code> noch <code>dictWord</code> De aanvaller moet door de hele wordlijst bladeren met alle regels.
 <strong>Rechtvaardiging</strong> : Gosney (Passwordscon 2012) documenteert een woordenlijst van 3,5M woorden × best64 (64 regels) = 224M kandidaten in totaal. In de praktijk maken realistische woordenlijsten 2M woorden en de gedeeltelijke beste64 runs stoppen bij ~128M kandidaten voordat klimmen naar bredere regels.
 <strong>Formule</strong> : <code>2<em>000</em>000 mots × 64 règles = 128<em>000</em>000 candidats</code>
-<strong>Interpretatie</strong> : 128 miljoen kandidaten bij 2000 GH/s (MD5) <strong>64 microseconden</strong>. Op bcrypt (69 kH/s): ~31 minuten.
+<strong>Interpretatie</strong> : 128 miljoen kandidaten bij 2600 GH/s (MD5) <strong>49 µs</strong>. Op bcrypt (114 kH/s): ~19 minuten.
 <hr>
 <h2>11. Kalibratie van hoge trouw</h2>
 <h3>11.1 Rol van hoge betrouwbaarheid</h3>
@@ -469,23 +469,23 @@ Sleutelruimte (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> dynamisch
 <p>De hybride werkt op het oppervlak van het woord (karakter transformaties), de morfologische werkt op de lexicale structuur (derivatie, buigen), en ze zijn complementair.</p>
 <hr>
 <h2>13. Benchmarks per hash-algoritme</h2>
-<h3>13.1 Tijd voor de drie hybride sleutelruimtes (12× RTX 4090)</h3>
+<h3>13.1 Tijd voor de drie hybride sleutelruimtes (12× RTX 5090)</h3>
 AlgoritmePercentage (H/s)GEMEENSCHAPPELIJK (500)DICT (8k)FULL (128M)
 ----------------------------- [57]--------------- [57]
-MD52 027 GH/s0,25 ps3,9 ns63 μs
-SHA-1610 GH/s0,82 ps13 ns210 μs
-SHA-256272 GH/s1.84 ps29 ns470 μs
-NTLM3,462 GH/s0,14 ps2,3 ns37 μs
-bcrypt (kosten 10)69 kH/s7,2 ms0,12 s31 min.
-Argon2id800 H/s0,625 s10 s44 uur
+MD52 634 GH/s0,19 ns3,0 ns49 μs
+SHA-1837 GH/s0,60 ns9,6 ns153 μs
+SHA-256332 GH/s1.5 ns24 ns386 μs
+NTLM4 081 GH/s0,12 ns2,0 ns31 μs
+bcrypt (kosten 10)114 kH/s4,4 ms0,07 s19 min.
+Argon2id1.000 H/s0,5 s8 s36 uur
 <strong>Lezen</strong> : voor MD5 en NTLM wordt zelfs de FULL keyspace (128M-kandidaten) gekraakt in een paar dozijn microseconden.
-<strong>Argon2id</strong> is het enige algoritme dat sterk weerstand biedt, zelfs voor gewone woorden: 0,625 seconden voor een GEMEENSCHAPPELIJK woord, 10 seconden voor een dictwoord. Deze tijden blijven kort in absolute waarde, maar vertegenwoordigen een vertraging van x10^12 vs MD5 
+<strong>Argon2id</strong> is het enige algoritme dat sterk weerstand biedt, zelfs voor gewone woorden: 0,5 seconden voor een GEMEENSCHAPPELIJK woord, 8 seconden voor een dictwoord. Deze tijden blijven kort in absolute waarde, maar vertegenwoordigen een vertraging van x10^12 vs MD5 
 <h3>13.2 Impact van het aanvalsprofiel</h3>
 <p>Time2Crack biedt twee profielen (Ervaren 12 GPU, Professional 100 GPU). Voor de hybride, het profiel verschil is direct evenredig:</p>
 ProfielGPU'sMultiplierVOLLEDIGE bcrypt
 ------------------------------- [57]
-Ervaren12× RTX 40901×31 min.
-Professioneel~100 GPU~8×~4 min
+Ervaren12× RTX 50901×19 min.
+Professioneel~100 GPU~8×~2 min
 <p>Voor MD5, SHA-1, NTLM: het profiel verandert de tijd van microseconden naar nanoseconden, zonder enige praktische impact, beide zijn onmiddellijk.</p>
 <hr>
 <h2>14. Concrete voorbeelden van hybride kraken</h2>
@@ -495,8 +495,8 @@ Professioneel~100 GPU~8×~4 min
 <li><code>isDictWord("Password1")</code> → waar ("wachtwoord" in DICTW VERMELDINGEN in kleine letters)</li>
 <li><code>COMMON.has("password")</code> → waar → <code>common = true</code></li>
 <li>Resultaat: HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500</li>
-<strong>MD5 tijd</strong> : 500 / 2,027e12 <strong>0,25 picoseconden</strong> (snapshot)
-<strong>Tijd bcrypt kosten 10</strong> 500 / 69 000 <strong>7,2 milliseconden</strong>
+<strong>MD5 tijd</strong> : 500 / 2,634e12 <strong>0,19 ns</strong> (snapshot)
+<strong>Tijd bcrypt kosten 10</strong> 500 / 114 000 <strong>4,4 milliseconden</strong>
 <strong>Regels getest vóór het vinden</strong> : <code>:</code> (bruto woord "wachtwoord" → nee), <code>c</code> ("Wachtwoord" → nee), <code>c $1</code> ("Wachtwoord1" → <strong>FIND</strong>, rij ~8)
 <h3>14.2 Voorbeeld 2: "Sun2024" (DICT)</h3>
 <strong>Analyse</strong> :
@@ -504,8 +504,8 @@ Professioneel~100 GPU~8×~4 min
 <li><code>isDictWord("Soleil2024")</code> → waar ("zon" in fr.txt)</li>
 <li><code>COMMON.has("soleil")</code> → vals → <code>common = false</code>, <code>dictWord = true</code></li>
 <li>Resultaat: HYBRID<em>KEYSPACE</em>DICT = 8.000</li>
-<strong>MD5 tijd</strong> : 8 000 / 2,027e12 <strong>3,9 nanoseconden</strong>
-<strong>Tijd bcrypt kosten 10</strong> : 8 000 / 69 000 <strong>0,12 seconden</strong>
+<strong>MD5 tijd</strong> : 8 000 / 2,634e12 <strong>3,0 nanoseconden</strong>
+<strong>Tijd bcrypt kosten 10</strong> : 8 000 / 114 000 <strong>0,07 seconden</strong>
 <strong>Testvoorschriften</strong> : de aanvaller arriveert op ~5000 in de woordenlijst fr gesorteerd op frequentie, dan geldt <code>c $2 $0 $2 $4</code> ("Sun2024") in de rij ~3 van zijn regels → algemene positie ~15 003.
 <h3>14.3 Voorbeeld 3: "p@pillon!" (DICT met substituties)</h3>
 <strong>Analyse</strong> :
@@ -529,7 +529,7 @@ Professioneel~100 GPU~8×~4 min
 <h3>15.1 Intrinsieke grenswaarden</h3>
 <strong>Afhankelijk van de kwaliteit van de woordenlijst</strong> : als het basiswoord niet in de woordenlijst staat, kan de hybride niet werken. Een wachtwoord gebaseerd op een zeer gespecialiseerde term (neologisme, obscure technische term, woord van een zeldzame taal) kan weerstaan als het ontbreekt in alle gangbare woordenlijsten.
 <strong>Onvolledige dekking van transformaties</strong> : zelfs OneRuleToRuleThemAlle met 52k regels dekt niet 100% van de denkbare transformaties. Sommige zeer zeldzame transformaties (base64 gedeeltelijke coderingen, uitgevonden patronen) ontsnappen aan de regels.
-<strong>Combinerende explosie met lange Wordlists</strong> Bij 2.000 GH/s (MD5), duurt het ~ 250 seconden, maar met bcrypt (69 kH/s), ~ 230.000 jaar. De schaalbaarheid van de hybride wordt beperkt door de lengte van de wordlist en de traagheid van de hash algoritme.
+<strong>Combinerende explosie met lange Wordlists</strong> Bij 2.600 GH/s (MD5), duurt het ~ 190 seconden, maar met bcrypt (114 kH/s), ~ 140 jaar. De schaalbaarheid van de hybride wordt beperkt door de lengte van de wordlist en de traagheid van de hash algoritme.
 <h3>15.2 Wat Time2Crack niet vastlegt</h3>
 <strong>Context Woordenlijsten</strong> : een aanvaller die zich richt op een specifiek bedrijf zal een woordenlijst bouwen met de naam van het bedrijf, producten, namen van werknemers, zakelijke termen. "Renault2024!" zou direct worden gekraakt door een aanvaller gericht Renault 
 <strong>Multipass-composietregels</strong> Sommige wachtwoorden weerstaan best64 maar geven toe aan twee-pass regels (toepassing van de ene regel, pas dan een andere regel toe op het resultaat). Time2Crack model slechts één regel pass.
@@ -563,8 +563,8 @@ Omgekeerd"enihsnus"Artikel <code>r</code>, top-15
 AlgoritmeTijd voor DICT (8k gissingen)Oefenaanval
 ----------------------------------------------------------------
 MD5 / NTLM&lt; 1 nanosecondeDirect
-SHA-25630 nanosecondenDirect
-bcrypt kosten 100,12 secondenTriviaal
+SHA-25624 nanosecondenDirect
+bcrypt kosten 100,07 secondenTriviaal
 bcrypt kosten 14~32 secondenUitvoerbaar
 Argon2id (standaard)~10 secondenUitvoerbaar
 Argon2id (sterk parametraat)~100 secondenLangzaam maar mogelijk
@@ -618,7 +618,7 @@ Een set van 64 regels die empirisch geselecteerd zijn op RockYou om de cracksnel
 <strong>Steube, J. (2016</strong>
 </em>Hashcat Advanced Password Herstel<em>
 https://hashcat.net/hashcat/
-Officiële mode documentatie -a 0, -a 6, -a 7. Syntaxis van regels. Officiële GPU benchmarks op 12× RTX 4090.
+Officiële mode documentatie -a 0, -a 6, -a 7. Syntaxis van regels. Officiële GPU benchmarks op 12× RTX 5090.
 <strong>NotSoSecure (2019)</strong>
 </em>OneRegleToRegleThemAll <em>
 https://github.com/NotSoSecure/wachtwoord<em>kraken</em>regels

@@ -155,7 +155,7 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <pre>Formule : temps (secondes) = log₁₀(rang) / log₁₀(taux_hachage)</pre>
 </div>
 <h3>Hızlar (GPU)</h3>
-<p>Time2Crack kullanır <strong>Gerçek hızlar Hashcat</strong> 12× RTX 4090 için:</p>
+<p>Time2Crack kullanır <strong>Gerçek hızlar Hashcat</strong> 12× RTX 5090 için:</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -168,32 +168,32 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <tbody>
 <tr>
 <td><strong>MD5</strong></td>
-<td>2.03 TH /s</td>
+<td>2.63 TH /s</td>
 <td>Hayır hayır hayır</td>
 </tr>
 <tr>
 <td><strong>SHA-1</strong></td>
-<td>610 GH /s</td>
+<td>837 GH /s</td>
 <td>Hayır hayır hayır</td>
 </tr>
 <tr>
 <td><strong>SHA-256</strong></td>
-<td>272 GH /s</td>
+<td>332 GH /s</td>
 <td>Hayır hayır hayır</td>
 </tr>
 <tr>
 <td><strong>NTLM</strong></td>
-<td>3.46 TH /s</td>
+<td>4.08 TH /s</td>
 <td>Hayır hayır hayır</td>
 </tr>
 <tr>
 <td><strong>bcrypt</strong></td>
-<td>2.2 MH /</td>
+<td>3.66 MH/s</td>
 <td>Evet Evet Evet</td>
 </tr>
 <tr>
 <td><strong>Argon2id</strong></td>
-<td>800 H /s</td>
+<td>1.000 H /s</td>
 <td>Evet Evet Evet</td>
 </tr>
 </tbody>
@@ -202,14 +202,14 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <h3>Dönüşüm örneği</h3>
 <div class="example-box">
 <h4>Şifre: "password" (Rang: 1 milyon = 106)</h4>
-<h4>MD5 (2 trilyon / güvensiz):</h4>
-<p><code>Temps = 10⁶ / (2×10¹²) = 0.5 microsecondes</code></p>
-<h4>SHA-256 (272 GH/s):</h4>
-<p><code>Temps = 10⁶ / (2.72×10¹¹) = 3.7 microsecondes</code></p>
-<h4>bcrypt için (2.2 MH/s):</h4>
-<p><code>Temps = 10⁶ / (2.2×10⁶) = 0.45 secondes</code></p>
-<h4>Argon2id (800 H/s):</h4>
-<p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
+<h4>MD5 (2.63 TH/s):</h4>
+<p><code>Temps = 10⁶ / (2.63×10¹²) = 0.38 µs</code></p>
+<h4>SHA-256 (332 GH/s):</h4>
+<p><code>Temps = 10⁶ / (3.32×10¹¹) = 3.0 µs</code></p>
+<h4>bcrypt için (3.66 MH/s):</h4>
+<p><code>Temps = 10⁶ / (3.66×10⁶) = 0.27 s</code></p>
+<h4>Argon2id (1.000 H/s):</h4>
+<p><code>Temps = 10⁶ / 1 000 = 1 000 s ≈ 17 min</code></p>
 </div>
 </section>
 <section class="doc-section" id="attacks">
@@ -260,36 +260,36 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <p>Farklı algoritmalar farklı güvenlik seviyeleri sunar. Time2Crack, algoritma seçiminin etkisini göstermek için 6 kez çatlaklar gösterir.</p>
 <h4><span class="emoji-marker"></span> MD5 (DEPRECTED)</h4>
 <ul>
-<li><strong>Hız Hız Hız Hız</strong> : 2 TH /s (çok hızlı)</li>
+<li><strong>Hız Hız Hız Hız</strong> : 2,63 TH /s (çok hızlı)</li>
 <li><strong>Salification</strong> Hayır hayır hayır</li>
 <li><strong>Durum durumu</strong> - Kullanmayın</li>
 </ul>
 <h4><span class="emoji-marker"></span> SHA-1 (DEPRECTED)</h4>
 <ul>
-<li><strong>Hız Hız Hız Hız</strong> : 610 GH /s</li>
+<li><strong>Hız Hız Hız Hız</strong> : 837 GH /s</li>
 <li><strong>Salification</strong> Hayır hayır hayır</li>
 <li><strong>Durum durumu</strong> Collisions (2017)</li>
 </ul>
 <h4><span class="emoji-marker"></span> SHA-256 (AC)</h4>
 <ul>
-<li><strong>Hız Hız Hız Hız</strong> : 272 GH /s</li>
+<li><strong>Hız Hız Hız Hız</strong> : 332 GH /s</li>
 <li><strong>Salification</strong> Genel olarak evet</li>
 <li><strong>Durum durumu</strong> - SALT + iteration ile kabul edilebilir</li>
 </ul>
 <h4><span class="emoji-marker"></span> NTLM (LEGACY)</h4>
 <ul>
-<li><strong>Hız Hız Hız Hız</strong> 3.46 TH /s</li>
+<li><strong>Hız Hız Hız Hız</strong> 4.08 TH /s</li>
 <li><strong>Durum durumu</strong> - Windows mirasında kullanılır</li>
 </ul>
 <h4><span class="emoji-marker"></span> bcrypt (RECOMMENDED)</h4>
 <ul>
-<li><strong>Hız Hız Hız Hız</strong> 2.2 MH/s (gerçekten yavaş)</li>
+<li><strong>Hız Hız Hız Hız</strong> 3.66 MH/s (gerçekten yavaş)</li>
 <li><strong>Salification</strong> EVET :</li>
 <li><strong>Durum durumu</strong> * Üretim için Mükemmel</li>
 </ul>
 <h4><span class="emoji-marker"></span> Argon2id (Better)</h4>
 <ul>
-<li><strong>Hız Hız Hız Hız</strong> 800 H /s (çok yavaş = çok güvenli)</li>
+<li><strong>Hız Hız Hız Hız</strong> 1.000 H /s (çok yavaş = çok güvenli)</li>
 <li><strong>Tipi Tipi Tipi Tipi</strong> : Hybrid (time + memory)</li>
 <li><strong>Durum durumu</strong> En İyi Modern Seçim (NIST 2021)</li>
 </ul>
@@ -315,25 +315,25 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <tr>
 <td><strong>Amatör Amatör</strong></td>
 <td>1 1 1</td>
-<td>288 GH /s</td>
+<td>340 GH /s</td>
 <td>Hobi Hackers</td>
 </tr>
 <tr>
 <td><strong>Deneyimlendi</strong></td>
 <td>12</td>
-<td>3.46 TH /s</td>
+<td>4.08 TH /s</td>
 <td>Ciddi çatlaklar</td>
 </tr>
 <tr>
 <td><strong>Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel</strong></td>
 <td>~100</td>
-<td>28.8 TH/s</td>
+<td>34.0 TH/s</td>
 <td>Şirketler, AWS kümeleri</td>
 </tr>
 <tr>
 <td><strong>Devlet Ulusu</strong></td>
 <td>~10k</td>
-<td>2.88 PH /s</td>
+<td>3.40 PH /s</td>
 <td>Hükümetler</td>
 </tr>
 </tbody>
@@ -343,10 +343,10 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <div class="example-box">
 <h4>Şifre: "P@ssw0rd" (10 tank, sıra: 1 trilyon)</h4>
 <ul>
-<li><strong>Amatör Amatör</strong> 44 saniye</li>
-<li><strong>Deneyimlendi</strong> 3.7 saniye</li>
-<li><strong>Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel</strong> : 0.43 saniye</li>
-<li><strong>Devlet Ulusu</strong> 4.4 milisaniye</li>
+<li><strong>Amatör Amatör</strong> 36 saniye</li>
+<li><strong>Deneyimlendi</strong> 3.0 saniye</li>
+<li><strong>Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel</strong> : 0.36 saniye</li>
+<li><strong>Devlet Ulusu</strong> 3.6 milisaniye</li>
 </ul>
 </div>
 <p><strong>Eğitim Eğitimi</strong> : Bir ulus devlet tarafından milisaniyelerde bile "güçlü" bir şifre bile kırılabilir!</p>
@@ -377,10 +377,10 @@ Combinator   : ∞</pre>
 <div class="example-box">
 <h4>50 milyar deneme sonuçları</h4>
 <ul>
-<li><strong>MD5</strong> : 0.025 saniye</li>
-<li><strong>SHA-256</strong> 0.18 saniye</li>
-<li><strong>bcrypt</strong> 6.3 saat</li>
-<li><strong>Argon2id</strong> 2 yıl</li>
+<li><strong>MD5</strong> : 0.019 saniye</li>
+<li><strong>SHA-256</strong> 0.15 saniye</li>
+<li><strong>bcrypt</strong> 3.8 saat</li>
+<li><strong>Argon2id</strong> 1,6 yıl</li>
 </ul>
 </div>
 <h3>Sonuç Sonuç Sonuç</h3>
@@ -401,7 +401,7 @@ Combinator   : ∞</pre>
 </ul>
 <p><small><a href="privacy.html">Gizlilik politikamız hakkında daha fazla bilgi edinin →</a></small></p>
 <h3>S: GPU hız numaraları nereden geliyor?</h3>
-<p><strong>Resmi Hashcat kriterleri</strong> (v6.2.6) RTX 4090:</p>
+<p><strong>Resmi Hashcat kriterleri</strong> (v6.2.6) RTX 5090:</p>
 <ul>
 <li>Laboratuvar ölçümleri</li>
 <li>Public domain</li>
@@ -444,5 +444,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">^ Back to top</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Son: <span id="commit-date">2026-04-25 11:52:15</span> • • <span id="commit-message">fonksiyon (otomi): uygulama fu...</span></small>
+<small class="commit-info">Son: <span id="commit-date">2026-10-20 11:45:03</span> • • <span id="commit-message">docs(pages): align GPU figures with the ...</span></small>
 </footer><script src="../includes.js"></script></body></html>

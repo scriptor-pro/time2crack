@@ -64,11 +64,11 @@ Time2Crack projesi başvuru belgesi
 <table class="about-table">
 <thead><tr><th>Algoritma</th><th>Hız</th><th>1 milyon aday için süre</th></tr></thead>
 <tbody>
-<tr><td>NTLM</td><td>4.674 GH/s</td><td>0,21 mikrosaniye</td></tr>
-<tr><td>MD5</td><td>2.737 GH/s</td><td>0,37 mikrosaniye</td></tr>
-<tr><td>SHA-1</td><td>824 GH/s</td><td>1,2 mikrosaniye</td></tr>
-<tr><td>SHA-256</td><td>367 GH/s</td><td>2,7 mikrosaniye</td></tr>
-<tr><td>bcrypt (maliyet 5)</td><td>2.760 kH/s</td><td>0,36 saniye</td></tr>
+<tr><td>NTLM</td><td>4.081 GH/s</td><td>0,25 mikrosaniye</td></tr>
+<tr><td>MD5</td><td>2.634 GH/s</td><td>0,38 mikrosaniye</td></tr>
+<tr><td>SHA-1</td><td>837 GH/s</td><td>1,2 mikrosaniye</td></tr>
+<tr><td>SHA-256</td><td>332 GH/s</td><td>3,0 mikrosaniye</td></tr>
+<tr><td>bcrypt (maliyet 5)</td><td>3.658 kH/s</td><td>0,27 saniye</td></tr>
 <tr><td>Argon2id</td><td>1.000 H/s</td><td>yaklaşık 17 dakika</td></tr>
 </tbody>
 </table>
@@ -127,8 +127,8 @@ Aşama 4: rapor
 </ul>
 <p>12× RTX 5090 üzerinde 1 milyar sızmış şifrelik bir liste için:</p>
 <ul>
-<li>MD5: 10<sup>9</sup> / 2.737 × 10<sup>9</sup> ≈ <strong>0,4 milisaniye</strong></li>
-<li>bcrypt (maliyet 5): 10<sup>9</sup> / 2.760.000 ≈ <strong>6 dakika</strong></li>
+<li>MD5: 10<sup>9</sup> / 2.634 × 10<sup>9</sup> ≈ <strong>0,4 milisaniye</strong></li>
+<li>bcrypt (maliyet 5): 10<sup>9</sup> / 3.658.000 ≈ <strong>5 dakika</strong></li>
 </ul>
 <p>MD5 ile bcrypt arasındaki yaklaşık altı büyüklük basamağı fark, özet algoritması seçiminin ne kadar önemli olduğunu gösterir.</p>
 <h3>4.3 Adayların sırası</h3>
@@ -400,11 +400,11 @@ export function rankToSeconds(rank, algo, profile = "experienced") {
 <table class="about-table">
 <thead><tr><th>Algoritma</th><th>Hız (12× RTX 5090)</th><th>Hesap</th><th>Süre</th></tr></thead>
 <tbody>
-<tr><td>NTLM</td><td>4.674 GH/s</td><td>275.117 / 4.674 × 10<sup>9</sup></td><td><strong>59 nanosaniye</strong></td></tr>
-<tr><td>MD5</td><td>2.737 GH/s</td><td>275.117 / 2.737 × 10<sup>9</sup></td><td><strong>101 nanosaniye</strong></td></tr>
-<tr><td>SHA-1</td><td>824 GH/s</td><td>275.117 / 824 × 10<sup>9</sup></td><td><strong>334 nanosaniye</strong></td></tr>
-<tr><td>SHA-256</td><td>367 GH/s</td><td>275.117 / 367 × 10<sup>9</sup></td><td><strong>750 nanosaniye</strong></td></tr>
-<tr><td>bcrypt (maliyet 5)</td><td>2.760 kH/s</td><td>275.117 / 2.760.000</td><td><strong>0,1 saniye</strong></td></tr>
+<tr><td>NTLM</td><td>4.081 GH/s</td><td>275.117 / 4.081 × 10<sup>9</sup></td><td><strong>67 nanosaniye</strong></td></tr>
+<tr><td>MD5</td><td>2.634 GH/s</td><td>275.117 / 2.634 × 10<sup>9</sup></td><td><strong>104 nanosaniye</strong></td></tr>
+<tr><td>SHA-1</td><td>837 GH/s</td><td>275.117 / 837 × 10<sup>9</sup></td><td><strong>329 nanosaniye</strong></td></tr>
+<tr><td>SHA-256</td><td>332 GH/s</td><td>275.117 / 332 × 10<sup>9</sup></td><td><strong>829 nanosaniye</strong></td></tr>
+<tr><td>bcrypt (maliyet 5)</td><td>3.658 kH/s</td><td>275.117 / 3.658.000</td><td><strong>0,08 saniye</strong></td></tr>
 <tr><td>Argon2id</td><td>1.000 H/s</td><td>275.117 / 1.000</td><td><strong>4 dakika 35 saniye</strong></td></tr>
 </tbody>
 </table>
@@ -518,7 +518,7 @@ export function rankToSeconds(rank, algo, profile = "experienced") {
 <h3>Sektör kaynakları</h3>
 <ul>
 <li><strong>Have I Been Pwned.</strong> <em>Pwned Passwords.</em> https://haveibeenpwned.com/Passwords. Time2Crack'in kullandığı k-anonimlikli API.</li>
-<li><strong>Hive Systems (2025).</strong> <em>Password table.</em> RTX 4090 ölçümleri; Time2Crack bunları RTX 5090'a uyarlar (hızlı özetler için +%35, bcrypt ve Argon2id için +%25).</li>
+<li><strong>Hive Systems (2025).</strong> <em>Password table.</em> 12× RTX 5090 tabanlı 2025 sürümü. Time2Crack, RTX 5090 üzerinde ölçülmüş hashcat kıyaslamalarını kullanır (Specops 2026, hashcat.net forumu); Argon2id bir tahmin olarak kalır.</li>
 <li><strong>Hashcat.</strong> <em>Advanced password recovery.</em> https://hashcat.net. GPU ölçümleri ve dönüştürme kuralları (<code>best64.rule</code>) için başvuru aracı.</li>
 <li><strong>Miessler, D.</strong> <em>SecLists.</em> GitHub. Time2Crack'in ilk dil listelerinin kaynağı.</li>
 </ul>

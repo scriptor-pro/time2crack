@@ -155,7 +155,7 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <pre>Formule : temps (secondes) = log₁₀(rang) / log₁₀(taux_hachage)</pre>
 </div>
 <h3>Velocità di taglio (GPU)</h3>
-<p>Time2Crack utilizza <strong>vero velocità Hashcat</strong> per 12× RTX 4090:</p>
+<p>Time2Crack utilizza <strong>vero velocità Hashcat</strong> per 12× RTX 5090:</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -168,32 +168,32 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <tbody>
 <tr>
 <td><strong>MD5</strong></td>
-<td>2.03 TH/s</td>
+<td>2.63 TH/s</td>
 <td>No.</td>
 </tr>
 <tr>
 <td><strong>SHA-1</strong></td>
-<td>610 GH/</td>
+<td>837 GH/s</td>
 <td>No.</td>
 </tr>
 <tr>
 <td><strong>SHA-256</strong></td>
-<td>272 GH/</td>
+<td>332 GH/s</td>
 <td>No.</td>
 </tr>
 <tr>
 <td><strong>NT1</strong></td>
-<td>3.46 TH/s</td>
+<td>4.08 TH/s</td>
 <td>No.</td>
 </tr>
 <tr>
 <td><strong>b.</strong></td>
-<td>2.2 MH/s</td>
+<td>3.66 MH/s</td>
 <td>Sì.</td>
 </tr>
 <tr>
 <td><strong>Argon2id</strong></td>
-<td>800 H/s</td>
+<td>1.000 H/s</td>
 <td>Sì.</td>
 </tr>
 </tbody>
@@ -202,14 +202,14 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <h3>Esempio di conversione</h3>
 <div class="example-box">
 <h4>Password: "password" (Rang: 1 milione = 106)</h4>
-<h4>Per MD5 (2 trilioni/sec):</h4>
-<p><code>Temps = 10⁶ / (2×10¹²) = 0.5 microsecondes</code></p>
-<h4>Per SHA-256 (272 GH/s):</h4>
-<p><code>Temps = 10⁶ / (2.72×10¹¹) = 3.7 microsecondes</code></p>
-<h4>Per bcrypt (2.2 MH/s):</h4>
-<p><code>Temps = 10⁶ / (2.2×10⁶) = 0.45 secondes</code></p>
-<h4>Per Argon2id (800 H/s):</h4>
-<p><code>Temps = 10⁶ / 800 = 1 250 secondes = 21 minutes</code></p>
+<h4>Per MD5 (2.63 TH/s):</h4>
+<p><code>Temps = 10⁶ / (2.63×10¹²) = 0.38 µs</code></p>
+<h4>Per SHA-256 (332 GH/s):</h4>
+<p><code>Temps = 10⁶ / (3.32×10¹¹) = 3.0 µs</code></p>
+<h4>Per bcrypt (3.66 MH/s):</h4>
+<p><code>Temps = 10⁶ / (3.66×10⁶) = 0.27 s</code></p>
+<h4>Per Argon2id (1.000 H/s):</h4>
+<p><code>Temps = 10⁶ / 1 000 = 1 000 s ≈ 17 min</code></p>
 </div>
 </section>
 <section class="doc-section" id="attacks">
@@ -260,36 +260,36 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <p>Time2Crack mostra tempi di crepa per i 6 per mostrare l'impatto della scelta dell'algoritmo.</p>
 <h4><span class="emoji-marker"></span> MD5 (DEPRECTED)</h4>
 <ul>
-<li><strong>Velocità</strong> : 2 TH/s (molto veloce)</li>
+<li><strong>Velocità</strong> : 2,63 TH/s (molto veloce)</li>
 <li><strong>Salificazione</strong> No.</li>
 <li><strong>Stato</strong> - Non usare</li>
 </ul>
 <h4><span class="emoji-marker"></span> SHA-1 (DEPRECTED)</h4>
 <ul>
-<li><strong>Velocità</strong> 610 GH/s</li>
+<li><strong>Velocità</strong> 837 GH/s</li>
 <li><strong>Salificazione</strong> No.</li>
 <li><strong>Stato</strong> - Collisions found (2017)</li>
 </ul>
 <h4><span class="emoji-marker"></span> SHA-256 (ACCETTABILE)</h4>
 <ul>
-<li><strong>Velocità</strong> : 272 GH/s</li>
+<li><strong>Velocità</strong> : 332 GH/s</li>
 <li><strong>Salificazione</strong> : Generalmente sì</li>
 <li><strong>Stato</strong> - Accettabile se con SALT + iterazione</li>
 </ul>
 <h4><span class="emoji-marker"></span> NTl LAVORATORI</h4>
 <ul>
-<li><strong>Velocità</strong> : 3.46 TH/s</li>
+<li><strong>Velocità</strong> : 4.08 TH/s</li>
 <li><strong>Stato</strong> - Utilizzato nell'eredità di Windows</li>
 </ul>
 <h4><span class="emoji-marker"></span> bcrypt (RECOMMENDED)</h4>
 <ul>
-<li><strong>Velocità</strong> 2.2 MH/s (intenzionalmente lento)</li>
+<li><strong>Velocità</strong> 3.66 MH/s (intenzionalmente lento)</li>
 <li><strong>Salificazione</strong> : SI</li>
 <li><strong>Stato</strong> * Eccellente per la produzione</li>
 </ul>
 <h4><span class="emoji-marker"></span> Argon2id (migliore)</h4>
 <ul>
-<li><strong>Velocità</strong> 800 H/s (molto lento = molto sicuro)</li>
+<li><strong>Velocità</strong> 1.000 H/s (molto lento = molto sicuro)</li>
 <li><strong>Tipo</strong> : Ibrido (tempo + memoria)</li>
 <li><strong>Stato</strong> Migliore scelta moderna (NIST 2021)</li>
 </ul>
@@ -315,25 +315,25 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <tr>
 <td><strong>Amatoriali</strong></td>
 <td>1</td>
-<td>288 GH/</td>
+<td>340 GH/s</td>
 <td>Hobbyist Hackers</td>
 </tr>
 <tr>
 <td><strong>Esperienza</strong></td>
 <td>12</td>
-<td>3.46 TH/s</td>
+<td>4.08 TH/s</td>
 <td>Cracker seri</td>
 </tr>
 <tr>
 <td><strong>Professionista</strong></td>
 <td>- 100.</td>
-<td>28.8 TH/s</td>
+<td>34.0 TH/s</td>
 <td>Aziende, cluster AWS</td>
 </tr>
 <tr>
 <td><strong>Nazione di Stato</strong></td>
 <td>- 10k</td>
-<td>2.88 PH/s</td>
+<td>3.40 PH/s</td>
 <td>Governi</td>
 </tr>
 </tbody>
@@ -343,10 +343,10 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <div class="example-box">
 <h4>Password: "P@ssw0rd" (10 carri armati, fila: 1 trilione)</h4>
 <ul>
-<li><strong>Amatoriali</strong> 44 secondi</li>
-<li><strong>Esperienza</strong> 3.7 secondi</li>
-<li><strong>Professionista</strong> 0,43 secondi</li>
-<li><strong>Nazione di Stato</strong> 4,4 millisecondi</li>
+<li><strong>Amatoriali</strong> 36 secondi</li>
+<li><strong>Esperienza</strong> 3.0 secondi</li>
+<li><strong>Professionista</strong> 0,36 secondi</li>
+<li><strong>Nazione di Stato</strong> 3,6 millisecondi</li>
 </ul>
 </div>
 <p><strong>Istruzione</strong> : Anche una password "forte" può essere decifrata in millisecondi da una nazione-stato!</p>
@@ -377,10 +377,10 @@ Combinator   : ∞</pre>
 <div class="example-box">
 <h4>Risultati per 50 miliardi di tentativi</h4>
 <ul>
-<li><strong>MD5</strong> : 0,025 secondi</li>
-<li><strong>SHA-256</strong> 0,18 secondi</li>
-<li><strong>b.</strong> 6.3 ore</li>
-<li><strong>Argon2id</strong> 2 anni</li>
+<li><strong>MD5</strong> : 0,019 secondi</li>
+<li><strong>SHA-256</strong> 0,15 secondi</li>
+<li><strong>b.</strong> 3.8 ore</li>
+<li><strong>Argon2id</strong> 1,6 anni</li>
 </ul>
 </div>
 <h3>Conclusioni</h3>
@@ -401,7 +401,7 @@ Combinator   : ∞</pre>
 </ul>
 <p><small><a href="privacy.html">Scopri di più sulla nostra politica sulla privacy →</a></small></p>
 <h3>D: Da dove vengono i numeri di velocità GPU?</h3>
-<p><strong>benchmark ufficiali Hashcat</strong> (v6.2.6) su RTX 4090:</p>
+<p><strong>benchmark ufficiali Hashcat</strong> (v6.2.6) su RTX 5090:</p>
 <ul>
 <li>Misure di laboratorio</li>
 <li>Dominio pubblico</li>
@@ -444,5 +444,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">↑ Torna all'inizio</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Ultimo: <span id="commit-date">2026-04-25 11:52:15</span> • <span id="commit-message">funzione(automazione): implementazione fu...</span></small>
+<small class="commit-info">Ultimo: <span id="commit-date">2026-10-20 11:45:03</span> • <span id="commit-message">docs(pages): align GPU figures with the ...</span></small>
 </footer><script src="../includes.js"></script></body></html>

@@ -401,18 +401,18 @@ Eğer (dl!)<em>WORDS.has (dl) gerçek geri döndü;</em></p>
 <h3>10.1 HYBRID<em>KEYSPACE</em>COMMON = 500</h3>
 <strong>Arka plan arka plan arka plan</strong> Şifre COMMON'da - zor kodlanmış liste HIBP üst-~400. Bunlar dünyanın en yaygın şifrelerinden bazıları ("password", "letmein", "sunshine", "iloveyou".
 <strong>Justification Justification</strong> Ma et al. (2014) Amply, bir hibrit listedeki en iyi 1000 şifrenin en iyi konumunun - 450 adayı olduğunu ölçtü.
-<strong>Yorum</strong> : Bir saldırgan, parolayı bulmadan önce ortalama 500 adayın frekans testlerine en iyi 64 ila bir kelime listesine başvurmaktadır.In 2,000 GH /s (MD5, 12× RTX 4090), 500 aday = <strong>0.25 picosans</strong>Pratik olarak anında.
-<strong>Örnek Örnek Örnek Örnek Örnek Örnek Örnek</strong> "Sunshine1" → "sunshine" COMMON → HYBRID<em>KEYSPACE</em>COMMON = 500 <code>budgetTime(500, 2027e9)</code> 0.25 nanosaniye.
+<strong>Yorum</strong> : Bir saldırgan, parolayı bulmadan önce ortalama 500 adayın frekans testlerine en iyi 64 ila bir kelime listesine başvurmaktadır.In 2 600 GH /s (MD5, 12× RTX 5090), 500 aday = <strong>0.19 ns</strong>Pratik olarak anında.
+<strong>Örnek Örnek Örnek Örnek Örnek Örnek Örnek</strong> "Sunshine1" → "sunshine" COMMON → HYBRID<em>KEYSPACE</em>COMMON = 500 <code>budgetTime(500, 2634e9)</code> 0.19 ns.
 <h3>10.2 HYBRID<em>KEYSPACE</em>DICT = 8,000</h3>
 <strong>Arka plan arka plan arka plan</strong> Şifre dil kelime listesinden gelen bir kelimeden elde edilir, ancak COMMON'dan değil. Bunlar ortak kelime kelimeler (“sun”, "tain", "paillon"...) dönüşümlerle yazılır.
 <strong>Justification Justification</strong> Ma et al. (2014), RockYou'daki kelimenin popülaritesine bağlı olarak 2.000 ila 15,000 arasında bir arabulucu pozisyonu ölçmek. Bu anahtar alan, saldırganın kelimeyi ve daha yaygın adaylarını test ettiğini yansıtıyor.
-<strong>Yorum</strong> : 2.000 GH/s (MD5) 8,000 adayı = <strong>4 nanosaniye</strong>. Her zaman hızlı hashs için yakın. bcrypt (69 kH/s): 8,000 / 69 000 <strong>0.12 saniye</strong>.
-<strong>Örnek Örnek Örnek Örnek Örnek Örnek Örnek</strong> : "Soleil2024" → "sun" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8,000 → MD5'te birkaç nanosaniye, bcrypt üzerinde 0.12.
+<strong>Yorum</strong> : 2.600 GH/s (MD5) 8,000 adayı = <strong>3.0 ns</strong>. Her zaman hızlı hashs için yakın. bcrypt (114 kH/s): 8,000 / 114 000 <strong>0.07 saniye</strong>.
+<strong>Örnek Örnek Örnek Örnek Örnek Örnek Örnek</strong> : "Soleil2024" → "sun" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8,000 → MD5'te birkaç nanosaniye, bcrypt üzerinde 0.07.
 <h3>10.3 HYBRID<em>KEYSPACE</em>FULL = 128,000,000</h3>
 <strong>Arka plan arka plan arka plan</strong> : <code>hybridVuln</code> Gerçek (password'in bir sözlük yapısı vardır) ama ne de <code>common</code> Ne de ne de <code>dictWord</code> Saldırgan tüm kelime listesini tüm kurallarla göz önünde bulundurmalıdır.
 <strong>Justification Justification</strong> Gosney (Passwordscon 2012) 3.5M kelime listesi × en iyi64 (64 kurallar) = 224M adayları toplam olarak 2M kelime yapar ve kısmi en iyi64 daha geniş kurallara tırmanmadan önce durur.
 <strong>Formula Formula Formula Formula</strong> : <code>2<em>000 000 000 000</em>000 mots × 64 règles = 128<em>000 000 000 000</em>000 candidats</code>
-<strong>Yorum</strong> : 2000 GH/s (MD5) <strong>64 mikrosaniye</strong>bcrypt (69 kH/s): - 31 dakika.
+<strong>Yorum</strong> : 2600 GH/s (MD5) <strong>49 µs</strong>bcrypt (114 kH/s): - 19 dakika.
 <hr>
 <h2>11. Yüksek sadakat kalibrasyonu</h2>
 <h3>11.1 Yüksek sadakat modundaki rolü</h3>
@@ -469,23 +469,23 @@ Keyspace (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> Dinamik olarak
 <p>Hibrit sözcüğün yüzeyinde çalışır (karacter dönüşümleri), morfolojik lexical yapısı üzerinde çalışır (derivation, bükme), ve tamamlayıcıdırlar.</p>
 <hr>
 <h2>13. Benchmarks by hash algoritma</h2>
-<h3>Üç karma anahtar alanı için 13.1 Zamanı (12× RTX 4090)</h3>
+<h3>Üç karma anahtar alanı için 13.1 Zamanı (12× RTX 5090)</h3>
 AlgorithmPuan (H/s)(500)DICT (8k)FULL (128M)
 - !!!- !!!---- ►- !!!---- ►
-MD52 027 GH /s0.25 ps3.9 ns63 μs
-SHA-1610 GH /s0.82 ps13 ns210 μs
-SHA-256272 GH /s1.84 ps29 ns470
-NTLM3,462 GH /s0,14 ps2.3 ns37 μs
-bcrypt (cost 10)69 kH /s7.2 ms0.1231 min
-Argon2id800 H /s0.625 s10 s44 saat 44
+MD52 634 GH /s0.19 ns3.0 ns49 μs
+SHA-1837 GH /s0.60 ns9,6 ns153 μs
+SHA-256332 GH /s1.5 ns24 ns386
+NTLM4 081 GH /s0,12 ns2.0 ns31 μs
+bcrypt (cost 10)114 kH /s4.4 ms0.1231 min
+Argon2id1.000 H /s0.5 s8 s36 saat 44
 <strong>Okuma</strong> MD5 ve NTLM için, FULL anahtar alanı (128M adayları) birkaç düzine mikrosaniyede kırılır.
-<strong>Argon2id</strong> Ortak kelimeler için bile önemli ölçüde direnen tek algoritma: bir COMMON kelimesi için 0.625 saniye, bir dictWord için 10 saniye. Bu kez mutlak değerde kısa kalır, ancak x10.12 vs MD5'in yavaşlamasını temsil eder - büyük ölçekli ekonomik saldırılar yapılabilir.
+<strong>Argon2id</strong> Ortak kelimeler için bile önemli ölçüde direnen tek algoritma: bir COMMON kelimesi için 0.5 saniye, bir dictWord için 8 saniye. Bu kez mutlak değerde kısa kalır, ancak x10.12 vs MD5'in yavaşlamasını temsil eder - büyük ölçekli ekonomik saldırılar yapılabilir.
 <h3>Saldırı profilinin 13.2 Etkisi</h3>
 <p>Time2Crack iki profil sunar (Experienced 12 GPU, Profesyonel 100 GPU). Hibrit için, profil farkı doğrudan orantılıdır:</p>
 Profil ProfiliGPUsMultiplierFULL bcrypt
 --- ►- ►----- ►
-Deneyimlendi12× RTX 40901×31 min
-Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel~100 GPU~8×~4 min
+Deneyimlendi12× RTX 50901×19 min
+Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel~100 GPU~8×~2 min
 <p>MD5 için, SHA-1, NTLM: profil mikrosaniyelerden nanosaniyelere zaman değiştirir – herhangi bir pratik etki olmadan, her ikisi de anında olur.</p>
 <hr>
 <h2>14. Hibrit çatlakların beton örnekleri</h2>
@@ -495,8 +495,8 @@ Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyo
 <li><code>isDictWord("Password1")</code> Daha düşük durumda DICTWORDS'de gerçek ("password")</li>
 <li><code>COMMON.has("password")</code> → gerçek → <code>common = true</code></li>
 <li>Sonuç: HYBRID<em>KEYSPACE</em>COMMON = 500</li>
-<strong>MD5 zamanı</strong> : 500 / 2,027e12 <strong>0.25 picosans</strong> (snapshot)
-<strong>Zaman bcrypt 10 maliyeti</strong> : 500 / 69 000 <strong>7.2 milisaniye</strong>
+<strong>MD5 zamanı</strong> : 500 / 2,634e12 <strong>0.19 ns</strong> (snapshot)
+<strong>Zaman bcrypt 10 maliyeti</strong> : 500 / 114 000 <strong>4.4 milisaniye</strong>
 <strong>Kuralları bulmadan önce test edildi</strong> : <code>:</code> (gross kelime "password" → hayır), <code>c</code> ("Password" → hayır), <code>c $1</code> ("Password1" → <strong>FIND</strong>satır -8)
 <h3>14.2 Örnek 2: "Sun2024" (DICT)</h3>
 <strong>Analiz Analizi</strong> :
@@ -504,8 +504,8 @@ Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyo
 <li><code>isDictWord("Soleil2024")</code> → true ("sun" in fr.txt)</li>
 <li><code>COMMON.has("soleil")</code> → false → <code>common = false</code>, <code>dictWord = true</code></li>
 <li>Sonuç: HYBRID<em>KEYSPACE</em>DICT = 8,000</li>
-<strong>MD5 zamanı</strong> : 8 000 / 2.027e12 <strong>3.9 nanosaniye</strong>
-<strong>Zaman bcrypt 10 maliyeti</strong> : 8 000 / 69 000 <strong>0.12 saniye</strong>
+<strong>MD5 zamanı</strong> : 8 000 / 2.634e12 <strong>3.0 nanosaniye</strong>
+<strong>Zaman bcrypt 10 maliyeti</strong> : 8 000 / 114 000 <strong>0.07 saniye</strong>
 <strong>Test kuralları</strong> : saldırgan, frekans tarafından sıralanan kelime listelerinde “sun” gelir, sonra geçerlidir. <code>c $2 $0 $2 $4</code> ("Sun2024") kendi kurallarının sırasında -3.
 <h3>14.3 Örnek 3: "p@pillon!" (geçerler ile DICT)</h3>
 <strong>Analiz Analizi</strong> :
@@ -529,7 +529,7 @@ Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyo
 <h3>15.1 Intrinsic limitleri</h3>
 <strong>Kelimelistinin kalitesine bağlı olarak</strong> Temel kelime listede değilse, karma çok özel bir terime dayanan bir şifre (neologism, belirsiz teknik terim, nadir bir dil kelimesi) tüm yaygın kelime listelerinden yoksun olup olmadığına karşı direnebilir.
 <strong>Tamamen dönüşümlerin kapsamı</strong> : OneRuleToRuleThemAll with 52k kuralları hayal edilebilir dönüşümlerin% 100'ini kapsamaz. Bazı çok nadir dönüşümler (base64 kısmi kodlamalar, icat desenler) kurallardan kaçır.
-<strong>Combinatory Blast with Long Wordlists</strong> 2.000 GH /s (MD5), ~250 saniye alır - ancak bcrypt (69 kH /s), ~230,000 yıl. Hibrit ölçeklenebilirliği, kelime listesinin uzunluğu ve hash algoritmasının yavaşlığı ile sınırlandırılır.
+<strong>Combinatory Blast with Long Wordlists</strong> 2.600 GH /s (MD5), ~190 saniye alır - ancak bcrypt (114 kH /s), ~140 yıl. Hibrit ölçeklenebilirliği, kelime listesinin uzunluğu ve hash algoritmasının yavaşlığı ile sınırlandırılır.
 <h3>15.2 What Time2Crack does not catch</h3>
 <strong>Context Wordlists</strong> Belirli bir şirketin hedeflediği bir saldırgan, şirketin adı ile bir kelime listesi inşa edecek, ürünler, çalışan isimleri, iş koşulları. "Renault2024!", Renault'yu hedef alan bir saldırgan tarafından anında kırılacaktı - ancak Time2Crack bu bağlamda model yapmaz (bu "Targeted OSINT" saldırısının rolüdür).
 <strong>Multi-pass kompozit kuralları</strong> Bazı şifreler en iyi64'e karşı direnir, ancak iki yönlü kurallara (bir kural olarak, o zaman sonuca başka bir kural uygular). Time2Crack modeli sadece bir kural geçer.
@@ -563,8 +563,8 @@ Ters"enihsnus"Kural Kural Kuralı <code>r</code>, üst-15
 AlgorithmDICT için zaman (8k tahminler)Uygulama saldırısı
 - !!!---- !!!--- *
 MD5 / NTLM&lt; 1 nanosaniyeAnında
-SHA-256~30 nanosaniyeAnında
-bcrypt maliyeti 10~0.12 saniyeTrivial
+SHA-256~24 nanosaniyeAnında
+bcrypt maliyeti 10~0.07 saniyeTrivial
 bcrypt maliyeti 14~32 saniyeFeasible
 Argon2id (default)~ 10 saniyeFeasible
 Argon2id (güçlü paramet)~100 saniyeYavaş ama mümkün
@@ -618,7 +618,7 @@ ACM CHI 2015
 <strong>Steube, J. (2016-günüm)</strong>
 </em>Hashcat Advanced Password Recovery<em>
 https://hashcat.net/hashcat/
-- Resmi mod belgeleri -a 0, -a 6, -a 7. kuralların Syntax. Resmi GPU kriterleri 12× RTX 4090.
+- Resmi mod belgeleri -a 0, -a 6, -a 7. kuralların Syntax. Resmi GPU kriterleri 12× RTX 5090.
 <strong>değil mi?</strong>
 </em>OneRuleToRuleThemAll – ML-rated hashcat kuralı set<em>
 https://git.hub.com/Not soSecure/password<em>çatmak</em>kurallar

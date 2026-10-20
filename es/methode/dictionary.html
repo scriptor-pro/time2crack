@@ -63,15 +63,15 @@ AñoEvento
 <strong>Adobe (2013)</strong> - 153 millones de cuentas.
 <strong>He sido Pwned (2013–presente)</strong> - La agregación progresiva de fugas públicas, permitiendo a Troy Hunt crear una base de referencia utilizada en todo el mundo.
 <h3>2.3 Puntos de referencia para el ataque al diccionario</h3>
-<p>Una lista de 200.000 entradas probadas a la velocidad de un RTX 4090:</p>
+<p>Una lista de 200.000 entradas probadas a la velocidad de un RTX 5090:</p>
 AlgoritmSpeedTiempo para 200k candidatos
 ----------------------------
-MD5168,9 GH/s~1,2 nanosegundo
-SHA-150.86 GH/s~3.9 nanoseconds
-SHA-25622.68 GH/s~8.8 nanosegundos
-NTLM288,5 GH/s~0,7 nanosegundo
-bcrypt (cost 5)184 kH/s~1.09 segundo
-Argon2id~67 H/s~50 minutos
+MD5219,5 GH/s~0,91 µs
+SHA-169.77 GH/s~2.9 µs
+SHA-25627.68 GH/s~7.2 µs
+NTLM340,1 GH/s~0,59 µs
+bcrypt (cost 5)305 kH/s~0.66 segundo
+Argon2id~83 H/s~40 minutos
 <p>Por lo tanto, el ataque del diccionario es casi instantáneo para MD5, SHA-1 y NTLM — y sigue siendo muy rápido incluso para la cripta en pequeñas listas.</p>
 <hr>
 <h2>3. Fundaciones conceptuales: por qué los diccionarios trabajan</h2>
@@ -109,19 +109,19 @@ Argon2id~67 H/s~50 minutos
 Para cada candidato w en la lista de palabras:
 , hash<em>candidato = hah</em>algo(w)
 Promocional si hash<em>candidato= hash</em>Meta: finalizada
-- Velocidad: 168 GH/s para MD5 en RTX 4090</p>
+- Velocidad: 219 GH/s para MD5 en RTX 5090</p>
 <p>Fase 4: Análisis de los resultados
 Report of cracked passwords, coverage statistics</p></code></pre>
 <h3>4.2 Optimizaciones de hardware</h3>
 <p>Los ataques de diccionario modernos son masivamente paralelos a la GPU:</p>
 <li><strong>Hashcat</strong> (herramienta de referencia): explota los núcleos de CUDA de la GPU para paralelizar miles de millones de computaciones simultáneas precipitadas</li>
-<li><strong>Vector Pipeline</strong> : en un RTX 4090, una sola instrucción SIMD calcula 8 a 16 hashs MD5 en paralelo</li>
+<li><strong>Vector Pipeline</strong> : en un RTX 5090, una sola instrucción SIMD calcula 8 a 16 hashs MD5 en paralelo</li>
 <li><strong>Caché de GPU</strong> : la lista de palabras se carga en VRAM para minimizar la latencia de memoria</li>
 <li><strong>Batching</strong> : los candidatos son enviados a la GPU en lotes de millones para maximizar el flujo</li>
-<p>Para una lista de palabras de 14 mil millones de entradas (tamaño HIP) en 12× RTX 4090:
-</p><li>MD5 : 14e9 / (168.9e9 × 12) <strong>6.9 segundos</strong></li>
-<li>bcrypt cost 5 : 14e9 / (184000 × 12) <strong>6.337 años</strong></li><p></p>
-<p>Esta diferencia de ~9 órdenes de magnitud entre MD5 y bcrypt explica por qué la elección del algoritmo hash es crítica.</p>
+<p>Para una lista de palabras de 14 mil millones de entradas (tamaño HIP) en 12× RTX 5090:
+</p><li>MD5 : 14e9 / (219.5e9 × 12) <strong>5.3 ms</strong></li>
+<li>bcrypt cost 5 : 14e9 / (304800 × 12) <strong>64 min</strong></li><p></p>
+<p>Esta diferencia de ~6 órdenes de magnitud entre MD5 y bcrypt explica por qué la elección del algoritmo hash es crítica.</p>
 <h3>4.3 Orden de prueba de candidatos</h3>
 <p>La lista de palabras no se prueba en orden alfabético — es <strong>ordenados por la disminución de la probabilidad</strong> :</p>
 <li>Las contraseñas de escape más comunes (RockYou top 100)</li>
@@ -206,7 +206,7 @@ retorno 0; // no encontrado
 <li>Falso negativo: 0 (si en HiBP, siempre devuelto)</li>
 <h3>6.3 Interpretación del Conde HIBP</h3>
 <p>El recuento devuelto por HiBP indica el número de veces que esta contraseña exacta apareció en las filtraciones indexadas:</p>
-CondeInterpretaciónTiempo de cuna (MD5, 12× RTX 4090)
+CondeInterpretaciónTiempo de cuna (MD5, 12× RTX 5090)
 ---.---
 1 000 000Top 100 World1 nanosegundo
 10.000 a 1.000.000Muy común10 nanosegundos
@@ -372,11 +372,11 @@ t(nAbsentLeaks);</p>
 }</p></code></pre>
 <h3>10.2 Tres niveles de vulnerabilidad</h3>
 <strong>Nivel 1 - Ultra-mojado</strong> (G)<code>weak = true</code>) : ~100 / bazo
-La contraseña está en el Top 100 del mundo ("password", "123456", "qwerty"...). Un atacante que prueba a estos 100 candidatos prioritarios lo encuentra en el primer paso. <strong>0.6 nanosegundo</strong>.
+La contraseña está en el Top 100 del mundo ("password", "123456", "qwerty"...). Un atacante que prueba a estos 100 candidatos prioritarios lo encuentra en el primer paso. <strong>0.46 ns</strong>.
 <strong>Nivel 2 - Común</strong> (G)<code>common = true</code>-10 000 / bazo
-La contraseña está en la lista de referencia HIBP de las ~10.000 contraseñas más frecuentes. Estos candidatos se prueban en los primeros microsegundos. Para MD5: 10,000 / 168,9e9 <strong>59 nanoseconds</strong>.
+La contraseña está en la lista de referencia HIBP de las ~10.000 contraseñas más frecuentes. Estos candidatos se prueban en los primeros microsegundos. Para MD5: 10,000 / 219,5e9 <strong>46 ns</strong>.
 <strong>Nivel 3 - DictWord</strong> (G)<code>dictWord = true</code>~200,000 / bazo
-La contraseña es una palabra del diccionario de idioma actual (lista de palabras locales ~50k–200k entries). Un análisis completo de la lista de palabras es casi instantáneo para algoritmos rápidos. Para MD5: 200 000 / 168,9e9 <strong>1.18 microsecond</strong>.
+La contraseña es una palabra del diccionario de idioma actual (lista de palabras locales ~50k–200k entries). Un análisis completo de la lista de palabras es casi instantáneo para algoritmos rápidos. Para MD5: 200 000 / 219,5e9 <strong>0.91 µs</strong>.
 <strong>Nivel 4 - No aplicable</strong> (G)<code>sec = null</code>) : la contraseña no es ni ultra-mojo, ni común, ni una palabra del diccionario actual. El ataque del diccionario solo no es aplicable - otros ataques (fuerza bruta, Markov, PCFG) se convierten en la principal amenaza.
 <h3>10.3 ¿Por qué estos números (100, 10.000, 200.000)?</h3>
 <p>Estos valores se calibran a datos reales:</p>
@@ -386,15 +386,15 @@ La contraseña es una palabra del diccionario de idioma actual (lista de palabra
 <strong>Referencia</strong> Weir et al. (2009) muestran que las palabras del diccionario se encuentran en los primeros 200.000 intentos de un ataque bien ordenado. Ur et al. (2012) confirman que las contraseñas comunes se encuentran en los primeros 10.000 intentos.
 <h3>10.4 Ejemplo numérico completo</h3>
 <p>Para la contraseña "sun" (actual palabra francesa, detectada como <code>dictWord</code>)</p>
-AlgoritmVelocidad (12× RTX 4090)FormulaHora
+AlgoritmVelocidad (12× RTX 5090)FormulaHora
 -----------------------------
-NTLM3.462 GH/s200 000 / 3 462e9<strong>57.8 picosegundos</strong>
-MD52 027 GH/s200 000 / 2 027e9<strong>98.7 picosegundos</strong>
-SHA-1610 GH/s200 000 / 610e9<strong>327,9 picosegundos</strong>
-SHA-256272 GH/s200 000 / 272e9<strong>735 picos segundos</strong>
-bcrypt (cost 5)2.2 MH/s200 000 / 2 200 000<strong>90,9 milisegundos</strong>
-Argon2id800 H/s200 000 / 800<strong>250 segundos</strong>
-<p>Incluso para Argon2id, 250 segundos es menos de 5 minutos, para una simple palabra del diccionario francés.</p>
+NTLM4.081 GH/s200 000 / 4 081e9<strong>49 ns</strong>
+MD52 634 GH/s200 000 / 2 634e9<strong>76 ns</strong>
+SHA-1837 GH/s200 000 / 837e9<strong>239 ns</strong>
+SHA-256332 GH/s200 000 / 332e9<strong>602 ns segundos</strong>
+bcrypt (cost 5)3.66 MH/s200 000 / 3 658 000<strong>54,7 milisegundos</strong>
+Argon2id1.000 H/s200 000 / 1.000<strong>200 segundos</strong>
+<p>Incluso para Argon2id, 200 segundos es menos de 5 minutos, para una simple palabra del diccionario francés.</p>
 <hr>
 <h2>11. Calibración de alta fidelidad: <code>applyHighFidelityCalibration()</code></h2>
 <h3>11.1 ¿Por qué la calibración adicional?</h3>
@@ -598,7 +598,7 @@ Protege contra ataques en línea (intentes de conexión directa), no contra el c
 <li>Basis de ~14 mil millones de contraseñas únicas de filtraciones documentadas</li>
 <li>k-Anónimo API utilizado por Time2Crack para la verificación en tiempo real</li>
 <strong>Hive Systems. (2025).</strong> </em>2025 Hive Systems Password Table.<em>
-<li>Parámetros 12× RTX 4090: MD5 2,027 GH/s, NTLM 3,462 GH/s, bcrypt cost 5 : 2,2 MH/s</li>
+<li>Parámetros 12× RTX 5090: MD5 2 634 GH/s, NTLM 4 081 GH/s, bcrypt cost 5 : 3,66 MH/s</li>
 <li><strong>Fuente principal de las tasas de hash utilizadas en Time2Crack</strong></li>
 <strong>Hashcat. (2025).</strong> </em>Hashcat — Recuperación avanzada de contraseña.<em>
 <li>Herramienta de referencia para parámetros GPU</li>

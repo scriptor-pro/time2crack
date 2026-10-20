@@ -106,7 +106,7 @@
         </p>
 </dd>
 <dt>Pourquoi les estimations de temps varient-elles selon l'algorithme de hash ?</dt>
-<dd>Différents algorithmes de hash ont des vitesses de craquage très différentes. MD5 et SHA-1 (unsalted) sont rapides à cracker (~2 milliards de tentatives/seconde), tandis que bcrypt et Argon2id sont volontairement lents (~2 millions et ~800 tentatives/seconde). Time2Crack affiche le temps pour chaque algorithme, afin que vous compreniez l'importance d'utiliser <strong>bcrypt</strong> ou <strong>Argon2id</strong> pour les mots de passe critiques.</dd>
+<dd>Différents algorithmes de hash ont des vitesses de craquage très différentes. MD5 et SHA-1 (unsalted) sont rapides à cracker (~2 600 milliards de tentatives/seconde), tandis que bcrypt et Argon2id sont volontairement lents (~3,7 millions et ~1 000 tentatives/seconde). Time2Crack affiche le temps pour chaque algorithme, afin que vous compreniez l'importance d'utiliser <strong>bcrypt</strong> ou <strong>Argon2id</strong> pour les mots de passe critiques.</dd>
 <dt>Qu'est-ce que "Force brute", "Dictionnaire", etc. ?</dt>
 <dd>Ce sont les 7 types d'attaques réelles que les pirates utilisent :
         <ul style="margin-top: 0.5em; margin-left: 1.5em;">
@@ -142,7 +142,7 @@
 <dt>Et si j'utilise un gestionnaire de mots de passe ?</dt>
 <dd>Excellent choix ! Les gestionnaires (Bitwarden, 1Password, KeePass) génèrent des mots de passe aléatoires de 16-32 caractères, que vous n'avez pas besoin de mémoriser. Time2Crack estimera le temps de craquage à <strong>10,000+ années</strong> pour un mot généré aléatoirement. Vous n'avez besoin que d'une <strong>passphrase solide pour déverrouiller le gestionnaire</strong>.</dd>
 <dt>Mes estimations peuvent-elles être inexactes ?</dt>
-<dd>Time2Crack utilise les meilleures données publiques disponibles (rockyou2021, NIST, recherche académique) pour calibrer ses estimations. <strong>L'erreur typique est ±1 ordre de grandeur</strong> (soit 10× plus rapide/lent que la réalité). Les estimations supposent aussi un <strong>attaquant avec 12× RTX 4090</strong> — un attaquant réel peut être 100× plus lent ou 10,000× plus rapide selon ses ressources. Les estimations pour <strong>Argon2id</strong> sont plus fiables (plus lentes, moins de variation).</dd>
+<dd>Time2Crack utilise les meilleures données publiques disponibles (rockyou2021, NIST, recherche académique) pour calibrer ses estimations. <strong>L'erreur typique est ±1 ordre de grandeur</strong> (soit 10× plus rapide/lent que la réalité). Les estimations supposent aussi un <strong>attaquant avec 12× RTX 5090</strong> — un attaquant réel peut être 100× plus lent ou 10,000× plus rapide selon ses ressources. Les estimations pour <strong>Argon2id</strong> sont plus fiables (plus lentes, moins de variation).</dd>
 <dt>Pourquoi Time2Crack montre 7 attaques différentes ?</dt>
 <dd>Parce que <strong>chaque mot de passe est vulnérable à une attaque différente</strong>. "password" tombe en 1 tentative (dictionnaire). "P@ssw0rd!" tombe en ~10,000 tentatives (hybride + PCFG). "a1b2c3d4e5f6g7h8" tombe seulement en force brute (~10^30 tentatives). Time2Crack identifie <strong>la meilleure attaque pour votre mot de passe</strong> et affiche le temps pour chaque algorithme de hash.</dd>
 <dt>La page "Méthode" explique comment ça marche ?</dt>

@@ -63,15 +63,15 @@ JaarGebeurtenis
 <strong>Adobe (2013)</strong> 153 miljoen rekeningen.
 <strong>Have I Been Pwned (2013</strong> - Progressieve aggregatie van publieke lekken, waardoor Troy Hunt een referentiebasis kan creëren die wereldwijd wordt gebruikt.
 <h3>2.3 Referentiebenchmarks voor woordenboekaanval</h3>
-<p>Een woordenlijst van 200.000 inzendingen getest met de snelheid van een RTX 4090:</p>
+<p>Een woordenlijst van 200.000 inzendingen getest met de snelheid van een RTX 5090:</p>
 AlgoritmeSnelheidTijd voor 200k kandidaten
 -------------------------Onverzadigd
-MD5168,9 GH/s~1,2 nanoseconde
-SHA-150,86 GH/s~3,9 nanoseconden
-SHA-25622.68 GH/s~8,8 nanoseconden
-NTLM288,5 GH/s~0,7 nanoseconde
-bcrypt (kosten 5)184 kH/s1,09 seconde
-Argon2id~67 H/s50 minuten
+MD5219,5 GH/s~0,91 µs
+SHA-169,77 GH/s~2,9 µs
+SHA-25627.68 GH/s~7,2 µs
+NTLM340,1 GH/s~0,59 µs
+bcrypt (kosten 5)305 kH/s0,66 seconde
+Argon2id~83 H/s40 minuten
 <p>De woordenboekaanval is daarom bijna onmiddellijk voor MD5, SHA-1 en NTLM en blijft zeer snel zelfs voor bcrypt op kleine lijsten.</p>
 <hr>
 <h2>3. Conceptuele fundamenten: waarom woordenboeken werken</h2>
@@ -109,19 +109,19 @@ Argon2id~67 H/s50 minuten
 Voor elke kandidaat w in de woordenlijst:
 │ hash<em>kandidaat = hash</em>algo(w)
 Promotional │ if hash<em>kandidaat== hash</em>Doel: Gevonden
-- Snelheid: 168 GH/s voor MD5 op RTX 4090</p>
+- Snelheid: 219 GH/s voor MD5 op RTX 5090</p>
 <p>Fase 4: Analyse van de resultaten
 Rapport van gekraakte wachtwoorden, dekkingsstatistieken</p></code></pre>
 <h3>4.2 Hardwareoptimalisatie</h3>
 <p>Moderne woordenboek aanvallen worden massaal parallel op GPU:</p>
 <li><strong>Hashcat</strong> (referentie tool): exploiteert de CUDA cores van de GPU om miljarden hash gelijktijdige berekeningen parallel te maken</li>
-<li><strong>Vectorpijpleiding</strong> : op een RTX 4090 berekent een enkele SIMD instructie 8 tot 16 MD5 hash parallel</li>
+<li><strong>Vectorpijpleiding</strong> : op een RTX 5090 berekent een enkele SIMD instructie 8 tot 16 MD5 hash parallel</li>
 <li><strong>GPU-cache</strong> : de wordlist wordt geladen in VRAM om geheugenlatentie te minimaliseren</li>
 <li><strong>Loting</strong> : de kandidaten worden verzonden naar de GPU in batches van miljoenen om de stroom te maximaliseren</li>
-<p>Voor een woordenlijst van 14 miljard inzendingen (HBP-grootte) op 12× RTX 4090:
-</p><li>MD5 : 14e9 / (168.9e9 × 12) <strong>6,9 seconden</strong></li>
-<li>bcrypt kosten 5: 14e9 / (184000 × 12) <strong>6,337 jaar</strong></li><p></p>
-<p>Dit verschil van ~9 orden van grootte tussen MD5 en bcrypt verklaart waarom de keuze van de hash algoritme is cruciaal.</p>
+<p>Voor een woordenlijst van 14 miljard inzendingen (HBP-grootte) op 12× RTX 5090:
+</p><li>MD5 : 14e9 / (219.5e9 × 12) <strong>5,3 ms</strong></li>
+<li>bcrypt kosten 5: 14e9 / (304800 × 12) <strong>64 min</strong></li><p></p>
+<p>Dit verschil van ~6 orden van grootte tussen MD5 en bcrypt verklaart waarom de keuze van de hash algoritme is cruciaal.</p>
 <h3>4.3 Testvolgorde van de kandidaten</h3>
 <p>De woordenlijst is niet in alfabetische volgorde getest. <strong>gesorteerd op afnemende waarschijnlijkheid</strong> :</p>
 <li>De meest voorkomende ontsnappingswachtwoorden (RockYou top 100)</li>
@@ -206,7 +206,7 @@ teruggeven 0; // niet gevonden
 <li>Vals negatief: 0 (als in HiBP, altijd teruggekeerd)</li>
 <h3>6.3 Interpretatie van graaf HIPP</h3>
 <p>De door HiBP geretourneerde telling geeft het aantal keren aan dat dit exacte wachtwoord verscheen in geïndexeerde lekken:</p>
-AantalInterpretatieCracktijd (MD5, 12× RTX 4090)
+AantalInterpretatieCracktijd (MD5, 12× RTX 5090)
 ------------------------------------------------------------
 &gt; 1 000 000Top 100 Wereld&lt; 1 nanoseconde
 10.000Zeer vaak&lt; 10 nanoseconden
@@ -372,11 +372,11 @@ function addDictionaryAttacks(rows, common, weak, dictWord) {
 }</p></code></pre>
 <h3>10.2 Drie kwetsbaarheidsniveaus</h3>
 <strong>Niveau 1 Ultrazwak</strong> (<code>weak = true</code>) : ~100 / milt
-Het wachtwoord is in 's werelds Top 100 ("wachtwoord," "123456," "qwerty"...). Een aanvaller die deze 100 prioritaire kandidaten test vindt het in de eerste pas. Voor MD5: 100 / 168.9e9 <strong>0,6 nanoseconde</strong>.
+Het wachtwoord is in 's werelds Top 100 ("wachtwoord," "123456," "qwerty"...). Een aanvaller die deze 100 prioritaire kandidaten test vindt het in de eerste pas. Voor MD5: 100 / 219.5e9 <strong>0,46 ns</strong>.
 <strong>Niveau 2</strong> (<code>common = true</code>) : ~10 000 / milt
-Het wachtwoord staat in de referentie HIPP lijst van de ~10.000 meest frequente wachtwoorden. Deze kandidaten worden getest in de eerste microseconden. Voor MD5: 10.000 / 168,9e9 <strong>59 nanoseconden</strong>.
+Het wachtwoord staat in de referentie HIPP lijst van de ~10.000 meest frequente wachtwoorden. Deze kandidaten worden getest in de eerste microseconden. Voor MD5: 10.000 / 219,5e9 <strong>46 ns</strong>.
 <strong>Niveau 3 DictWord</strong> (<code>dictWord = true</code>) : ~200.000 / milt
-Het wachtwoord is een woord uit het huidige taalwoordenboek (lokale woordenlijst ~50k <strong>1,18 microseconde</strong>.
+Het wachtwoord is een woord uit het huidige taalwoordenboek (lokale woordenlijst ~50k <strong>0,91 µs</strong>.
 <strong>Niveau 4</strong> (<code>sec = null</code>) : het wachtwoord is niet ultra-zwak, noch gebruikelijk, noch een woord uit het huidige woordenboek. De woordenboek aanval alleen is niet van toepassing .
 <h3>10.3 Waarom deze nummers (100, 10.000, 200.000)?</h3>
 <p>Deze waarden worden gekalibreerd op feitelijke gegevens:</p>
@@ -386,15 +386,15 @@ Het wachtwoord is een woord uit het huidige taalwoordenboek (lokale woordenlijst
 <strong>Rubrieknummer</strong> Weir et al. (2009) tonen aan dat woordenboek woorden worden gevonden in de eerste 200.000 pogingen tot een goed geordende aanval. Ur et al. (2012) bevestigen dat gemeenschappelijke wachtwoorden worden gevonden in de eerste 10.000 pogingen.
 <h3>10.4 Volledig numeriek voorbeeld</h3>
 <p>Voor het "zon" wachtwoord (huidig Frans woord, gedetecteerd als <code>dictWord</code>) :</p>
-AlgoritmeSnelheid (12× RTX 4090)FormuleTijd
+AlgoritmeSnelheid (12× RTX 5090)FormuleTijd
 ------------------------------------------------------
-NTLM3,462 GH/s200 000 / 3 462e9<strong>57,8 picoseconden</strong>
-MD52 027 GH/s200 000 / 2 027e9<strong>98,7 picoseconden</strong>
-SHA-1610 GH/s200 000 / 610e9<strong>327,9 picoseconden</strong>
-SHA-256272 GH/s200 000 / 272e9<strong>735 picoseconden</strong>
-bcrypt (kosten 5)2,2 MH/s200 000 / 2 200 000<strong>90,9 milliseconden</strong>
-Argon2id800 H/s200 000 / 800<strong>250 seconden</strong>
-<p>Zelfs voor Argon2id is 250 seconden minder dan 5 minuten voor een simpel woord uit het Franse woordenboek.</p>
+NTLM4 081 GH/s200 000 / 4 081e9<strong>49 ns</strong>
+MD52 634 GH/s200 000 / 2 634e9<strong>76 ns</strong>
+SHA-1837 GH/s200 000 / 837e9<strong>239 ns</strong>
+SHA-256332 GH/s200 000 / 332e9<strong>602 ns</strong>
+bcrypt (kosten 5)3,66 MH/s200 000 / 3 658 000<strong>54,7 milliseconden</strong>
+Argon2id1.000 H/s200 000 / 1.000<strong>200 seconden</strong>
+<p>Zelfs voor Argon2id is 200 seconden minder dan 5 minuten voor een simpel woord uit het Franse woordenboek.</p>
 <hr>
 <h2>11. Kalibratie van hoge trouw: <code>applyHighFidelityCalibration()</code></h2>
 <h3>11.1 Waarom extra kalibratie?</h3>
@@ -598,7 +598,7 @@ Beschermt tegen online aanvallen (directe verbinding pogingen), niet tegen offli
 <li>Basis van ~14 miljard unieke wachtwoorden van gedocumenteerde lekken</li>
 <li>k-anonimiteit API gebruikt door Time2Crack voor real-time verificatie</li>
 <strong>Hive Systems. (2025).</strong> </em>2025 Hive Systems Paswoordtabel.<em>
-<li>Benchmarks 12× RTX 4090: MD5 2,027 GH/s, NTLM 3,462 GH/s, bcrypt cost 5: 2,2 MH/s</li>
+<li>Benchmarks 12× RTX 5090: MD5 2 634 GH/s, NTLM 4 081 GH/s, bcrypt cost 5: 3,66 MH/s</li>
 <li><strong>Belangrijkste bron van hash rates gebruikt in Time2Crack</strong></li>
 <strong>Hashcat. (2025).</strong> </em>Geavanceerde wachtwoord herstel.<em>
 <li>Referentietool voor GPU-benchmarks</li>

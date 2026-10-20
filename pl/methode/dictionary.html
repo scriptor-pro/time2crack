@@ -63,15 +63,15 @@ Więc...To...
 <strong>Adobe (2013)</strong> - 153 miliony kont.
 <strong>Czy jestem Pwned (2013- obecny)</strong> - Progresywna agregacja publicznych przecieków, pozwalająca Troy Huntowi stworzyć bazę referencyjną używaną na całym świecie.
 <h3>2.3 Wartości odniesienia dla ataku słownika</h3>
-<p>Lista 200 000 wpisów testowana z prędkością RTX 4090:</p>
+<p>Lista 200 000 wpisów testowana z prędkością RTX 5090:</p>
 AlgorytmPrędkośćCzas dla kandydatów na 200k
 To...Czy...To...
-MD5168.9 GH / s- 1,2 nanosekundy
-SHA-150,86 GH / s- 3.9 nanosekundy
-SHA- 25622, 68 GH / s- 8,8 nanosekundy
-NTLM288,5 GH / s~ 0,7 nanosekunda
-bcrypt (koszt 5)184 kH / s- 1,09 sekundy.
-Argon2id- 67 H / s- 50 minut
+MD5219.5 GH / s- 0,91 µs
+SHA-169,77 GH / s- 2.9 µs
+SHA-25627,68 GH / s- 7,2 µs
+NTLM340,1 GH / s~ 0,59 µs
+bcrypt (koszt 5)305 kH / s- 0,66 sekundy.
+Argon2id- 83 H / s- 40 minut
 <p>Atak słownika jest więc niemal natychmiastowy dla MD5, SHA-1 i NTLM - i pozostaje bardzo szybki nawet dla bcrypt na małych listach.</p>
 <hr>
 <h2>3. Fundamenty koncepcyjne: dlaczego słowniki działają</h2>
@@ -109,19 +109,19 @@ Argon2id- 67 H / s- 50 minut
 Dla każdego kandydata w liście słów:
 Roszpunka warzywna<em>kandydat = hash</em>algo (w)
 Promocyjna reklama hash<em>kandydat = = hash</em>Cel: USTALENIA
-- Prędkość: 168 GH / s dla MD5 na RTX 4090</p>
+- Prędkość: 219 GH / s dla MD5 na RTX 5090</p>
 <p>Faza 4: Analiza wyników
 Sprawozdanie dotyczące pękniętych haseł, statystyki zasięgu</p></code></pre>
 <h3>4.2 Optymalizacja sprzętu</h3>
 <p>Nowoczesne ataki słowników są bardzo podobne na GPU:</p>
 <li><strong>Hashcat</strong> (narzędzie referencyjne): wykorzystuje rdzenie CUDA GPU, aby porównać miliardy symultanicznych obliczeń haszu</li>
-<li><strong>Pipeline wektorowy</strong> : na RTX 4090, pojedyncza instrukcja SIMD oblicza 8 do 16 hashs MD5 równolegle</li>
+<li><strong>Pipeline wektorowy</strong> : na RTX 5090, pojedyncza instrukcja SIMD oblicza 8 do 16 hashs MD5 równolegle</li>
 <li><strong>GPU cache</strong> : lista słów jest załadowana w VRAM, aby zminimalizować opóźnienie pamięci</li>
 <li><strong>Łatanie</strong> : kandydaci są wysyłane do GPU w partiach milionów w celu maksymalizacji przepływu</li>
-<p>Dla słownika zawierającego 14 miliardów wpisów (rozmiar HIBP) na 12 × RTX 4090:
-</p><li>MD5: 14e9 / (168.9e9 × 12) <strong>6.9 sekund</strong></li>
-<li>koszt bcrypt 5: 14e9 / (184000 × 12) <strong>6 337 lat</strong></li><p></p>
-<p>Ta różnica ~ 9 rzędów wielkości pomiędzy MD5 i bcrypt wyjaśnia, dlaczego wybór algorytmu haszu jest krytyczny.</p>
+<p>Dla słownika zawierającego 14 miliardów wpisów (rozmiar HIBP) na 12 × RTX 5090:
+</p><li>MD5: 14e9 / (219.5e9 × 12) <strong>5.3 ms</strong></li>
+<li>koszt bcrypt 5: 14e9 / (304800 × 12) <strong>64 min</strong></li><p></p>
+<p>Ta różnica ~ 6 rzędów wielkości pomiędzy MD5 i bcrypt wyjaśnia, dlaczego wybór algorytmu haszu jest krytyczny.</p>
 <h3>4.3 Porządek testowy kandydatów</h3>
 <p>Lista słów nie jest testowana w porządku alfabetycznym - jest <strong>posortowane przez malejące prawdopodobieństwo</strong> :</p>
 <li>Najczęstsze hasła escape (RockYou top 100)</li>
@@ -206,7 +206,7 @@ powrót 0; / / nie znaleziono
 <li>Fałszywy wynik ujemny: 0 (jeśli w HiBP, zawsze zwracane)</li>
 <h3>6.3 Interpretacja Hrabiego HIBP</h3>
 <p>Liczba zwrócona przez HiBP wskazuje liczbę razy to dokładne hasło pojawiło się w indeksowanych przeciekach:</p>
-LiczInterpretacjaCzas pęknięcia (MD5, 12 × RTX 4090)
+LiczInterpretacjaCzas pęknięcia (MD5, 12 × RTX 5090)
 Więc...{C: $aaccff} Tłumaczenie:- Nie.
 &gt; 1 000 000Top 100 Świat&lt; 1 nanosekunda
 10,000-1,000,000Bardzo często&lt; 10 nanosekund
@@ -374,9 +374,9 @@ function addDictionaryAttacks(rows, common, weak, dictWord) {
 <strong>Poziom 1 - Uszkodzenie</strong> (<code>weak = true</code>): ~ 100 / śledziona
 Hasło znajduje się w Top 100 na świecie ("hasło", "123456", "qwerty"...). Napastnik testujący te 100 priorytetowych kandydatów znajduje go w pierwszym przejściu. <strong>0, 6 nanosekundu</strong>.
 <strong>Poziom 2 - często</strong> (<code>common = true</code>): ~ 10 000 / śledziona
-Hasło znajduje się w referencyjnej liście HIBP ~ 10 000 najczęściej haseł. Kandydaci są testowani w pierwszych mikrosekundach. <strong>59 nanosekund</strong>.
+Hasło znajduje się w referencyjnej liście HIBP ~ 10 000 najczęściej haseł. Kandydaci są testowani w pierwszych mikrosekundach. <strong>46 ns</strong>.
 <strong>Poziom 3 - DictWord</strong> (<code>dictWord = true</code>): ~ 200,000 / śledziona
-Hasło jest słowem z obecnego słownika językowego (lokalna lista słów ~ 50k- 200k). Kompletny skan listy słów jest niemal natychmiastowy dla szybkich algorytmów. Dla MD5: 200 000 / 168,9e9 <strong>1,18 mikrosekundy</strong>.
+Hasło jest słowem z obecnego słownika językowego (lokalna lista słów ~ 50k- 200k). Kompletny skan listy słów jest niemal natychmiastowy dla szybkich algorytmów. Dla MD5: 200 000 / 219,5e9 <strong>0,91 µs</strong>.
 <strong>Poziom 4 - Nie dotyczy</strong> (<code>sec = null</code>): hasło nie jest ani ultrasłabe, ani powszechne, ani słowo z obecnego słownika. Sam atak słownika nie ma zastosowania - inne ataki (siła brutto, Markov, PCFG) stają się głównym zagrożeniem.
 <h3>10.3 Dlaczego te liczby (100, 10 000, 200 000)?</h3>
 <p>Wartości te są skalibrowane na rzeczywiste dane:</p>
@@ -386,15 +386,15 @@ Hasło jest słowem z obecnego słownika językowego (lokalna lista słów ~ 50k
 <strong>Odniesienie</strong> Weir et al. (2009) pokazać, że słowniki znajdują się w pierwszych 200 000 prób dobrze uporządkowanego ataku. Ur et al. (2012) potwierdzić, że wspólne hasła znajdują się w pierwszych 10 000 prób.
 <h3>10.4 Kompletny przykład numeryczny</h3>
 <p>Hasło "słońce" (obecne francuskie słowo, wykryte jako <code>dictWord</code>):</p>
-AlgorytmPrędkość (12 × RTX 4090)WzórCzas
+AlgorytmPrędkość (12 × RTX 5090)WzórCzas
 To...Czy...Czy...Więc...
-NTLM3,462 GH / s200 000 / 3 462e9<strong>57,8 pikosekund</strong>
-MD52 027 GH / s200 000 / 2 027e9<strong>98.7 pikosekund</strong>
-SHA-1610 GH / s200 000 / 610e9<strong>327.9 pikosekund</strong>
-SHA- 256272 GH / s200 000 / 272e9<strong>735 pikosekund</strong>
-bcrypt (koszt 5)2.2 MH / s200 000 / 2 200 000<strong>90,9 milisekundy</strong>
-Argon2id800 H / s200 000 / 800<strong>250 sekund</strong>
-<p>Nawet dla Argon2id, 250 sekund to mniej niż 5 minut - za proste słowo z francuskiego słownika.</p>
+NTLM4 081 GH / s200 000 / 4 081e9<strong>49 ns</strong>
+MD52 634 GH / s200 000 / 2 634e9<strong>76 ns</strong>
+SHA-1837 GH / s200 000 / 837e9<strong>239 ns</strong>
+SHA-256332 GH / s200 000 / 332e9<strong>602 ns</strong>
+bcrypt (koszt 5)3.66 MH / s200 000 / 3 658 000<strong>54,7 milisekundy</strong>
+Argon2id1 000 H / s200 000 / 1 000<strong>200 sekund</strong>
+<p>Nawet dla Argon2id, 200 sekund to mniej niż 5 minut - za proste słowo z francuskiego słownika.</p>
 <hr>
 <h2>11. Wysoka kalibracja wierności: <code>applyHighFidelityCalibration()</code></h2>
 <h3>11.1 Dlaczego dodatkowa kalibracja?</h3>
@@ -598,7 +598,7 @@ Chroni przed atakami online (próby bezpośredniego połączenia), a nie przed o
 <li>Podstawa ~ 14 miliardów unikalnych haseł z udokumentowanych wycieków</li>
 <li>k- anonimowość API używana przez Time2Crack do weryfikacji czasu rzeczywistego</li>
 <strong>Hive Systems. (2025).</strong> </em>2025 Hive Systems Password Table.<em>
-<li>Wartości odniesienia 12 × RTX 4090: MD5 2,027 GH / s, NTLM 3,462 GH / s, koszt krypty 5: 2,2 MH / s</li>
+<li>Wartości odniesienia 12 × RTX 5090: MD5 2 634 GH / s, NTLM 4 081 GH / s, koszt krypty 5: 3,66 MH / s</li>
 <li><strong>Główne źródło stawek haszu stosowanych w Time2Crack</strong></li>
 <strong>Hashcat (2025).</strong> </em>Hashcat - Zaawansowane odzyskiwanie hasła.<em>
 <li>Narzędzie referencyjne dla wskaźników GPU</li>

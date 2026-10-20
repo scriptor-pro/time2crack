@@ -106,7 +106,7 @@ A 4-word passphrase easily succeeds, while a 12-character word can fail dependin
         </p>
 </dd>
 <dt>Why do time estimates vary according to the hash algorithm?</dt>
-<dd>Different hash algorithms have very different crack speeds. MD5 and SHA-1 (unsalted) are quick to crack (~2 billion attempts/second), while bcrypt and Argon2id are voluntarily slow (~2 million and ~800 attempts/second). Time2Crack displays time for each algorithm, so you understand the importance of using <strong>bcrypt</strong> or <strong>Argon2id</strong> for critical passwords.</dd>
+<dd>Different hash algorithms have very different crack speeds. MD5 and SHA-1 (unsalted) are quick to crack (~2.6 trillion attempts/second), while bcrypt and Argon2id are voluntarily slow (~3.7 million and ~1,000 attempts/second). Time2Crack displays time for each algorithm, so you understand the importance of using <strong>bcrypt</strong> or <strong>Argon2id</strong> for critical passwords.</dd>
 <dt>What is "crude force", "Dictionary", etc.?</dt>
 <dd>These are the 7 types of real attacks that pirates use:
         <ul style="margin-top: 0.5em; margin-left: 1.5em;">
@@ -142,7 +142,7 @@ A 4-word passphrase easily succeeds, while a 12-character word can fail dependin
 <dt>What if I use a password manager?</dt>
 <dd>Excellent choice! Managers (Bitwarden, 1Password, KeePass) generate random passwords of 16-32 characters, which you don't need to memorize. Time2Crack will estimate crack time to <strong>10,000+ years</strong> for a randomly generated word. You only need one <strong>solid passphrase to unlock manager</strong>.</dd>
 <dt>Can my estimates be incorrect?</dt>
-<dd>Time2Crack uses the best available public data (rockyou2021, NIST, academic research) to calibrate its estimates. <strong>The typical error is ±1 order of magnitude</strong> (i.e. 10× faster/slower than reality). <strong>attacking with 12× RTX 4090</strong> — a real attacker can be 100× slower or 10,000× faster depending on its resources. <strong>Argon2id</strong> are more reliable (slower, less variation).</dd>
+<dd>Time2Crack uses the best available public data (rockyou2021, NIST, academic research) to calibrate its estimates. <strong>The typical error is ±1 order of magnitude</strong> (i.e. 10× faster/slower than reality). <strong>attacking with 12× RTX 5090</strong> — a real attacker can be 100× slower or 10,000× faster depending on its resources. <strong>Argon2id</strong> are more reliable (slower, less variation).</dd>
 <dt>Why Time2Crack shows 7 different attacks?</dt>
 <dd>Because <strong>each password is vulnerable to a different attack</strong>. "password" falls in 1 attempt (dictionary). "P@ssw0rd!" falls in ~10,000 attempts (hybrid + PCFG). "a1b2c3d4e5f6g7h8" falls only in raw force (~10^30 attempts). Time2Crack identifies <strong>the best attack for your password</strong> and displays the time for each hash algorithm.</dd>
 <dt>The Method page explains how it works?</dt>

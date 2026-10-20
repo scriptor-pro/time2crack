@@ -63,15 +63,15 @@ YearEvent
 <strong>Adobe (2013)</strong> — 153 million accounts.
 <strong>Have I Been Pwned (2013–present)</strong> - Progressive aggregation of public leaks, allowing Troy Hunt to create a reference base used worldwide.
 <h3>2.3 Reference Benchmarks for Dictionary Attack</h3>
-<p>A wordlist of 200,000 entries tested at the speed of a RTX 4090:</p>
+<p>A wordlist of 200,000 entries tested at the speed of a RTX 5090:</p>
 AlgorithmSpeedTime for 200k candidates
 ------------------------------------------------
-MD5168.9 GH/s~1,2 nanosecond
-SHA-150.86 GH/s~3.9 nanoseconds
-SHA-25622.68 GH/s~8.8 nanoseconds
-NTLM288.5 GH/s~0,7 nanosecond
-bcrypt (cost 5)184 kH/s~1.09 second
-Argon2id~67 H/s~50 minutes
+MD5219.5 GH/s~0,91 µs
+SHA-169.77 GH/s~2.9 µs
+SHA-25627.68 GH/s~7.2 µs
+NTLM340.1 GH/s~0,59 µs
+bcrypt (cost 5)305 kH/s~0.66 second
+Argon2id~83 H/s~40 minutes
 <p>The dictionary attack is therefore almost instantaneous for MD5, SHA-1 and NTLM — and remains very fast even for bcrypt on small lists.</p>
 <hr>
 <h2>3. Conceptual foundations: why dictionaries work</h2>
@@ -109,19 +109,19 @@ Argon2id~67 H/s~50 minutes
 For each candidate w in the wordlist:
 │ hash<em>candidate = hash</em>algo(w)
 Promotional │ if hash<em>candidate== hash</em>Target : FINDED
-- - Speed: 168 GH/s for MD5 on RTX 4090</p>
+- - Speed: 219 GH/s for MD5 on RTX 5090</p>
 <p>Phase 4: Analysis of results
 Report of cracked passwords, coverage statistics</p></code></pre>
 <h3>4.2 Hardware optimizations</h3>
 <p>Modern dictionary attacks are massively paralleled on GPU:</p>
 <li><strong>Hashcat</strong> (reference tool): exploits the CUDA cores of the GPU to parallelize billions of hash simultaneous computations</li>
-<li><strong>Vector Pipeline</strong> : on a RTX 4090, a single SIMD instruction calculates 8 to 16 MD5 hashs in parallel</li>
+<li><strong>Vector Pipeline</strong> : on a RTX 5090, a single SIMD instruction calculates 8 to 16 MD5 hashs in parallel</li>
 <li><strong>GPU cache</strong> : the wordlist is loaded in VRAM to minimize memory latency</li>
 <li><strong>Batching</strong> : the candidates are sent to the GPU in batches of millions to maximize the flow</li>
-<p>For a wordlist of 14 billion entries (HIBP size) on 12× RTX 4090:
-</p><li>MD5 : 14e9 / (168.9e9 × 12) <strong>6.9 seconds</strong></li>
-<li>bcrypt cost 5 : 14e9 / (184000 × 12) <strong>6,337 years</strong></li><p></p>
-<p>This difference of ~9 orders of magnitude between MD5 and bcrypt explains why the choice of the hash algorithm is critical.</p>
+<p>For a wordlist of 14 billion entries (HIBP size) on 12× RTX 5090:
+</p><li>MD5 : 14e9 / (219.5e9 × 12) <strong>5.3 ms</strong></li>
+<li>bcrypt cost 5 : 14e9 / (304800 × 12) <strong>64 min</strong></li><p></p>
+<p>This difference of ~6 orders of magnitude between MD5 and bcrypt explains why the choice of the hash algorithm is critical.</p>
 <h3>4.3 Test order of candidates</h3>
 <p>The wordlist is not tested in alphabetical order — it is <strong>sorted by decreasing probability</strong> :</p>
 <li>The most common escape passwords (RockYou top 100)</li>
@@ -206,7 +206,7 @@ return 0; // not found
 <li>False negative: 0 (if in HiBP, always returned)</li>
 <h3>6.3 Interpretation of Count HIBP</h3>
 <p>The count returned by HiBP indicates the number of times this exact password appeared in indexed leaks:</p>
-CountInterpretationCrack time (MD5, 12× RTX 4090)
+CountInterpretationCrack time (MD5, 12× RTX 5090)
 ------------------------------------------------------------
 &gt; 1 000 000Top 100 World&lt; 1 nanosecond
 10,000–1,000,000Very common&lt; 10 nanoseconds
@@ -372,11 +372,11 @@ function addDictionaryAttacks(rows, common, weak, dictWord) {
 }</p></code></pre>
 <h3>10.2 Three levels of vulnerability</h3>
 <strong>Level 1 — Ultra-weak</strong> (<code>weak = true</code>) : ~100 / spleen
-The password is in the world's Top 100 ("password", "123456", "qwerty"...). An attacker testing these 100 priority candidates finds it in the first pass. For MD5: 100 / 168.9e9 <strong>0.6 nanosecond</strong>.
+The password is in the world's Top 100 ("password", "123456", "qwerty"...). An attacker testing these 100 priority candidates finds it in the first pass. For MD5: 100 / 219.5e9 <strong>0.46 ns</strong>.
 <strong>Level 2 — Common</strong> (<code>common = true</code>) : ~10 000 / spleen
-The password is in the reference HIBP list of the ~10,000 most frequent passwords. These candidates are tested in the first microseconds. For MD5: 10,000 / 168,9e9 <strong>59 nanoseconds</strong>.
+The password is in the reference HIBP list of the ~10,000 most frequent passwords. These candidates are tested in the first microseconds. For MD5: 10,000 / 219,5e9 <strong>46 ns</strong>.
 <strong>Level 3 — DictWord</strong> (<code>dictWord = true</code>) : ~200,000 / spleen
-The password is a word from the current language dictionary (local wordlist ~50k–200k entries). A complete scan of the wordlist is almost instantaneous for fast algorithms. For MD5: 200 000 / 168,9e9 <strong>1.18 microsecond</strong>.
+The password is a word from the current language dictionary (local wordlist ~50k–200k entries). A complete scan of the wordlist is almost instantaneous for fast algorithms. For MD5: 200 000 / 219,5e9 <strong>0.91 µs</strong>.
 <strong>Level 4 — Not applicable</strong> (<code>sec = null</code>) : the password is neither ultra-weak, nor common, nor a word from the current dictionary. The dictionary attack alone is not applicable — other attacks (gross force, Markov, PCFG) become the main threat.
 <h3>10.3 Why these numbers (100, 10,000, 200,000)?</h3>
 <p>These values are calibrated to actual data:</p>
@@ -386,15 +386,15 @@ The password is a word from the current language dictionary (local wordlist ~50k
 <strong>Reference</strong> Weir et al. (2009) show that dictionary words are found in the first 200,000 attempts at a well-ordered attack. Ur et al. (2012) confirm that common passwords are found in the first 10,000 attempts.
 <h3>10.4 Complete numerical example</h3>
 <p>For the "sun" password (current French word, detected as <code>dictWord</code>) :</p>
-AlgorithmSpeed (12× RTX 4090)FormulaTime
+AlgorithmSpeed (12× RTX 5090)FormulaTime
 ---------------------------------------------------
-NTLM3,462 GH/s200 000 / 3 462e9<strong>57.8 picoseconds</strong>
-MD52 027 GH/s200 000 / 2 027e9<strong>98.7 picoseconds</strong>
-SHA-1610 GH/s200 000 / 610e9<strong>327.9 picoseconds</strong>
-SHA-256272 GH/s200 000 / 272e9<strong>735 picoseconds</strong>
-bcrypt (cost 5)2.2 MH/s200 000 / 2 200 000<strong>90.9 milliseconds</strong>
-Argon2id800 H/s200 000 / 800<strong>250 seconds</strong>
-<p>Even for Argon2id, 250 seconds is less than 5 minutes — for a simple word from the French dictionary.</p>
+NTLM4,081 GH/s200 000 / 4 081e9<strong>49 ns</strong>
+MD52 634 GH/s200 000 / 2 634e9<strong>76 ns</strong>
+SHA-1837 GH/s200 000 / 837e9<strong>239 ns</strong>
+SHA-256332 GH/s200 000 / 332e9<strong>602 ns</strong>
+bcrypt (cost 5)3.66 MH/s200 000 / 3 658 000<strong>54.7 milliseconds</strong>
+Argon2id1,000 H/s200 000 / 1,000<strong>200 seconds</strong>
+<p>Even for Argon2id, 200 seconds is less than 5 minutes — for a simple word from the French dictionary.</p>
 <hr>
 <h2>11. High fidelity calibration: <code>applyHighFidelityCalibration()</code></h2>
 <h3>11.1 Why additional calibration?</h3>
@@ -598,7 +598,7 @@ Protects against online attacks (direct connection attempts), not against offlin
 <li>Basis of ~14 billion unique passwords from documented leaks</li>
 <li>k- anonymity API used by Time2Crack for real-time verification</li>
 <strong>Hive Systems. (2025).</strong> </em>2025 Hive Systems Password Table.<em>
-<li>Benchmarks 12× RTX 4090: MD5 2,027 GH/s, NTLM 3,462 GH/s, bcrypt cost 5 : 2,2 MH/s</li>
+<li>Benchmarks 12× RTX 5090: MD5 2,634 GH/s, NTLM 4,081 GH/s, bcrypt cost 5 : 3,66 MH/s</li>
 <li><strong>Main source of hash rates used in Time2Crack</strong></li>
 <strong>Hashcat. (2025).</strong> </em>Hashcat — Advanced password recovery.<em>
 <li>Reference tool for GPU benchmarks</li>

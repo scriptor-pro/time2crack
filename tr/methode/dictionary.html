@@ -63,15 +63,15 @@ YılEvent Event Event
 <strong>Adobe (2013)</strong> - 153 milyon hesap.
 <strong>I Been Pwned (2013-günüm)</strong> - Halk sızıntılarının progresyonu, Troy Hunt'ın dünya çapında kullanılan bir referans üssü oluşturmasına izin veriyor.
 <h3>2.3 Words Attack için Referans Benchmarks</h3>
-<p>Bir RTX 4090 hızında test edilen 200.000 giriş listesi:</p>
+<p>Bir RTX 5090 hızında test edilen 200.000 giriş listesi:</p>
 AlgorithmHız Hız Hız Hız200k aday için zaman
 - !!!►- !!!
-MD5168.9 GH /s~1,2 nanosaniye
-SHA-150.86 GH /s~3.9 nanosaniye
-SHA-25622.68 GH /s~8.8 nanosaniye
-NTLM288.5 GH /s-0,7 nanosaniye
-bcrypt (cost 5)184 kH /s~1.09 ikinci
-Argon2id~67 H /s~50 dakika
+MD5219.5 GH /s~0,91 µs
+SHA-169.77 GH /s~2.9 µs
+SHA-25627.68 GH /s~7.2 µs
+NTLM340.1 GH /s-0,59 µs
+bcrypt (cost 5)305 kH /s~0.66 ikinci
+Argon2id~83 H /s~40 dakika
 <p>Sözlük saldırısı bu nedenle MD5, SHA-1 ve NTLM için neredeyse anındadır - ve küçük listelerde bile çok hızlı kalır.</p>
 <hr>
 <h2>3. Kavramsal temeller: Neden sözlük işleri</h2>
@@ -109,18 +109,18 @@ Argon2id~67 H /s~50 dakika
 Her aday için kelime listesinde:
 hash<em>aday = hash</em>Algo (w)
 Promosyon │ eğer varsa<em>Aday== hashh</em>Hedef: FINDED
-- Hız: RTX 4090'da MD5 için 168 GH /s</p>
+- Hız: RTX 5090'da MD5 için 219 GH /s</p>
 <p>Aşama 4: Sonuçlar Analizi
 Çevik şifreler Raporu, kapsama istatistikleri</p></code></pre>
 <h3>4.2 Donanım optimizasyonu</h3>
 <p>Modern sözlük saldırıları GPU üzerinde çok paraleldir:</p>
 <li><strong>Hashcat</strong> (reference aracı): GPU'nun CUDA çekirdeklerini milyarlarca paralelleştirmek için kullanır</li>
-<li><strong>Vector Boru Hattı</strong> : RTX 4090'da, tek bir SIMD talimat 8 ila 16 MD5 paralellik hesaplar</li>
+<li><strong>Vector Boru Hattı</strong> : RTX 5090'da, tek bir SIMD talimat 8 ila 16 MD5 paralellik hesaplar</li>
 <li><strong>GPU önbelli</strong> : Kelime listesi VRAM'da bellek gecikmesini en aza indirmek için yüklenir</li>
 <li><strong>Batching Batching</strong> : Adaylar, akışı en üst seviyeye çıkarmak için GPU'ya gönderilir</li>
-<p>Bir kelime listesi için 14 milyar giriş (HIBP büyüklüğü) 12× RTX 4090:
-</p><li>MD5: 14e9 / (168.9e9 × 12) <strong>6.9 saniye</strong></li>
-<li>bcrypt 5 maliyeti: 14e9 / (184000 × 12) <strong>6,337 yıl</strong></li><p></p>
+<p>Bir kelime listesi için 14 milyar giriş (HIBP büyüklüğü) 12× RTX 5090:
+</p><li>MD5: 14e9 / (219.5e9 × 12) <strong>5.3 ms</strong></li>
+<li>bcrypt 5 maliyeti: 14e9 / (304800 × 12) <strong>64 min</strong></li><p></p>
 <p>MD5 ile bcrypt arasındaki büyüklüğün 9 siparişinin bu farkı neden hash algoritmasının seçiminin kritik olduğunu açıklıyor.</p>
 <h3>4.3 Adayların Test siparişi</h3>
 <p>Kelime listesi alfabetik sırayla test edilmez - bu <strong>olasılık azaltılabilir</strong> :</p>
@@ -206,7 +206,7 @@ iade 0; // bulunamadı
 <li>Yanlış negatif: 0 (Eğer HiBP’de olursa, her zaman geri döndü)</li>
 <h3>6.3 Kont HIBP</h3>
 <p>HiBP tarafından iade edilen sayı, bu tam şifrenin indekslenmiş sızıntılarda ortaya çıktığını gösteriyor:</p>
-KontYorumCrack zamanı (MD5, 12× RTX 4090)
+KontYorumCrack zamanı (MD5, 12× RTX 5090)
 - ►-- !!!
 &gt; 1 000 000 000Top 100 World&lt; 1 nanosaniye
 10.000-1,000,000Çok yaygın&lt; 10 nanosaniye
@@ -372,11 +372,11 @@ T(nAbsentLeaks);</p>
 }</p></code></pre>
 <h3>10.2 Üç kırılganlık seviyesi</h3>
 <strong>Seviye 1 - Ultra-weak</strong> (<code>weak = true</code>) : ~100 / spleen
-Şifre dünyanın En Top 100 ("password", "123456", "qwerty"...) Bu 100 öncelikli adayın ilk geçişte olduğunu test ediyor. MD5: 100 / 168.9e9 <strong>0.6 nanosaniye</strong>.
+Şifre dünyanın En Top 100 ("password", "123456", "qwerty"...) Bu 100 öncelikli adayın ilk geçişte olduğunu test ediyor. MD5: 100 / 219.5e9 <strong>0.46 ns</strong>.
 <strong>Seviye 2 - Common Common</strong> (<code>common = true</code>) : ~ 10 000 / spleen
-Şifre, ~10.000 en sık şifrenin referans HIBP listesindedir. Bu adaylar ilk mikrosaniyede test edilir. MD5: 10.000 / 168,9e9 <strong>59 nanosaniye</strong>.
+Şifre, ~10.000 en sık şifrenin referans HIBP listesindedir. Bu adaylar ilk mikrosaniyede test edilir. MD5: 10.000 / 219,5e9 <strong>46 ns</strong>.
 <strong>Seviye 3 - DictWord</strong> (<code>dictWord = true</code>) : ~200,000 / spleen
-Şifre şu anki dil sözlüğünden bir kelimedir (yerel kelime listesi -50k-200k girişler). Kelime listesinin tam taraması neredeyse hızlı algoritmaları için anındadır. MD5 için: 200 000 / 168,9e9 <strong>1.18 mikrosaniye</strong>.
+Şifre şu anki dil sözlüğünden bir kelimedir (yerel kelime listesi -50k-200k girişler). Kelime listesinin tam taraması neredeyse hızlı algoritmaları için anındadır. MD5 için: 200 000 / 219,5e9 <strong>0.91 µs</strong>.
 <strong>Seviye 4 - Geçerli Değil</strong> (<code>sec = null</code>) : Şifre ne ultra-weak, ne de ortak, ne de mevcut sözlerden gelen bir kelime geçerli değildir - diğer saldırılar (gross kuvveti, Markov, PCFG) ana tehdit haline gelir.
 <h3>10.3 Neden bu sayılar (100, 10.000, 200.000)?</h3>
 <p>Bu değerler gerçek verilere kalibre edilir:</p>
@@ -386,15 +386,15 @@ T(nAbsentLeaks);</p>
 <strong>Referans</strong> Weir et al. (2009), sözlüğün iyi sipariş edilen bir saldırıda ilk 200.000 girişimde bulunduğunu gösteriyor. Ur et al. (2012), ortak şifrelerin ilk 10.000 denemede bulunduğunu doğrulamaktadır.
 <h3>10.4 Tamam sayısal örnek</h3>
 <p>"sun" şifresi için (şimdi Fransız kelimesi, tespit edilen gibi <code>dictWord</code>)</p>
-AlgorithmHız (12× RTX 4090)Formula Formula Formula FormulaZaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman
+AlgorithmHız (12× RTX 5090)Formula Formula Formula FormulaZaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman
 - !!!- !!!►- ►
-NTLM3,462 GH /s200 000 / 3 462e9<strong>57.8 picoiyes</strong>
-MD52 027 GH /s200 000 / 2 027e9<strong>98.7 picosans</strong>
-SHA-1610 GH /s200 000 / 610e9<strong>327.9 picoiyes</strong>
-SHA-256272 GH /s200 000 / 272e9<strong>735 picoiyes</strong>
-bcrypt (cost 5)2.2 MH /200 000 / 2 200 000<strong>90.9 milisaniye</strong>
-Argon2id800 H /s200 000 / 800<strong>250 saniye</strong>
-<p>Argon2id için bile, 250 saniye 5 dakikadan daha az - Fransızca sözlüğünden basit bir kelime için.</p>
+NTLM4 081 GH /s200 000 / 4 081e9<strong>49 ns</strong>
+MD52 634 GH /s200 000 / 2 634e9<strong>76 ns</strong>
+SHA-1837 GH /s200 000 / 837e9<strong>239 ns</strong>
+SHA-256332 GH /s200 000 / 332e9<strong>602 ns</strong>
+bcrypt (cost 5)3.66 MH/s200 000 / 3 658 000<strong>54.7 milisaniye</strong>
+Argon2id1.000 H /s200 000 / 1.000<strong>200 saniye</strong>
+<p>Argon2id için bile, 200 saniye 5 dakikadan daha az - Fransızca sözlüğünden basit bir kelime için.</p>
 <hr>
 <h2>11. Yüksek sadakat kalibrasyonu: <code>applyHighFidelityCalibration()</code></h2>
 <h3>11.1 Neden ek kalibrasyon?</h3>
@@ -598,7 +598,7 @@ Online saldırılarına karşı korumalar (yönemli bağlantı girişimleri), ç
 <li>Basis of ~14 milyar benzersiz şifre belgelenmiş sızıntılardan</li>
 <li>Zaman2Crack tarafından gerçek zamanlı doğrulama için kullanılan anonim API</li>
 <strong>Hive Systems. (2025).</strong> </em>2025 Hive Systems Password Table.<em>
-<li>Benchmarks 12× RTX 4090: MD5 2,027 GH /s, NTLM 3,462 GH /s, bcrypt maliyeti 5: 2,2 MH/s</li>
+<li>Benchmarks 12× RTX 5090: MD5 2 634 GH /s, NTLM 4 081 GH /s, bcrypt maliyeti 5: 3,66 MH/s</li>
 <li><strong>Zaman2Crack'de kullanılan hash oranlarının ana kaynağı</strong></li>
 <strong>Hashcat. (2025).</strong> </em>Hashcat - Gelişmiş şifre kurtarma.<em>
 <li>GPU karşılaştırmaları için referans aracı</li>

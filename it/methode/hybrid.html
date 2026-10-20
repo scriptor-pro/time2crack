@@ -137,7 +137,7 @@ Promozionale coda<em>della</em>candidati.push(candidate)
 o: (w1, rule1), (w2, regola1)... secondo la strategia</p>
 <p>Fase 4: Haching e Confronto (GPU)
 - - Inviare per lotto di ~10M candidati alla GPU
-- Calcolo parallelo di hash (SIMD, 168 GH/s per MD5)
+- Calcolo parallelo di hash (SIMD, 219 GH/s per MD5)
 - Confronto con hash(es) target
 Se corrisponde: FINDED — log(candidate, hash, regola)</p>
 <p>Fase 5: Reporting
@@ -401,18 +401,18 @@ se (l.includes(w) &amp; w.length &gt;= 4) ritorna vero;
 <h3>10.1 HYBRID<em>KEYSPACE</em>COMMON = 500</h3>
 <strong>Contesto</strong> La password è in COMMON — la lista codificata HIBP top-~400. Queste sono alcune delle password più comuni del mondo ("password", "letmein", "sunshine", "iloveyou"...).
 <strong>Giustificazione</strong> Ma et al. (2014) empiricamente misurato che la posizione mediana di una password top-1000 in un elenco ibrido ordinato per probabilità è ~450 candidati. Il numero 500 è una stima leggermente conservatrice per coprire fino a ~400 rango.
-<strong>Interpretazione</strong> : un aggressore che applica il best64 ad una lista di parole ordinata da test di frequenza in media 500 candidati prima di trovare la password. <strong>0,25 picosecondi</strong>. Praticamente istantaneo.
-<strong>Esempio</strong> : "Sunshine1" → "sunshine" è in COMMON → HYBRID<em>KEYSPACE</em>COMMON = 500 → <code>budgetTime(500, 2027e9)</code> 0.25 nanosecondi.
+<strong>Interpretazione</strong> : un aggressore che applica il best64 ad una lista di parole ordinata da test di frequenza in media 500 candidati prima di trovare la password. <strong>0,19 ns</strong>. Praticamente istantaneo.
+<strong>Esempio</strong> : "Sunshine1" → "sunshine" è in COMMON → HYBRID<em>KEYSPACE</em>COMMON = 500 → <code>budgetTime(500, 2634e9)</code> 0.19 ns.
 <h3>10.2 HYBRID<em>KEYSPACE</em>DICT = 8.000</h3>
 <strong>Contesto</strong> La parola d'ordine deriva da una parola del wordlist di lingua, ma non da COMMON. Queste sono parole comuni del vocabolario ("sun", "mountain", "paillon"...) con trasformazioni.
 <strong>Giustificazione</strong> Ma et al. (2014) misurano una posizione mediana da 2.000 a 15.000 a seconda della popolarità della parola in RockYou. La mediana empirica è ~8,000. Questo spazio chiave riflette che l'attaccante testa la parola e le sue varianti dopo esaurimento dei candidati più comuni.
-<strong>Interpretazione</strong> : 8.000 candidati a 2.000 GH/s (MD5) = <strong>4 nanosecondi</strong>. Sempre quasi istantaneo per hash veloci. Per bcrypt (69 kH/s): 8.000 / 69 000 <strong>0,12 secondi</strong>.
-<strong>Esempio</strong> : "Soleil2024" → "sun" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8.000 → pochi nanosecondi su MD5, 0.12s su bcrypt.
+<strong>Interpretazione</strong> : 8.000 candidati a 2.600 GH/s (MD5) = <strong>3,0 ns</strong>. Sempre quasi istantaneo per hash veloci. Per bcrypt (114 kH/s): 8.000 / 114 000 <strong>0,07 secondi</strong>.
+<strong>Esempio</strong> : "Soleil2024" → "sun" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8.000 → pochi nanosecondi su MD5, 0.07s su bcrypt.
 <h3>10.3 HYBRID<em>KEYSPACE</em>FULL = 128.000</h3>
 <strong>Contesto</strong> : <code>hybridVuln</code> è vero (password ha una struttura del dizionario) ma né <code>common</code> # <code>dictWord</code> L'aggressore deve sfogliare l'intera lista delle parole con tutte le regole.
 <strong>Giustificazione</strong> : Gosney (Passwordscon 2012) documenta una lista di parole di 3.5M × best64 (64 regole) = 224M candidati in totale. In pratica, i wordlist realistici fanno 2M parole e i migliori64 parziali si fermano a ~128M candidati prima di salire verso regole più ampie.
 <strong>Formula</strong> : <code>2<em>000</em>000 mots × 64 règles = 128<em>000</em>000 candidats</code>
-<strong>Interpretazione</strong> : 128M candidati a 2000 GH/s (MD5) <strong>64 microsecondi</strong>. Su bcrypt (69 kH/s): ~31 minuti.
+<strong>Interpretazione</strong> : 128M candidati a 2600 GH/s (MD5) <strong>49 µs</strong>. Su bcrypt (114 kH/s): ~19 minuti.
 <hr>
 <h2>11. Taratura ad alta fedeltà</h2>
 <h3>11.1 Ruolo di alta fedeltà</h3>
@@ -469,23 +469,23 @@ Keyspace (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> calcolato dina
 <p>L'ibrido opera sulla superficie della parola (trasformazioni di caratteri), la morfologica opera sulla struttura lessicale (derivation, bending), e sono complementari.</p>
 <hr>
 <h2>13. Benchmarks per algoritmo di hash</h2>
-<h3>13.1 Tempo per i tre settori chiave ibridi (12× RTX 4090)</h3>
+<h3>13.1 Tempo per i tre settori chiave ibridi (12× RTX 5090)</h3>
 AlgoritmoTasso (H/s)COMMON (500)DICT (8k)FULL (128M)
 --------------------------------------------
-MD52 027 GH/s0.25 ps3.9 ns63 μ
-SHA-1610 GH/0,80 ps13 ns210 μ
-SHA-256272 GH/1,84 p29 ns470 μ
-NT13.462 GH/s0,14 ps2.3 ns37 μ
-bcrypt (costo 10)69 kH/7,2 ms0,1231 min
-Argon2id800 H/s0.6251044 ore
+MD52 634 GH/s0.19 ns3.0 ns49 μ
+SHA-1837 GH/s0,60 ns9,6 ns153 μs
+SHA-256332 GH/s1,5 ns24 ns386 μs
+NTLM4.081 GH/s0,12 ns2,0 ns31 μs
+bcrypt (costo 10)114 kH/s4,4 ms0,07 s19 min
+Argon2id1.000 H/s0,5 s8 s36 ore
 <strong>Lettura</strong> : per MD5 e NTLM, anche lo spazio chiave FULL (128M candidati) è incrinato in poche dozzine di microsecondi. L'algoritmo hash è quasi irrilevante per parole comuni.
-<strong>Argon2id</strong> è l'unico algoritmo che resiste in modo significativo anche per parole comuni: 0,625 secondi per una parola COMMON, 10 secondi per un dictWord. Questi tempi rimangono brevi in valore assoluto, ma rappresentano un rallentamento di x10^12 vs MD5 — facendo attacchi su larga scala economicamente invisibili.
+<strong>Argon2id</strong> è l'unico algoritmo che resiste in modo significativo anche per parole comuni: 0,5 secondi per una parola COMMON, 8 secondi per un dictWord. Questi tempi rimangono brevi in valore assoluto, ma rappresentano un rallentamento di x10^12 vs MD5 — facendo attacchi su larga scala economicamente invisibili.
 <h3>13.2 Impatto del profilo di attacco</h3>
 <p>Time2Crack offre due profili (esperti 12 GPU, Professional 100 GPU). Per l'ibrido, la differenza del profilo è direttamente proporzionale:</p>
 ProfiloGPUsMultiploFULL Bcrypt
 -------------------------------------
-Esperienza12 × RTX 4090131 min
-Professionista- 100 GPU♪~4 min ~
+Esperienza12 × RTX 50901×19 min
+Professionista- 100 GPU♪~2 min ~
 <p>Per MD5, SHA-1, NTLM: il profilo cambia il tempo da microsecondi a nanosecondi — senza alcun impatto pratico, entrambi sono istantanei.</p>
 <hr>
 <h2>14. Esempi concreti di cracking ibrido</h2>
@@ -495,8 +495,8 @@ Professionista- 100 GPU♪~4 min ~
 <li><code>isDictWord("Password1")</code> → true ("password" in DICTWORDS in caso inferiore)</li>
 <li><code>COMMON.has("password")</code> → vero → <code>common = true</code></li>
 <li>Risultato: HYBRID<em>KEYSPACE</em>COMMON = 500</li>
-<strong>Tempo MD5</strong> : 500 / 2.027e12 <strong>0,25 picosecondi</strong> (snapshot)
-<strong>Tempo bcrypt costo 10</strong> : 500 / 69 000 <strong>7,2 millisecondi</strong>
+<strong>Tempo MD5</strong> : 500 / 2.634e12 <strong>0,19 ns</strong> (snapshot)
+<strong>Tempo bcrypt costo 10</strong> : 500 / 114 000 <strong>4,4 millisecondi</strong>
 <strong>Regole testate prima di trovare</strong> : <code>:</code> (grossa parola "password" → no), <code>c</code> ("Password" → no), <code>c $1</code> ("Password1" → <strong>FINO</strong>, fila ~8)
 <h3>14.2 Esempio 2: "Sun2024" (DICT)</h3>
 <strong>Analisi</strong> :
@@ -504,8 +504,8 @@ Professionista- 100 GPU♪~4 min ~
 <li><code>isDictWord("Soleil2024")</code> → true ("sun" in fr.txt)</li>
 <li><code>COMMON.has("soleil")</code> → falsi → <code>common = false</code>♪ <code>dictWord = true</code></li>
 <li>Risultato: HYBRID<em>KEYSPACE</em>DICT = 8.000</li>
-<strong>Tempo MD5</strong> : 8 000 / 2.027e12 <strong>3.9 nanosecondi</strong>
-<strong>Tempo bcrypt costo 10</strong> : 8 000 / 69 000 <strong>0,12 secondi</strong>
+<strong>Tempo MD5</strong> : 8 000 / 2.634e12 <strong>3.0 nanosecondi</strong>
+<strong>Tempo bcrypt costo 10</strong> : 8 000 / 114 000 <strong>0,07 secondi</strong>
 <strong>Regole di prova</strong> : l'attaccante arriva a "sun" a ~5000 nella lista delle parole fr ordinati per frequenza, quindi si applica <code>c $2 $0 $2 $4</code> ("Sun2024") nella riga ~3 delle sue regole → posizione complessiva ~15 003.
 <h3>14.3 Esempio 3: "p@pillon!" (DICT con sostituzioni)</h3>
 <strong>Analisi</strong> :
@@ -529,7 +529,7 @@ Professionista- 100 GPU♪~4 min ~
 <h3>15.1 Limiti intrinseci</h3>
 <strong>Dipendenza dalla qualità della wordlist</strong> : se la parola di base non è nella wordlist, l'ibrido non può funzionare. Una password basata su un termine molto specializzato (neologismo, termine tecnico oscuro, parola di una lingua rara) può resistere se è assente da tutti i wordlist comuni.
 <strong>Copertura incompleta delle trasformazioni</strong> : anche OneRuleToRuleThemAll con le regole 52k non copre il 100% delle trasformazioni immaginabili.
-<strong>Esplosione combinata con Long Wordlist</strong> A 2.000 GH/s (MD5), ci vogliono ~250 secondi — ma con bcrypt (69 kH/s), ~230.000 anni. La scalabilità dell'ibrido è ostacolata dalla lunghezza della wordlist e dalla lentezza dell'algoritmo hash.
+<strong>Esplosione combinata con Long Wordlist</strong> A 2.600 GH/s (MD5), ci vogliono ~190 secondi — ma con bcrypt (114 kH/s), ~140 anni. La scalabilità dell'ibrido è ostacolata dalla lunghezza della wordlist e dalla lentezza dell'algoritmo hash.
 <h3>15.2 Che Time2Crack non cattura</h3>
 <strong>Context Wordlists</strong> : un aggressore che si rivolge a una specifica società costruirà una lista di parole con il nome della società, prodotti, nomi dei dipendenti, termini di business. "Renault2024!" verrebbe incrinato immediatamente da un aggressore che si rivolge a Renault - ma Time2Crack non modella questo contesto (questo è il ruolo dell'attacco "Targeted OSINT".
 <strong>Regole composte multipass</strong> Alcune password resistere best64 ma dare a due regole di passaggio (applicare una regola, quindi applicare un'altra regola sul risultato).
@@ -563,8 +563,8 @@ Indietro"enihsnus"Articolo <code>r</code>, top-15
 AlgoritmoTempo per DICT (8k indovina)Attacco pratica
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MD5 / NTLM&lt; 1 nanosecondoistanza istantanea
-SHA-256~30 nanosecondiistanza istantanea
-costo di bcrypt 10~0.12 secondiTriviale
+SHA-256~24 nanosecondiistanza istantanea
+costo di bcrypt 10~0.07 secondiTriviale
 bcrypt costo 14- 32 secondiFessura
 Argon2id (default)10 secondiFessura
 Argon2id (forte parametrate)100 secondiLenta ma possibile

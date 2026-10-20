@@ -59,16 +59,16 @@ Calcul basé sur Shannon entropy:
 - Patterns détectés (mots du dictionnaire, patterns clavier, séquences, dates, etc.)
 
 ### Attack Time Estimation
-**Baseline: 12× NVIDIA RTX 4090 (Experienced Attacker 2025)**
+**Baseline: 12× NVIDIA RTX 5090 (Experienced Attacker, benchmarks hashcat mesurés)**
 
-| Algorithm | Hash Rate | Exemple (11 chars mixed) |
+| Algorithm | Hash Rate | Exemple (11 chars mixed, ~3,5×10¹⁷ essais) |
 |-----------|-----------|--------------------------|
-| MD5 | 2,027 GH/s | ~2 jours |
-| SHA-1 | 610 GH/s | ~1 semaine |
-| SHA-256 | 272 GH/s | ~1 mois |
-| NTLM | 3,462 GH/s | ~1 jour |
-| bcrypt (cost 5) | 2.2 MH/s | ~500 ans |
-| Argon2id | 800 H/s | ~10 millions d'années |
+| MD5 | 2,634 GH/s | ~1,5 jour |
+| SHA-1 | 837 GH/s | ~5 jours |
+| SHA-256 | 332 GH/s | ~2 semaines |
+| NTLM | 4,081 GH/s | ~1 jour |
+| bcrypt (cost 5) | 3.66 MH/s | ~3 000 ans |
+| Argon2id | 1,000 H/s (estimation) | ~11 millions d'années |
 
 ### 10 Attack Types
 1. **Brute Force**: Tous les caractères possibles testés séquentiellement
@@ -228,7 +228,8 @@ names are still single letters; rename them as you touch the code.
 - **Hatzivasilis, G., & Papaefstathiou, I. (2015)**. "Password hashing competition" — IACR ePrint
 
 ### Industry Benchmarks & Performance Data
-- **Hive Systems (2025)**. "2025 Password Table" — 12× NVIDIA RTX 4090 benchmarks
+- **Hive Systems (2025)**. "2025 Password Table" — 12× NVIDIA RTX 5090, bcrypt cost 10
+- **Specops Software / BleepingComputer (2026)**. "Is a $30,000 GPU good at password cracking?" — benchmarks hashcat RTX 5090 (MD5, NTLM, SHA-256, bcrypt)
 - **Hashcat (2025)**. "Hashcat - Advanced password recovery" — Official v6.2.6 benchmarks
 - **Gosney, J. (2016)**. "8× Nvidia GTX 1080 Hashcat Benchmarks" — Sagitta Brutalis system
 

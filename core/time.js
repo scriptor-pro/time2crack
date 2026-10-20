@@ -4,22 +4,25 @@
 // Responsabilité unique : rank / hash_rate
 // Ne dépend pas des modèles probabilistes — uniquement des benchmarks GPU.
 //
-// Vitesses GPU : benchmarks Hashcat v6.2.6, 12× RTX 5090 (Blackwell, 2025).
-// Estimation : +35% vs RTX 4090 pour hashes compute-bound (MD5, SHA, NTLM),
-// +25% pour hashes memory-bound (bcrypt, Argon2id).
-// Source : Hashcat official RTX 4090 + gain architectural Blackwell estimé.
-// TODO: remplacer par benchmarks hashcat.net officiels RTX 5090 dès disponibles.
+// Vitesses GPU : benchmarks Hashcat mesurés sur 1× RTX 5090 (Blackwell), × 12.
+// Sources :
+//  - MD5, NTLM, SHA-256, bcrypt : Specops Software, publié par BleepingComputer
+//    (2026-04-08), "Is a $30,000 GPU good at password cracking?"
+//  - SHA1 : hashcat.net forum, thread "[Benchmark] GeForce RTX 5090" (hashcat
+//    v6.2.6, 1 GPU, CUDA 12.8)
+//  - Argon2id : pas de benchmark RTX 5090 publié → estimation (+25 % vs RTX 4090).
+// bcrypt : mode hashcat 3200, cost 5 (valeur par défaut du benchmark).
 
 'use strict';
 
 // Vitesses de hachage en H/s pour 12× RTX 5090
 export const HASH_RATES = {
-  md5:    2_737e9,   // 2 737 GH/s  (+35% vs RTX 4090 : 2 027 GH/s)
-  sha1:   824e9,     //   824 GH/s  (+35% vs RTX 4090 :   610 GH/s)
-  sha256: 367e9,     //   367 GH/s  (+35% vs RTX 4090 :   272 GH/s)
-  ntlm:   4_674e9,   // 4 674 GH/s  (+35% vs RTX 4090 : 3 462 GH/s)
-  bcrypt: 2_760e3,   // 2 760 kH/s  (+25% vs RTX 4090 : 2 208 kH/s, cost 5, memory-bound)
-  argon2: 1_000,     // 1 000 H/s   (+25% vs RTX 4090 :   800 H/s, Argon2id, memory-bound)
+  md5:    2_634e9,   // 2 634 GH/s  (219,5 GH/s × 12)
+  sha1:   837e9,     //   837 GH/s  ( 69,8 GH/s × 12)
+  sha256: 332e9,     //   332 GH/s  ( 27,7 GH/s × 12)
+  ntlm:   4_081e9,   // 4 081 GH/s  (340,1 GH/s × 12)
+  bcrypt: 3_658e3,   // 3 658 kH/s  (304,8 kH/s × 12, cost 5)
+  argon2: 1_000,     // 1 000 H/s   (estimation, aucun benchmark RTX 5090 publié)
 };
 
 // Multiplicateurs de vitesse par profil d'attaquant (relatif à 12× RTX 5090)

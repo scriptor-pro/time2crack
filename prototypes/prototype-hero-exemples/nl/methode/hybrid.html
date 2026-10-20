@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybride — Aanvalsmethoden — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../site.css">
+  <style>:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #eef4ff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --muted-strong: #334155;
+  --line: #e2e8f0;
+  --line-strong: #c7dcff;
+  --brand: #2563eb;
+  --brand-soft: #e0eeff;
+  --brand-soft-2: #d0e4ff;
+  --success: #166534;
+  --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --header-h: 52px;
+  --container: 48rem;
+  --space-2: 0.375rem;
+  --space-3: 0.625rem;
+  --space-4: 1rem;
+  --space-5: 1.618rem;
+  --space-6: 2.618rem;
+  --text-sm: 0.8125rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.618rem;
+  --leading: 1.618;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading);
+}
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; border: 0; background: none; color: inherit; }
+
+.page-shell {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-6);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header__inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  min-height: var(--header-h);
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.site-logo__mark {
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #dbeafe, #bfdbfe);
+  border: 1px solid #93c5fd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+  font-size: 0.9rem;
+}
+
+.site-logo__accent { color: var(--brand); }
+
+.site-nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.site-nav__primary,
+.site-nav__secondary {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.site-nav__secondary {
+  margin-left: auto;
+}
+
+.nav-link,
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease;
+}
+
+.nav-link:hover,
+.nav-toggle:hover,
+.nav-link:focus-visible,
+.nav-toggle:focus-visible {
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+
+.nav-link.is-active,
+.nav-toggle.is-active {
+  color: var(--brand);
+  background: var(--brand-soft);
+  font-weight: 500;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown__menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 230px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2) 0;
+  z-index: 30;
+}
+
+.dropdown__menu--lang {
+  min-width: 180px;
+}
+
+.dropdown__menu.is-open { display: block; }
+.dropdown__group-title {
+  display: block;
+  padding: 6px var(--space-4) 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dropdown__separator {
+  height: 1px;
+  margin: var(--space-2) 0;
+  background: var(--line);
+}
+.dropdown__item {
+  display: block;
+  padding: 8px var(--space-4);
+  font-size: var(--text-sm);
+}
+.dropdown__item:hover,
+.dropdown__item:focus-visible {
+  background: var(--bg);
+  outline: none;
+}
+
+.hero {
+  padding: var(--space-6) 0 var(--space-5);
+}
+
+.hero__card {
+  background: linear-gradient(180deg, var(--surface-2), #f8fbff);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: var(--text-sm);
+  color: var(--success);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.hero__eyebrow::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.hero__subtitle {
+  margin: var(--space-4) 0 0;
+  max-width: 60ch;
+  color: var(--muted-strong);
+  font-size: 1.05rem;
+}
+
+.input-section,
+.generator-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.input-section {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.input-group > label,
+.generator-container > h2 {
+  display: block;
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.generator-container {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.generator-container > p {
+  margin: 0 0 var(--space-4);
+  color: var(--muted-strong);
+}
+
+.generator-container small {
+  color: var(--muted);
+}
+
+.presets,
+.generator-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.presets {
+  margin: 0 0 var(--space-4);
+}
+
+.generator-buttons {
+  margin-top: var(--space-4);
+}
+
+.preset-btn,
+.btn {
+  padding: .8rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-weight: 600;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.preset-btn:hover,
+.btn:hover {
+  background: var(--bg);
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}
+
+.preset-btn {
+  min-width: 7rem;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: transparent;
+}
+
+.btn-secondary {
+  background: #fff;
+}
+
+.btn:disabled,
+.preset-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.generator-controls {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.control-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.control-group legend {
+  padding: 0 .35rem;
+  font-weight: 600;
+  color: var(--muted-strong);
+}
+
+.control-group label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.charset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+  margin-top: .9rem;
+}
+
+.charset-option {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: .7rem;
+  row-gap: .15rem;
+  padding: .85rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.charset-option input {
+  margin-top: .2rem;
+}
+
+.charset-label {
+  font-weight: 600;
+}
+
+.charset-range {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.strength-meter {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #fff, var(--bg));
+}
+
+.strength-bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.strength-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+}
+
+.strength-text {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .75rem;
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.entropy-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: .55rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.generator-output {
+  margin-top: var(--space-4);
+}
+
+.password-output {
+  width: 100%;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.feedback {
+  margin-top: var(--space-3);
+  padding: .75rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+  color: var(--muted-strong);
+}
+
+.cracking-results {
+  margin-top: var(--space-5);
+}
+
+.cracking-subtitle {
+  margin-top: .25rem;
+  color: var(--muted);
+}
+
+.brute-force-display {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.brute-time-label {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.brute-time-formatted {
+  margin-top: .25rem;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+
+.brute-time-breakdown {
+  margin-top: .35rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.attacks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.attack-card {
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.attack-name {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.attack-time {
+  margin-top: .25rem;
+  font-weight: 700;
+}
+
+.attack-rank {
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.best-attack {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+  padding: .9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.best-attack .label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack .value {
+  font-weight: 700;
+}
+
+.best-attack .time {
+  color: var(--muted-strong);
+}
+
+.best-attack-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--brand-soft);
+}
+
+.best-attack-label {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack-result {
+  margin: .35rem 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.profile-selector {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-selector__label {
+  display: block;
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
+
+.profile-selector__buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .5rem;
+}
+
+.profile-btn {
+  padding: .85rem .8rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  text-align: left;
+}
+
+.profile-btn--active {
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.profile-btn__name,
+.profile-info-card__header span:first-child {
+  display: block;
+  font-weight: 700;
+}
+
+.profile-btn__gpu,
+.profile-info-card__gpus {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.profile-info-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-info-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  align-items: baseline;
+}
+
+.profile-info-card__desc {
+  display: block;
+  margin-top: .35rem;
+  color: var(--muted-strong);
+}
+
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.context-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .9rem;
+  background: #fff;
+}
+
+.context-group__title {
+  margin-bottom: .75rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.context-row {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .45rem;
+}
+
+.context-row dt {
+  color: var(--muted);
+}
+
+.context-row dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  margin-top: var(--space-4);
+  overflow-x: auto;
+}
+
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#results-table th,
+#results-table td {
+  padding: .8rem .9rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+#results-table thead th {
+  background: var(--bg);
+  color: var(--muted-strong);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+#results-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#status {
+  margin-top: var(--space-4);
+  color: var(--muted-strong);
+}
+
+.dict-loader {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.dict-loader__content {
+  display: grid;
+  gap: .5rem;
+}
+
+.dict-loader__text {
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.dict-loader__bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.dict-loader__progress {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-top: var(--space-4);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--muted-strong);
+  font-size: .85rem;
+}
+
+.badge--privacy {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.badge__dot {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.input-panel {
+  margin-top: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1.1rem, 2.4vw, 1.5rem);
+}
+
+.input-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.input-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.text-input {
+  flex: 1 1 18rem;
+  min-width: 0;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  background: #fff;
+  color: var(--text);
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.toggle-btn,
+.cta-btn {
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  min-width: 8.2rem;
+  text-align: center;
+}
+
+.toggle-btn:hover,
+.cta-btn:hover { background: #1d4ed8; }
+
+.input-hint {
+  margin: var(--space-3) 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.card {
+  grid-column: span 12;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card--split {
+  grid-column: span 6;
+}
+
+.card h2,
+.card h3 {
+  margin: 0 0 .8rem;
+  line-height: 1.15;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted-strong);
+}
+
+.card ul {
+  margin: .8rem 0 0 1.1rem;
+  color: var(--muted-strong);
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .9rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: .4rem .65rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+.section-title {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--text-lg);
+}
+
+.method-list,
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.method-link,
+.page-link {
+  display: block;
+  padding: .95rem 1rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.method-link:hover,
+.page-link:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.method-link__title,
+.page-link__title {
+  display: block;
+  font-weight: 600;
+}
+
+.method-link__desc,
+.page-link__desc {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.footer {
+  max-width: var(--container);
+  margin: var(--space-6) auto 0;
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.footer__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+}
+
+.footer__links a {
+  color: var(--muted-strong);
+}
+
+.footer__links a:hover { color: var(--brand); }
+
+.footer__meta {
+  margin-top: .8rem;
+  text-align: center;
+}
+
+.hamburger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 4px auto;
+  background: var(--text);
+  border-radius: 999px;
+}
+
+.drawer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .site-nav { display: none; }
+  .hamburger { display: inline-block; }
+  .drawer {
+    display: grid;
+    gap: .5rem;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--space-4) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .drawer[hidden] { display: none; }
+  .drawer__link, .drawer__summary {
+    display: block;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__details { margin: 0; }
+  .drawer__details summary {
+    list-style: none;
+    cursor: pointer;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__nested {
+    margin-top: .5rem;
+    padding-left: .25rem;
+    display: grid;
+    gap: .5rem;
+  }
+  .method-list,
+  .link-grid,
+  .card--split,
+  .attacks-grid,
+  .context-grid,
+  .profile-selector__buttons,
+  .charset-grid {
+    grid-template-columns: 1fr;
+    grid-column: span 12;
+  }
+  .profile-info-card__header,
+  .best-attack,
+  .strength-text {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .hero { padding-top: var(--space-4); }
+}
+
+@media (max-width: 600px) {
+  .page-shell { padding-inline: var(--space-3); }
+  .site-header__inner { padding-inline: var(--space-3); }
+  .hero__title { font-size: 2rem; }
+}
+</style>
+</head>
+<body data-page="hybrid">
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-logo" href="../index.html">
+        <span class="site-logo__mark">🔒</span>
+        Time<span class="site-logo__accent">2</span>Crack
+      </a>
+      <nav class="site-nav" aria-label="Navigation principale">
+        <div class="site-nav__primary">
+          <a class="nav-link " href="../index.html">Tester un mot de passe</a>
+          <a class="nav-link " href="../generator.html">Générer un mot de passe</a>
+        </div>
+        <div class="site-nav__secondary">
+          <a class="nav-link " href="../faq.html">FAQ</a>
+          <a class="nav-link " href="../about.html">À propos</a>
+          <div class="dropdown">
+            <button class="nav-toggle" id="science-toggle" type="button" aria-expanded="false" aria-controls="science-menu">
+              Science <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="science-menu" role="menu" aria-label="Science">
+              <a class="dropdown__item" href="../how-time2crack-works.html" role="menuitem">Comment ça fonctionne</a>
+              <div class="dropdown__separator"></div>
+              <span class="dropdown__group-title">Méthodes d'attaque</span>
+              <a class="dropdown__item" href="index.html" role="menuitem">index</a><a class="dropdown__item" href="bruteforce.html" role="menuitem">Force brute</a><a class="dropdown__item" href="dictionary.html" role="menuitem">Dictionnaire</a><a class="dropdown__item" href="hybrid.html" role="menuitem">Hybride</a><a class="dropdown__item" href="mask.html" role="menuitem">Masque</a><a class="dropdown__item" href="markov.html" role="menuitem">Markov</a><a class="dropdown__item" href="pcfg.html" role="menuitem">PCFG</a><a class="dropdown__item" href="combinator.html" role="menuitem">Combinateur</a>
+              <div class="dropdown__separator"></div>
+              <a class="dropdown__item" href="../sources.html" role="menuitem">Sources</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="security-toggle" type="button" aria-expanded="false" aria-controls="security-menu">
+              Sécurité <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="security-menu" role="menu" aria-label="Sécurité">
+              <a class="dropdown__item" href="../hibp.html" role="menuitem">HIBP</a>
+              <a class="dropdown__item" href="../privacy.html" role="menuitem">Confidentialité</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="lang-toggle" type="button" aria-expanded="false" aria-controls="lang-menu">
+              Nederlands <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu dropdown__menu--lang" id="lang-menu" role="menu" aria-label="Langue">
+              <a class="dropdown__item" href="../../fr/methode/hybrid.html" hreflang="fr" role="menuitem">Français</a><a class="dropdown__item" href="../../en/methode/hybrid.html" hreflang="en" role="menuitem">English</a><a class="dropdown__item" href="../../es/methode/hybrid.html" hreflang="es" role="menuitem">Español</a><a class="dropdown__item" href="../../pt/methode/hybrid.html" hreflang="pt" role="menuitem">Português</a><a class="dropdown__item" href="../../de/methode/hybrid.html" hreflang="de" role="menuitem">Deutsch</a><a class="dropdown__item" href="../../it/methode/hybrid.html" hreflang="it" role="menuitem">Italiano</a><a class="dropdown__item" href="../../tr/methode/hybrid.html" hreflang="tr" role="menuitem">Türkçe</a><a class="dropdown__item" href="../../pl/methode/hybrid.html" hreflang="pl" role="menuitem">Polski</a><a class="dropdown__item is-active" href="hybrid.html" hreflang="nl" role="menuitem">Nederlands</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <button class="hamburger" id="drawer-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="drawer" id="mobile-drawer" hidden>
+    <a class="drawer__link " href="../index.html">Tester un mot de passe</a>
+    <a class="drawer__link " href="../generator.html">Générer un mot de passe</a>
+    <a class="drawer__link " href="../faq.html">FAQ</a>
+    <a class="drawer__link " href="../about.html">À propos</a>
+    <details class="drawer__details">
+      <summary>Science</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="../how-time2crack-works.html">Comment ça fonctionne</a>
+        <a class="drawer__link" href="index.html">Combinateur</a><a class="drawer__link" href="bruteforce.html">Force brute</a><a class="drawer__link" href="dictionary.html">Dictionnaire</a><a class="drawer__link" href="hybrid.html">Hybride</a><a class="drawer__link" href="mask.html">Masque</a><a class="drawer__link" href="markov.html">Markov</a><a class="drawer__link" href="pcfg.html">PCFG</a><a class="drawer__link" href="combinator.html">Combinateur</a>
+        <a class="drawer__link" href="../sources.html">Sources</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Sécurité</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="../hibp.html">HIBP</a>
+        <a class="drawer__link" href="../privacy.html">Confidentialité</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Langue</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" hreflang="fr" href="../../fr/methode/hybrid.html">Français</a><a class="drawer__link" hreflang="en" href="../../en/methode/hybrid.html">English</a><a class="drawer__link" hreflang="es" href="../../es/methode/hybrid.html">Español</a><a class="drawer__link" hreflang="pt" href="../../pt/methode/hybrid.html">Português</a><a class="drawer__link" hreflang="de" href="../../de/methode/hybrid.html">Deutsch</a><a class="drawer__link" hreflang="it" href="../../it/methode/hybrid.html">Italiano</a><a class="drawer__link" hreflang="tr" href="../../tr/methode/hybrid.html">Türkçe</a><a class="drawer__link" hreflang="pl" href="../../pl/methode/hybrid.html">Polski</a><a class="drawer__link" hreflang="nl" href="hybrid.html">Nederlands</a>
+      </div>
+    </details>
+  </div>
+<main class="page-shell">
+<h1 style="display:none">Hybride aanval </h1>
+<blockquote>
+Projectreferentiedocument Time2Crack
+</blockquote>
+<blockquote>Ontvangers: ontwikkelaars, security onderzoekers, geavanceerde gebruikers</blockquote>
+<hr>
+<h2>Inhoud</h2>
+<li><a href="hybrid.html#1-vue-densemble">Overzicht</a></li>
+<li><a href="hybrid.html#2-contexte-historique-et-académique">Historische en academische achtergrond</a></li>
+<li><a href="hybrid.html#3-fondements-conceptuels--pourquoi-lhybride-fonctionne">Conceptuele Stichtingen: Waarom de Hybride Werken</a></li>
+<li><a href="hybrid.html#4-architecture-dune-attaque-hybride-moderne">Architectuur van een moderne hybride aanval</a></li>
+<li><a href="hybrid.html#5-les-jeux-de-règles-de-mutation">Het spel van mutatieregels</a></li>
+<li><a href="hybrid.html#6-règles-best64--le-jeu-de-référence">Best64 regels: het referentiespel</a></li>
+<li><a href="hybrid.html#7-taxonomie-complète-des-transformations">Volledige taxonomie van transformaties</a></li>
+<li><a href="hybrid.html#8-priorisation-par-fréquence--le-cœur-de-lefficacité">Frequentieprioriteit: het hart van efficiëntie</a></li>
+<li><a href="hybrid.html#9-implémentation-dans-time2crack--addhybridattacks">Uitvoering in Time2Crack: <code>addHybridAttacks()</code></a></li>
+<li><a href="hybrid.html#10-les-trois-keyspaces-hybrides-et-leur-justification">De drie hybride sleutelruimtes en hun rechtvaardiging</a></li>
+<li><a href="hybrid.html#11-calibration-haute-fidélité">Kwalificatie van hoge trouw</a></li>
+<li><a href="hybrid.html#12-relation-avec-les-attaques-dérivées">Relatie met afgeleide aanvallen</a></li>
+<li><a href="hybrid.html#13-benchmarks-par-algorithme-de-hachage">Benchmarks per hash-algoritme</a></li>
+<li><a href="hybrid.html#14-exemples-concrets-de-cracking-hybride">Concrete voorbeelden van hybride kraken</a></li>
+<li><a href="hybrid.html#15-limites-de-lattaque-hybride">Hybride aanvalslimieten</a></li>
+<li><a href="hybrid.html#16-défenses-efficaces">Doeltreffende verdediging</a></li>
+<li><a href="hybrid.html#17-références-bibliographiques">Referenties</a></li>
+<hr>
+<h2>1. Overzicht</h2>
+<p>Hybride aanval is de kraakmethode die combineert <strong>een woordenboekwoordenlijst</strong> met <strong>een reeks transformatieregels</strong>In plaats van elk woord te testen in het woordenboek zoals het is (pure woordenboek aanval), genereert het op de vlieg alle plausibele varianten van elk woord "kapitalisaties, karakter substituties, prefix/suffix toevoegingen, inversies .. en systematisch testen ze.</p>
+<strong>Waarom is het zo effectief?</strong> Mensen kiezen niet voor "wachtwoord" als wachtwoord, ze kiezen voor "Password1," "p@ssw0rd," "PASSWORD123" of "wachtwoord!". Deze varianten lijken sterker omdat ze niet in de ruwe woordenboeklijst staan, maar ze behoren tot de eersten die worden gegenereerd door een modern hybride kraakgereedschap. De aanvaller gebruikt precies dezelfde "veilige" heuristieken die de gebruiker toepast.
+<p>Hybride aanval is historisch gezien de verantwoordelijke methode voor de meerderheid van de echte "gemiddelde" wachtwoord kraakt die lijken te zijn sterk zonder sterk te zijn. (2014, IEEE S&amp;P), <strong>de eerste 8 tot 10 regels toegepast op een huidig woord volstaan om het mediane wachtwoord te kraken</strong> bevolking.</p>
+<p>In Time2Crack modelde de hybride aanval:
+</p><li>De detectie dat het wachtwoord is of is afgeleid van een woordenboekwoord</li>
+<li>Schatting van het aantal kandidaten dat een aanvaller moet testen alvorens de exacte variant te vinden</li>
+<li>Berekening van de overeenkomstige tijd volgens het hash-algoritme van het doel</li><p></p>
+<hr>
+<h2>2. Historische en academische achtergrond</h2>
+<h3>2.1 Oorsprong: John the Ripper en mutatieregels</h3>
+<p>De hybride aanval is formeel geboren met <strong>John de Ripper</strong> (Solar Designer, 1996), de eerste publieke tool om een woordenlijst te combineren met een configureerbare regel engine. Voorafgaand aan John de Ripper, woordenboek aanvallen getest rauwe woorden; John introduceerde het idee dat elk woord genereert een familie van kandidaten.</p>
+<strong>Chronologie van mijlpalen</strong> :
+JaarGebeurtenis
+---------------------
+1979Morris &amp; Thompson: gebruikers vervangen letters om hun wachtwoorden te "veiligen"
+1996John the Ripper 1.0: eerste publieke regel engine, JtR syntax (<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)
+2000Alec Muffett documenteert dat 80% van het echte kraken door wordlist+regels gaat, niet brute kracht
+2006Hashcat 0,01: migratie op GPU, regels gaan van 1M→1000M kandidaten / seconde
+2009RockYou: 14.3M duidelijke wachtwoorden maken empirische kalibratie van de meest effectieve regels mogelijk
+2012Gosney (Passwordscon): 8 GPU GTX 580, best64 regels, crack 90% LinkedIn in &lt; 6 dagen
+2013Löfstrand: publiceert "best64.rule," 64 regels voor 85-90% van de huidige menselijke transformaties
+2014Ma et al. (IEEE S&amp;P): eerste academische studie waarin de effectiviteit wordt gekwantificeerd op regelschaal
+2016Hashcat open source: geïntegreerde best64, MD5 snelheid 2 TH/s op 8× GTX 1080
+2019Hashcat 6.0: OneRegleToRegleThemAll spel (52k regels) gegenereerd door ML op corpus van wachtwoorden
+2023NSA Advisory: beveelt expliciet het testen van bedrijfswachtwoorden met hybride tools aan
+<h3>2.2 Oprichting van empirische studies</h3>
+<strong>Klein (1990)</strong> 
+<strong>Weir et al. (2009, IEEE S&amp;P)</strong> Het PCFG model wordt voorgesteld maar geldig door de manier waarop de hashcat regels betrekking hebben op 78% van de transformaties waargenomen in RockYou. Demonstreert dat de wachtwoorden "Password1" en "P@ssw0rd" behoren tot de eerste 100 kandidaten gegenereerd door best64 op het woord "wachtwoord."
+<strong>Ma et al. (2014, IEEE S&amp;P)</strong> De meest geciteerde studie over de effectiviteit van hybride regels.
+<ul>
+<li>Artikel 1 (<code>: → mot brut</code>) : crack 18% van op dict-gebaseerde wachtwoorden</li>
+</ul>
+<li>Regels 1</li>
+<li>Regels 1</li>
+<li>Regels 1500: scheur 88%</li>
+<li><strong>Belangrijkste conclusie</strong> De eerste tien regels maken het grootste deel van het werk.</li>
+<strong>Durmuth et al. (2015, ESORICS)</strong> Evalueert de JtR vs Hashcat vs PCFG regels. Concludes dat de Hashcat best64 regels zijn empirisch de meest effectieve voor waargenomen duidelijke wachtwoorden, overtreffen PCFG door 12% op RockYou cover.
+<h3>2.3 LinkedIn vlucht als schoolzaak</h3>
+<p>De 2012 LinkedIn lek (6.5 miljoen niet-gezouten SHA-1s) perfect illustreert de kracht van de hybride. In 72 uur, de hashcat gemeenschap had gekraakt:
+</p><li>100% wachtwoorden in top-10M wordlists (zuiver woordenboek)</li>
+<li>90% meer via best64 + Combineatoraanval</li>
+<li>Resistente wachtwoorden: alleen die zonder woordenboekstructuur</li><p></p>
+<p>Post-crack analyse onthulde dat "linkin1," "Linkedin1," "l!unked!n" en "LINKEDIN" alle varianten van "linkin" samen tienduizenden gecompromitteerde rekeningen vertegenwoordigden.</p>
+<hr>
+<h2>3. Conceptuele stichtingen: Waarom de hybride werken</h2>
+<h3>3.1 Het menselijk gedrag van "veilig"</h3>
+<p>Wanneer een systeem legt regels van complexiteit (majuscule, nummer, symbool), gebruikers niet willekeurig genereren . <strong>voorspelbare transformaties toepassen op memorizeerbare woorden</strong> :</p>
+Menselijke strategieVoorbeeldGerelateerde hybride regel
+--------------------------------------------------------------
+Hoofdletter maken van de eerste letter"Sunshine" → "Sunshine"<code>c</code> (kapitaliseren eerst)
+Tel alles"Sunshine" → "SUNSHINE"<code>u</code> (bovenal)
+Aan het einde een cijfer toevoegen"zonneschijn" → "zonneschijn1"<code>$1</code> (bijlage "1")
+Jaar toevoegen"sunshine" → "sunshine2024"<code>$2 $0 $2 $4</code>
+E→3 vervangen"zonneschijn" → "zonneschijn"<code>s e 3</code> (vervangen door 3)
+Vervangen a→@"wachtwoord" → "p@ssword"<code>s a @</code>
+Omgekeerd woord"sunshine" → "enihsnus"<code>r</code> (omkeringen)
+Dubbel woord"zon" → "zonzon"<code>d</code> (dupliceren)
+Toevoegen ! definitief"zonneschijn" → "zonneschijn!"<code>$!</code>
+Meerdere combineren"wachtwoord" → "P@ssw0rd1"<code>c s a @ s o 0 $1</code>
+<p>Deze transformaties <strong>lijkt creatief</strong> aan de gebruiker. <strong>precies de eerste die de aanvaller probeert</strong> Zij komen overeen met de beperkingen die het veiligheidsbeleid oplegt.</p>
+<h3>3.2 Het concept van efficiënte vermindering van de ruimte</h3>
+<p>Een 10-karakter wachtwoord met letters+cijfers+symbolen heeft een ruwe sleutelruimte-kracht van 94^10, 5,4 × 10^19 combinaties. Te groot om in een redelijke tijd te reizen.</p>
+<p>Maar als dit wachtwoord "Password1!" is een triviale transformatie van "wachtwoord" is het onder de <strong>500 eerste kandidaten</strong> De aanvaller reist niet 5.4 × 10^19 combinaties: hij reist 500.</p>
+<p>Dit is de fundamentele vermindering van de hybride aanval: <strong>de werkelijke ruimte van menselijke keuzes is astronomisch kleiner dan de theoretische ruimte van mogelijke karakters</strong>.</p>
+<h3>3.3 De machtswet van transformatie</h3>
+<p>Net zoals rauwe wachtwoorden een wet van macht (Zipf) volgen de transformaties die mensen toepassen ook een zeer geconcentreerde distributie. Ma et al. (2014) empirisch toonde:</p>
+<li>~5% van de transformaties ("toevoegen 1 aan het einde," "kapitaliseren de eerste letter") dekken ~50% van de reële gevallen</li>
+<li>~20% van de transformaties dekt 85% van de gevallen</li>
+<li>De resterende 80% van de omzettingen betreft slechts 15% van de gevallen</li>
+<p>Door deze concentratie kunnen 64 goed gekozen regels (best64) een dekking bereiken van 79-855%, waarbij 64 willekeurige regels slechts 10-15% zouden bereiken.</p>
+<h3>3.4 Interactie met de populariteit van het basiswoord</h3>
+<p>Hoe vaker het basiswoord, hoe eerder het afgeleide wachtwoord is in de lijst van de aanvaller prioriteit. De aanvaller beveelt zijn kandidaten in afnemende waarschijnlijkheid:</p>
+<pre><code class="language-plaintext">Candidats générés par l'attaquant (ordre de test) :
+<li>wachtwoord (bruto, meest voorkomende woord)</li>
+<li>Wachtwoord (kapitaliseren eerst)</li>
+<li>wachtwoord1 ($1)</li>
+<li>PASSWORD (bovenaan alle)</li>
+<li>Wachtwoord!</li>
+<li>p@ssword (substitueer a→@)</li>
+<li>passw0rd (substituut o→0)</li>
+<li>Wachtwoord1 (c + $1)</li>
+<li>P@ssword (c + s a @)</li>
+<li>wachtwoord123 ($12$3)</li>
+...
+<li>p@ssW0rd! (combinatiecomplex)</li></code></pre>
+<p>"wachtwoord" is het meest voorkomende woord → zijn derivaten worden eerst getest. "papillon" is minder gebruikelijk → zijn derivaten worden veel later getest. Deze prioritering is het centrale mechanisme dat de drie verschillende sleutelruimtes in Time2Crack verklaart.</p>
+<hr>
+<h2>4. Architectuur van een moderne hybride aanval</h2>
+<h3>4.1 Algemene pijpleiding</h3>
+<pre><code class="language-plaintext">Phase 1 : Sélection de la wordlist
+    ├── Passwords fuités triés par fréquence (RockYou, HIBP, Collections)
+    ├── Dictionnaire linguistique (fr.txt, en.txt, de.txt...)
+    ├── Wordlists thématiques (prénoms, villes, marques, séries TV)
+    └── Wordlists contextuelles (domaine cible, noms d'employés, termes métier)
+<p>Fase 2: Selectie van de regels Spel
+- - beste64.regel (evenwichtige referentie, 64 regels)
+OneRegleToRegleThemAll.rule (52.000 regels, ML-generated)
+D3ad0ne.rule (34.000 regels, empirisch)
+- JtR-regels (algemene regel, specifieke regel, extra regel)
+- - Aangepaste regels (aangepast aan het doeldomein)</p>
+<p>Fase 3: Uitbreiding (woordenlijst × regels)
+Voor elk woord w in woordenlijst:
+Voor elke regel in de regel:
+│ aanvrager = aanvraag(r,w)
+Promotie │ Als kandidaat
+Promotionele wachtrij │<em>van de</em>candidates.push(candidate)
+--Order: (w1, regel 1), (w1, regel 2)... (w2, regel1)...
+of: (w1, regel 1), (w2, regel 1)... volgens strategie</p>
+<p>Fase 4: Haching en vergelijking (GPU)
+- - Verzenden door batch van ~10M kandidaten naar de GPU
+- Parallelle berekening van hashs (SIMD, 168 GH/s voor MD5)
+- Vergelijking met target hash(es)
+Als dit overeenkomt: FINDED </p>
+<p>Fase 5: Rapportage
+- - Gebarsten kandidaat + regel gebruikt + rang in lijst</p></code></pre>
+<h3>4.2 Hashcat-methoden</h3>
+<p>Hashcat implementeert de hybride op twee verschillende manieren:</p>
+<strong>Modus -a 0 (woordenlijst + regels)</strong> Dit is de klassieke hybride modus.
+<pre><code class="language-bash">hashcat -a 0 -m 0 hashes.txt rockyou.txt -r best64.rule</code></pre>
+<strong>Modus -a 6 (woordenlijst + masker)</strong> : combineert een woordenlijst met een positionaal masker. Genereert alle combinaties <code>mot + suffixe<em>gemaskerd</em></code>.
+<pre><code class="language-bash">hashcat -a 6 -m 0 hashes.txt wordlist.txt ?d?d?d?d
+<h1 style="display:none">Test "sunshine0000," "sunshine0001, ..., "sunshine9999"</h1></code></pre>
+<strong>Modus -a 7 (masker + woordlijst)</strong> : Inverse, gemaskerd voorvoegsel + woord.
+<pre><code class="language-bash">hashcat -a 7 -m 0 hashes.txt ?d?d wordlist.txt
+<h1 style="display:none">Test "00sunshine," "01sunshine," ..., "99sunshine"</h1></code></pre>
+<p>Time2Crack modelleert vooral de modus <code>-a 0</code> (overschrijvingsregels), die betrekking hebben op het overgrote deel van de daadwerkelijk gedocumenteerde hybride aanvallen.</p>
+<h3>4.3 Orde van kandidaten en prioriteitenstrategie</h3>
+<p>De volgorde waarin kandidaten worden getest is cruciaal.</p>
+<strong>Strategie eerst</strong> (standaard hashcat): alle regels worden toegepast op W1 alvorens over te stappen op W2.
+<pre><code class="language-plaintext">(W1, R1), (W1, R2), ..., (W1, Rn), (W2, R1), (W2, R2)...</code></pre>
+Voordeel: als W1 zeer waarschijnlijk is (bijvoorbeeld "wachtwoord"), ontdekt u snel zijn varianten.
+<strong>Regel-eerste strategie</strong> : alle woordenlijsten worden uitgevoerd voor R1 voordat ze naar R2 gaan.
+<pre><code class="language-plaintext">(W1, R1), (W2, R1), ..., (Wm, R1), (W1, R2), (W2, R2)...</code></pre>
+Voordeel: de meest effectieve regel (<code>: → mot brut</code>) wordt eerst toegepast op alle woorden. Vaak effectiever voor diverse corpus.
+<p>In de praktijk gebruikt hashcat standaard woord-eerste, maar ervaren operators kiezen volgens het doelprofiel.</p>
+<hr>
+<h2>5. Stelt mutatieregels</h2>
+<h3>5.1 Syntaxis van hashcat-regels</h3>
+<p>De hashcat-regels worden uitgedrukt in een minimumtaal waarin elk teken een operatie op de kandidaat-string vertegenwoordigt:</p>
+<strong>Gevalmodifiers</strong> :
+<li><code>:</code> Identiteit (bruto woord, geen transformatie)</li>
+<li><code>l</code> Alle kleine letters ("PASSWORD" → "wachtwoord")</li>
+<li><code>u</code> </li>
+<li><code>c</code> Kapitaliseren eerste, kleine geval rust ("PASSWORD" → "Wachtwoord")</li>
+<li><code>C</code> </li>
+<li><code>t</code> Inschakelen van alle tekens ("Wachtwoord" → "PASSWORD")</li>
+<li><code>TN</code> Schakel het vakje van teken naar positie N</li>
+<strong>Verwijderingen en omkeringen</strong> :
+<li><code>r</code> Omkeren ("wachtwoord" → "drowssap")</li>
+<li><code>d</code> Dupliceren ("wachtwoord" → "wachtwoordwachtwoord")</li>
+<li><code>f</code> </li>
+<li><code>{</code> Roteer links ("wachtwoord" → "wachtwoordp")</li>
+<li><code>}</code> Rechts draaien ("wachtwoord" → "dpasswor")</li>
+<li><code>[</code> Verwijder eerste teken ("wachtwoord" → "wachtwoord")</li>
+<li><code>]</code> Het laatste teken verwijderen ("wachtwoord" → "passwor")</li>
+<strong>Tekenaanvullingen</strong> :
+<li><code>$X</code> X toevoegen ("wachtwoord" + <code>$1</code> → "wachtwoord1")</li>
+<li><code>^X</code> Prepend teken X ("wachtwoord" + <code>^1</code> → "1wachtwoord")</li>
+<li><code>iNX</code> Plaats teken X op positie N</li>
+<strong>Instellingen</strong> :
+<li><code>sXY</code> Vervang alle X door Y ("wachtwoord" + <code>s a @</code> → "p@ssword")</li>
+<li><code>SNX</code> Vervang teken op positie N door X</li>
+<strong>Truncings</strong> :
+<li><code>'N</code> Afkappen op positie N (wachtwoord + <code>'4</code> → "pass")</li>
+<li><code>DN</code> Teken verwijderen op positie N</li>
+<strong>Voorwaardelijk</strong> :
+<li><code><n< code=""> - Pas de regel alleen toe als lengte &lt; N</n<></code></li>
+<li><code>&gt;N</code> De regel alleen toepassen als lengte &gt; N</li>
+<li><code>=N</code> De regel alleen toepassen als lengte = N</li>
+<h3>5.2. Samengestelde regels</h3>
+<p>Regels kunnen op één lijn worden geketend om complexe transformaties te creëren:</p>
+<pre><code class="language-plaintext">c $1          → "Password1" (capitalize + append 1)
+c $! $1       → "Password!1" (capitalize + append ! + 1)
+s a @ s e 3   → "p@ssw3rd" (substitute a→@ et e→3)
+r $1          → "1drowssap" (reverse + append 1)
+u $2 $0 $2 $3 → "PASSWORD2023" (uppercase + append year)</code></pre>
+<p>Macht zit in de samenstelling: 64 eenvoudige regels genereren duizenden verschillende transformaties door combinatie.</p>
+<h3>5.3 Hoofdregels</h3>
+<strong>best64.rule</strong> (Löfstrand, 2013) 
+<strong>OneRegleToRegleThemAll</strong> (NotSoSecure, 2019) 
+<strong>d3ad0ne.rule</strong> 34.096 Communautaire regels, gericht op patronen die niet onder de beste64 vallen (accenten, uitgebreide karakters, niet-Engelse patronen).
+<strong>live.rule</strong> 99 000+ regels, de meest uitgebreide. Gebruikt voor lange termijn kraken wanneer anderen mislukt.
+<strong>Algemeen2.regel (JtR)</strong> Automatische gegenereerd door statistische analyse van reeds gekraakte wachtwoorden. Herberekend periodiek als nieuwe lekken optreden.
+<hr>
+<h2>6. Best64 regels: het referentiespel</h2>
+<p>Best64 is de set van 64 standaard regels van referentie in academische literatuur en industrie. Hier zijn de belangrijkste regels en hun empirische rechtvaardiging:</p>
+<h3>6.1 De 20 meest effectieve regels (in volgorde van uitvoering)</h3>
+RangArtikelTransformatie% wachtwoorden behandeld (mei 2014)
+------------------------------]----------------
+1<code>:</code>Grof woord-18%
+2<code>c</code>Hoofdletter~11%
+3<code>u</code>Hoofdletter alles6
+4<code>$1</code>Invoegen "1"~5%
+5<code>l</code>Kleine letters~4%
+6<code>$!</code>Voeg " toe!"~3%
+7<code>s a @</code>a→@2,8%
+8<code>c $1</code>Hoofdletter + "1"~ 2,5%
+9<code>$2</code>"2" toevoegen~2,1%
+10<code>r</code>Omgekeerd~1,9%
+11<code>$!</code> + <code>c</code>Hoofdletter + "!"~1,7%
+12<code>s o 0</code>o→0~ 1,6%
+13<code>d</code>Dupliceren~1,4
+14<code>s e 3</code>e→3~1,3%
+15<code>$1 $2 $3</code>Voeg "123" toe~1,2
+16<code>c $1 $2 $3</code>Kapitalisatie + "123"~1,1%
+17<code>$0</code>"0" toevoegen~1,0%
+18<code>^1</code>Prepareer "1"~0,9%
+19<code>s i 1</code>i→1~0,8%
+20<code>c $! $1</code>Hoofdletter + "!1"~0,7%
+<strong>Cumulatieregels 1</strong> : ~55% van op dict gebaseerde wachtwoorden
+<strong>Cumulatieregels 1</strong> : ~68% van dict-gebaseerde wachtwoorden
+<strong>Cumulatieregels 1</strong> : ~79% van op dict-gebaseerde wachtwoorden
+<h3>6.2 Waarom zijn deze regels zo doeltreffend?</h3>
+<p>Elke top-10 regel komt overeen met een gemeenschappelijk veiligheidsbeleid:
+</p><li>"Shall have a capital capital" → gebruikers kapitaliseren de eerste letter (<code>c</code>)</li>
+<li>"moet een nummer hebben" → gebruikers voegen "1" toe aan het einde (<code>$1</code>)</li>
+<li>"Zal een symbool" → gebruikers toevoegen "!" (<code>$!</code>)</li>
+<li>"moet letters EN cijfers hebben" → <code>c $1</code> of <code>c $1 $2 $3</code></li><p></p>
+<p>Password beleid niet echt verhogen veiligheid als gebruikers te implementeren voorspelbare transformaties </p>
+<hr>
+<h2>7. Volledige taxonomie van transformaties</h2>
+<h3>7.1 Categorie 1: Case transformaties</h3>
+<p>Gebruik makend van de verplichting om kapitaal te hebben:</p>
+<li>Hoofdletter: "zonneschijn" → "Zonneschijn" (<strong>meest voorkomende regel na het woord rauw</strong>)</li>
+<li>Alle hoofdletters: "zonneschijn" → "zonneschijn"</li>
+<li>Schakel afwisselend in: "zonneschijn" → "sUnShInE"</li>
+<li>Laatste letter hoofdletter: "zonneschijn" → "zonneschijn"</li>
+<li>CamelCase: "sunshinE" (bij benadering door <code>c</code> veranderingen)</li>
+<strong>Prevalentie</strong> : Klein (1990) merkt op dat 41% van "wachtwoorden met hoofdletters" simpelweg bestaat uit het woord met de eerste letter in hoofdletters.
+<h3>7.2 Categorie 2: Digitale achtervoegsels en voorvoegsels</h3>
+<p>Gebruik maken van de verplichting om een cijfer te hebben:</p>
+<li>Enkel cijfer toevoegen: woord+"0" aan woord+"9"</li>
+<li>Voeg twee cijfers toe: woord+"00" aan woord+"99" (100 combinaties)</li>
+<li>Einde jaar : woord+"1990" tot woord+"2024" (35 frequente combinaties)</li>
+<li>Voeg "123" of "1234" toe (zeer vaak)</li>
+<li>Eén cijfer vooraf: "1"+mot à "9"+mot</li>
+<li>Prepend jaar: "2024"+word</li>
+<strong>Prevalentie</strong> Veras et al. (2014) vinden dat ~73% van de "verplichte" wachtwoorden het cijfer in achtervoegsel toevoegen. Slechts ~12% prefix het.
+<h3>7.3 Categorie 3: Leervervangers</h3>
+<p>Systematische vervanging van letters door soortgelijke cijfers of symbolen:</p>
+VervangingEmpirische frequentie
+--]----------------------
+a → @23% van de wachtwoorden met @
+e → 331% van de wachtwoorden met 3
+i → 119% van de wachtwoorden met 1
+o → 027% wachtwoorden met 0
+S → $14% van de wachtwoorden met $
+l → 18%
+t → 76%
+g → 94%
+<p>Gecombineerde vervangingen ("P@ssw0rd") lijken complex maar worden gegenereerd in een paar regels: <code>c s a @ s o 0</code>Zij behoren tot de <strong>500 eerste kandidaten</strong> Op wachtwoord.</p>
+<h3>7.4 Categorie 4: Symbolische achtervoegsels</h3>
+<p>Gebruik maken van de verplichting om een speciaal karakter te hebben:</p>
+<li>Voeg "!" toe: het vaakst toegevoegde symbool (~35% van de symbolische toevoegingen)</li>
+<li>"" toevoegen?: ~8%</li>
+<li>"#" toevoegen: ~6%</li>
+<li>Voeg "@" toe: ~5%</li>
+<li>Voeg "." toe: ~4%</li>
+<li>Voeg "!!" toe: ~3%</li>
+<li>Prepends "!": minder frequent (~10% van de gevallen vs 35% voor suffix)</li>
+<strong>Kombinaison</strong> : woord + "1!" komt zo vaak voor dat het systematisch wordt gegenereerd door best64. "zonneschijn1!" behoort tot de eerste 200 kandidaten gegenereerd op "zonneschijn."
+<h3>7.5 Categorie 5: Structurele veranderingen</h3>
+<p>Minder frequent maar nuttig voor sommige profielen:</p>
+<li>Inversie: "zon" → "naakt" (huidig voor bepaalde groepen)</li>
+<li>Duplicatie: "zon" → "zonzon" (wachtwoorden voor systemen beperken tot 8 tanks opgelost tot 16)</li>
+<li>Rotatie: "wachtwoord" → "wachtwoordp"</li>
+<li>Truncation + addition: "passw" + "1"</li>
+<h3>7.6 Categorie 6: Compound transformaties (geavanceerd niveau)</h3>
+<p>Complexe regels combineren verschillende bewerkingen:</p>
+<pre><code class="language-plaintext">c $1 s a @        → "P@ssword1" (capitalize + append 1 + substitute a→@)
+u $! $1 $2 $3     → "SUNSHINE!123" (uppercase + append !123)
+r c $1            → "Drowssap1" (reverse + capitalize + append 1)
+s e 3 s a @ c $!  → "P@ssw3rd!" (multiple substitutions + capitalize + !)</code></pre>
+<p>Deze transformaties lijken zeer complex, maar blijven aantoonbaar door een goede set van regels. OneRuleToRuleThemAlle bevat duizenden van deze.</p>
+<hr>
+<h2>8. Frequentieprioriteit: Het hart van effectiviteit</h2>
+<h3>8.1. De frequentie van het basiswoord bepaalt de prioriteit</h3>
+<p>Een intelligente aanvaller past de regels niet uniform toe op alle woorden.</p>
+<li><strong>Meest voorkomende woorden</strong> (boven-100 RockYou/HIBP) × alle regels</li>
+<li><strong>Woorden matig algemeen</strong> (top-10k) × meest effectieve regels</li>
+<li><strong>Minder frequente woorden</strong> (alle woordenboek) × eerste paar regels</li>
+<p>Deze strategie wordt uitgevoerd in hashcat via het sorteren van de woordenlijst door het verlagen van de frequentie in combinatie met de woord-eerste strategie. Het verklaart waarom "Password1" (afgeleid van "wachtwoord," het woord #1) wordt gekraakt in milliseconden, terwijl "Soleil1" (afkomstig van "zon," woord ~5000 uit het Franse woordenboek) een paar seconden kan duren.</p>
+<h3>8.2 Mediane positie in zoekruimte</h3>
+<p>De belangrijkste maatregel is: <strong>het mediane aantal geteste kandidaten voordat het doelwachtwoord wordt gevonden</strong>. Ma et al. (2014) geven empirische metingen:</p>
+DerdeVoorbeeldMediane aanvragers voordat zij een
+--------------------------------------------------------------------
+TOP100"wachtwoord1," "P@ssword"450 500
+Gemeenschappelijke dobbelstenen (top-10k)Sunshine1, sunshine.5 000 15 000
+Minder vaak"Paillon2024"50 000 200.000
+Zonder woordenboek"Xk7#mP9q"N.v.t. (niet van toepassing zijnde hybride)
+<p>Deze metingen zijn de directe basis van Time2Crack constanten:
+</p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
+const HYBRID<em>KEYSPACE</em>DICT = 8<em>1 000; // Ma et al. 2014
+cont HYBRID</em>KEYSPACE<em>FULL = 128e6; // Gosney 2012 </em></code></pre><p></p>
+<h3>8.3 Voorwaarden die nodig zijn om de hybride toe te passen</h3>
+<p>Hybride aanval vereist het wachtwoord te zijn <strong>structureel afgeleid van een woordenboekwoord</strong>Time2Crack detecteert deze aandoening via <code>hybridVuln</code> :</p>
+<pre><code class="language-javascript">const hybridVuln = dictWord || (common &amp;&amp; /[a-z]/i.test(pw));</code></pre>
+<li><code>dictWord = true</code> : het wachtwoord is of is afgeleid van een taalwoordenlijst</li>
+<li><code>common &amp;&amp; lettre</code> : het wachtwoord verschijnt in GEMEENSCHAPPELIJK (HIBP top-400) en bevat letters </li>
+<p>Als <code>dictWord</code> noch <code>hybridVuln</code> het wachtwoord bevat geen detecteerbare woordenboek root  <code>null</code> Een puur willekeurig wachtwoord als "xK9#mQ7@" is niet kwetsbaar voor hybride.</p>
+<hr>
+<h2>9. Uitvoering in Time2Crack: <code>addHybridAttacks()</code></h2>
+<h3>9.1 Volledige geannoteerde code</h3>
+<pre><code class="language-javascript">function addHybridAttacks(rows, hybridVuln, weak, common, dictWord) {
+  if (hybridVuln || weak) {
+    // Sélection du keyspace selon la popularité du mot de base :
+    // common → mot dans HIBP top-400 → position ~500 dans la liste de l'attaquant
+    // dictWord → mot dans la wordlist → position ~8000
+    // sinon (hybridVuln sans dictWord ni common) → scan exhaustif ~128M
+    const hybridKS = common ? HYBRIDKEYSPACE<em>GEMEENSCHAPPELIJK
+dictWord? HYBRID</em>KEYSPACE<em>DICT
+HYBRID</em>KEYSPACE<em>Full;
+<p>voor (cont a van ALGOS) {
+rijen.push({
+atk: t("aHybrid");
+hash: a.name,
+tarief: a.rate,
+// budgetTime: de keyspace IS het aantal gissingen dat door 2 wordt verdeeld
+// (in tegenstelling tot BrutTime, hier worden kandidaten gerangschikt naar waarschijnlijkheid)
+droog: zwak ? zwakGoestijd(a.rate): budgetTime(hybridKS, a.rate),
+opmerking: zwak ? t("nWeakPassword") : t("nDictMut")
+kat: "hybride,"
+});
+}
+Anders {
+// Wachtwoord zonder structuur woordenboek → hybride niet van toepassing
+rijen.push({
+atk: t("aHybrid");
+hash: "(all),"
+tarief: 0,
+droog: nul, // N/A in de tabel
+Opmerking: t(nStructUnrecog),
+kat: "hybride,"
+});
+}
+}</p></em></code></pre>
+<h3>9,2 <code>budgetTime</code> vs <code>bruteTime</code></h3>
+<p>Het onderscheid tussen beide functies is fundamenteel:</p>
+<pre><code class="language-javascript">// bruteTime : l'attaquant ne sait pas où est le mot de passe dans l'espace.
+// Il teste en moyenne la moitié avant de le trouver. → keyspace/2
+function bruteTime(keyspace, rate) {
+  const ls = Math.log(keyspace / 2) - Math.log(rate);
+  return Math.exp(ls);
+}
+<p>// budgetTijd: de aanvaller test kandidaten in dalende volgorde van waarschijnlijkheid.
+// Keyspace IS het aantal kandidaten dat wordt verwacht voordat (mediane positie) wordt gevonden.
+// Geen verdeling door 2 
+BegrotingsfunctieTijd, rente) {
+const ls = Math.log(guesses) - Math.log(rate);
+geeft wiskunde.exp(ls);
+}</p></code></pre>
+<p>Voor de hybride, <code>budgetTime</code> is correct omdat de 500/8000/128M kandidaten empirische schattingen van de <strong>mediane positie</strong>, geen totale ruimte om te reizen.</p>
+<h3>9.3 Relatie met <code>isDictWord()</code></h3>
+<p>Detectie <code>dictWord</code> welke voorwaarden de keuze van hybride sleutelruimte wordt geproduceerd door <code>isDictWord()</code> :</p>
+<pre><code class="language-javascript">function isDictWord(pw) {
+  if (!DICTWORDS || !DICT<em>(W VERMELDING.size) return false;
+const l = pw.normalize("NFC").toLowerCase();
+<p>// Directe test: Is het wachtwoord zoals het in het woordenboek staat?
+indien (DICT)</p></em>WORDS.has(l)) return true;
+<p>// Leetified test: "s0le1l" → "zon" in de dico?
+const dl = deLeet(pw);
+als (dl!)<em>VERMELDING.has(dl) return true;</em></p>
+<p>// Test substring: "zonneschijn123" bevat "zonneschijn" in de dico?
+voor (const w van DICTW VERMELDING) {
+indien (l.includes(w) &amp;&amp;w.length &gt;= 4) return true;
+}</p>
+<p>Foutief retourneren;
+}</p></code></pre>
+<p>Deze detectie bepaalt niet alleen of de hybride van toepassing is, maar ook <strong>welke sleutelruimte</strong> (vaak vs dict) wordt gebruikt om de tijd te berekenen.</p>
+<hr>
+<h2>10. De drie hybride sleutelruimtes en hun rechtvaardiging</h2>
+<h3>10.1 HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500</h3>
+<strong>Achtergrond</strong> Het wachtwoord is in GEMEENSCHAPPELIJK de hardgecodeerde lijst HIPP top-~400. Dit zijn enkele van de meest voorkomende wachtwoorden in de wereld ("wachtwoord," "letmein," "sunshine," "iloveyou" ...).
+<strong>Rechtvaardiging</strong> Ma et al. (2014) empirisch gemeten dat de mediane positie van een top-1000 wachtwoord in een hybride lijst gesorteerd op waarschijnlijkheid ~450 kandidaten is. Het getal 500 is een enigszins conservatieve schatting om tot ~400 rang te dekken.
+<strong>Interpretatie</strong> : een aanvaller die best64 toepast op een woordenlijst gesorteerd op frequentietests gemiddeld 500 kandidaten voor het vinden van het wachtwoord. Bij 2000 GH/s (MD5, 12× RTX 4090), 500 kandidaten = <strong>0,25 picoseconden</strong>- Bijna onmiddellijk.
+<strong>Voorbeeld</strong> : "Sunshine1" → "sunshine" is in GEMEENSCHAPPELIJK → HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500 → <code>budgetTime(500, 2027e9)</code> 0,25 nanoseconden.
+<h3>10.2 HYBRID<em>KEYSPACE</em>DICT = 8.000</h3>
+<strong>Achtergrond</strong> Het wachtwoord is afgeleid van een woord uit de taalwoordenlijst, maar niet van GEMEENSCHAPPELIJK. Dit zijn gewone woordenschat woorden ("zon," "berg," "paillon"...) met transformaties.
+<strong>Rechtvaardiging</strong> Ma et al. (2014) meet een mediane positie van 2000 tot 15.000 afhankelijk van de populariteit van het woord in RockYou. De empirische mediaan is ~ 8000. Deze sleutelruimte weerspiegelt dat de aanvaller het woord en zijn varianten test na het vermoeien van de meer voorkomende kandidaten.
+<strong>Interpretatie</strong> : 8.000 kandidaten bij 2.000 GH/s (MD5) = <strong>4 nanoseconden</strong>Voor bcrypt (69 kH/s): 8.000 / 69 000 <strong>0,12 seconden</strong>.
+<strong>Voorbeeld</strong> : "Soleil2024" → "zon" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8000 → een paar nanoseconden op MD5, 0,12s op bcrypt.
+<h3>10.3 HYBRID<em>KEYSPACE</em>FULL = 128.000.000</h3>
+<strong>Achtergrond</strong> : <code>hybridVuln</code> is waar (wachtwoord heeft een woordenboekstructuur) maar geen van beide <code>common</code> noch <code>dictWord</code> De aanvaller moet door de hele wordlijst bladeren met alle regels.
+<strong>Rechtvaardiging</strong> : Gosney (Passwordscon 2012) documenteert een woordenlijst van 3,5M woorden × best64 (64 regels) = 224M kandidaten in totaal. In de praktijk maken realistische woordenlijsten 2M woorden en de gedeeltelijke beste64 runs stoppen bij ~128M kandidaten voordat klimmen naar bredere regels.
+<strong>Formule</strong> : <code>2<em>000</em>000 mots × 64 règles = 128<em>000</em>000 candidats</code>
+<strong>Interpretatie</strong> : 128 miljoen kandidaten bij 2000 GH/s (MD5) <strong>64 microseconden</strong>. Op bcrypt (69 kH/s): ~31 minuten.
+<hr>
+<h2>11. Kalibratie van hoge trouw</h2>
+<h3>11.1 Rol van hoge betrouwbaarheid</h3>
+<p>Wanneer de hoge betrouwbaarheidsmodus (HF) wordt geactiveerd in Time2Crack, wordt een extra multiplier toegepast op de berekende tijd om de nauwkeurigheid te verfijnen. Voor hybride aanval houdt deze multiplier rekening met factoren die niet worden vastgelegd door de basissleutelruimtes.</p>
+<h3>HF multiplicators voor hybride</h3>
+<p>In <code>applyHighFidelityCalibration()</code> :</p>
+<pre><code class="language-javascript">case "hybrid":
+  // Mots très courants : crackés encore plus tôt que la médiane Ma 2014
+  // car les attaquants modernes trient word-first + règle-first simultanément.
+  // Réduction de 30% sur les temps déjà courts.
+  m <em>= context.vaak ? 0,7
+: context.dictWord ? 0,8
+- 1,0;
+Break;</em></code></pre>
+<strong>Rechtvaardiging</strong> :
+<li>Voor <code>common</code> : moderne gereedschappen (hashcat met <code>--markov-threshold</code>De beste kandidaten komen nog eerder aan.</li>
+<li>Voor <code>dictWord</code> : minder effect omdat de positie in de woordenlijst minder geconcentreerd is.</li>
+<li>Voor <code>hybridVuln</code> alleen (FULL keyspace): geen enkele vermindering van volledige sleutelruimte is al een conservatieve schatting.</li>
+<h3>11.3 Interacties met de monotone bewaker</h3>
+<p>De monotone bewaker zorgt ervoor dat geen gespecialiseerde aanval beweert te zijn <strong>sneller</strong> dat de ruwe kracht op de alfabetische subtekenreeks van het wachtwoord:</p>
+<pre><code class="language-javascript">// Pour chaque row non-brute :
+const floorAlpha = bruteTime(Math.pow(26, alphaOnly.length), algo.rate);
+if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
+<p>Voor korte woorden (bv. "cat" = 3 letters, vloer = 26^3/rate</p>
+<hr>
+<h2>12. Relatie met afgeleide aanvallen</h2>
+<h3>12.1 Hybrid vs. Puur woordenboek</h3>
+CriteriaPuur woordenboekHybride
+---------------------------------------
+Geteste kandidatenWoorden van correcte lijstWoorden + al hun varianten
+Dekking (RockYou)-18%~79-85% (met beste64)
+Sleutelruimte (200k woorden)200 000200 000 × 64 = 12,8M
+ToepasselijkheidWachtwoord = exact woordWachtwoord afgeleid van een woord
+Kwetsbaar voorbeeld"zonneschijn" (exact)Sunshine1!
+Bestand voorbeeld"Sunshine1""xK9#mQ7@" (geen root)
+<h3>12.2 Hybrid vs Regelgebaseerd</h3>
+<p>De regelgebaseerde aanval in Time2Crack is conceptueel vergelijkbaar maar met een veel bredere set regels:</p>
+<pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000; // vs 128M voor volledige hybride</em></code></pre>
+<p>Het verschil: de beste64 model hybride (64 regels, focus op gemeenschappelijke menselijke transformaties). De regel gebaseerde aanval modellen bredere games zoals d3ad0ne (34k regels) of OneRuleToRuleThemAll (52k regels), gebruikt wanneer best64 faalt. De regel-gebaseerd is de "tweede lijn" hybride </p>
+<h3>12.3 Hybrid vs. PCFG</h3>
+<p>PCFG (Probabilistic Context-Free Grammar, Weir 2009) modelleert de grammaticale structuur van het wachtwoord om kandidaten te genereren.</p>
+CriteriaHybridePCFG
+----------------------------
+AanpakBasiswoord + transformatieregelsAlgemene grammaticale structuur
+ForcerenBestaande woorden gemuteerdStructuurtype "word+Digits"
+Voorbeeld"zonneschijn" → "zonneschijn"Detecteert de structuur "Caps+lower+digit"
+ComplementariteitTriggers op <code>dictWord</code>Triggers op gedetecteerde structuur
+Sleutelruimte (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> dynamisch berekend
+<p>PCFG kan aanvallen wachtwoorden zonder root woordenboek als hun <strong>structuur</strong> komt vaak voor (ex: "Thelonious8" → geen woord van de dico maar structuur Capitalize+lower+digit zeer voorspelbaar).</p>
+<h3>12.4 Hybrid vs Morfologisch (morf)</h3>
+<p>De morfologische aanval test taalkundige varianten (flexions, variaties). Het is een generalisatie van de hybride voor talen met rijke morfologie:</p>
+<li>Hybride: "zon" → "Zon1," "s0leil," "zon!"</li>
+<li>Morfologisch: "zon" → "zon," "zon," "zon," "zon," "zon"</li>
+<p>De hybride werkt op het oppervlak van het woord (karakter transformaties), de morfologische werkt op de lexicale structuur (derivatie, buigen), en ze zijn complementair.</p>
+<hr>
+<h2>13. Benchmarks per hash-algoritme</h2>
+<h3>13.1 Tijd voor de drie hybride sleutelruimtes (12× RTX 4090)</h3>
+AlgoritmePercentage (H/s)GEMEENSCHAPPELIJK (500)DICT (8k)FULL (128M)
+----------------------------- [57]--------------- [57]
+MD52 027 GH/s0,25 ps3,9 ns63 μs
+SHA-1610 GH/s0,82 ps13 ns210 μs
+SHA-256272 GH/s1.84 ps29 ns470 μs
+NTLM3,462 GH/s0,14 ps2,3 ns37 μs
+bcrypt (kosten 10)69 kH/s7,2 ms0,12 s31 min.
+Argon2id800 H/s0,625 s10 s44 uur
+<strong>Lezen</strong> : voor MD5 en NTLM wordt zelfs de FULL keyspace (128M-kandidaten) gekraakt in een paar dozijn microseconden.
+<strong>Argon2id</strong> is het enige algoritme dat sterk weerstand biedt, zelfs voor gewone woorden: 0,625 seconden voor een GEMEENSCHAPPELIJK woord, 10 seconden voor een dictwoord. Deze tijden blijven kort in absolute waarde, maar vertegenwoordigen een vertraging van x10^12 vs MD5 
+<h3>13.2 Impact van het aanvalsprofiel</h3>
+<p>Time2Crack biedt twee profielen (Ervaren 12 GPU, Professional 100 GPU). Voor de hybride, het profiel verschil is direct evenredig:</p>
+ProfielGPU'sMultiplierVOLLEDIGE bcrypt
+------------------------------- [57]
+Ervaren12× RTX 40901×31 min.
+Professioneel~100 GPU~8×~4 min
+<p>Voor MD5, SHA-1, NTLM: het profiel verandert de tijd van microseconden naar nanoseconden, zonder enige praktische impact, beide zijn onmiddellijk.</p>
+<hr>
+<h2>14. Concrete voorbeelden van hybride kraken</h2>
+<h3>14.1 Voorbeeld 1: "Wachtwoord1" (COMMON)</h3>
+<strong>Analyse</strong> :
+<li><code>isCommon("Password1")</code> → onwaar (niet in exact HIPP)</li>
+<li><code>isDictWord("Password1")</code> → waar ("wachtwoord" in DICTW VERMELDINGEN in kleine letters)</li>
+<li><code>COMMON.has("password")</code> → waar → <code>common = true</code></li>
+<li>Resultaat: HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500</li>
+<strong>MD5 tijd</strong> : 500 / 2,027e12 <strong>0,25 picoseconden</strong> (snapshot)
+<strong>Tijd bcrypt kosten 10</strong> 500 / 69 000 <strong>7,2 milliseconden</strong>
+<strong>Regels getest vóór het vinden</strong> : <code>:</code> (bruto woord "wachtwoord" → nee), <code>c</code> ("Wachtwoord" → nee), <code>c $1</code> ("Wachtwoord1" → <strong>FIND</strong>, rij ~8)
+<h3>14.2 Voorbeeld 2: "Sun2024" (DICT)</h3>
+<strong>Analyse</strong> :
+<li><code>isCommon("Soleil2024")</code> → onwaar</li>
+<li><code>isDictWord("Soleil2024")</code> → waar ("zon" in fr.txt)</li>
+<li><code>COMMON.has("soleil")</code> → vals → <code>common = false</code>, <code>dictWord = true</code></li>
+<li>Resultaat: HYBRID<em>KEYSPACE</em>DICT = 8.000</li>
+<strong>MD5 tijd</strong> : 8 000 / 2,027e12 <strong>3,9 nanoseconden</strong>
+<strong>Tijd bcrypt kosten 10</strong> : 8 000 / 69 000 <strong>0,12 seconden</strong>
+<strong>Testvoorschriften</strong> : de aanvaller arriveert op ~5000 in de woordenlijst fr gesorteerd op frequentie, dan geldt <code>c $2 $0 $2 $4</code> ("Sun2024") in de rij ~3 van zijn regels → algemene positie ~15 003.
+<h3>14.3 Voorbeeld 3: "p@pillon!" (DICT met substituties)</h3>
+<strong>Analyse</strong> :
+<li><code>isDictWord("p@pillon!")</code> : de-leetification → "paillon" → in fr.txt → <code>dictWord = true</code></li>
+<li>Resultaat: HYBRID<em>KEYSPACE</em>DICT = 8.000</li>
+<strong>Testvoorschriften</strong> : "paillon" at ~15.000 of the dictionary fr. Rule <code>s a @ $!</code> → "p@pillon!" in rij ~12. Algemene positie: ~180.000. Altijd goed in HYBRID<em>KEYSPACE</em>DICT.
+<h3>14.4 Voorbeeld 4: "xK9#mQ7@" (bestendig)</h3>
+<strong>Analyse</strong> :
+<li><code>isDictWord("xK9#mQ7@")</code> → onwaar (geen root woordenboek)</li>
+<li><code>isCommon("xK9#mQ7@")</code> → onwaar</li>
+<li><code>hybridVuln = false</code></li>
+<li>Resultaat: <code>sec = null</code> → <strong>hybride niet van toepassing</strong></li>
+<p>Dit wachtwoord kan niet worden gekraakt door hybride aanval. Het heeft geen woordenboek root. De aanvaller moet gebruik maken van pure brute kracht, PCFG of statistische aanvallen (Markov, Neural).</p>
+<h3>14.5 Voorbeeld 5: "LinkedInB3st!"</h3>
+<strong>Analyse</strong> :
+<li><code>isDictWord("LinkedInB3st!")</code> : "linkin" → wordlist en.txt + <code>deLeet("b3st")</code> → "beste" → <code>dictWord = true</code></li>
+<li>Resultaat: HYBRID<em>KEYSPACE</em>DICT = 8.000</li>
+<p>Interessant geval: het wachtwoord bevat twee roots ("linkedin" en "best" via de-leetification). Hybride aanval is van toepassing omdat ten minste één root wordt gedetecteerd. In de praktijk zou een combinatoraanval (twee woorden gelijmd) hier nog effectiever zijn.</p>
+<hr>
+<h2>15. Hybride aanvalslimieten</h2>
+<h3>15.1 Intrinsieke grenswaarden</h3>
+<strong>Afhankelijk van de kwaliteit van de woordenlijst</strong> : als het basiswoord niet in de woordenlijst staat, kan de hybride niet werken. Een wachtwoord gebaseerd op een zeer gespecialiseerde term (neologisme, obscure technische term, woord van een zeldzame taal) kan weerstaan als het ontbreekt in alle gangbare woordenlijsten.
+<strong>Onvolledige dekking van transformaties</strong> : zelfs OneRuleToRuleThemAlle met 52k regels dekt niet 100% van de denkbare transformaties. Sommige zeer zeldzame transformaties (base64 gedeeltelijke coderingen, uitgevonden patronen) ontsnappen aan de regels.
+<strong>Combinerende explosie met lange Wordlists</strong> Bij 2.000 GH/s (MD5), duurt het ~ 250 seconden, maar met bcrypt (69 kH/s), ~ 230.000 jaar. De schaalbaarheid van de hybride wordt beperkt door de lengte van de wordlist en de traagheid van de hash algoritme.
+<h3>15.2 Wat Time2Crack niet vastlegt</h3>
+<strong>Context Woordenlijsten</strong> : een aanvaller die zich richt op een specifiek bedrijf zal een woordenlijst bouwen met de naam van het bedrijf, producten, namen van werknemers, zakelijke termen. "Renault2024!" zou direct worden gekraakt door een aanvaller gericht Renault 
+<strong>Multipass-composietregels</strong> Sommige wachtwoorden weerstaan best64 maar geven toe aan twee-pass regels (toepassing van de ene regel, pas dan een andere regel toe op het resultaat). Time2Crack model slechts één regel pass.
+<strong>Cache effecten en geheugen</strong> : hashcat onderhoudt een tabel van kandidaten al getest om duplicaten te vermijden, die versnelt loopt in de praktijk. Niet gemodelleerd in Time2Crack (conservatief).
+<h3>15.3 Gevallen waarin de hybride wordt overschat</h3>
+<p>Time2Crack kan hybride snelheid overschatten in twee gevallen:</p>
+<li><strong>Lange wachtwoorden</strong> Een 20-karakter wachtwoord op basis van een woord woordenboek ("onbegrijpelijkheden1!") wordt gedetecteerd als een woordenboek, maar hybride hulpmiddelen filteren meestal kandidaten te lang. De echte sleutelruimte is misschien 10× groter.</li>
+<li><strong>Talen met rijke morfologie</strong> Turks, Fins, Hongaars hebben meer complexe woordenlijsten. "Güneş2024" kan onder radars passeren als de Turkse woordenlijst niet alle morfologische vormen bevat.</li>
+<hr>
+<h2>16. Doeltreffende verdediging</h2>
+<h3>16.1 Wat bestand is tegen hybridisatie</h3>
+<p>Hybride aanval mislukt als <strong>het wachtwoord komt niet voort uit een bestaand woordenboekwoord</strong>Effectieve strategieën:</p>
+<strong>Willekeurige wachtwoorden</strong> "xK9#mQ7@vP2!" bevat geen woordenboekwortel. Geen enkele hybride regel kan het genereren. Weerstand: maximum.
+<strong>Wachtwoordgenerators</strong> : wachtwoord managers (Bitwarden, 1Password, KeePass) genereren willekeurige strings. Geen root woordenboek → hybride niet van toepassing.
+<strong>Wachtwoorden van echt willekeurige woorden</strong> : "tabouret-marmot-ginger-flash" vier willekeurige woorden. Hybride aanval in de klassieke modus genereert geen combinaties van 4 woorden (dit is de rol van de combinator). Passphrase weerstaat de standaard hybride.
+<h3>16.2 Wat is GEEN resistentie tegen Hybride</h3>
+<p>De meest voorkomende "versterkingsstrategieën" verzetten zich niet tegen:</p>
+StrategieVoorbeeldResistentie
+-------------------------››
+Hoofdletter maken van de eerste letterZonneschijnArtikel <code>c</code>, rij 2
+Een cijfer toevoegen"sunshine1"Artikel <code>$1</code>, rij 4
+Toevoegen symboolSunshine.Artikel <code>$!</code>, rij 6
+E→3 vervangen"suns3ine"Artikel <code>s e 3</code>, top-20
+Alles combinerenSuns3ine.Een samengestelde regel, top-100
+Kies een zeldzaam woordPapillon123.
+Dubbel woord"zonzon"Artikel <code>d</code>, top-30
+Omgekeerd"enihsnus"Artikel <code>r</code>, top-15
+<strong>Conclusie</strong> Elke strategie op basis van "neem een woord + wijzigen" is kwetsbaar voor de hybride. De uitzondering is zo'n complexe en zeldzame wijziging dat het niet wordt gedekt door een regel ..maar als de gebruiker moet onthouden deze complexe transformatie, hij eindigt meestal kiezen voor iets voorspelbaar.
+<h3>16.3. Resistent hash-algoritmen</h3>
+<p>Zelfs als een wachtwoord kwetsbaar is voor de structurele hybride, kan het hash-algoritme de aanval economisch onlevenbaar maken:</p>
+AlgoritmeTijd voor DICT (8k gissingen)Oefenaanval
+----------------------------------------------------------------
+MD5 / NTLM&lt; 1 nanosecondeDirect
+SHA-25630 nanosecondenDirect
+bcrypt kosten 100,12 secondenTriviaal
+bcrypt kosten 14~32 secondenUitvoerbaar
+Argon2id (standaard)~10 secondenUitvoerbaar
+Argon2id (sterk parametraat)~100 secondenLangzaam maar mogelijk
+<strong>Argon2id</strong> met hoge parameters (t=4, m=65536) is het enige algoritme dat de hybride echt duur maakt, zelfs op zwakke wachtwoorden.
+<h3>16.4 Praktische aanbevelingen</h3>
+<li><strong>Wachtwoordbeheer gebruiken</strong> : genereert zuivere willekeurige, niet van toepassing hybride</li>
+<li><strong>Indien nodig</strong> : 4+ woorden eigenlijk willekeurige wachtwoordzin (uit EVF)</li>
+<li><strong>Nooit "veilig" een woord door vervanging</strong> : de hybride genereert ze automatisch</li>
+<li><strong>Vereiste bcryptkosten ≥ 12 of Argon2id</strong> serverzijde: de enige echte langzamer</li>
+<li><strong>MVO inschakelen</strong> : maakt offline kraken theoretisch zonder operationele impact</li>
+<hr>
+<h2>17. Referenties</h2>
+<h3>Academische publicaties</h3>
+<strong>Klein (1990)</strong>
+"Foiling the Cracker": Een overzicht van, en verbeteringen aan, wachtwoordbeveiliging<em>
+Werkzaamheden van de USNIX Security Workshop, 1990.
+
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009)</strong>
+</em>Wachtwoord volgen met behulp van probabilistische contextvrije grammatica's<em>
+IEEE Symposium on Security and Privacy (S&amp;P), 2009.
+Opgericht het PCFG model en geldig door de manier waarop de hashcat regels betrekking hebben op 78% van de menselijke transformaties waargenomen in RockYou.
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014)</strong>
+</em>Een studie van Probabilistische Password Modellen<em>
+IEE Symposium on Security and Privacy (S&amp;P), 2014.
+Wat? <strong>Directe referentiestudie</strong> voor Time2Crack: empirische meting van mediane posities (500 voor top-100, 2000
+<strong>Durmuth, M., Chaabane, A., Perito, D., &amp; Castelluccia, C. (2015)</strong>
+</em>Wanneer Privacyvergaderingen Beveiliging: Persoonlijke gegevens voor Wachtwoord volgen<em>
+ESORICS 2015.
+
+<strong>Veras, R., Collins, C., &amp; Thorpe, J. (2014)</strong>
+</em>Op de Semantische patronen van wachtwoorden en hun impact op de beveiliging<em>
+NDSS 2014.
+Taalanalyse van semantische patronen.
+<strong>Ur, B., Bees, J., Segreti, S. M., Bauer, L., Christin, N., &amp; Cranor, L. F. (2015)</strong>
+</em>Komen gebruikerspercepties van wachtwoordbeveiliging overeen met realiteit?<em>
+ACM CHI 2015.
+Demonstreert dat gebruikers systematisch de sterkte van gemuteerde wachtwoorden overschatten. "P@ssw0rd" ontvangt een subjectieve score van "sterk" maar wordt gekraakt in &lt; 1s.
+<strong>Wheeler, D.L. (2016)</strong>
+</em>zxcvbn: Low-Budget Wachtwoord Sterkteschatting<em>
+25e USENIX Security Symposium, 2016.
+Krachtschatting bibliotheek integratie mutatie regel detectie. Referentie voor de implementatie van detectie heuristiek.
+<h3>Industriële conferenties en presentaties</h3>
+<strong>Gosney, J (2012)</strong>
+</em>8x Nvidia GTX 580 Cluster Hashcat Benchmarks / LinkedIn crack sessie<em>
+Wachtwoordencon 2012, Oslo.
+Documenteer de LinkedIn crack: best64 + wordlist 3.5M = 224M kandidaten, 90% gebarsten in 6 dagen.<em>KEYSPACE</em>FULL = 128M.
+<strong>Löfstrand, K. (2013)</strong>
+</em>best64.rule <em>
+Intern, gepubliceerd op GitHub.
+Een set van 64 regels die empirisch geselecteerd zijn op RockYou om de cracksnelheid te maximaliseren.
+<strong>Steube, J. (2016</strong>
+</em>Hashcat Advanced Password Herstel<em>
+https://hashcat.net/hashcat/
+Officiële mode documentatie -a 0, -a 6, -a 7. Syntaxis van regels. Officiële GPU benchmarks op 12× RTX 4090.
+<strong>NotSoSecure (2019)</strong>
+</em>OneRegleToRegleThemAll <em>
+https://github.com/NotSoSecure/wachtwoord<em>kraken</em>regels
+52 218 regels gegenereerd door automatisch leren op corpus van gebarsten wachtwoorden.
+<h3>Referentiegereedschappen</h3>
+<strong>John de Ripper</strong> (Solar Designer, 1996
+https://www.openwall.com/john/
+Pioneer van de wordlist+rules hybride. JtR syntax altijd gebruikt parallel met Hashcat.
+<strong>Hashcat</strong> (Steube, 2009
+https://hashcat.net/hashcat/
+Referentie GPU implementatie. Modi -a 0/6/7 voor hybride. best64 geïntegreerd.
+<strong>RockYou wordlist</strong> (2009)
+14,3M duidelijke wachtwoorden. Standaard kalibratie corpora voor alle hybride regelsets.
+<strong>Seclists</strong> (Daniel Miessler, 2012
+https://github.com/danielmeissler/SecLists
+Collectie van wordlists per taal, domein, thema. Belangrijkste bron van Time2Crack taal wordlists.
+<h3>Webbronnen geciteerd in de Time2Crack-toepassing</h3>
+<strong>Chick3nman (Hashcat benchmarks/regels).</strong>
+https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb4222fd
+Verwante bron <code>descHybrid</code> (app.js) voor de orde van grootte van de toegepaste mutatieregels.
+<strong>IEEE Xplore (hybride referentie).</strong>
+https://ieeexplore.ieee.org/document/6956583
+Verwante bron <code>descHybrid</code> (app.js) betreffende de empirische effectiviteit van gemuteerde wachtwoorden.
+<hr>
+</em>Document gegenereerd als onderdeel van het Time2Crack-project 2026<em>
+</em>Zie ook: BRUTEFORCE<em>AANVAARDING</em>UITGEBREIDE MD, MARKOV<em>AANVAARDING</em>TOELICHTING<em>AANVAARDING</em>UITGEBRACHT.md
+</main>
+
+  <footer class="footer">
+    <div class="footer__links">
+      <a href="../about.html">À propos</a>
+      <a href="../sources.html">Sources</a>
+      <a href="../privacy.html">Confidentialité</a>
+      <a href="../hibp.html">HIBP</a>
+    </div>
+    <div class="footer__meta">Copie locale avec contenu réel des pages existantes et navigation interne fonctionnelle.</div>
+  </footer>
+<script src="../../site.js"></script>
+<script type="module" src="../../engine-bridge.js"></script>
+</body>
+</html>

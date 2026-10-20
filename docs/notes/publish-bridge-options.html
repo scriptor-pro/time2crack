@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Options de pont main → publish</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=newsreader:400,500,600,500i|jetbrains-mono:400,500,600&display=swap">
+<style>
+:root{
+  --bg:#F7F8FA;
+  --surface:#FFFFFF;
+  --surface-sunken:#EEF0F3;
+  --border:#DCE0E6;
+  --text:#1A1D24;
+  --text-muted:#5B6270;
+  --text-faint:#8990A0;
+  --accent:#B5691A;
+  --accent-soft:#F3E3D0;
+  --accent-text:#8A4E12;
+  --good:#3F7D4C;
+  --good-soft:#E4F0E6;
+  --warn:#A85D1E;
+  --warn-soft:#F5E6D6;
+  --risk:#B0432E;
+  --risk-soft:#F6E0DB;
+  --font-display:"Newsreader", Georgia, "Times New Roman", serif;
+  --font-body:"Newsreader", Georgia, "Times New Roman", serif;
+  --font-mono:"JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12151B;
+    --surface:#181C24;
+    --surface-sunken:#0E1116;
+    --border:#2A2F3A;
+    --text:#E7E9EE;
+    --text-muted:#9AA1B0;
+    --text-faint:#6B7280;
+    --accent:#E0954A;
+    --accent-soft:#3A2A18;
+    --accent-text:#F0B380;
+    --good:#7FBF8E;
+    --good-soft:#1C2E20;
+    --warn:#E0A45E;
+    --warn-soft:#332413;
+    --risk:#E0796A;
+    --risk-soft:#361E1A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151B;
+  --surface:#181C24;
+  --surface-sunken:#0E1116;
+  --border:#2A2F3A;
+  --text:#E7E9EE;
+  --text-muted:#9AA1B0;
+  --text-faint:#6B7280;
+  --accent:#E0954A;
+  --accent-soft:#3A2A18;
+  --accent-text:#F0B380;
+  --good:#7FBF8E;
+  --good-soft:#1C2E20;
+  --warn:#E0A45E;
+  --warn-soft:#332413;
+  --risk:#E0796A;
+  --risk-soft:#361E1A;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  line-height:1.6;
+  padding:clamp(28px, 5vw, 72px) clamp(18px, 4vw, 32px) 90px;
+}
+::selection{background:var(--accent-soft);color:var(--accent-text);}
+
+.page{max-width:980px;margin:0 auto;}
+
+.masthead{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding-bottom:28px;
+  margin-bottom:40px;
+  border-bottom:1px solid var(--border);
+}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:0.72rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--text-faint);
+}
+h1{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:clamp(1.7rem, 3.4vw, 2.35rem);
+  margin:0;
+  text-wrap:balance;
+  letter-spacing:-0.01em;
+}
+.dek{
+  color:var(--text-muted);
+  font-size:1.05rem;
+  max-width:66ch;
+  margin:2px 0 0;
+}
+.premise{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  border-radius:8px;
+  padding:16px 20px;
+  margin-top:22px;
+  max-width:70ch;
+}
+.premise p{margin:0;font-size:0.95rem;color:var(--text-muted);}
+.premise code{
+  font-family:var(--font-mono);
+  font-size:0.88em;
+  background:var(--surface-sunken);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:0.1em 0.38em;
+  color:var(--text);
+}
+
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+.option{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+.option__head{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  padding:22px 26px 18px;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.option__num{
+  font-family:var(--font-mono);
+  font-size:0.85rem;
+  color:var(--accent-text);
+  background:var(--accent-soft);
+  border-radius:5px;
+  padding:2px 8px;
+  font-weight:600;
+  flex-shrink:0;
+}
+.option__title{
+  font-family:var(--font-display);
+  font-size:1.28rem;
+  font-weight:600;
+  margin:0;
+  text-wrap:balance;
+}
+.option__effort{
+  margin-left:auto;
+  font-family:var(--font-mono);
+  font-size:0.72rem;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--text-faint);
+  white-space:nowrap;
+}
+.option__effort b{color:var(--text-muted);font-weight:600;}
+
+.option__body{
+  padding:20px 26px 26px;
+}
+.option__lede{
+  font-size:0.98rem;
+  color:var(--text-muted);
+  max-width:68ch;
+  margin:0 0 20px;
+}
+.option__lede code{
+  font-family:var(--font-mono);
+  font-size:0.88em;
+  background:var(--surface-sunken);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:0.1em 0.38em;
+  color:var(--text);
+}
+
+.cols{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+}
+.col{
+  background:var(--surface);
+  padding:16px 18px;
+}
+.col__label{
+  font-family:var(--font-mono);
+  font-size:0.68rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  margin:0 0 10px;
+}
+.col--trait .col__label{color:var(--text-faint);}
+.col--pro .col__label{color:var(--good);}
+.col--con .col__label{color:var(--risk);}
+.col ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;}
+.col li{font-size:0.9rem;line-height:1.45;position:relative;padding-left:16px;}
+.col li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0.55em;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+}
+.col--trait li::before{background:var(--text-faint);}
+.col--pro li::before{background:var(--good);}
+.col--con li::before{background:var(--risk);}
+
+.fit{
+  margin-top:18px;
+  font-size:0.9rem;
+  color:var(--text-muted);
+  background:var(--surface-sunken);
+  border-radius:8px;
+  padding:10px 16px;
+}
+.fit b{color:var(--text);font-weight:600;}
+
+.verdict{
+  margin-top:44px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:26px 28px;
+}
+.verdict__label{
+  font-family:var(--font-mono);
+  font-size:0.72rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--accent-text);
+  margin:0 0 12px;
+  font-weight:600;
+}
+.verdict p{margin:0 0 10px;font-size:0.98rem;max-width:72ch;}
+.verdict p:last-child{margin-bottom:0;}
+.verdict code{
+  font-family:var(--font-mono);
+  font-size:0.88em;
+  background:var(--surface-sunken);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:0.1em 0.38em;
+}
+
+footer{
+  margin-top:52px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+  font-family:var(--font-mono);
+  font-size:0.76rem;
+  color:var(--text-faint);
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+@media (max-width:760px){
+  .cols{grid-template-columns:1fr;}
+  .option__effort{margin-left:0;}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <span class="eyebrow">Time2Crack — suite de la note de synthèse</span>
+    <h1>Quatre façons de faire tenir le pont entre <span style="white-space:nowrap;">main</span> et la production</h1>
+    <p class="dek">Aucun mécanisme n'existe aujourd'hui : la publication sur time2crack.eu se fait à la main, sans trace, vers la branche <code style="font-family:var(--font-mono);background:var(--surface-sunken);border:1px solid var(--border);border-radius:4px;padding:0.1em 0.38em;">codex-site-publish</code> que GitHub Pages sert directement.</p>
+    <div class="premise">
+      <p>Contrainte commune aux quatre options : <code>main</code> n'est pas publiable tel quel. Son <code>index.html</code> racine a un canonical erroné (<code>time2crack.com</code>), il lui manque les hreflang absolus et le favicon corrigé, et il référence encore des assets ML/ONNX absents. Toute solution doit préserver cette passe de correctifs, pas la contourner.</p>
+    </div>
+  </header>
+
+  <div class="options">
+
+    <article class="option">
+      <div class="option__head">
+        <span class="option__num">1</span>
+        <h2 class="option__title">Pages pointe directement sur <span style="font-family:var(--font-mono);font-size:0.85em;">main</span></h2>
+        <span class="option__effort">Effort <b>moyen</b> · discipline <b>élevée</b></span>
+      </div>
+      <div class="option__body">
+        <p class="option__lede">On change la config GitHub Pages (<code>source.branch: "main"</code>) et les correctifs de publication (canonical, hreflang, favicon, retrait ONNX) deviennent un script exécuté en pre-commit ou juste avant chaque commit sur les fichiers concernés.</p>
+        <div class="cols">
+          <div class="col col--trait">
+            <p class="col__label">Caractéristiques</p>
+            <ul>
+              <li>Une seule branche à connaître et à maintenir</li>
+              <li>Publication à chaque push sur <code style="font-family:var(--font-mono);font-size:0.85em;">main</code></li>
+              <li>Correctifs appliqués en amont, avant le commit</li>
+            </ul>
+          </div>
+          <div class="col col--pro">
+            <p class="col__label">Avantages</p>
+            <ul>
+              <li>Zéro synchronisation manuelle entre deux branches</li>
+              <li><code style="font-family:var(--font-mono);font-size:0.85em;">main</code> devient la seule source de vérité, sans ambiguïté</li>
+              <li>Mise en place la plus simple conceptuellement</li>
+            </ul>
+          </div>
+          <div class="col col--con">
+            <p class="col__label">Inconvénients</p>
+            <ul>
+              <li>Tout commit expérimental part directement en prod</li>
+              <li>Le WIP en cours (<code style="font-family:var(--font-mono);font-size:0.85em;">v2/public/</code>) doit rester toujours propre</li>
+              <li>Aucun filet de sécurité avant déploiement</li>
+            </ul>
+          </div>
+        </div>
+        <p class="fit"><b>Convient si</b> l'équipe est prête à traiter chaque commit sur main comme potentiellement public, ou à passer systématiquement par des PR revues avant merge.</p>
+      </div>
+    </article>
+
+    <article class="option">
+      <div class="option__head">
+        <span class="option__num">2</span>
+        <h2 class="option__title">Branche <span style="font-family:var(--font-mono);font-size:0.85em;">release</span> scriptée</h2>
+        <span class="option__effort">Effort <b>moyen</b> · discipline <b>modérée</b></span>
+      </div>
+      <div class="option__body">
+        <p class="option__lede">On garde une branche de publication séparée, mais on remplace le portage manuel par <code>scripts/sync-release.sh</code> : merge de <code>main</code>, application des correctifs, push. GitHub Pages reste branché sur cette branche (renommage propre de <code>codex-site-publish</code>).</p>
+        <div class="cols">
+          <div class="col col--trait">
+            <p class="col__label">Caractéristiques</p>
+            <ul>
+              <li>Deux branches : <code style="font-family:var(--font-mono);font-size:0.85em;">main</code> (dev) et <code style="font-family:var(--font-mono);font-size:0.85em;">release</code> (publiée)</li>
+              <li>Un script unique fait tout le travail de portage</li>
+              <li>Déclenchement toujours manuel, mais outillé</li>
+            </ul>
+          </div>
+          <div class="col col--pro">
+            <p class="col__label">Avantages</p>
+            <ul>
+              <li>Séparation dev/publication conservée — utile si main contient du WIP cassé</li>
+              <li>Un seul point d'entrée, traçable et réexécutable</li>
+              <li>Élimine la dérive silencieuse actuelle</li>
+            </ul>
+          </div>
+          <div class="col col--con">
+            <p class="col__label">Inconvénients</p>
+            <ul>
+              <li>Reste un geste humain à déclencher à chaque publication</li>
+              <li>Le script de correctifs doit être écrit et testé une première fois</li>
+              <li>Oubli toujours possible si personne ne lance le script</li>
+            </ul>
+          </div>
+        </div>
+        <p class="fit"><b>Convient si</b> on veut garder la main sur le moment de publication sans réinvestir dans un pipeline CI complet.</p>
+      </div>
+    </article>
+
+    <article class="option">
+      <div class="option__head">
+        <span class="option__num">3</span>
+        <h2 class="option__title">GitHub Actions automatique</h2>
+        <span class="option__effort">Effort <b>élevé</b> · discipline <b>faible</b></span>
+      </div>
+      <div class="option__body">
+        <p class="option__lede">Un workflow <code>.github/workflows/deploy.yml</code> qui, à chaque push sur <code>main</code> (ou sur un tag), checkout, applique les correctifs via un petit script, et publie le résultat — soit sur <code>codex-site-publish</code>, soit directement en artifact Pages via <code>actions/deploy-pages</code>.</p>
+        <div class="cols">
+          <div class="col col--trait">
+            <p class="col__label">Caractéristiques</p>
+            <ul>
+              <li>Pipeline CI natif GitHub, déclenché par push ou tag</li>
+              <li>Correctifs de publication exécutés côté serveur, pas en local</li>
+              <li>Peut être combiné à une protection de branche</li>
+            </ul>
+          </div>
+          <div class="col col--pro">
+            <p class="col__label">Avantages</p>
+            <ul>
+              <li>Zéro geste humain après la mise en place initiale</li>
+              <li>Impossible d'oublier de publier</li>
+              <li>Review possible via PR avant que le merge ne déclenche la publication</li>
+            </ul>
+          </div>
+          <div class="col col--con">
+            <p class="col__label">Inconvénients</p>
+            <ul>
+              <li>Coût de mise en place le plus élevé des quatre</li>
+              <li>Demande de définir ce qui est « publiable » (tag vs. chaque commit)</li>
+              <li>Débogage d'un pipeline cassé plus indirect qu'un script local</li>
+            </ul>
+          </div>
+        </div>
+        <p class="fit"><b>Convient si</b> les publications deviennent fréquentes et qu'on veut retirer complètement l'étape manuelle de l'équation.</p>
+      </div>
+    </article>
+
+    <article class="option">
+      <div class="option__head">
+        <span class="option__num">4</span>
+        <h2 class="option__title">Script <span style="font-family:var(--font-mono);font-size:0.85em;">publish.sh</span> sur le worktree existant</h2>
+        <span class="option__effort">Effort <b>faible</b> · discipline <b>modérée</b></span>
+      </div>
+      <div class="option__body">
+        <p class="option__lede">On garde <code>CrackDate-publish</code> tel quel — déjà en place comme worktree — et on ajoute <code>bin/publish.sh</code> qui automatise ce qui se ferait à la main : fetch, merge de <code>main</code>, correctifs, puis push vers <code>codex-site-publish</code>.</p>
+        <div class="cols">
+          <div class="col col--trait">
+            <p class="col__label">Caractéristiques</p>
+            <ul>
+              <li>Réutilise l'infrastructure déjà présente (worktree existant)</li>
+              <li>Aucune nouvelle branche, aucun CI à configurer</li>
+              <li>Un seul script local à lancer avant chaque publication</li>
+            </ul>
+          </div>
+          <div class="col col--pro">
+            <p class="col__label">Avantages</p>
+            <ul>
+              <li>Changement le plus léger des quatre</li>
+              <li>Corrige immédiatement le flou actuel, sans nouveau composant</li>
+              <li>Bon compromis si les publications restent peu fréquentes</li>
+            </ul>
+          </div>
+          <div class="col col--con">
+            <p class="col__label">Inconvénients</p>
+            <ul>
+              <li>Reste manuel — il faut se souvenir de lancer le script</li>
+              <li>Ne passe pas à l'échelle si le rythme de publication s'accélère</li>
+              <li>Aucune trace CI si le script échoue silencieusement</li>
+            </ul>
+          </div>
+        </div>
+        <p class="fit"><b>Convient si</b> l'objectif est de corriger le flou tout de suite, à coût quasi nul, quitte à migrer plus tard vers une option plus automatisée.</p>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="verdict">
+    <p class="verdict__label">Recommandation</p>
+    <p>Démarrer par <b>l'option 4</b> : elle corrige immédiatement le flou actuel sans nouveau composant à maintenir, en réutilisant le worktree déjà en place.</p>
+    <p>Basculer vers <b>l'option 3</b> si les publications deviennent fréquentes — <b>l'option 2</b> reste un palier raisonnable entre les deux si on préfère garder la main sur le déclenchement sans investir dans un pipeline CI complet.</p>
+  </div>
+
+  <footer>
+    <span>time2crack.eu · options de pont main → publish</span>
+    <span>suite de git-divergence-memo.html</span>
+  </footer>
+
+</div>
+</body>
+</html>

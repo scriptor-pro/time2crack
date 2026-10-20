@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confidentialité &amp; Sécurité — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../site.css">
+  <style>:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #eef4ff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --muted-strong: #334155;
+  --line: #e2e8f0;
+  --line-strong: #c7dcff;
+  --brand: #2563eb;
+  --brand-soft: #e0eeff;
+  --brand-soft-2: #d0e4ff;
+  --success: #166534;
+  --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --header-h: 52px;
+  --container: 48rem;
+  --space-2: 0.375rem;
+  --space-3: 0.625rem;
+  --space-4: 1rem;
+  --space-5: 1.618rem;
+  --space-6: 2.618rem;
+  --text-sm: 0.8125rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.618rem;
+  --leading: 1.618;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading);
+}
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; border: 0; background: none; color: inherit; }
+
+.page-shell {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-6);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header__inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  min-height: var(--header-h);
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.site-logo__mark {
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #dbeafe, #bfdbfe);
+  border: 1px solid #93c5fd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+  font-size: 0.9rem;
+}
+
+.site-logo__accent { color: var(--brand); }
+
+.site-nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.site-nav__primary,
+.site-nav__secondary {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.site-nav__secondary {
+  margin-left: auto;
+}
+
+.nav-link,
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease;
+}
+
+.nav-link:hover,
+.nav-toggle:hover,
+.nav-link:focus-visible,
+.nav-toggle:focus-visible {
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+
+.nav-link.is-active,
+.nav-toggle.is-active {
+  color: var(--brand);
+  background: var(--brand-soft);
+  font-weight: 500;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown__menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 230px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2) 0;
+  z-index: 30;
+}
+
+.dropdown__menu--lang {
+  min-width: 180px;
+}
+
+.dropdown__menu.is-open { display: block; }
+.dropdown__group-title {
+  display: block;
+  padding: 6px var(--space-4) 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dropdown__separator {
+  height: 1px;
+  margin: var(--space-2) 0;
+  background: var(--line);
+}
+.dropdown__item {
+  display: block;
+  padding: 8px var(--space-4);
+  font-size: var(--text-sm);
+}
+.dropdown__item:hover,
+.dropdown__item:focus-visible {
+  background: var(--bg);
+  outline: none;
+}
+
+.hero {
+  padding: var(--space-6) 0 var(--space-5);
+}
+
+.hero__card {
+  background: linear-gradient(180deg, var(--surface-2), #f8fbff);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: var(--text-sm);
+  color: var(--success);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.hero__eyebrow::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.hero__subtitle {
+  margin: var(--space-4) 0 0;
+  max-width: 60ch;
+  color: var(--muted-strong);
+  font-size: 1.05rem;
+}
+
+.input-section,
+.generator-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.input-section {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.input-group > label,
+.generator-container > h2 {
+  display: block;
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.generator-container {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.generator-container > p {
+  margin: 0 0 var(--space-4);
+  color: var(--muted-strong);
+}
+
+.generator-container small {
+  color: var(--muted);
+}
+
+.presets,
+.generator-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.presets {
+  margin: 0 0 var(--space-4);
+}
+
+.generator-buttons {
+  margin-top: var(--space-4);
+}
+
+.preset-btn,
+.btn {
+  padding: .8rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-weight: 600;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.preset-btn:hover,
+.btn:hover {
+  background: var(--bg);
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}
+
+.preset-btn {
+  min-width: 7rem;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: transparent;
+}
+
+.btn-secondary {
+  background: #fff;
+}
+
+.btn:disabled,
+.preset-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.generator-controls {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.control-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.control-group legend {
+  padding: 0 .35rem;
+  font-weight: 600;
+  color: var(--muted-strong);
+}
+
+.control-group label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.charset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+  margin-top: .9rem;
+}
+
+.charset-option {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: .7rem;
+  row-gap: .15rem;
+  padding: .85rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.charset-option input {
+  margin-top: .2rem;
+}
+
+.charset-label {
+  font-weight: 600;
+}
+
+.charset-range {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.strength-meter {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #fff, var(--bg));
+}
+
+.strength-bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.strength-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+}
+
+.strength-text {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .75rem;
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.entropy-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: .55rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.generator-output {
+  margin-top: var(--space-4);
+}
+
+.password-output {
+  width: 100%;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.feedback {
+  margin-top: var(--space-3);
+  padding: .75rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+  color: var(--muted-strong);
+}
+
+.cracking-results {
+  margin-top: var(--space-5);
+}
+
+.cracking-subtitle {
+  margin-top: .25rem;
+  color: var(--muted);
+}
+
+.brute-force-display {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.brute-time-label {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.brute-time-formatted {
+  margin-top: .25rem;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+
+.brute-time-breakdown {
+  margin-top: .35rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.attacks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.attack-card {
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.attack-name {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.attack-time {
+  margin-top: .25rem;
+  font-weight: 700;
+}
+
+.attack-rank {
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.best-attack {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+  padding: .9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.best-attack .label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack .value {
+  font-weight: 700;
+}
+
+.best-attack .time {
+  color: var(--muted-strong);
+}
+
+.best-attack-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--brand-soft);
+}
+
+.best-attack-label {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack-result {
+  margin: .35rem 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.profile-selector {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-selector__label {
+  display: block;
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
+
+.profile-selector__buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .5rem;
+}
+
+.profile-btn {
+  padding: .85rem .8rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  text-align: left;
+}
+
+.profile-btn--active {
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.profile-btn__name,
+.profile-info-card__header span:first-child {
+  display: block;
+  font-weight: 700;
+}
+
+.profile-btn__gpu,
+.profile-info-card__gpus {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.profile-info-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-info-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  align-items: baseline;
+}
+
+.profile-info-card__desc {
+  display: block;
+  margin-top: .35rem;
+  color: var(--muted-strong);
+}
+
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.context-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .9rem;
+  background: #fff;
+}
+
+.context-group__title {
+  margin-bottom: .75rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.context-row {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .45rem;
+}
+
+.context-row dt {
+  color: var(--muted);
+}
+
+.context-row dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  margin-top: var(--space-4);
+  overflow-x: auto;
+}
+
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#results-table th,
+#results-table td {
+  padding: .8rem .9rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+#results-table thead th {
+  background: var(--bg);
+  color: var(--muted-strong);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+#results-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#status {
+  margin-top: var(--space-4);
+  color: var(--muted-strong);
+}
+
+.dict-loader {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.dict-loader__content {
+  display: grid;
+  gap: .5rem;
+}
+
+.dict-loader__text {
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.dict-loader__bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.dict-loader__progress {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-top: var(--space-4);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--muted-strong);
+  font-size: .85rem;
+}
+
+.badge--privacy {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.badge__dot {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.input-panel {
+  margin-top: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1.1rem, 2.4vw, 1.5rem);
+}
+
+.input-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.input-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.text-input {
+  flex: 1 1 18rem;
+  min-width: 0;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  background: #fff;
+  color: var(--text);
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.toggle-btn,
+.cta-btn {
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  min-width: 8.2rem;
+  text-align: center;
+}
+
+.toggle-btn:hover,
+.cta-btn:hover { background: #1d4ed8; }
+
+.input-hint {
+  margin: var(--space-3) 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.card {
+  grid-column: span 12;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card--split {
+  grid-column: span 6;
+}
+
+.card h2,
+.card h3 {
+  margin: 0 0 .8rem;
+  line-height: 1.15;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted-strong);
+}
+
+.card ul {
+  margin: .8rem 0 0 1.1rem;
+  color: var(--muted-strong);
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .9rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: .4rem .65rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+.section-title {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--text-lg);
+}
+
+.method-list,
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.method-link,
+.page-link {
+  display: block;
+  padding: .95rem 1rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.method-link:hover,
+.page-link:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.method-link__title,
+.page-link__title {
+  display: block;
+  font-weight: 600;
+}
+
+.method-link__desc,
+.page-link__desc {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.footer {
+  max-width: var(--container);
+  margin: var(--space-6) auto 0;
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.footer__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+}
+
+.footer__links a {
+  color: var(--muted-strong);
+}
+
+.footer__links a:hover { color: var(--brand); }
+
+.footer__meta {
+  margin-top: .8rem;
+  text-align: center;
+}
+
+.hamburger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 4px auto;
+  background: var(--text);
+  border-radius: 999px;
+}
+
+.drawer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .site-nav { display: none; }
+  .hamburger { display: inline-block; }
+  .drawer {
+    display: grid;
+    gap: .5rem;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--space-4) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .drawer[hidden] { display: none; }
+  .drawer__link, .drawer__summary {
+    display: block;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__details { margin: 0; }
+  .drawer__details summary {
+    list-style: none;
+    cursor: pointer;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__nested {
+    margin-top: .5rem;
+    padding-left: .25rem;
+    display: grid;
+    gap: .5rem;
+  }
+  .method-list,
+  .link-grid,
+  .card--split,
+  .attacks-grid,
+  .context-grid,
+  .profile-selector__buttons,
+  .charset-grid {
+    grid-template-columns: 1fr;
+    grid-column: span 12;
+  }
+  .profile-info-card__header,
+  .best-attack,
+  .strength-text {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .hero { padding-top: var(--space-4); }
+}
+
+@media (max-width: 600px) {
+  .page-shell { padding-inline: var(--space-3); }
+  .site-header__inner { padding-inline: var(--space-3); }
+  .hero__title { font-size: 2rem; }
+}
+</style>
+</head>
+<body data-page="privacy">
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-logo" href="index.html">
+        <span class="site-logo__mark">🔒</span>
+        Time<span class="site-logo__accent">2</span>Crack
+      </a>
+      <nav class="site-nav" aria-label="Navigation principale">
+        <div class="site-nav__primary">
+          <a class="nav-link " href="index.html">Tester un mot de passe</a>
+          <a class="nav-link " href="generator.html">Générer un mot de passe</a>
+        </div>
+        <div class="site-nav__secondary">
+          <a class="nav-link " href="faq.html">FAQ</a>
+          <a class="nav-link " href="about.html">À propos</a>
+          <div class="dropdown">
+            <button class="nav-toggle" id="science-toggle" type="button" aria-expanded="false" aria-controls="science-menu">
+              Science <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="science-menu" role="menu" aria-label="Science">
+              <a class="dropdown__item" href="how-time2crack-works.html" role="menuitem">Comment ça fonctionne</a>
+              <div class="dropdown__separator"></div>
+              <span class="dropdown__group-title">Méthodes d'attaque</span>
+              <a class="dropdown__item" href="methode/index.html" role="menuitem">index</a><a class="dropdown__item" href="methode/bruteforce.html" role="menuitem">Force brute</a><a class="dropdown__item" href="methode/dictionary.html" role="menuitem">Dictionnaire</a><a class="dropdown__item" href="methode/hybrid.html" role="menuitem">Hybride</a><a class="dropdown__item" href="methode/mask.html" role="menuitem">Masque</a><a class="dropdown__item" href="methode/markov.html" role="menuitem">Markov</a><a class="dropdown__item" href="methode/pcfg.html" role="menuitem">PCFG</a><a class="dropdown__item" href="methode/combinator.html" role="menuitem">Combinateur</a>
+              <div class="dropdown__separator"></div>
+              <a class="dropdown__item" href="sources.html" role="menuitem">Sources</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="security-toggle" type="button" aria-expanded="false" aria-controls="security-menu">
+              Sécurité <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="security-menu" role="menu" aria-label="Sécurité">
+              <a class="dropdown__item" href="hibp.html" role="menuitem">HIBP</a>
+              <a class="dropdown__item" href="privacy.html" role="menuitem">Confidentialité</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="lang-toggle" type="button" aria-expanded="false" aria-controls="lang-menu">
+              Français <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu dropdown__menu--lang" id="lang-menu" role="menu" aria-label="Langue">
+              <a class="dropdown__item is-active" href="privacy.html" hreflang="fr" role="menuitem">Français</a><a class="dropdown__item" href="../en/privacy.html" hreflang="en" role="menuitem">English</a><a class="dropdown__item" href="../es/privacy.html" hreflang="es" role="menuitem">Español</a><a class="dropdown__item" href="../pt/privacy.html" hreflang="pt" role="menuitem">Português</a><a class="dropdown__item" href="../de/privacy.html" hreflang="de" role="menuitem">Deutsch</a><a class="dropdown__item" href="../it/privacy.html" hreflang="it" role="menuitem">Italiano</a><a class="dropdown__item" href="../tr/privacy.html" hreflang="tr" role="menuitem">Türkçe</a><a class="dropdown__item" href="../pl/privacy.html" hreflang="pl" role="menuitem">Polski</a><a class="dropdown__item" href="../nl/privacy.html" hreflang="nl" role="menuitem">Nederlands</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <button class="hamburger" id="drawer-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="drawer" id="mobile-drawer" hidden>
+    <a class="drawer__link " href="index.html">Tester un mot de passe</a>
+    <a class="drawer__link " href="generator.html">Générer un mot de passe</a>
+    <a class="drawer__link " href="faq.html">FAQ</a>
+    <a class="drawer__link " href="about.html">À propos</a>
+    <details class="drawer__details">
+      <summary>Science</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="how-time2crack-works.html">Comment ça fonctionne</a>
+        <a class="drawer__link" href="methode/index.html">Combinateur</a><a class="drawer__link" href="methode/bruteforce.html">Force brute</a><a class="drawer__link" href="methode/dictionary.html">Dictionnaire</a><a class="drawer__link" href="methode/hybrid.html">Hybride</a><a class="drawer__link" href="methode/mask.html">Masque</a><a class="drawer__link" href="methode/markov.html">Markov</a><a class="drawer__link" href="methode/pcfg.html">PCFG</a><a class="drawer__link" href="methode/combinator.html">Combinateur</a>
+        <a class="drawer__link" href="sources.html">Sources</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Sécurité</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="hibp.html">HIBP</a>
+        <a class="drawer__link" href="privacy.html">Confidentialité</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Langue</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" hreflang="fr" href="privacy.html">Français</a><a class="drawer__link" hreflang="en" href="../en/privacy.html">English</a><a class="drawer__link" hreflang="es" href="../es/privacy.html">Español</a><a class="drawer__link" hreflang="pt" href="../pt/privacy.html">Português</a><a class="drawer__link" hreflang="de" href="../de/privacy.html">Deutsch</a><a class="drawer__link" hreflang="it" href="../it/privacy.html">Italiano</a><a class="drawer__link" hreflang="tr" href="../tr/privacy.html">Türkçe</a><a class="drawer__link" hreflang="pl" href="../pl/privacy.html">Polski</a><a class="drawer__link" hreflang="nl" href="../nl/privacy.html">Nederlands</a>
+      </div>
+    </details>
+  </div>
+<main class="page-shell">
+<h1>Confidentialité &amp; Sécurité</h1>
+<p style="font-size: 1.05em; color: #666; margin-bottom: 2em;">
+      Comprendre exactement ce que Time2Crack fait et ne fait pas avec votre mot de passe
+    </p>
+ ========================================== 
+ CE QUE FAIT TIME2CRACK 
+ ========================================== 
+<section>
+<h2>✅ Ce que Time2Crack FAIT</h2>
+<div class="privacy-section">
+<h3>1. Analyse locale dans votre navigateur</h3>
+<ul class="does-list">
+<li><strong>Reçoit votre mot de passe</strong> uniquement quand vous le tapez dans le champ</li>
+<li><strong>Calcule en local</strong> tous les rangs d'attaque (force brute, dictionnaire, Markov, etc.)</li>
+<li><strong>Affiche les résultats</strong> directement sur votre écran</li>
+<li><strong>Oublie le mot de passe</strong> dès que vous quittez ou changez de page</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin-top: 1em;">
+          ℹ️ Votre navigateur n'envoie le mot de passe nulle part — il reste uniquement en mémoire RAM locale pendant l'analyse.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>2. Vérification optionnelle HIBP (Have I Been Pwned)</h3>
+<p>
+          Si vous cochez l'option "Vérifier les leaks connus", Time2Crack peut vérifier si votre mot de passe figure dans les fuites historiques. Cette vérification utilise le protocole <strong>k-anonymité</strong> pour protéger votre confidentialité.
+        </p>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Comment fonctionne la k-anonymité</h4>
+<div class="flow-diagram">
+<div class="flow-step">
+<div class="flow-number">1</div>
+<div class="flow-content">
+<p><strong>Calcul du hash SHA-1</strong> (sur votre ordinateur)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack calcule le hash SHA-1 complet de votre mot de passe, mais <strong>ne le quitte jamais</strong>.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">2</div>
+<div class="flow-content">
+<p><strong>Extraction du préfixe</strong> (5 premiers caractères)</p>
+<p style="color: #666; margin-top: 0.3em;">Seuls les 5 premiers caractères du hash sont envoyés à HIBP. C'est insuffisant pour identifier votre mot de passe.</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">3</div>
+<div class="flow-content">
+<p><strong>Requête anonyme à HIBP</strong></p>
+<p style="color: #666; margin-top: 0.3em;">HIBP retourne tous les mots de passe qui commencent par ce préfixe (environ 500-1000 résultats anonymes).</p>
+</div>
+</div>
+<div class="flow-step">
+<div class="flow-number">4</div>
+<div class="flow-content">
+<p><strong>Comparaison locale</strong> (sur votre ordinateur)</p>
+<p style="color: #666; margin-top: 0.3em;">Time2Crack compare les 35 caractères restants du hash localement. Seul votre ordinateur sait si c'est un match.</p>
+</div>
+</div>
+</div>
+<h4 style="margin-top: 1.2em; font-size: 1em;">Exemple concret : le mot de passe "password"</h4>
+<div class="example-box">
+<div class="example-title">🔍 Étape par étape</div>
+<div class="hash-row">
+<span class="hash-label">Mot de passe :</span>
+<span class="hash-value"><code>password</code></span>
+</div>
+<div class="hash-row">
+<span class="hash-label">Hash SHA-1 complet :</span>
+<span class="hash-value">
+<code>5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+</span>
+</div>
+<div style="margin: 1em 0; padding: 1em; background: #f0f0f0; border-radius: 4px; border-left: 4px solid #2196F3;">
+<p style="margin-top: 0; color: #666; font-size: 0.9em;"><strong>↓ SPLIT</strong></p>
+<div class="hash-row" style="margin-top: 0.8em;">
+<span class="hash-label"><span class="hash-sent">✅ Envoyé à HIBP</span> :</span>
+<span class="hash-value">
+<code class="hash-sent">5BAA6</code>
+<span style="color: #666; font-size: 0.85em;"> (5 caractères = ~2,000 hashes possibles)</span>
+</span>
+</div>
+<div class="hash-row">
+<span class="hash-label"><span class="hash-local">🔒 Conservé localement</span> :</span>
+<span class="hash-value">
+<code class="hash-local">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code>
+<span style="color: #666; font-size: 0.85em;"> (35 caractères, jamais transmis)</span>
+</span>
+</div>
+</div>
+<div style="margin-top: 1em; padding: 1em; background: #e8f5e9; border-radius: 4px; border-left: 4px solid #388e3c;">
+<p style="margin: 0; color: #1b5e20; font-weight: 500;">
+              ✅ Résultat : HIBP retourne tous les hashes commençant par <code>5BAA6</code> (~500-1000 résultats).
+              <br>Time2Crack compare localement et détermine si c'est un match. <strong>Votre mot de passe complet ne quitte jamais votre appareil.</strong>
+</p>
+</div>
+</div>
+<p style="font-size: 0.9em; color: #666; margin-top: 1.5em;">
+<strong>Pourquoi 5 caractères suffisent pour la k-anonymité :</strong>
+          Avec 5 caractères hexadécimaux, il y a 16^5 = 1,048,576 combinaisons possibles. HIBP retourne environ 500-1000 résultats pour chaque préfixe, créant une masse critique où votre mot de passe est anonymisé parmi des centaines d'autres.
+        </p>
+</div>
+<div class="privacy-section">
+<h3>3. Stockage des données</h3>
+<ul class="does-list">
+<li><strong>Utilise le localStorage de votre navigateur</strong> uniquement pour les paramètres utilisateur (langue, préférences)</li>
+<li><strong>Aucune sauvegarde de mots de passe</strong> ou de résultats de crack time</li>
+<li><strong>Efface automatiquement</strong> le mot de passe de la mémoire après l'analyse</li>
+</ul>
+</div>
+</section>
+ ========================================== 
+ CE QUE NE FAIT PAS TIME2CRACK 
+ ========================================== 
+<section>
+<h2>❌ Ce que Time2Crack NE FAIT PAS</h2>
+<div class="privacy-section">
+<h3>1. Transmission du mot de passe</h3>
+<ul class="does-list doesnt-list">
+<li>N'envoie <span class="highlight-red">jamais</span> votre mot de passe à nos serveurs ou à des tiers</li>
+<li>N'envoie <span class="highlight-red">jamais</span> votre mot de passe à HIBP ou à d'autres services</li>
+<li>N'envoie <span class="highlight-red">jamais</span> le hash SHA-1 complet (seuls 5 caractères)</li>
+<li>N'enregistre <span class="highlight-red">jamais</span> les mots de passe testés</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>2. Utilisation des données</h3>
+<ul class="does-list doesnt-list">
+<li>Ne garde <span class="highlight-red">aucune trace</span> de votre activité ou de vos mots de passe testés</li>
+<li>Ne crée <span class="highlight-red">aucun profil utilisateur</span> lié à vos données personnelles</li>
+<li>Ne partage <span class="highlight-red">aucune information</span> avec des tiers (annonceurs, partenaires, etc.)</li>
+<li>Ne vend <span class="highlight-red">jamais</span> vos données</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Stockage persistent</h3>
+<ul class="does-list doesnt-list">
+<li>N'héberge <span class="highlight-red">aucune base de données</span> de mots de passe utilisateur</li>
+<li>Ne sauvegarde <span class="highlight-red">aucun historique</span> de calculs ou de résultats</li>
+<li>N'exige <span class="highlight-red">aucun compte utilisateur</span> ou enregistrement</li>
+</ul>
+</div>
+<div class="warning-box">
+<div class="warning-title">⚠️ Important</div>
+<p style="margin: 0.5em 0 0;">
+          Même si Time2Crack ne transmet jamais votre mot de passe, <strong>ne testez pas votre vrai mot de passe ici si quelqu'un d'autre regarde votre écran</strong>. Utilisez un mot de passe de test ou consultez cet outil en privé.
+        </p>
+</div>
+</section>
+ ========================================== 
+ TABLEAU COMPARATIF 
+ ========================================== 
+<section>
+<h2>Résumé : Fait vs Ne Fait Pas</h2>
+<table class="comparison-table">
+<thead>
+<tr>
+<th>Action</th>
+<th class="does-column">Time2Crack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Calcule les temps de crack</strong></td>
+<td class="does-column">✅ Oui (localement)</td>
+</tr>
+<tr>
+<td><strong>Envoie le mot de passe complet</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Envoie le hash SHA-1 complet</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Envoie les 5 premiers caractères du hash (k-anonymité)</strong></td>
+<td class="does-column">✅ Oui (si vérification HIBP activée)</td>
+</tr>
+<tr>
+<td><strong>Sauvegarde les mots de passe</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Crée un compte utilisateur</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Partage les données avec des tiers</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Utilise des cookies de tracking</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Affiche des publicités</strong></td>
+<td class="doesnt-column">❌ Non</td>
+</tr>
+<tr>
+<td><strong>Exécute du code client externalisé</strong></td>
+<td class="doesnt-column">❌ Non (zéro dépendances)</td>
+</tr>
+</tbody>
+</table>
+</section>
+ ========================================== 
+ VÉRIFICATION 
+ ========================================== 
+<section>
+<h2>Comment Vérifier Vous-Même</h2>
+<div class="privacy-section">
+<h3>1. Outils de développement du navigateur</h3>
+<ol style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Ouvrez les <strong>Outils de développement</strong> (F12 ou Cmd+Option+I)</li>
+<li>Allez dans l'onglet <strong>Réseau</strong> (Network)</li>
+<li>Entrez un mot de passe de test dans Time2Crack</li>
+<li>Observez les requêtes réseau : vous ne verrez <strong>que</strong> la requête HIBP avec le préfixe 5-char</li>
+<li>Le mot de passe complet n'apparaît <strong>jamais</strong> dans les requêtes</li>
+</ol>
+</div>
+<div class="privacy-section">
+<h3>2. Consulter le code source</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Time2Crack est <strong>100% open source</strong> sur Codeberg</li>
+<li>Le code contient <strong>zéro dépendances externes</strong> — c'est du JavaScript pur</li>
+<li>Vous pouvez inspecter <code>app.js</code> et vérifier que :
+            <ul style="margin-top: 0.5em;">
+<li>Les mots de passe restent toujours locaux</li>
+<li>Seul le préfixe HIBP 5-char est envoyé</li>
+<li>Aucun cookie de tracking ou d'analytics personnel</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="privacy-section">
+<h3>3. Tester en mode hors ligne</h3>
+<ul style="color: #555; margin: 1em 0; padding-left: 2em;">
+<li>Vous pouvez utiliser Time2Crack <strong>complètement hors ligne</strong></li>
+<li>Téléchargez les fichiers et ouvrez <code>index.html</code> localement</li>
+<li>Tous les calculs fonctionnent sans connexion (sauf la vérification HIBP optionnelle)</li>
+</ul>
+</div>
+</section>
+ ========================================== 
+ FOOTER 
+ ========================================== 
+<section style="margin-top: 3em; padding-top: 2em; border-top: 1px solid #eee;">
+<p style="color: #999; font-size: 0.9em;">
+<strong>Questions ?</strong> Consultez la <a href="faq.html">FAQ</a> ou les <a href="sources.html">sources académiques</a> pour plus de détails sur la méthodologie de Time2Crack.
+      </p>
+</section>
+</main>
+
+  <footer class="footer">
+    <div class="footer__links">
+      <a href="about.html">À propos</a>
+      <a href="sources.html">Sources</a>
+      <a href="privacy.html">Confidentialité</a>
+      <a href="hibp.html">HIBP</a>
+    </div>
+    <div class="footer__meta">Copie locale avec contenu réel des pages existantes et navigation interne fonctionnelle.</div>
+  </footer>
+<script src="../site.js"></script>
+<script type="module" src="../engine-bridge.js"></script>
+</body>
+</html>

@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../site.css">
+  <style>:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #eef4ff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --muted-strong: #334155;
+  --line: #e2e8f0;
+  --line-strong: #c7dcff;
+  --brand: #2563eb;
+  --brand-soft: #e0eeff;
+  --brand-soft-2: #d0e4ff;
+  --success: #166534;
+  --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --header-h: 52px;
+  --container: 48rem;
+  --space-2: 0.375rem;
+  --space-3: 0.625rem;
+  --space-4: 1rem;
+  --space-5: 1.618rem;
+  --space-6: 2.618rem;
+  --text-sm: 0.8125rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.618rem;
+  --leading: 1.618;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading);
+}
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; border: 0; background: none; color: inherit; }
+
+.page-shell {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-6);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header__inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  min-height: var(--header-h);
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.site-logo__mark {
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #dbeafe, #bfdbfe);
+  border: 1px solid #93c5fd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+  font-size: 0.9rem;
+}
+
+.site-logo__accent { color: var(--brand); }
+
+.site-nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.site-nav__primary,
+.site-nav__secondary {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.site-nav__secondary {
+  margin-left: auto;
+}
+
+.nav-link,
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease;
+}
+
+.nav-link:hover,
+.nav-toggle:hover,
+.nav-link:focus-visible,
+.nav-toggle:focus-visible {
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+
+.nav-link.is-active,
+.nav-toggle.is-active {
+  color: var(--brand);
+  background: var(--brand-soft);
+  font-weight: 500;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown__menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 230px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2) 0;
+  z-index: 30;
+}
+
+.dropdown__menu--lang {
+  min-width: 180px;
+}
+
+.dropdown__menu.is-open { display: block; }
+.dropdown__group-title {
+  display: block;
+  padding: 6px var(--space-4) 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dropdown__separator {
+  height: 1px;
+  margin: var(--space-2) 0;
+  background: var(--line);
+}
+.dropdown__item {
+  display: block;
+  padding: 8px var(--space-4);
+  font-size: var(--text-sm);
+}
+.dropdown__item:hover,
+.dropdown__item:focus-visible {
+  background: var(--bg);
+  outline: none;
+}
+
+.hero {
+  padding: var(--space-6) 0 var(--space-5);
+}
+
+.hero__card {
+  background: linear-gradient(180deg, var(--surface-2), #f8fbff);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: var(--text-sm);
+  color: var(--success);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.hero__eyebrow::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.hero__subtitle {
+  margin: var(--space-4) 0 0;
+  max-width: 60ch;
+  color: var(--muted-strong);
+  font-size: 1.05rem;
+}
+
+.input-section,
+.generator-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.input-section {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.input-group > label,
+.generator-container > h2 {
+  display: block;
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.generator-container {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.generator-container > p {
+  margin: 0 0 var(--space-4);
+  color: var(--muted-strong);
+}
+
+.generator-container small {
+  color: var(--muted);
+}
+
+.presets,
+.generator-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.presets {
+  margin: 0 0 var(--space-4);
+}
+
+.generator-buttons {
+  margin-top: var(--space-4);
+}
+
+.preset-btn,
+.btn {
+  padding: .8rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-weight: 600;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.preset-btn:hover,
+.btn:hover {
+  background: var(--bg);
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}
+
+.preset-btn {
+  min-width: 7rem;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: transparent;
+}
+
+.btn-secondary {
+  background: #fff;
+}
+
+.btn:disabled,
+.preset-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.generator-controls {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.control-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.control-group legend {
+  padding: 0 .35rem;
+  font-weight: 600;
+  color: var(--muted-strong);
+}
+
+.control-group label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.charset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+  margin-top: .9rem;
+}
+
+.charset-option {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: .7rem;
+  row-gap: .15rem;
+  padding: .85rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.charset-option input {
+  margin-top: .2rem;
+}
+
+.charset-label {
+  font-weight: 600;
+}
+
+.charset-range {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.strength-meter {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #fff, var(--bg));
+}
+
+.strength-bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.strength-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+}
+
+.strength-text {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .75rem;
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.entropy-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: .55rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.generator-output {
+  margin-top: var(--space-4);
+}
+
+.password-output {
+  width: 100%;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.feedback {
+  margin-top: var(--space-3);
+  padding: .75rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+  color: var(--muted-strong);
+}
+
+.cracking-results {
+  margin-top: var(--space-5);
+}
+
+.cracking-subtitle {
+  margin-top: .25rem;
+  color: var(--muted);
+}
+
+.brute-force-display {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.brute-time-label {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.brute-time-formatted {
+  margin-top: .25rem;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+
+.brute-time-breakdown {
+  margin-top: .35rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.attacks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.attack-card {
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.attack-name {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.attack-time {
+  margin-top: .25rem;
+  font-weight: 700;
+}
+
+.attack-rank {
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.best-attack {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+  padding: .9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.best-attack .label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack .value {
+  font-weight: 700;
+}
+
+.best-attack .time {
+  color: var(--muted-strong);
+}
+
+.best-attack-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--brand-soft);
+}
+
+.best-attack-label {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack-result {
+  margin: .35rem 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.profile-selector {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-selector__label {
+  display: block;
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
+
+.profile-selector__buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .5rem;
+}
+
+.profile-btn {
+  padding: .85rem .8rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  text-align: left;
+}
+
+.profile-btn--active {
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.profile-btn__name,
+.profile-info-card__header span:first-child {
+  display: block;
+  font-weight: 700;
+}
+
+.profile-btn__gpu,
+.profile-info-card__gpus {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.profile-info-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-info-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  align-items: baseline;
+}
+
+.profile-info-card__desc {
+  display: block;
+  margin-top: .35rem;
+  color: var(--muted-strong);
+}
+
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.context-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .9rem;
+  background: #fff;
+}
+
+.context-group__title {
+  margin-bottom: .75rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.context-row {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .45rem;
+}
+
+.context-row dt {
+  color: var(--muted);
+}
+
+.context-row dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  margin-top: var(--space-4);
+  overflow-x: auto;
+}
+
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#results-table th,
+#results-table td {
+  padding: .8rem .9rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+#results-table thead th {
+  background: var(--bg);
+  color: var(--muted-strong);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+#results-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#status {
+  margin-top: var(--space-4);
+  color: var(--muted-strong);
+}
+
+.dict-loader {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.dict-loader__content {
+  display: grid;
+  gap: .5rem;
+}
+
+.dict-loader__text {
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.dict-loader__bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.dict-loader__progress {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-top: var(--space-4);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--muted-strong);
+  font-size: .85rem;
+}
+
+.badge--privacy {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.badge__dot {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.input-panel {
+  margin-top: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1.1rem, 2.4vw, 1.5rem);
+}
+
+.input-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.input-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.text-input {
+  flex: 1 1 18rem;
+  min-width: 0;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  background: #fff;
+  color: var(--text);
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.toggle-btn,
+.cta-btn {
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  min-width: 8.2rem;
+  text-align: center;
+}
+
+.toggle-btn:hover,
+.cta-btn:hover { background: #1d4ed8; }
+
+.input-hint {
+  margin: var(--space-3) 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.card {
+  grid-column: span 12;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card--split {
+  grid-column: span 6;
+}
+
+.card h2,
+.card h3 {
+  margin: 0 0 .8rem;
+  line-height: 1.15;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted-strong);
+}
+
+.card ul {
+  margin: .8rem 0 0 1.1rem;
+  color: var(--muted-strong);
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .9rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: .4rem .65rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+.section-title {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--text-lg);
+}
+
+.method-list,
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.method-link,
+.page-link {
+  display: block;
+  padding: .95rem 1rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.method-link:hover,
+.page-link:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.method-link__title,
+.page-link__title {
+  display: block;
+  font-weight: 600;
+}
+
+.method-link__desc,
+.page-link__desc {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.footer {
+  max-width: var(--container);
+  margin: var(--space-6) auto 0;
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.footer__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+}
+
+.footer__links a {
+  color: var(--muted-strong);
+}
+
+.footer__links a:hover { color: var(--brand); }
+
+.footer__meta {
+  margin-top: .8rem;
+  text-align: center;
+}
+
+.hamburger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 4px auto;
+  background: var(--text);
+  border-radius: 999px;
+}
+
+.drawer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .site-nav { display: none; }
+  .hamburger { display: inline-block; }
+  .drawer {
+    display: grid;
+    gap: .5rem;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--space-4) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .drawer[hidden] { display: none; }
+  .drawer__link, .drawer__summary {
+    display: block;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__details { margin: 0; }
+  .drawer__details summary {
+    list-style: none;
+    cursor: pointer;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__nested {
+    margin-top: .5rem;
+    padding-left: .25rem;
+    display: grid;
+    gap: .5rem;
+  }
+  .method-list,
+  .link-grid,
+  .card--split,
+  .attacks-grid,
+  .context-grid,
+  .profile-selector__buttons,
+  .charset-grid {
+    grid-template-columns: 1fr;
+    grid-column: span 12;
+  }
+  .profile-info-card__header,
+  .best-attack,
+  .strength-text {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .hero { padding-top: var(--space-4); }
+}
+
+@media (max-width: 600px) {
+  .page-shell { padding-inline: var(--space-3); }
+  .site-header__inner { padding-inline: var(--space-3); }
+  .hero__title { font-size: 2rem; }
+}
+</style>
+</head>
+<body data-page="faq">
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-logo" href="index.html">
+        <span class="site-logo__mark">🔒</span>
+        Time<span class="site-logo__accent">2</span>Crack
+      </a>
+      <nav class="site-nav" aria-label="Navigation principale">
+        <div class="site-nav__primary">
+          <a class="nav-link " href="index.html">Tester un mot de passe</a>
+          <a class="nav-link " href="generator.html">Générer un mot de passe</a>
+        </div>
+        <div class="site-nav__secondary">
+          <a class="nav-link is-active" href="faq.html">FAQ</a>
+          <a class="nav-link " href="about.html">À propos</a>
+          <div class="dropdown">
+            <button class="nav-toggle" id="science-toggle" type="button" aria-expanded="false" aria-controls="science-menu">
+              Science <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="science-menu" role="menu" aria-label="Science">
+              <a class="dropdown__item" href="how-time2crack-works.html" role="menuitem">Comment ça fonctionne</a>
+              <div class="dropdown__separator"></div>
+              <span class="dropdown__group-title">Méthodes d'attaque</span>
+              <a class="dropdown__item" href="methode/index.html" role="menuitem">index</a><a class="dropdown__item" href="methode/bruteforce.html" role="menuitem">Force brute</a><a class="dropdown__item" href="methode/dictionary.html" role="menuitem">Dictionnaire</a><a class="dropdown__item" href="methode/hybrid.html" role="menuitem">Hybride</a><a class="dropdown__item" href="methode/mask.html" role="menuitem">Masque</a><a class="dropdown__item" href="methode/markov.html" role="menuitem">Markov</a><a class="dropdown__item" href="methode/pcfg.html" role="menuitem">PCFG</a><a class="dropdown__item" href="methode/combinator.html" role="menuitem">Combinateur</a>
+              <div class="dropdown__separator"></div>
+              <a class="dropdown__item" href="sources.html" role="menuitem">Sources</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="security-toggle" type="button" aria-expanded="false" aria-controls="security-menu">
+              Sécurité <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="security-menu" role="menu" aria-label="Sécurité">
+              <a class="dropdown__item" href="hibp.html" role="menuitem">HIBP</a>
+              <a class="dropdown__item" href="privacy.html" role="menuitem">Confidentialité</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="lang-toggle" type="button" aria-expanded="false" aria-controls="lang-menu">
+              Español <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu dropdown__menu--lang" id="lang-menu" role="menu" aria-label="Langue">
+              <a class="dropdown__item" href="../fr/faq.html" hreflang="fr" role="menuitem">Français</a><a class="dropdown__item" href="../en/faq.html" hreflang="en" role="menuitem">English</a><a class="dropdown__item is-active" href="faq.html" hreflang="es" role="menuitem">Español</a><a class="dropdown__item" href="../pt/faq.html" hreflang="pt" role="menuitem">Português</a><a class="dropdown__item" href="../de/faq.html" hreflang="de" role="menuitem">Deutsch</a><a class="dropdown__item" href="../it/faq.html" hreflang="it" role="menuitem">Italiano</a><a class="dropdown__item" href="../tr/faq.html" hreflang="tr" role="menuitem">Türkçe</a><a class="dropdown__item" href="../pl/faq.html" hreflang="pl" role="menuitem">Polski</a><a class="dropdown__item" href="../nl/faq.html" hreflang="nl" role="menuitem">Nederlands</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <button class="hamburger" id="drawer-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="drawer" id="mobile-drawer" hidden>
+    <a class="drawer__link " href="index.html">Tester un mot de passe</a>
+    <a class="drawer__link " href="generator.html">Générer un mot de passe</a>
+    <a class="drawer__link is-active" href="faq.html">FAQ</a>
+    <a class="drawer__link " href="about.html">À propos</a>
+    <details class="drawer__details">
+      <summary>Science</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="how-time2crack-works.html">Comment ça fonctionne</a>
+        <a class="drawer__link" href="methode/index.html">Combinateur</a><a class="drawer__link" href="methode/bruteforce.html">Force brute</a><a class="drawer__link" href="methode/dictionary.html">Dictionnaire</a><a class="drawer__link" href="methode/hybrid.html">Hybride</a><a class="drawer__link" href="methode/mask.html">Masque</a><a class="drawer__link" href="methode/markov.html">Markov</a><a class="drawer__link" href="methode/pcfg.html">PCFG</a><a class="drawer__link" href="methode/combinator.html">Combinateur</a>
+        <a class="drawer__link" href="sources.html">Sources</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Sécurité</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="hibp.html">HIBP</a>
+        <a class="drawer__link" href="privacy.html">Confidentialité</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Langue</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" hreflang="fr" href="../fr/faq.html">Français</a><a class="drawer__link" hreflang="en" href="../en/faq.html">English</a><a class="drawer__link" hreflang="es" href="faq.html">Español</a><a class="drawer__link" hreflang="pt" href="../pt/faq.html">Português</a><a class="drawer__link" hreflang="de" href="../de/faq.html">Deutsch</a><a class="drawer__link" hreflang="it" href="../it/faq.html">Italiano</a><a class="drawer__link" hreflang="tr" href="../tr/faq.html">Türkçe</a><a class="drawer__link" hreflang="pl" href="../pl/faq.html">Polski</a><a class="drawer__link" hreflang="nl" href="../nl/faq.html">Nederlands</a>
+      </div>
+    </details>
+  </div>
+<main class="page-shell">
+<h2>Preguntas frecuentes</h2>
+<p><small><a href="how-time2crack-works.html">Entender el funcionamiento técnico →</a></small></p>
+<dl class="faq-list">
+<dt>¿Cómo mido la resistencia de mi contraseña?</dt>
+<dd>
+<p>
+<strong>Time2Crack es un estimador gratuito de resistencia a contraseñas</strong> que mide la robustez de su contraseña contra ataques informáticos reales.
+        </p>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Proceso de evaluación de tres etapas</h3>
+<ol style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>Introduzca su contraseña</strong> en el campo de herramientas Time2Crack.
+            <em style="color: #999;">(Su contraseña se mantiene enteramente en su computadora, sin transmisión)</em>
+</li>
+<li>
+<strong>Haga clic en "Analyse"</strong> para activar el análisis de resistencia.
+La herramienta prueba su contraseña contra 7 tipos de ataques informáticos realistas: ataque de fuerza cruda, diccionario, híbrido, máscara, Markov probabilístico, PCFG gramatical y combinador de palabras.
+          </li>
+<li>
+<strong>Leer los resultados</strong> : La herramienta muestra el tiempo estimado para romper su contraseña con cada uno de los 6 algoritmos de hash (MD5, SHA-1, SHA-256, NTLM, bcrypt, Argon2id).
+          </li>
+</ol>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Interpretación de resultados</h3>
+<p>
+          Time2Crack muestra dos medidas principales:
+        </p>
+<ul style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>"Crack Time"</strong> : ¿Cuánto tardaría un atacante promedio (12 GPU moderna) para romper su contraseña.
+            <ul style="margin-top: 0.5em; font-size: 0.95em;">
+<li> <strong>Excelente</strong> ■ 100 años</li>
+<li> <strong>Muy bien.</strong> 1 año – 100 años</li>
+<li> <strong>Aceptable</strong> : 1 día – 1 año</li>
+<li> <strong>Baja</strong> 1 día</li>
+<li> <strong>Ultra-low</strong> 1 segundo</li>
+</ul>
+</li>
+<li>
+<strong>"Ataque rápido"</strong> : Qué tipo de ataque romperá su contraseña primero.
+Por ejemplo, una contraseña de diccionario simple se romperá por un <strong>ataque de diccionario</strong>, mientras que una contraseña (4+ palabras) se romperá por <strong>Ataque combinado</strong>.
+          </li>
+</ul>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">¿Por qué esta medida es científica?</h3>
+<p>
+          Time2Crack no mide<strong>entropía teórica</strong> (traditional NIST approach), which overestimates passwords by ignoring human patterns.
+En su lugar, él considera el <strong>costo práctico de ataque</strong> basado en:
+        </p>
+<ul style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li><strong>Investigación académica</strong> (Wheeler 2016, Wang &amp; Ding 2023, Weir 2009) validando 7 ataques reales</li>
+<li><strong>Datos empíricos rockyou2021</strong> (32.6M contraseñas reales) para calibrar modelos probabilísticos</li>
+<li><strong>Puntos de referencia oficiales de la GPU</strong> (Hashcat v6.2.6, Hive Systems 2025) para velocidades de grieta</li>
+</ul>
+<p style="margin-top: 1em;">
+          Esto significa que <strong>Time2Crack calcula con más precisión la seguridad real</strong> una barra de fuerza visual tradicional.
+        </p>
+<h3 style="font-size: 1.05em; margin-top: 1em; margin-bottom: 0.5em;">Pasos para mejorar tu puntuación</h3>
+<p>
+          Si su contraseña se valora bajo, mejore como sigue:
+        </p>
+<ol style="margin: 1em 0; padding-left: 2em; color: #555;">
+<li>
+<strong>Aumentar la longitud</strong> : Incremento de 8 a 12 caracteres.
+Cada personaje adicional multiplica la dificultad por ~70 (número promedio de caracteres).
+          </li>
+<li>
+<strong>Use una contraseña</strong> (recomendado): 4-5 palabras al azar separadas por dashes o espacios.
+Ejemplo: <code style="background: #f5f5f5; padding: 2px 4px; border-radius: 3px;">correct-horse-battery-staple</code>
+            Esto es más seguro y más memorizable que una palabra compleja.
+          </li>
+<li>
+<strong>Evitar patrones humanos</strong> : No combinar "Nombre + año" (ex: Jean1985).
+Time2Crack detecta estos patrones y los rompe en segundos a través del ataque PCFG.
+          </li>
+<li>
+<strong>Utilice un administrador de contraseñas</strong> : Que un gerente genere una cadena de caracteres 16-32 al azar.
+Time2Crack lo estimará a &gt; 10,000 años, garantizando la máxima seguridad.
+          </li>
+</ol>
+<p style="margin-top: 1em; padding-top: 1em; border-top: 1px solid #eee; font-size: 0.95em; color: #666;">
+<strong>Asesoramiento clave</strong> : No busque una barra de fuerza visual perfecta. <strong>tiempo de crack</strong> para una contraseña crítica (email, banco).
+Una contraseña de 4 palabras tiene éxito fácilmente, mientras que una palabra de 12 caracteres puede fallar dependiendo de la composición.
+        </p>
+</dd>
+<dt>¿Qué es Time2Crack?</dt>
+<dd>Time2Crack es una calculadora de tiempo de grieta de contraseña. Estima cuánto tiempo tomaría un atacante para adivinar su contraseña utilizando 7 ataques diferentes (fuerza de grifo, diccionario, híbrido, máscara, Markov, PCFG, combinador). <strong>en su computadora</strong> - tu contraseña nunca deja tu dispositivo.</dd>
+<dt>¿Mis datos están seguros?</dt>
+<dd>
+<p>
+          Sí. <strong>100% local</strong> en su navegador. No se envía contraseña a nuestros servidores. Sólo hacemos un cheque opcional: compruebe a través de Have I Been Pwned (HIBP) si su contraseña se conoce en viejas filtraciones. <strong>k-anonymity</strong> (sólo enviamos los primeros 5 caracteres del hash SHA-1, nunca la contraseña completa).
+        </p>
+<h4 style="font-size: 0.95em; margin: 0.8em 0 0.3em 0; font-weight: 600;">Ejemplo concreto: cómo funciona el anonimato k</h4>
+<p style="font-size: 0.9em; color: #666; margin: 0.5em 0;">
+          Para contraseña <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">password</code> :
+        </p>
+<ul style="font-size: 0.9em; color: #555; margin: 0.5em 0 1em 2em; list-style: disc;">
+<li>Full Hash SHA-1 (local, nunca transmitido): <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8</code></li>
+<li>Prefijo enviado a HIBP: <code style="background: #e8f5e9; padding: 0.2em 0.4em; border-radius: 2px; color: #2e7d32;">5BAA6</code> (sólo 5 caracteres)</li>
+<li>Sufijo se conserva localmente (nunca se transmite): <code style="background: #f0f0f0; padding: 0.2em 0.4em; border-radius: 2px;">1E4C9B93F3F0682250B6CF8331B7EE68FD8</code></li>
+<li>HIBP devuelve todos los hash empezando con <code>5BAA6</code> (~500-1000 resultados anónimos)</li>
+<li>Time2Crack compara localmente el sufijo con las respuestas, sólo en su computadora</li>
+</ul>
+<p style="font-size: 0.9em; color: #666; margin: 0.5em 0;">
+          Resultado: <strong>La contraseña completa nunca deja tu dispositivo</strong>incluso durante la verificación HIBP.
+        </p>
+</dd>
+<dt>¿Por qué las estimaciones de tiempo varían según el algoritmo hash?</dt>
+<dd>Los diferentes algoritmos de hash tienen velocidades de grieta muy diferentes. MD5 y SHA-1 (sin salir) son rápidos de grieta (~2 mil millones de intentos/segundo), mientras que la cripta y Argon2id son voluntariamente lentos (~2 millones y ~800 intentos/segundo). Time2Crack muestra tiempo para cada algoritmo, por lo que usted entiende la importancia de usar <strong>bcrypt</strong> o <strong>Argon2id</strong> para contraseñas críticas.</dd>
+<dt>¿Qué es "fuerza cruda", "Diccionario", etc.?</dt>
+<dd>Estos son los 7 tipos de ataques reales que usan los piratas:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>Fuerza bruta</strong> : probar cada combinación posible (bajo para contraseñas largas)</li>
+<li><strong>Diccionario</strong> : probar palabras comunes y filtraciones conocidas (rápido para palabras simples)</li>
+<li><strong>híbrido</strong> : diccionario + mutaciones menores (ex: contraseña → p@ssw0rd)</li>
+<li><strong>Máscara</strong> Objetivo de estructuras predecibles (por ejemplo, nombre + año)</li>
+<li><strong>Markov</strong> : analizar las probabilidades de secuencias (ex: "qu" actual en francés)</li>
+<li><strong>PCFG</strong> : Estructuras gramaticales (por ejemplo, Majuscule+minuscules+figuras)</li>
+<li><strong>Combiner</strong> : concate palabras (ex: "correo-batería-batería-espaldas")</li>
+</ul>
+</dd>
+<dt>¿Qué es "Favorable" contra "Standard"?</dt>
+<dd><strong>Estándar</strong> : cree optimista que el atacante utiliza el ataque más conocido. <strong>Favorable</strong> : supone que el atacante prueba sólo el diccionario y mutaciones simples (el escenario más favorable para su contraseña). En la práctica, estas dos estimaciones son a menudo similares, ya que los mejores atacantes prueban todos los métodos en paralelo.</dd>
+<dt>Mi contraseña está marcada "Ultra-weak".</dt>
+<dd>Una contraseña ultra-bajo (llamada en menos de un segundo) significa que se incluye en las listas de contraseñas más comunes. <strong>Cámbialo inmediatamente.</strong> En su lugar, use:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li>Uno <strong>Passphrase</strong> (4+ palabras al azar separadas por espacios, por ejemplo "correo-bateria-batería-staple")</li>
+<li>Uno <strong>contraseña generada aleatoriamente</strong> (al menos 12 caracteres mixtos)</li>
+<li>Uno <strong>password Manager</strong> (Bitwarden, 1Password, KeePass, etc.)</li>
+</ul>
+</dd>
+<dt>¿Cómo puedo crear una contraseña segura?</dt>
+<dd>Los tres enfoques:
+        <ol style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>Passphrase</strong> (recomendado): 4-5 palabras aleatorias comunes (p. ej. "sun-table-computer-flower"). Fácil de memorizar, muy segura (~10.000+ años si números añadidos).</li>
+<li><strong>Aleatorio</strong> : 16+ caracteres (macúsculas, pequeñas figuras, símbolos). Cracking tarda más de 10.000 años. Utilice un administrador para almacenarlo.</li>
+<li><strong>Frase + mutación</strong> "Sun2024!" (passphrase + año + símbolo). Combina seguridad y memoria.</li>
+</ol>
+</dd>
+<dt>¿Por qué una contraseña corta con símbolos no es suficiente?</dt>
+<dd>Ejemplo: "P@ssw0rd!" (10 caracteres) se puede romper en unos días con bcrypt. Incluso con símbolos, una palabra corta sigue siendo vulnerable porque sigue una <strong>patrón predecible</strong> El ataque PCFG prueba este patrón exactamente. Una contraseña de 4 palabras es más segura que una palabra corta "complejo".</dd>
+<dt>¿Y si uso un administrador de contraseñas?</dt>
+<dd>¡Excelente elección! Los gerentes (Bitwarden, 1Password, KeePass) generan contraseñas aleatorias de 16-32 caracteres, que no necesita memorizar. Time2Crack estimará tiempo de grieta para <strong>10.000 años más</strong> para una palabra generada al azar. <strong>sólido contraseña para desbloquear al administrador</strong>.</dd>
+<dt>¿Pueden mis estimaciones ser incorrectas?</dt>
+<dd>Time2Crack utiliza los mejores datos públicos disponibles (rockyou2021, NIST, investigación académica) para calibrar sus estimaciones. <strong>El error típico es ±1 orden de magnitud</strong> (es decir, 10× más rápido/más bajo que la realidad). <strong>ataque con 12× RTX 4090</strong> — un verdadero atacante puede ser 100× más lento o 10.000× más rápido dependiendo de sus recursos. <strong>Argon2id</strong> son más confiables ( menor, menor variación).</dd>
+<dt>¿Por qué Time2Crack muestra 7 ataques diferentes?</dt>
+<dd>Porque... <strong>cada contraseña es vulnerable a un ataque diferente</strong>. "palabra" cae en 1 intento (diccionario). "P@ssw0rd!" cae en ~10,000 intentos (hibrid + PCFG). "a1b2c3d4e5f6g7h8" cae sólo en la fuerza cruda (~10^30 intentos). <strong>el mejor ataque para su contraseña</strong> y muestra el tiempo para cada algoritmo de hash.</dd>
+<dt>La página Método explica cómo funciona?</dt>
+<dd>¡Sí! <strong>Método</strong> (accesible a través del menú) detalles:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li>Cómo funciona cada ataque (con ejemplos)</li>
+<li>Fuentes de datos utilizadas (rockyou, NIST, Hive Systems)</li>
+<li>Limitaciones y hipótesis</li>
+<li>Investigación académica que valida nuestras estimaciones</li>
+</ul>
+</dd>
+<dt>¿Puedo usar Time2Crack sin conexión?</dt>
+<dd>Si! Time2Crack funciona completamente fuera de línea una vez cargado. Los datos del diccionario y los modelos ML (Markov, PCFG) se descargan una vez al inicio. Luego se puede cerrar Internet — Time2Crack continúa trabajando normalmente.</dd>
+<dt>¿Cuánto tiempo puede romperse una contraseña "buena"?</dt>
+<dd>Con una estimación conservadora:
+        <ul style="margin-top: 0.5em; margin-left: 1.5em;">
+<li><strong>8 caracteres aleatorios</strong> : ~8 horas (MD5) / ~3 años (bcrypt)</li>
+<li><strong>12 caracteres aleatorios</strong> : ~2.000 años (MD5) / ~1 millones de años (bcrypt)</li>
+<li><strong>16 caracteres aleatorios</strong> : ~2 millones de años (bcrypt)</li>
+<li><strong>Passphrase 4 palabras + símbolo</strong> : ~ 10.000+ años (bcrypt)</li>
+</ul>
+        Uso <strong>bcrypt</strong> o <strong>Argon2id</strong> para todas las contraseñas críticas.
+      </dd>
+<dt>¿Es la fuente abierta Time2Crack?</dt>
+<dd>El código fuente está disponible en Codeberg. Time2Crack tiene <strong>cero dependencia</strong> — es JavaScript puro, no hay paquetes ni sudoración. Puede comprobar el código usted mismo para confirmar que no se transmite ninguna contraseña.</dd>
+</dl>
+</main>
+
+  <footer class="footer">
+    <div class="footer__links">
+      <a href="about.html">À propos</a>
+      <a href="sources.html">Sources</a>
+      <a href="privacy.html">Confidentialité</a>
+      <a href="hibp.html">HIBP</a>
+    </div>
+    <div class="footer__meta">Copie locale avec contenu réel des pages existantes et navigation interne fonctionnelle.</div>
+  </footer>
+<script src="../site.js"></script>
+<script type="module" src="../engine-bridge.js"></script>
+</body>
+</html>

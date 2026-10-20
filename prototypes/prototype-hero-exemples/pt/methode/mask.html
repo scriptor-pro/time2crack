@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Máscara — Métodos de ataque — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../site.css">
+  <style>:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #eef4ff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --muted-strong: #334155;
+  --line: #e2e8f0;
+  --line-strong: #c7dcff;
+  --brand: #2563eb;
+  --brand-soft: #e0eeff;
+  --brand-soft-2: #d0e4ff;
+  --success: #166534;
+  --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --header-h: 52px;
+  --container: 48rem;
+  --space-2: 0.375rem;
+  --space-3: 0.625rem;
+  --space-4: 1rem;
+  --space-5: 1.618rem;
+  --space-6: 2.618rem;
+  --text-sm: 0.8125rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.618rem;
+  --leading: 1.618;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading);
+}
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; border: 0; background: none; color: inherit; }
+
+.page-shell {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-6);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header__inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  min-height: var(--header-h);
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.site-logo__mark {
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #dbeafe, #bfdbfe);
+  border: 1px solid #93c5fd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+  font-size: 0.9rem;
+}
+
+.site-logo__accent { color: var(--brand); }
+
+.site-nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.site-nav__primary,
+.site-nav__secondary {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.site-nav__secondary {
+  margin-left: auto;
+}
+
+.nav-link,
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease;
+}
+
+.nav-link:hover,
+.nav-toggle:hover,
+.nav-link:focus-visible,
+.nav-toggle:focus-visible {
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+
+.nav-link.is-active,
+.nav-toggle.is-active {
+  color: var(--brand);
+  background: var(--brand-soft);
+  font-weight: 500;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown__menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 230px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2) 0;
+  z-index: 30;
+}
+
+.dropdown__menu--lang {
+  min-width: 180px;
+}
+
+.dropdown__menu.is-open { display: block; }
+.dropdown__group-title {
+  display: block;
+  padding: 6px var(--space-4) 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dropdown__separator {
+  height: 1px;
+  margin: var(--space-2) 0;
+  background: var(--line);
+}
+.dropdown__item {
+  display: block;
+  padding: 8px var(--space-4);
+  font-size: var(--text-sm);
+}
+.dropdown__item:hover,
+.dropdown__item:focus-visible {
+  background: var(--bg);
+  outline: none;
+}
+
+.hero {
+  padding: var(--space-6) 0 var(--space-5);
+}
+
+.hero__card {
+  background: linear-gradient(180deg, var(--surface-2), #f8fbff);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: var(--text-sm);
+  color: var(--success);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.hero__eyebrow::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.hero__subtitle {
+  margin: var(--space-4) 0 0;
+  max-width: 60ch;
+  color: var(--muted-strong);
+  font-size: 1.05rem;
+}
+
+.input-section,
+.generator-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.input-section {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.input-group > label,
+.generator-container > h2 {
+  display: block;
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.generator-container {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.generator-container > p {
+  margin: 0 0 var(--space-4);
+  color: var(--muted-strong);
+}
+
+.generator-container small {
+  color: var(--muted);
+}
+
+.presets,
+.generator-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.presets {
+  margin: 0 0 var(--space-4);
+}
+
+.generator-buttons {
+  margin-top: var(--space-4);
+}
+
+.preset-btn,
+.btn {
+  padding: .8rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-weight: 600;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.preset-btn:hover,
+.btn:hover {
+  background: var(--bg);
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}
+
+.preset-btn {
+  min-width: 7rem;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: transparent;
+}
+
+.btn-secondary {
+  background: #fff;
+}
+
+.btn:disabled,
+.preset-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.generator-controls {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.control-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.control-group legend {
+  padding: 0 .35rem;
+  font-weight: 600;
+  color: var(--muted-strong);
+}
+
+.control-group label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.charset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+  margin-top: .9rem;
+}
+
+.charset-option {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: .7rem;
+  row-gap: .15rem;
+  padding: .85rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.charset-option input {
+  margin-top: .2rem;
+}
+
+.charset-label {
+  font-weight: 600;
+}
+
+.charset-range {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.strength-meter {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #fff, var(--bg));
+}
+
+.strength-bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.strength-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+}
+
+.strength-text {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .75rem;
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.entropy-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: .55rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.generator-output {
+  margin-top: var(--space-4);
+}
+
+.password-output {
+  width: 100%;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.feedback {
+  margin-top: var(--space-3);
+  padding: .75rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+  color: var(--muted-strong);
+}
+
+.cracking-results {
+  margin-top: var(--space-5);
+}
+
+.cracking-subtitle {
+  margin-top: .25rem;
+  color: var(--muted);
+}
+
+.brute-force-display {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.brute-time-label {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.brute-time-formatted {
+  margin-top: .25rem;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+
+.brute-time-breakdown {
+  margin-top: .35rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.attacks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.attack-card {
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.attack-name {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.attack-time {
+  margin-top: .25rem;
+  font-weight: 700;
+}
+
+.attack-rank {
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.best-attack {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+  padding: .9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.best-attack .label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack .value {
+  font-weight: 700;
+}
+
+.best-attack .time {
+  color: var(--muted-strong);
+}
+
+.best-attack-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--brand-soft);
+}
+
+.best-attack-label {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack-result {
+  margin: .35rem 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.profile-selector {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-selector__label {
+  display: block;
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
+
+.profile-selector__buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .5rem;
+}
+
+.profile-btn {
+  padding: .85rem .8rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  text-align: left;
+}
+
+.profile-btn--active {
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.profile-btn__name,
+.profile-info-card__header span:first-child {
+  display: block;
+  font-weight: 700;
+}
+
+.profile-btn__gpu,
+.profile-info-card__gpus {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.profile-info-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-info-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  align-items: baseline;
+}
+
+.profile-info-card__desc {
+  display: block;
+  margin-top: .35rem;
+  color: var(--muted-strong);
+}
+
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.context-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .9rem;
+  background: #fff;
+}
+
+.context-group__title {
+  margin-bottom: .75rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.context-row {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .45rem;
+}
+
+.context-row dt {
+  color: var(--muted);
+}
+
+.context-row dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  margin-top: var(--space-4);
+  overflow-x: auto;
+}
+
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#results-table th,
+#results-table td {
+  padding: .8rem .9rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+#results-table thead th {
+  background: var(--bg);
+  color: var(--muted-strong);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+#results-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#status {
+  margin-top: var(--space-4);
+  color: var(--muted-strong);
+}
+
+.dict-loader {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.dict-loader__content {
+  display: grid;
+  gap: .5rem;
+}
+
+.dict-loader__text {
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.dict-loader__bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.dict-loader__progress {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-top: var(--space-4);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--muted-strong);
+  font-size: .85rem;
+}
+
+.badge--privacy {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.badge__dot {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.input-panel {
+  margin-top: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1.1rem, 2.4vw, 1.5rem);
+}
+
+.input-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.input-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.text-input {
+  flex: 1 1 18rem;
+  min-width: 0;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  background: #fff;
+  color: var(--text);
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.toggle-btn,
+.cta-btn {
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  min-width: 8.2rem;
+  text-align: center;
+}
+
+.toggle-btn:hover,
+.cta-btn:hover { background: #1d4ed8; }
+
+.input-hint {
+  margin: var(--space-3) 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.card {
+  grid-column: span 12;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card--split {
+  grid-column: span 6;
+}
+
+.card h2,
+.card h3 {
+  margin: 0 0 .8rem;
+  line-height: 1.15;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted-strong);
+}
+
+.card ul {
+  margin: .8rem 0 0 1.1rem;
+  color: var(--muted-strong);
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .9rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: .4rem .65rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+.section-title {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--text-lg);
+}
+
+.method-list,
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.method-link,
+.page-link {
+  display: block;
+  padding: .95rem 1rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.method-link:hover,
+.page-link:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.method-link__title,
+.page-link__title {
+  display: block;
+  font-weight: 600;
+}
+
+.method-link__desc,
+.page-link__desc {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.footer {
+  max-width: var(--container);
+  margin: var(--space-6) auto 0;
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.footer__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+}
+
+.footer__links a {
+  color: var(--muted-strong);
+}
+
+.footer__links a:hover { color: var(--brand); }
+
+.footer__meta {
+  margin-top: .8rem;
+  text-align: center;
+}
+
+.hamburger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 4px auto;
+  background: var(--text);
+  border-radius: 999px;
+}
+
+.drawer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .site-nav { display: none; }
+  .hamburger { display: inline-block; }
+  .drawer {
+    display: grid;
+    gap: .5rem;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--space-4) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .drawer[hidden] { display: none; }
+  .drawer__link, .drawer__summary {
+    display: block;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__details { margin: 0; }
+  .drawer__details summary {
+    list-style: none;
+    cursor: pointer;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__nested {
+    margin-top: .5rem;
+    padding-left: .25rem;
+    display: grid;
+    gap: .5rem;
+  }
+  .method-list,
+  .link-grid,
+  .card--split,
+  .attacks-grid,
+  .context-grid,
+  .profile-selector__buttons,
+  .charset-grid {
+    grid-template-columns: 1fr;
+    grid-column: span 12;
+  }
+  .profile-info-card__header,
+  .best-attack,
+  .strength-text {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .hero { padding-top: var(--space-4); }
+}
+
+@media (max-width: 600px) {
+  .page-shell { padding-inline: var(--space-3); }
+  .site-header__inner { padding-inline: var(--space-3); }
+  .hero__title { font-size: 2rem; }
+}
+</style>
+</head>
+<body data-page="mask">
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-logo" href="../index.html">
+        <span class="site-logo__mark">🔒</span>
+        Time<span class="site-logo__accent">2</span>Crack
+      </a>
+      <nav class="site-nav" aria-label="Navigation principale">
+        <div class="site-nav__primary">
+          <a class="nav-link " href="../index.html">Tester un mot de passe</a>
+          <a class="nav-link " href="../generator.html">Générer un mot de passe</a>
+        </div>
+        <div class="site-nav__secondary">
+          <a class="nav-link " href="../faq.html">FAQ</a>
+          <a class="nav-link " href="../about.html">À propos</a>
+          <div class="dropdown">
+            <button class="nav-toggle" id="science-toggle" type="button" aria-expanded="false" aria-controls="science-menu">
+              Science <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="science-menu" role="menu" aria-label="Science">
+              <a class="dropdown__item" href="../how-time2crack-works.html" role="menuitem">Comment ça fonctionne</a>
+              <div class="dropdown__separator"></div>
+              <span class="dropdown__group-title">Méthodes d'attaque</span>
+              <a class="dropdown__item" href="index.html" role="menuitem">index</a><a class="dropdown__item" href="bruteforce.html" role="menuitem">Force brute</a><a class="dropdown__item" href="dictionary.html" role="menuitem">Dictionnaire</a><a class="dropdown__item" href="hybrid.html" role="menuitem">Hybride</a><a class="dropdown__item" href="mask.html" role="menuitem">Masque</a><a class="dropdown__item" href="markov.html" role="menuitem">Markov</a><a class="dropdown__item" href="pcfg.html" role="menuitem">PCFG</a><a class="dropdown__item" href="combinator.html" role="menuitem">Combinateur</a>
+              <div class="dropdown__separator"></div>
+              <a class="dropdown__item" href="../sources.html" role="menuitem">Sources</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="security-toggle" type="button" aria-expanded="false" aria-controls="security-menu">
+              Sécurité <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="security-menu" role="menu" aria-label="Sécurité">
+              <a class="dropdown__item" href="../hibp.html" role="menuitem">HIBP</a>
+              <a class="dropdown__item" href="../privacy.html" role="menuitem">Confidentialité</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="lang-toggle" type="button" aria-expanded="false" aria-controls="lang-menu">
+              Português <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu dropdown__menu--lang" id="lang-menu" role="menu" aria-label="Langue">
+              <a class="dropdown__item" href="../../fr/methode/mask.html" hreflang="fr" role="menuitem">Français</a><a class="dropdown__item" href="../../en/methode/mask.html" hreflang="en" role="menuitem">English</a><a class="dropdown__item" href="../../es/methode/mask.html" hreflang="es" role="menuitem">Español</a><a class="dropdown__item is-active" href="mask.html" hreflang="pt" role="menuitem">Português</a><a class="dropdown__item" href="../../de/methode/mask.html" hreflang="de" role="menuitem">Deutsch</a><a class="dropdown__item" href="../../it/methode/mask.html" hreflang="it" role="menuitem">Italiano</a><a class="dropdown__item" href="../../tr/methode/mask.html" hreflang="tr" role="menuitem">Türkçe</a><a class="dropdown__item" href="../../pl/methode/mask.html" hreflang="pl" role="menuitem">Polski</a><a class="dropdown__item" href="../../nl/methode/mask.html" hreflang="nl" role="menuitem">Nederlands</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <button class="hamburger" id="drawer-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="drawer" id="mobile-drawer" hidden>
+    <a class="drawer__link " href="../index.html">Tester un mot de passe</a>
+    <a class="drawer__link " href="../generator.html">Générer un mot de passe</a>
+    <a class="drawer__link " href="../faq.html">FAQ</a>
+    <a class="drawer__link " href="../about.html">À propos</a>
+    <details class="drawer__details">
+      <summary>Science</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="../how-time2crack-works.html">Comment ça fonctionne</a>
+        <a class="drawer__link" href="index.html">Combinateur</a><a class="drawer__link" href="bruteforce.html">Force brute</a><a class="drawer__link" href="dictionary.html">Dictionnaire</a><a class="drawer__link" href="hybrid.html">Hybride</a><a class="drawer__link" href="mask.html">Masque</a><a class="drawer__link" href="markov.html">Markov</a><a class="drawer__link" href="pcfg.html">PCFG</a><a class="drawer__link" href="combinator.html">Combinateur</a>
+        <a class="drawer__link" href="../sources.html">Sources</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Sécurité</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="../hibp.html">HIBP</a>
+        <a class="drawer__link" href="../privacy.html">Confidentialité</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Langue</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" hreflang="fr" href="../../fr/methode/mask.html">Français</a><a class="drawer__link" hreflang="en" href="../../en/methode/mask.html">English</a><a class="drawer__link" hreflang="es" href="../../es/methode/mask.html">Español</a><a class="drawer__link" hreflang="pt" href="mask.html">Português</a><a class="drawer__link" hreflang="de" href="../../de/methode/mask.html">Deutsch</a><a class="drawer__link" hreflang="it" href="../../it/methode/mask.html">Italiano</a><a class="drawer__link" hreflang="tr" href="../../tr/methode/mask.html">Türkçe</a><a class="drawer__link" hreflang="pl" href="../../pl/methode/mask.html">Polski</a><a class="drawer__link" hreflang="nl" href="../../nl/methode/mask.html">Nederlands</a>
+      </div>
+    </details>
+  </div>
+<main class="page-shell">
+<h1 style="display:none">Ataque de Máscara — Operação abrangente</h1>
+<blockquote>
+Documento de referência do projeto Time2Crack
+</blockquote>
+<blockquote>Destinatários: desenvolvedores, pesquisadores de segurança, usuários avançados</blockquote>
+<hr>
+<h2>Índice</h2>
+<li><a href="mask.html#1-vue-densemble">Visão geral</a></li>
+<li><a href="mask.html#2-contexte-historique-et-académique">Formação histórica e académica</a></li>
+<li><a href="mask.html#3-fondements-conceptuels--pourquoi-les-masques-fonctionnent">Fundações conceituais: Por que as máscaras funcionam</a></li>
+<li><a href="mask.html#4-architecture-dune-attaque-par-masque-moderne">Arquitetura de um ataque de máscara moderna</a></li>
+<li><a href="mask.html#5-syntaxe-des-masques-hashcatjtr">Sintaxe da Máscara (Hashcat/JtR)</a></li>
+<li><a href="mask.html#6-réduction-du-keyspace--principe-mathématique">Redução do espaço-chave: princípio matemático</a></li>
+<li><a href="mask.html#7-implémentation-dans-time2crack--addmaskattacks">Implementação no Time2Crack: <code>addMaskAttacks()</code></a></li>
+<li><a href="mask.html#8-détection-de-date-et-réduction-structurelle">Detecção de datas e redução estrutural</a></li>
+<li><a href="mask.html#9-calibration-haute-fidélité">Calibração de alta fidelidade</a></li>
+<li><a href="mask.html#10-benchmarks-et-ordres-de-grandeur">Benchmarks e ordens de grandeza</a></li>
+<li><a href="mask.html#11-exemples-concrets-de-craquage-par-masque">Exemplos concretos de quebra de máscaras</a></li>
+<li><a href="mask.html#12-comparaison-avec-brute-force-hybride-et-pcfg">Comparação com força bruta, híbrida e PCFG</a></li>
+<li><a href="mask.html#13-limites-de-lattaque-par-masque">Limitações do ataque de máscara</a></li>
+<li><a href="mask.html#14-défenses-efficaces">Defesas eficazes</a></li>
+<li><a href="mask.html#15-références-bibliographiques">Referências</a></li>
+<hr>
+<h2>Resumo</h2>
+<p>Mascara ataque consiste em testar senhas que seguem um <strong>forma posicional precisa</strong> em vez de todas as combinações possíveis.</p>
+<p>Exemplo: em vez de testar todo o espaço 8 caracteres de 95 símbolos (<code>95^8</code>), o atacante visa um motivo provável como:</p>
+<ul>
+<li>1 capital,</li>
+</ul>
+<li>5 minúsculos,</li>
+<li>2 dígitos.</li>
+<p>Ou a máscara Hashcat <code>?u?l?l?l?l?l?d?d</code>.</p>
+<p>A ideia central: as senhas humanas não são aleatórias.<code>Thomas42</code>, <code>Marine2024</code>, <code>Bonjour!1</code>A máscara explora precisamente esta regularidade.</p>
+<hr>
+<h2>2. Antecedentes históricos e acadêmicos</h2>
+<h3>2.1 Origens</h3>
+<p>A lógica das máscaras é antiga: desde as primeiras ferramentas de cracking, os operadores observaram que as políticas de senha produzem formatos repetitivos.</p>
+<p>Industrialização vem com:</p>
+<li>John, o Estripador (modos e padrões incrementais),</li>
+<li>Hashcat (modos de máscara GPU super otimizados),</li>
+<li>vazamentos maciços (RockYou, LinkedIn, Adobe), que identificaram as estruturas mais frequentes.</li>
+<h3>2.2 Validação empírica</h3>
+<p>A literatura ofensiva/defensiva converge: uma fração muito grande de senhas reais seguem padrões simples (palavra + dígitos, capital inicial + palavra + ano, etc.).</p>
+<p>Wheeler (USENIX 2016), e as obras probabilísticas (Markov/PCFG/OMEN), mostram que a estrutura é tão decisiva quanto o comprimento bruto.</p>
+<hr>
+<h2>3. Fundamentos conceituais: Por que as máscaras funcionam</h2>
+<h3>3.1 Os seres humanos geram estruturas, não por acaso</h3>
+<p>A maioria dos usuários constrói segredos de memória:</p>
+<li>palavra conhecida,</li>
+<li>variação da quebra,</li>
+<li>sufixo digital,</li>
+<li>símbolo final opcional.</li>
+<p>Essa estratégia é previsível e altamente comprimível em máscaras.</p>
+<h3>3.2 Políticas de complexidade aumentam a previsibilidade</h3>
+<p>Uma regra do tipo "1 capital, 1 dígito, 1 símbolo" não impõe aleatoriedade; muitas vezes empurra para padrões estáveis:</p>
+<li><code>Mot123!</code></li>
+<li><code>Prénom2024</code></li>
+<li><code>Ville75#</code></li>
+<p>A máscara é a ferramenta ideal para navegar nestes diagramas a um custo muito baixo.</p>
+<h3>3.3 Redução do espaço-chave eficaz</h3>
+<p>Para uma senha de comprimento 8 :</p>
+<li>Força bruta total (<code>95^8</code>) <code>6.63e15</code> candidatos,</li>
+<li>máscara <code>?u?l?l?l?l?d?d</code> = <code>26 <em> 26^4 </em> 10^2</code> = <code>1.19e9</code> candidatos.</li>
+<p>A redução é de vários milhões de vezes, enquanto cobre um padrão humano comum.</p>
+<hr>
+<h2>4. Arquitetura de um ataque de máscara moderna</h2>
+<p>Tipo de pipeline:</p>
+<pre><code class="language-text">1) Profilage de la cible / du corpus
+   -&gt; structures fréquentes (L8D2, L6D4, U1L5D2, etc.)
+<p>2) Geração de máscaras candidatas
+-&gt; ordenados por probabilidade</p>
+<p>3) Execução da GPU (Hashcat -a 3)
+-&gt; ensaios paralelos de alta velocidade</p>
+<p>4) Adaptação
+-&gt; Mantemos as máscaras altas, espalhamos os fracos</p></code></pre>
+<p>O sucesso depende menos da quantidade bruta de máscaras do que de sua priorização.</p>
+<hr>
+<h2>5. Sintaxe da Máscara (Hashcat/JtR)</h2>
+<h3>5. 1 Classes básicas</h3>
+<li><code>?l</code> : minúsculo (<code>a-z</code>)</li>
+<li><code>?u</code> : capitais (<code>A-Z</code>)</li>
+<li><code>?d</code> : número (<code>0-9</code>)</li>
+<li><code>?s</code> : símbolo imprimível</li>
+<li><code>?a</code> : alfabeto misto padrão (muitas vezes <code>?l?u?d?s</code>)</li>
+<h3>5.2 Exemplos</h3>
+<li><code>?u?l?l?l?l?d?d</code> -&gt; <code>Thomas42</code></li>
+<li><code>?l?l?l?l?l?l?d?d?d?d</code> -&gt; <code>summer2024</code></li>
+<li><code>?u?l?l?l?l?l?l?s?d</code> -&gt; <code>Marine!7</code></li>
+<h3>5.3. Máscaras personalizadas</h3>
+<p>O Hashcat permite conjuntos de caracteres personalizados (<code>-1</code>, <code>-2</code>, etc.), por exemplo:</p>
+<li><code>-1 ?l?uéèàç</code> para as línguas latinas,</li>
+<li><code>-2 0123456789!@#</code> para sufixos prováveis,</li>
+<li>então máscara combinada <code>?1?1?1?1?2?2</code>.</li>
+<hr>
+<h2>6. Redução de Keyspace: princípio matemático</h2>
+<p>Ou uma máscara de comprimento <code>n</code> com cardinalidades posicionais <code>c1, c2, ..., cn</code>.</p>
+<p>O espaço de teclas mascarado é:</p>
+<code>K<em>máscara = Π(i)</em></code>
+<p>Tempo (modelo orçamental):</p>
+<code>T = Kmask / rate</code>
+<p>Num modelo ingénuo e desmascarado:</p>
+<code>K<em>full = cs^n</em></code>
+<p>O ganho da máscara é:</p>
+<code>Gain = Kfull / K_mask</code>
+<p>Quanto mais fortes as restrições posicionais (por exemplo, dígitos no final, capital na cabeça), maior o ganho.</p>
+<hr>
+<h2>7. Implementação no Time2Crack: <code>addMaskAttacks()</code></h2>
+<p>Time2Crack implementa lógica de máscara em <code>app.js</code> :</p>
+<li>função: <code>addMaskAttacks(rows, full, len, cs, kbPat, seq, weak, dt, pw)</code></li>
+<li>Categoria: <code>cat: "mask"</code></li>
+<li>display: <code>aMask</code> / nota <code>nMaskPositional</code>, <code>nKBDetected</code>, <code>nSeqDetected</code>, <code>nDateDetected</code></li>
+<h3>7.1. Cálculo do espaço de chave mascarado</h3>
+<p>O código conta as ocorrências reais de cada tipo de caracteres na senha:</p>
+<li>letras maiúsculas,</li>
+<li>minúsculo,</li>
+<li>números,</li>
+<li>símbolos.</li>
+<p>Em seguida, construído:</p>
+<code>maskKS = 26^U <em> 26 </em> 10^D <em> 33^S</em></code> (aproximação via constantes internas)
+<p>Isso modela um atacante conhecendo a estrutura por tipo, não apenas o comprimento total.</p>
+<h3>7.2 Casos especiais</h3>
+<li><code>weak</code> : estimativa via <code>weakGuessTime(a.rate)</code> (intervalo mínimo dependente do caudal),</li>
+<li><code>dt</code> (data detectada): redução via <code>detectDateAndReduce()</code>,</li>
+<li>Caso contrário: espaço de chave posicional padrão.</li>
+<p>O tempo é então estimado por <code>budgetTime(effectiveMaskGuesses, a.rate)</code> (com fator de classificação da máscara e processamento Unicode/data).</p>
+<hr>
+<h2>8. Detecção de datas e redução estrutural</h2>
+<p>Time2Crack inclui um processamento específico de data (<code>hasDate</code>, <code>detectDateAndReduce</code>) :</p>
+<li>detecção do ano <code>1600-2099</code>,</li>
+<li>detecção de padrões de data (<code>DD/MM/YYYY</code>, variantes do separador),</li>
+<li>substituição de um espaço enorme (<code>10^dateChars</code>) por um conjunto plausível (<code>~200 années</code> ou <code>~36500 dates</code>).</li>
+<p>Conseqüência: uma senha do tipo <code>Mot2024!</code> Isto é consistente com a prática ofensiva.</p>
+<hr>
+<h2>9. Calibração de alta fidelidade</h2>
+<p>Quando o modo de alta fidelidade está ativo, a categoria máscara recebe um multiplicador adicional em <code>applyHighFidelityCalibration()</code> :</p>
+<li>if teclado padrão / sequência / data: fator de redução adicional,</li>
+<li>Caso contrário: estimativa conservadora.</li>
+<p>Intuição: Estes sinais aumentam a probabilidade de uma classificação precoce na linha de máscaras testadas.</p>
+<hr>
+<h2>10. Benchmarks e ordens de magnitude</h2>
+<p>Ordens de magnitude (perfil 12x RTX 4090):</p>
+AlgoritmoVazão aproximadaTempo para 1o 9 candidatos
+------:---:
+MD5~2,03 TH/s~0,0005 s
+SHA-1~610 GH/s~0.0016 s
+SHA-256~272 GH/s~0.0037 s
+NTLM~3,46 TH/s~0,0003 s
+bcrypt (custo 10)~69 kH/s~4,0 h
+Argon2id~800 H/s~14.5 dias
+<p>Leitura:</p>
+<li>no haxixe rápido, a máscara é esmagadora,</li>
+<li>no hash lento, permanece muito perigoso em padrões frequentes, mas o custo torna-se concreto.</li>
+<hr>
+<h2>11. Exemplos concretos de quebra de máscara</h2>
+<h3>11.1 <code>Thomas42</code></h3>
+<li>Máscara relevante: <code>?u?l?l?l?l?l?d?d</code></li>
+<li>Espaço de teclas: <code>26  26^4 <em> 10^2</em></code> (ordem de magnitude ~1e9)</li>
+<li>em NTLM/MD5: quase instantâneo.</li>
+<h3>11.2 <code>summer2024</code></h3>
+<li>Máscara relevante: <code>?l?l?l?l?l?l?d?d?d?d</code></li>
+<li>se ano detectado, redução acentuada (anos plausíveis &lt; &lt; <code>10^4</code>).</li>
+<h3>11.3 <code>Marine!7</code></h3>
+<li>Máscara relevante: <code>?u?l?l?l?l?l?s?d</code></li>
+<li>um padrão muito comum nas políticas corporativas.</li>
+<hr>
+<h2>12. Comparação com força bruta, híbrido e PCFG</h2>
+AtaquePonto fortePonto baixo
+---------
+Resistência brutaCobertura globalcusto exponencial
+MáscaraExcelente eficiência em estruturas humanasEscolha sensível à má máscara
+Híbrido/regrasMuito bom em palavras + mutaçõesDepende de uma palavra básica
+PCFGCapturar gramática globalMais caro para treinar / operar
+<p>Na prática, os operadores combinam frequentemente máscara + regras + probabilística.</p>
+<hr>
+<h2>13. Limitações do ataque da máscara</h2>
+<li><strong>Dependência na máscara certa</strong> : um mau conjunto de máscaras rapidamente perde em rendimento.</li>
+<li><strong>Baixa generalização da estrutura externa</strong> : em uma senha realmente aleatória, a vantagem desaparece.</li>
+<li><strong>Explosão combinatória se máscaras muito largas</strong> : <code>?a</code> Repetido em comprimento longo retorna perto da força bruta.</li>
+<li><strong>Cobertura linguística parcial</strong> : Unicode / alfabetos diacríticos requerem jogos personalizados.</li>
+<hr>
+<h2>14. Defesas eficazes</h2>
+<h3>14.1 Lado do usuário</h3>
+<li>usar um gerenciador de senhas,</li>
+<li>gerar senhas aleatórias longas (&gt; = 16),</li>
+<li>evitar padrões completamente <code>Mot+année</code>, <code>Prénom+chiffres</code>, <code>Majuscule+mot+symbole</code>.</li>
+<h3>14.2. Lado do sistema</h3>
+<li>armazenamento com Argon2id (ou bcrypt de alto custo),</li>
+<li>AMF sistemática,</li>
+<li>bloqueio de senhas comprometidas,</li>
+<li>telemetria de ligação e detecção de anomalias.</li>
+<h3>14.3 Política</h3>
+<li>duração da prioridade e controlo do compromisso,</li>
+<li>reduzir as regras de complexidade puramente cosmética que favorecem padrões previsíveis.</li>
+<hr>
+<h2>15. Referências bibliográficas</h2>
+<h3>Fontes académicas</h3>
+<strong>Wheeler, D.L. (2016).</strong> zxcvbn: Estimativa de Força de Senha de Baixo Orçamento.<em> 25o Simpósio de Segurança USENIX.
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong> </em>Rastreamento de senhas usando Gramática Probabilística Livre de Contexto.<em> Simpósio IEE sobre Segurança e Privacidade.
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., et al. (2015).</strong> </em>OMEN: Senha mais rápida adivinhando usando um Enumerador Markov ordenado.<em> Essos.
+<strong>Ur, B., Kelley, P. G., Komanduri, S., et al. (2012).</strong> </em>Como sua senha se encaixa?<em> USENIX Segurança.
+<h3>Fontes industriais e técnicas</h3>
+<strong>Hashcat Wiki.</strong> </em>Ataque de máscara (-a 3).<em> https://hashcat.net/wiki/
+<strong>Hashcat (benchmarks).</strong> https://hashcat.net/hashcat/
+<strong>Sistemas de Colmeia (Tabela de Senha).</strong> https://www.hivesystems.io/password-table
+<h3>Fontes da Web citadas no aplicativo Time2Crack</h3>
+<strong>USENIX Security 2016 (Wheeler).</strong>
+https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheller
+<hr>
+</em>Documento gerado para o projeto Time2Crack — Versão 1.0 — 2026-04-01<em>
+</em>Código- fonte: <code>app.js</code> (funções <code>addMaskAttacks</code>, <code>detectDateAndReduce</code>, <code>hasDate</code>, <code>budgetTime</code>, <code>applyHighFidelityCalibration</code>)*
+</main>
+
+  <footer class="footer">
+    <div class="footer__links">
+      <a href="../about.html">À propos</a>
+      <a href="../sources.html">Sources</a>
+      <a href="../privacy.html">Confidentialité</a>
+      <a href="../hibp.html">HIBP</a>
+    </div>
+    <div class="footer__meta">Copie locale avec contenu réel des pages existantes et navigation interne fonctionnelle.</div>
+  </footer>
+<script src="../../site.js"></script>
+<script type="module" src="../../engine-bridge.js"></script>
+</body>
+</html>

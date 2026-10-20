@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>main vs codex-site-publish</title>
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=newsreader:400,500,600,500i|jetbrains-mono:400,500,600&display=swap">
+<style>
+:root{
+  --bg:#F7F8FA;
+  --surface:#FFFFFF;
+  --surface-sunken:#EEF0F3;
+  --border:#DCE0E6;
+  --text:#1A1D24;
+  --text-muted:#5B6270;
+  --text-faint:#8990A0;
+  --accent:#B5691A;
+  --accent-soft:#F3E3D0;
+  --accent-text:#8A4E12;
+  --good:#3F7D4C;
+  --good-soft:#E4F0E6;
+  --warn:#A85D1E;
+  --warn-soft:#F5E6D6;
+  --risk:#B0432E;
+  --risk-soft:#F6E0DB;
+  --font-display:"Newsreader", Georgia, "Times New Roman", serif;
+  --font-body:"Newsreader", Georgia, "Times New Roman", serif;
+  --font-mono:"JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12151B;
+    --surface:#181C24;
+    --surface-sunken:#0E1116;
+    --border:#2A2F3A;
+    --text:#E7E9EE;
+    --text-muted:#9AA1B0;
+    --text-faint:#6B7280;
+    --accent:#E0954A;
+    --accent-soft:#3A2A18;
+    --accent-text:#F0B380;
+    --good:#7FBF8E;
+    --good-soft:#1C2E20;
+    --warn:#E0A45E;
+    --warn-soft:#332413;
+    --risk:#E0796A;
+    --risk-soft:#361E1A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151B;
+  --surface:#181C24;
+  --surface-sunken:#0E1116;
+  --border:#2A2F3A;
+  --text:#E7E9EE;
+  --text-muted:#9AA1B0;
+  --text-faint:#6B7280;
+  --accent:#E0954A;
+  --accent-soft:#3A2A18;
+  --accent-text:#F0B380;
+  --good:#7FBF8E;
+  --good-soft:#1C2E20;
+  --warn:#E0A45E;
+  --warn-soft:#332413;
+  --risk:#E0796A;
+  --risk-soft:#361E1A;
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  line-height:1.6;
+  padding:clamp(28px, 5vw, 72px) clamp(18px, 4vw, 32px) 80px;
+}
+::selection{background:var(--accent-soft);color:var(--accent-text);}
+
+.page{
+  max-width:920px;
+  margin:0 auto;
+}
+
+.masthead{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding-bottom:28px;
+  margin-bottom:36px;
+  border-bottom:1px solid var(--border);
+}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:0.72rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--text-faint);
+}
+h1{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:clamp(1.7rem, 3.4vw, 2.35rem);
+  margin:0;
+  text-wrap:balance;
+  letter-spacing:-0.01em;
+}
+h1 .branch{
+  font-family:var(--font-mono);
+  font-weight:500;
+  font-size:0.72em;
+  background:var(--surface-sunken);
+  border:1px solid var(--border);
+  border-radius:5px;
+  padding:0.12em 0.4em;
+  white-space:nowrap;
+}
+.dek{
+  color:var(--text-muted);
+  font-size:1.05rem;
+  max-width:62ch;
+  margin:2px 0 0;
+}
+
+.prose{
+  max-width:68ch;
+  font-size:1.02rem;
+}
+.prose p{margin:0 0 1.1em;}
+.prose strong{font-weight:600;color:var(--text);}
+code{
+  font-family:var(--font-mono);
+  font-size:0.88em;
+  background:var(--surface-sunken);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:0.1em 0.38em;
+}
+
+.finding{
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  border-radius:8px;
+  padding:18px 20px;
+  margin:28px 0 32px;
+}
+.finding__mark{
+  font-family:var(--font-mono);
+  font-size:0.72rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--accent-text);
+  background:var(--accent-soft);
+  border-radius:4px;
+  padding:3px 7px;
+  white-space:nowrap;
+  margin-top:0.2em;
+}
+.finding p{margin:0;font-size:0.98rem;}
+
+section.stats{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
+  margin:36px 0 44px;
+}
+.stat{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px 18px;
+}
+.stat__value{
+  font-family:var(--font-mono);
+  font-size:1.6rem;
+  font-variant-numeric:tabular-nums;
+  font-weight:500;
+  line-height:1.1;
+}
+.stat__label{
+  font-size:0.82rem;
+  color:var(--text-muted);
+  margin-top:4px;
+}
+
+h2{
+  font-family:var(--font-display);
+  font-size:1.4rem;
+  font-weight:600;
+  margin:0 0 4px;
+  text-wrap:balance;
+}
+.section-note{
+  color:var(--text-muted);
+  font-size:0.95rem;
+  margin:0 0 20px;
+  max-width:62ch;
+}
+section + section{margin-top:52px;}
+
+.table-scroll{
+  overflow-x:auto;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface);
+}
+table{
+  border-collapse:collapse;
+  width:100%;
+  min-width:760px;
+  font-size:0.93rem;
+}
+thead th{
+  text-align:left;
+  font-family:var(--font-mono);
+  font-weight:500;
+  font-size:0.72rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--text-faint);
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface-sunken);
+}
+thead th:first-child{border-top-left-radius:12px;}
+thead th:last-child{border-top-right-radius:12px;}
+tbody th{
+  text-align:left;
+  font-weight:600;
+  padding:14px 16px 14px 16px;
+  vertical-align:top;
+  white-space:nowrap;
+  border-bottom:1px solid var(--border);
+  font-size:0.95rem;
+}
+tbody td{
+  padding:14px 16px;
+  vertical-align:top;
+  border-bottom:1px solid var(--border);
+  border-left:1px solid var(--border);
+  color:var(--text-muted);
+}
+tbody tr:last-child th, tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td, tbody tr:hover th{background:var(--surface-sunken);}
+.opt{font-weight:600;color:var(--text);display:block;margin-bottom:2px;}
+
+.pill{
+  display:inline-block;
+  font-family:var(--font-mono);
+  font-size:0.72rem;
+  letter-spacing:0.03em;
+  border-radius:4px;
+  padding:2px 7px;
+  font-weight:600;
+}
+.pill--low{background:var(--good-soft);color:var(--good);}
+.pill--med{background:var(--warn-soft);color:var(--warn);}
+.pill--high{background:var(--risk-soft);color:var(--risk);}
+
+.verdict{
+  margin-top:20px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px 22px;
+}
+.verdict h3{
+  font-family:var(--font-mono);
+  font-size:0.78rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--accent-text);
+  margin:0 0 10px;
+  font-weight:600;
+}
+.verdict p{margin:0;font-size:0.98rem;color:var(--text);}
+.verdict p + p{margin-top:10px;}
+
+footer{
+  margin-top:60px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+  font-family:var(--font-mono);
+  font-size:0.76rem;
+  color:var(--text-faint);
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+@media (max-width:640px){
+  section.stats{grid-template-columns:1fr;}
+  .finding{flex-direction:column;gap:8px;}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <span class="eyebrow">Time2Crack — note de synthèse</span>
+    <h1>Où en est vraiment <span class="branch">main</span> face à <span class="branch">codex-site-publish</span> ?</h1>
+    <p class="dek">Le site en production (time2crack.eu) ne tourne pas sur la branche où se fait le travail. Voici ce que ça change et trois façons d'y répondre.</p>
+  </header>
+
+  <div class="prose">
+    <p>Le worktree <code>CrackDate-publish</code> pointe en HEAD détachée sur le commit <code>cb69bc3d</code>, et son <code>index.html</code> est <strong>strictement identique</strong> à ce que sert <code>time2crack.eu</code> — confirmé par diff direct. Ce commit vit sur <code>codex-site-publish</code>.</p>
+    <p>Ce n'est <strong>pas</strong> une fourche parallèle : <code>main</code> est un ancêtre direct de <code>codex-site-publish</code>. Le fork date du 26 août ; <code>main</code> n'a rien produit depuis que <code>codex-site-publish</code> n'ait déjà. Le vrai sujet est donc un <strong>flux de release à sens unique et manuel</strong> — le travail avance sur <code>main</code>, puis quelqu'un (ou un agent nommé « codex ») le porte et le complète côté publish, sans que ce sens ne s'inverse jamais.</p>
+  </div>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat__value">0</div>
+      <div class="stat__label">commit sur <code style="background:none;border:none;padding:0;">main</code> depuis le fork</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">80</div>
+      <div class="stat__label">commits d'avance sur <code style="background:none;border:none;padding:0;">codex-site-publish</code></div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">26 août</div>
+      <div class="stat__label">date du point de fork commun</div>
+    </div>
+  </section>
+
+  <div class="finding">
+    <span class="finding__mark">Constat</span>
+    <p>Certains des 80 commits sont des <strong>retraits</strong> (ML/ONNX absent faute de fichiers, chemins CDN corrigés) — un merge naïf vers <code>main</code> pourrait soit réintroduire du code cassé, soit écraser du travail en cours si mal résolu.</p>
+  </div>
+
+  <section>
+    <h2>Trois options</h2>
+    <p class="section-note">Classées par coût d'entrée croissant. Le risque porte sur la santé du dépôt, pas sur la difficulté d'exécution.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Option</th>
+            <th scope="col">Ce que ça implique</th>
+            <th scope="col">Coût immédiat</th>
+            <th scope="col">Risque</th>
+            <th scope="col">Convient si…</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><span class="opt">A · Comprendre le flux</span></th>
+            <td>Cartographier comment et par qui les 80 commits sont produits — manuel, script, agent dédié.</td>
+            <td><span class="pill pill--low">Faible</span></td>
+            <td><span class="pill pill--low">Aucun</span></td>
+            <td>On ne sait pas encore si ce split est délibéré ou une dérive.</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="opt">B · Réconcilier</span></th>
+            <td>Merger ou rebaser <code>codex-site-publish</code> vers <code>main</code> pour n'avoir qu'une source de vérité déployable.</td>
+            <td><span class="pill pill--med">Moyen–élevé</span></td>
+            <td><span class="pill pill--high">Élevé</span></td>
+            <td>L'objectif est la santé du dépôt à long terme, avec itérations fréquentes à venir.</td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="opt">C · Implémenter direct</span></th>
+            <td>Poser le design de conversion (badges de confiance, alerte HIBP à deux niveaux, tableau hiérarchisé) directement sur <code>codex-site-publish</code>.</td>
+            <td><span class="pill pill--low">Faible</span></td>
+            <td><span class="pill pill--med">Dette croissante</span></td>
+            <td>La priorité est un résultat visible en production maintenant.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="verdict">
+      <h3>Recommandation</h3>
+      <p>Commencer par <strong>A</strong> : coût quasi nul, et sa réponse détermine si <strong>B</strong> est praticable proprement ou si <strong>C</strong> reste la seule option réaliste à court terme.</p>
+      <p>Sans cette clarté, tout ce qui atterrit sur <code>main</code> — dont <code>fix/methode-pages</code> en cours — continue de s'accumuler sans jamais atteindre time2crack.eu.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>time2crack.eu · analyse de dépôt</span>
+    <span>fork main→codex-site-publish : 2026-08-26</span>
+  </footer>
+
+</div>
+</body>
+</html>
+

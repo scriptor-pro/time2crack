@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototype Hero — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" rel="stylesheet">
+  <style>
+    /* ─── WCAG 2.1 AA audit ────────────────────────────────────────────────────
+       #0F172A sur #FFFFFF  → 19.1:1  ✅ AAA
+       #64748B sur #FFFFFF  →  4.6:1  ✅ AA  (seuil texte normal : 4.5:1)
+       #2563EB sur #FFFFFF  →  4.7:1  ✅ AA
+       #166534 sur #F0FDF4  →  7.2:1  ✅ AAA
+       #64748B sur #EEF4FF  →  4.1:1  ⚠️  FAIL AA → remplacé par #4B5E7A (5.2:1)
+       #64748B sur #F8FAFC  →  4.5:1  ✅ AA (limite, ok)
+       Dropdown (#0F172A sur #FFFFFF) → 19.1:1  ✅
+       Input hint (#4B5E7A sur #FFFFFF) → 5.2:1  ✅ AA
+    ─────────────────────────────────────────────────────────────────────────── */
+
+    :root {
+      --text-base: 1rem;
+      --text-xl: 1.618rem;
+      --text-lg: 1.25rem;
+      --text-sm: 0.8125rem;
+      --text-xs: 0.75rem;
+      --leading-body: 1.618;
+      --space-2: 0.375rem;
+      --space-3: 0.625rem;
+      --space-4: 1rem;
+      --space-5: 1.618rem;
+      --space-6: 2.618rem;
+      --color-bg: #F8FAFC;
+      --color-surface: #FFFFFF;
+      --color-hero-bg: #EEF4FF;
+      --color-text: #0F172A;
+      --color-text-muted: #64748B;          /* 4.6:1 sur blanc ✅ */
+      --color-text-muted-hero: #4B5E7A;     /* 5.2:1 sur #EEF4FF ✅ — corrigé */
+      --color-blue: #2563EB;
+      --color-blue-subtle: #E0EEFF;
+      --color-border: #E2E8F0;
+      --color-border-hero: #C7DCFF;
+      --radius-md: 6px;
+      --radius-lg: 10px;
+      --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+      --shadow-dropdown: 0 4px 16px rgba(15, 23, 42, 0.12);
+      --shadow-input: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      --header-h: 52px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      color: var(--color-text);
+      background: var(--color-bg);
+      min-height: 100vh;
+    }
+
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ══════════════════════════════════════════════
+       HEADER FIXE
+    ══════════════════════════════════════════════ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .site-header__inner {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 0 var(--space-4);
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    /* Logo */
+    .site-logo {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--color-text);       /* 19.1:1 ✅ */
+      line-height: 1;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+      margin-right: var(--space-3);
+    }
+    .site-logo__accent { color: var(--color-blue); } /* 4.7:1 ✅ */
+
+    /* Nav primaire */
+    .site-nav {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      gap: 0;
+    }
+
+    .site-nav__primary {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 400;
+      color: var(--color-text-muted);  /* 4.6:1 sur blanc ✅ */
+      white-space: nowrap;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-link:hover {
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+    .nav-link--active {
+      color: var(--color-blue);        /* 4.7:1 ✅ */
+      font-weight: 500;
+      background: var(--color-blue-subtle);
+    }
+    .nav-link--active:hover { background: #D0E4FF; }
+
+    /* Nav secondaire (droite) */
+    .site-nav__secondary {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-left: auto;
+    }
+
+    /* Dropdown générique */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown__toggle {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);  /* 4.6:1 ✅ */
+      transition: color 0.15s, background 0.15s;
+    }
+    .dropdown__toggle:hover {
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+    .dropdown__toggle[aria-expanded="true"] {
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    .dropdown__arrow {
+      font-size: 0.6em;
+      transition: transform 0.15s;
+      color: var(--color-text-muted);
+    }
+    .dropdown__toggle[aria-expanded="true"] .dropdown__arrow {
+      transform: rotate(180deg);
+    }
+
+    .dropdown__menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 200px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-dropdown);
+      padding: var(--space-2) 0;
+      z-index: 300;
+    }
+    .dropdown__menu.is-open { display: block; }
+
+    .dropdown__item {
+      display: block;
+      padding: 8px var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--color-text);        /* 19.1:1 ✅ */
+      transition: background 0.1s;
+    }
+    .dropdown__item:hover { background: var(--color-bg); }
+
+    .dropdown__group-title {
+      display: block;
+      padding: 6px var(--space-4) 2px;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text-muted);  /* 4.6:1 ✅ */
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .dropdown__separator {
+      height: 1px;
+      background: var(--color-border);
+      margin: var(--space-2) 0;
+    }
+
+    /* Sélecteur de langue */
+    .lang-selector { position: relative; margin-left: var(--space-2); }
+
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 5px 10px;
+      height: 32px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);  /* 4.6:1 ✅ */
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .lang-toggle:hover {
+      border-color: var(--color-blue);
+      color: var(--color-text);
+    }
+    .lang-toggle[aria-expanded="true"] {
+      border-color: var(--color-blue);
+      color: var(--color-text);
+    }
+
+    .lang-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 140px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-dropdown);
+      padding: var(--space-2) 0;
+      z-index: 300;
+      list-style: none;
+    }
+    .lang-menu.is-open { display: block; }
+
+    .lang-menu__item {
+      display: block;
+      width: 100%;
+      padding: 7px var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--color-text);        /* 19.1:1 ✅ */
+      text-align: left;
+      transition: background 0.1s;
+    }
+    .lang-menu__item:hover { background: var(--color-bg); }
+    .lang-menu__item--active {
+      color: var(--color-blue);        /* 4.7:1 ✅ */
+      font-weight: 500;
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      padding: 6px;
+      margin-left: var(--space-2);
+      border-radius: var(--radius-md);
+      transition: background 0.15s;
+    }
+    .hamburger:hover { background: var(--color-bg); }
+    .hamburger span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--color-text);   /* 19.1:1 ✅ */
+      border-radius: 2px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* ══════════════════════════════════════════════
+       DRAWER MOBILE
+    ══════════════════════════════════════════════ */
+    .drawer {
+      display: none;
+      position: fixed;
+      inset: var(--header-h) 0 0 0;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      overflow-y: auto;
+      z-index: 150;
+      padding: var(--space-4);
+    }
+    .drawer.is-open { display: block; }
+
+    .drawer__link {
+      display: block;
+      padding: 10px var(--space-3);
+      font-size: var(--text-base);
+      color: var(--color-text);        /* 19.1:1 ✅ */
+      border-radius: var(--radius-md);
+      transition: background 0.1s;
+    }
+    .drawer__link:hover { background: var(--color-bg); }
+    .drawer__link--active {
+      color: var(--color-blue);        /* 4.7:1 ✅ */
+      font-weight: 500;
+    }
+
+    .drawer__separator {
+      height: 1px;
+      background: var(--color-border);
+      margin: var(--space-3) 0;
+    }
+
+    .drawer__group-title {
+      padding: 4px var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    details.drawer__details summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px var(--space-3);
+      font-size: var(--text-base);
+      color: var(--color-text);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      list-style: none;
+      transition: background 0.1s;
+    }
+    details.drawer__details summary::-webkit-details-marker { display: none; }
+    details.drawer__details summary:hover { background: var(--color-bg); }
+    details.drawer__details summary::after {
+      content: '▾';
+      font-size: 0.75em;
+      color: var(--color-text-muted);
+    }
+    details.drawer__details[open] summary::after { content: '▴'; }
+
+    .drawer__nested {
+      padding-left: var(--space-5);
+    }
+    .drawer__nested .drawer__link {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+
+    .drawer__lang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+    .drawer__lang-btn {
+      padding: 8px var(--space-3);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      text-align: left;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .drawer__lang-btn:hover { border-color: var(--color-blue); background: var(--color-blue-subtle); }
+    .drawer__lang-btn--active {
+      border-color: var(--color-blue);
+      color: var(--color-blue);
+      font-weight: 500;
+    }
+
+    /* ══════════════════════════════════════════════
+       HERO
+    ══════════════════════════════════════════════ */
+    .hero {
+      background: var(--color-hero-bg);
+      border-bottom: 1px solid var(--color-border-hero);
+      padding: var(--space-5) var(--space-4) var(--space-6);
+    }
+
+    .hero__inner {
+      max-width: 48rem;
+      margin: 0 auto;
+    }
+
+    .hero__title {
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+      color: var(--color-text);        /* 19.1:1 sur #EEF4FF ✅ */
+      margin-bottom: var(--space-3);
+    }
+
+    .hero__subtitle {
+      font-size: var(--text-lg);
+      font-weight: 300;
+      color: var(--color-text-muted-hero); /* 5.2:1 sur #EEF4FF ✅ corrigé */
+      line-height: 1.5;
+      max-width: 38rem;
+    }
+
+    /* Badges */
+    .trust-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin: var(--space-4) 0 var(--space-5);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      border: 1px solid var(--color-border-hero);
+      background: var(--color-surface);
+      color: var(--color-text-muted);  /* 4.6:1 sur blanc ✅ */
+      white-space: nowrap;
+    }
+
+    .badge--privacy {
+      color: #166534;                  /* 7.2:1 sur #F0FDF4 ✅ AAA */
+      background: #F0FDF4;
+      border-color: #BBF7D0;
+    }
+
+    .badge__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* Zone de saisie */
+    .hero__input-area {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .input-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);  /* 4.6:1 ✅ */
+      margin-bottom: var(--space-2);
+    }
+
+    .input-row {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+    }
+
+    #pw-input {
+      flex: 1;
+      padding: 10px var(--space-4);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-base);
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--color-bg);
+      color: var(--color-text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    #pw-input:focus {
+      outline: none;
+      border-color: var(--color-blue);
+      box-shadow: var(--shadow-input);
+    }
+    #pw-input::placeholder {
+      color: var(--color-text-muted);
+      opacity: 0.6;
+    }
+
+    .toggle-btn {
+      padding: 10px var(--space-3);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg);
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+      white-space: nowrap;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .toggle-btn:hover {
+      border-color: var(--color-blue);
+      color: var(--color-blue);
+    }
+
+    .input-hint {
+      margin-top: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted-hero); /* 5.2:1 sur blanc ✅ */
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ══════════════════════════════════════════════
+       RÉSULTATS
+    ══════════════════════════════════════════════ */
+    :root {
+      --color-surface-alt: #F1F5F9;
+      --color-muted-bg: #F8FAFC;
+      --color-text-inv: #FFFFFF;
+      --radius-sm: 4px;
+      --space-1: 0.25rem;
+      --space-5: 1.618rem;
+    }
+
+    .page-body {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: var(--space-5) var(--space-4) var(--space-6);
+    }
+
+    #results h2 {
+      font-size: var(--text-lg);
+      font-weight: 500;
+      margin: var(--space-5) 0 var(--space-4);
+    }
+
+    /* Badge HIBP */
+    .hibp-badge {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-4);
+      border: 1px solid;
+    }
+    .hibp-badge--pwned {
+      background: #FEF2F2;
+      border-color: #FECACA;
+      color: #991B1B;           /* 7.1:1 sur #FEF2F2 ✅ AAA */
+    }
+    .hibp-badge__icon { flex-shrink: 0; }
+    .hibp-badge--pwned strong { color: #7F1D1D; }
+
+    /* Sélecteur de profil */
+    .profile-selector {
+      margin-bottom: var(--space-4);
+    }
+    .profile-selector__label {
+      display: block;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: var(--space-2);
+    }
+    .profile-selector__buttons {
+      display: flex;
+      gap: var(--space-2);
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 3px;
+    }
+    .profile-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      flex: 1;
+      min-height: 56px;
+      padding: var(--space-2) var(--space-1);
+      background: var(--color-surface);
+      border: 0;
+      border-radius: calc(var(--radius-sm) - 1px);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      line-height: 1.2;
+      font-weight: 500;
+    }
+    .profile-btn:hover { background: var(--color-surface-alt); color: var(--color-text); }
+    .profile-btn--active, .profile-btn[aria-pressed="true"] {
+      background: var(--color-blue);
+      color: #fff;
+      box-shadow: 0 0 0 2px var(--color-blue-subtle);
+    }
+    .profile-btn__name { font-weight: 600; font-size: var(--text-sm); color: inherit; }
+    .profile-btn__gpu { font-size: 0.625rem; color: var(--color-text-muted); font-weight: 400; }
+    .profile-btn--active .profile-btn__gpu { color: rgba(255,255,255,0.8); }
+
+    /* Meilleure attaque */
+    .best-attack-card {
+      background: #F1F5F9;
+      border: 2px solid var(--color-blue);
+      border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-4);
+      margin-bottom: var(--space-4);
+      box-shadow: var(--shadow-sm);
+    }
+    .best-attack-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-blue);
+      margin-bottom: var(--space-3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .best-attack-result {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .best-attack-result strong {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 1.5rem;
+      color: var(--color-blue);
+      letter-spacing: -0.01em;
+    }
+    .best-attack-row {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+    .best-attack-row strong { font-weight: 600; color: var(--color-text); }
+
+    /* Info profil */
+    .profile-info-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .profile-info-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .profile-info-card__gpus { font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 400; }
+    .profile-info-card__desc { font-size: var(--text-xs); }
+
+    /* Tableau */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: var(--space-4);
+    }
+    #results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+      min-width: 420px;
+    }
+    #results-table thead { background: var(--color-text); }
+    #results-table thead th {
+      font-size: 0.6875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #FFFFFF;            /* 19.1:1 sur #0F172A ✅ */
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      white-space: nowrap;
+    }
+    #results-table thead th:last-child { text-align: right; }
+    #results-table tbody tr { border-bottom: 1px solid var(--color-border); transition: background 0.1s; }
+    #results-table tbody tr:last-child { border-bottom: none; }
+    #results-table tbody tr:hover { background: var(--color-surface-alt); }
+    #results-table tbody tr.attack-group-alt { background: var(--color-surface-alt); }
+    #results-table td {
+      padding: var(--space-2) var(--space-4);
+      vertical-align: middle;
+      color: var(--color-text);
+    }
+    #results-table td:first-child {
+      font-weight: 500;
+      white-space: nowrap;
+      border-right: 1px solid var(--color-border);
+    }
+    #results-table td:nth-child(2) {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+      border-right: 1px solid var(--color-border);
+    }
+    #results-table td:last-child {
+      font-family: 'IBM Plex Mono', monospace;
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    #results-table tr.not-applicable td {
+      color: var(--color-text-muted);
+      font-style: italic;
+      background: var(--color-muted-bg);
+    }
+    #results-table tr.is-best-attack td:first-child { color: var(--color-blue); font-weight: 600; }
+
+    /* Grille d'analyse */
+    .context-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-sm);
+    }
+    .context-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-alt);
+    }
+    .context-group__title {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--color-blue);  /* 4.7:1 ✅ */
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: var(--space-1);
+      margin-bottom: var(--space-1);
+    }
+    .context-row { display: flex; flex-direction: column; gap: 1px; }
+    .context-row dt { font-size: 0.75rem; color: var(--color-text-muted); }
+    .context-row dd { font-family: 'IBM Plex Mono', monospace; font-size: var(--text-sm); }
+    .val-num { color: var(--color-text-muted); }
+    .val-ok { color: var(--color-text-muted); font-style: italic; }
+    .val-warn {
+      font-weight: 700;
+      color: var(--color-text);  /* 19.1:1 ✅ */
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+    }
+
+    @media (max-width: 600px) {
+      .context-grid { grid-template-columns: 1fr; }
+      .profile-selector__buttons { flex-wrap: wrap; }
+      .profile-btn { min-width: calc(50% - var(--space-2)); }
+    }
+
+    /* ══════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════ */
+    @media (max-width: 640px) {
+      .site-nav__primary,
+      .site-nav__secondary {
+        display: none;
+      }
+      .hamburger { display: flex; }
+      .lang-selector { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .hero { padding: var(--space-4) var(--space-3) var(--space-5); }
+      .hero__title { font-size: 1.5rem; }
+      .hero__subtitle { font-size: var(--text-base); }
+      .input-row { flex-direction: column; align-items: stretch; }
+      .toggle-btn { text-align: center; }
+      .trust-badges { margin: var(--space-3) 0 var(--space-4); }
+    }
+
+    @media (max-width: 320px) {
+      .hero__title { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ HEADER ══ -->
+  <header class="site-header">
+    <div class="site-header__inner">
+
+      <!-- Logo -->
+      <a href="/fr/index.html" class="site-logo">
+        Time<span class="site-logo__accent">2</span>Crack
+      </a>
+
+      <!-- Nav principale (desktop) -->
+      <nav class="site-nav" aria-label="Navigation principale">
+
+        <!-- Primaire -->
+        <div class="site-nav__primary">
+          <a href="/fr/index.html" class="nav-link nav-link--active" aria-current="page">
+            Tester un mot de passe
+          </a>
+          <a href="/fr/generator.html" class="nav-link">
+            Générer un mot de passe
+          </a>
+        </div>
+
+        <!-- Secondaire -->
+        <div class="site-nav__secondary">
+          <a href="/fr/faq.html" class="nav-link">FAQ</a>
+          <a href="/fr/about.html" class="nav-link">À propos</a>
+
+          <!-- Dropdown Science -->
+          <div class="dropdown">
+            <button
+              class="dropdown__toggle nav-link"
+              id="dd-science-toggle"
+              aria-expanded="false"
+              aria-controls="dd-science-menu"
+              aria-haspopup="true"
+            >
+              Science <span class="dropdown__arrow" aria-hidden="true">▾</span>
+            </button>
+            <div id="dd-science-menu" class="dropdown__menu" role="menu" aria-label="Science">
+              <a href="/fr/how-time2crack-works.html" class="dropdown__item" role="menuitem">Comment ça fonctionne</a>
+              <div class="dropdown__separator"></div>
+              <span class="dropdown__group-title">Méthodes d'attaque</span>
+              <a href="/fr/methode/bruteforce.html"   class="dropdown__item" role="menuitem">Force brute</a>
+              <a href="/fr/methode/dictionary.html"   class="dropdown__item" role="menuitem">Dictionnaire</a>
+              <a href="/fr/methode/hybrid.html"       class="dropdown__item" role="menuitem">Hybride</a>
+              <a href="/fr/methode/mask.html"         class="dropdown__item" role="menuitem">Masque</a>
+              <a href="/fr/methode/markov.html"       class="dropdown__item" role="menuitem">Markov</a>
+              <a href="/fr/methode/pcfg.html"         class="dropdown__item" role="menuitem">PCFG</a>
+              <a href="/fr/methode/combinator.html"   class="dropdown__item" role="menuitem">Combinateur</a>
+              <div class="dropdown__separator"></div>
+              <a href="/fr/sources.html" class="dropdown__item" role="menuitem">Sources</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Sélecteur de langue (desktop) -->
+      <div class="lang-selector">
+        <button
+          class="lang-toggle"
+          id="lang-toggle"
+          type="button"
+          aria-label="Changer de langue"
+          aria-expanded="false"
+          aria-controls="lang-menu"
+          aria-haspopup="listbox"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-13H9v2h2V7zm0 4H9v6h2v-6zm2-4h2v2h-2V7zm2 4h-2v6h2v-6z" fill="currentColor"/>
+          </svg>
+          <span id="lang-label">Français</span>
+          <span aria-hidden="true">▾</span>
+        </button>
+        <ul id="lang-menu" class="lang-menu" role="listbox" aria-label="Sélectionner une langue">
+          <li><button class="lang-menu__item lang-menu__item--active" data-lang="fr" role="option" aria-selected="true">Français</button></li>
+          <li><button class="lang-menu__item" data-lang="en" role="option">English</button></li>
+          <li><button class="lang-menu__item" data-lang="es" role="option">Español</button></li>
+          <li><button class="lang-menu__item" data-lang="pt" role="option">Português</button></li>
+          <li><button class="lang-menu__item" data-lang="de" role="option">Deutsch</button></li>
+          <li><button class="lang-menu__item" data-lang="it" role="option">Italiano</button></li>
+          <li><button class="lang-menu__item" data-lang="tr" role="option">Türkçe</button></li>
+          <li><button class="lang-menu__item" data-lang="pl" role="option">Polski</button></li>
+          <li><button class="lang-menu__item" data-lang="nl" role="option">Nederlands</button></li>
+        </ul>
+      </div>
+
+      <!-- Hamburger (mobile) -->
+      <button
+        class="hamburger"
+        id="hamburger-btn"
+        type="button"
+        aria-label="Ouvrir le menu"
+        aria-expanded="false"
+        aria-controls="mobile-drawer"
+      >
+        <span></span><span></span><span></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- ══ DRAWER MOBILE ══ -->
+  <div id="mobile-drawer" class="drawer" aria-label="Menu mobile" role="dialog" aria-modal="true" hidden>
+    <a href="/fr/index.html" class="drawer__link drawer__link--active" aria-current="page">Tester un mot de passe</a>
+    <a href="/fr/generator.html" class="drawer__link">Générer un mot de passe</a>
+    <div class="drawer__separator"></div>
+    <a href="/fr/faq.html" class="drawer__link">FAQ</a>
+    <a href="/fr/about.html" class="drawer__link">À propos</a>
+    <details class="drawer__details">
+      <summary>Science</summary>
+      <div class="drawer__nested">
+        <a href="/fr/how-time2crack-works.html" class="drawer__link">Comment ça fonctionne</a>
+        <div class="drawer__group-title">Méthodes d'attaque</div>
+        <a href="/fr/methode/bruteforce.html"   class="drawer__link">Force brute</a>
+        <a href="/fr/methode/dictionary.html"   class="drawer__link">Dictionnaire</a>
+        <a href="/fr/methode/hybrid.html"       class="drawer__link">Hybride</a>
+        <a href="/fr/methode/mask.html"         class="drawer__link">Masque</a>
+        <a href="/fr/methode/markov.html"       class="drawer__link">Markov</a>
+        <a href="/fr/methode/pcfg.html"         class="drawer__link">PCFG</a>
+        <a href="/fr/methode/combinator.html"   class="drawer__link">Combinateur</a>
+        <a href="/fr/sources.html"              class="drawer__link">Sources</a>
+      </div>
+    </details>
+    <div class="drawer__separator"></div>
+    <div class="drawer__group-title">Langue</div>
+    <div class="drawer__lang-grid">
+      <button class="drawer__lang-btn drawer__lang-btn--active" data-lang="fr">Français</button>
+      <button class="drawer__lang-btn" data-lang="en">English</button>
+      <button class="drawer__lang-btn" data-lang="es">Español</button>
+      <button class="drawer__lang-btn" data-lang="pt">Português</button>
+      <button class="drawer__lang-btn" data-lang="de">Deutsch</button>
+      <button class="drawer__lang-btn" data-lang="it">Italiano</button>
+      <button class="drawer__lang-btn" data-lang="tr">Türkçe</button>
+      <button class="drawer__lang-btn" data-lang="pl">Polski</button>
+      <button class="drawer__lang-btn" data-lang="nl">Nederlands</button>
+    </div>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero__inner">
+
+      <h1 class="hero__title">Combien de temps pour cracker<br>votre mot de passe ?</h1>
+      <p class="hero__subtitle">Analyse réelle par 7 modèles d'attaque. Aucun mot de passe transmis.</p>
+
+      <div class="trust-badges">
+        <span class="badge badge--privacy"><span class="badge__dot"></span>100% local</span>
+        <span class="badge badge--privacy"><span class="badge__dot"></span>Open source</span>
+        <span class="badge">7 modèles d'attaque</span>
+        <span class="badge">6 algorithmes de hash</span>
+        <span class="badge">jusqu'à 3,6M mots / langue</span>
+      </div>
+
+      <div class="hero__input-area">
+        <label for="pw-input" class="input-label">Entrez votre mot de passe</label>
+        <div class="input-row">
+          <input
+            type="password"
+            id="pw-input"
+            placeholder="••••••••••••"
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button class="toggle-btn" id="toggle-btn" type="button">Afficher</button>
+        </div>
+        <p class="input-hint">🔒 Traitement intégral dans votre navigateur — rien n'est envoyé.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ RÉSULTATS ══ -->
+  <div class="page-body">
+    <div id="results">
+
+      <!-- Badge HIBP -->
+      <div class="hibp-badge hibp-badge--pwned" role="status" aria-live="polite">
+        <span class="hibp-badge__icon">⚠️</span>
+        <span class="hibp-badge__text">Ce mot de passe a été détecté dans <strong>23 742 fuites de données</strong>. Ne l'utilisez pas.</span>
+      </div>
+
+      <!-- Sélecteur de profil -->
+      <div class="profile-selector" role="group" aria-label="Profil d'attaquant">
+        <span class="profile-selector__label">Profil d'attaquant</span>
+        <div class="profile-selector__buttons">
+          <button class="profile-btn" data-profile="amateur" aria-pressed="false">
+            <span class="profile-btn__name">Amateur</span>
+            <span class="profile-btn__gpu">1 GPU</span>
+          </button>
+          <button class="profile-btn profile-btn--active" data-profile="experienced" aria-pressed="true">
+            <span class="profile-btn__name">Standard</span>
+            <span class="profile-btn__gpu">12 GPU</span>
+          </button>
+          <button class="profile-btn" data-profile="professional" aria-pressed="false">
+            <span class="profile-btn__name">Pro</span>
+            <span class="profile-btn__gpu">~100 GPU</span>
+          </button>
+          <button class="profile-btn" data-profile="nation_state" aria-pressed="false">
+            <span class="profile-btn__name">État</span>
+            <span class="profile-btn__gpu">~10k GPU</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Meilleure attaque -->
+      <div class="best-attack-card">
+        <div class="best-attack-label">Meilleure attaque estimée</div>
+        <div class="best-attack-result">
+          <span>⚡</span>
+          <strong>3 minutes 42 secondes</strong>
+        </div>
+        <p class="best-attack-row">via <strong>Attaque dictionnaire</strong> · 12 GPU (profil Standard)</p>
+      </div>
+
+      <!-- Info profil -->
+      <div class="profile-info-card" role="status" aria-live="polite">
+        <div class="profile-info-card__header">
+          <span>Standard</span>
+          <span class="profile-info-card__gpus">12 GPU · ~100 GH/s (bcrypt)</span>
+        </div>
+        <span class="profile-info-card__desc">Attaquant organisé disposant d'un cluster GPU dédié. Typique d'un groupe cybercriminel ou d'un pentesteur professionnel.</span>
+      </div>
+
+      <!-- Tableau des attaques -->
+      <h2>Analyse détaillée des attaques</h2>
+      <div class="table-wrapper" role="region" aria-label="Tableau des temps de crack" tabindex="0">
+        <table id="results-table">
+          <thead>
+            <tr>
+              <th scope="col">Attaque</th>
+              <th scope="col">Algorithme</th>
+              <th scope="col">Temps estimé</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-best-attack">
+              <td>Dictionnaire</td>
+              <td>bcrypt</td>
+              <td>3 min 42 s</td>
+            </tr>
+            <tr>
+              <td>Hybride</td>
+              <td>bcrypt</td>
+              <td>18 min 10 s</td>
+            </tr>
+            <tr>
+              <td>Masque</td>
+              <td>MD5</td>
+              <td>2 h 34 min</td>
+            </tr>
+            <tr class="attack-group-alt">
+              <td>Markov</td>
+              <td>SHA-256</td>
+              <td>14 h 07 min</td>
+            </tr>
+            <tr class="attack-group-alt">
+              <td>PCFG</td>
+              <td>SHA-256</td>
+              <td>3 jours 2 h</td>
+            </tr>
+            <tr>
+              <td>Combinateur</td>
+              <td>bcrypt</td>
+              <td>9 jours 14 h</td>
+            </tr>
+            <tr class="not-applicable">
+              <td>Force brute</td>
+              <td>bcrypt</td>
+              <td>— (non applicable)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Analyse du mot de passe -->
+      <h2>Analyse du mot de passe</h2>
+      <div class="context-grid" aria-label="Caractéristiques du mot de passe">
+        <div class="context-group">
+          <div class="context-group__title">Structure</div>
+          <div class="context-row"><dt>Longueur</dt>          <dd><span class="val-warn">8</span></dd></div>
+          <div class="context-row"><dt>Charset effectif</dt>  <dd><span class="val-num">36</span> (a-z + 0-9)</dd></div>
+          <div class="context-row"><dt>Date détectée</dt>     <dd><span class="val-ok">non</span></dd></div>
+        </div>
+        <div class="context-group">
+          <div class="context-group__title">Patterns</div>
+          <div class="context-row"><dt>Séq. clavier</dt>      <dd><span class="val-warn">oui</span></dd></div>
+          <div class="context-row"><dt>Séq. alpha/num</dt>    <dd><span class="val-ok">non</span></dd></div>
+          <div class="context-row"><dt>Répétition</dt>        <dd><span class="val-ok">non</span></dd></div>
+        </div>
+        <div class="context-group">
+          <div class="context-group__title">Dictionnaire</div>
+          <div class="context-row"><dt>Mot dico</dt>          <dd><span class="val-warn">oui (score 0.94)</span></dd></div>
+          <div class="context-row"><dt>Hybride</dt>           <dd><span class="val-warn">oui</span></dd></div>
+          <div class="context-row"><dt>Passphrase</dt>        <dd><span class="val-ok">non</span></dd></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Afficher/masquer le mot de passe
+    const pwInput = document.getElementById('pw-input');
+    const toggleBtn = document.getElementById('toggle-btn');
+    toggleBtn.addEventListener('click', () => {
+      const show = pwInput.type === 'password';
+      pwInput.type = show ? 'text' : 'password';
+      toggleBtn.textContent = show ? 'Masquer' : 'Afficher';
+    });
+
+    // Dropdown Science
+    const scienceToggle = document.getElementById('dd-science-toggle');
+    const scienceMenu = document.getElementById('dd-science-menu');
+    scienceToggle.addEventListener('click', () => {
+      const open = scienceMenu.classList.toggle('is-open');
+      scienceToggle.setAttribute('aria-expanded', open);
+    });
+
+    // Sélecteur de langue
+    const langToggle = document.getElementById('lang-toggle');
+    const langMenu = document.getElementById('lang-menu');
+    langToggle.addEventListener('click', () => {
+      const open = langMenu.classList.toggle('is-open');
+      langToggle.setAttribute('aria-expanded', open);
+    });
+    langMenu.querySelectorAll('.lang-menu__item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        langMenu.querySelectorAll('.lang-menu__item').forEach(b => {
+          b.classList.remove('lang-menu__item--active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('lang-menu__item--active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById('lang-label').textContent = btn.textContent;
+        langMenu.classList.remove('is-open');
+        langToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Hamburger + Drawer
+    const hamburger = document.getElementById('hamburger-btn');
+    const drawer = document.getElementById('mobile-drawer');
+    hamburger.addEventListener('click', () => {
+      const open = !drawer.hidden;
+      drawer.hidden = open;
+      hamburger.setAttribute('aria-expanded', !open);
+      drawer.classList.toggle('is-open', !open);
+    });
+
+    // Fermer les dropdowns au clic extérieur
+    document.addEventListener('click', e => {
+      if (!scienceToggle.contains(e.target) && !scienceMenu.contains(e.target)) {
+        scienceMenu.classList.remove('is-open');
+        scienceToggle.setAttribute('aria-expanded', 'false');
+      }
+      if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+        langMenu.classList.remove('is-open');
+        langToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Fermer au Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        scienceMenu.classList.remove('is-open');
+        scienceToggle.setAttribute('aria-expanded', 'false');
+        langMenu.classList.remove('is-open');
+        langToggle.setAttribute('aria-expanded', 'false');
+        if (!drawer.hidden) {
+          drawer.hidden = true;
+          drawer.classList.remove('is-open');
+          hamburger.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time2Crack - Prototype durées raw/capped</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600,700|ibm-plex-mono:400,500,600&display=swap">
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --blue: #2563eb;
+      --red: #dc2626;
+      --amber: #d97706;
+      --green: #16a34a;
+      --border: #dbe3ef;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 8px 30px rgba(15, 23, 42, 0.10);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(220, 38, 38, 0.08), transparent 26%),
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 24%),
+        linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
+    }
+
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 20px 44px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.08);
+      color: var(--blue);
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .frame {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .title {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0 0 26px;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.65;
+    }
+
+    .card,
+    .panel,
+    .table-card,
+    .note-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card { padding: 24px; }
+    .panel { padding: 20px; }
+
+    .password-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .password-chip {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.98rem;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      word-break: break-word;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pill--ok { background: #ecfdf5; color: #166534; }
+    .pill--soft { background: #eff6ff; color: #1d4ed8; }
+    .pill--warning { background: #fff7ed; color: #9a3412; }
+    .pill--danger { background: #fee2e2; color: #991b1b; }
+
+    .result-card {
+      position: relative;
+      overflow: hidden;
+      padding: 26px 24px 24px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), transparent 42%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .result-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--blue), #38bdf8);
+    }
+
+    .result-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 14px;
+    }
+
+    .result-number {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: clamp(2.3rem, 6vw, 4rem);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+      margin: 0 0 10px;
+    }
+
+    .result-meta {
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.55;
+      max-width: 60ch;
+    }
+
+    .duration-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .duration-card {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+
+    .duration-label {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .duration-value {
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 600;
+      font-size: 1.1rem;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    .duration-note {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .status-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .status-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .cap-box {
+      border-left: 4px solid var(--amber);
+      padding-left: 14px;
+    }
+
+    .table-card {
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .table-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .table-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #fbfdff;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .algo { font-weight: 600; }
+    .rank { font-family: "IBM Plex Mono", monospace; font-weight: 600; white-space: nowrap; }
+    .capped { color: var(--red); font-size: 0.84rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px; }
+    .muted { color: var(--muted); }
+
+    .side {
+      display: grid;
+      gap: 16px;
+    }
+
+    .foot {
+      margin-top: 22px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 920px) {
+      .frame { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .page { padding: 18px 14px 28px; }
+      .card, .panel, .note-card { padding-left: 18px; padding-right: 18px; }
+      .duration-grid { grid-template-columns: 1fr; }
+      .table-head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="eyebrow"><span class="dot"></span> Durées raw / capped</div>
+
+    <div class="frame">
+      <section>
+        <h1 class="title">Montrer la durée plafonnée et la durée brute, côte à côte.</h1>
+        <p class="subtitle">
+          Ce prototype affiche la durée issue de la valeur brute du modèle et la durée issue de la
+          valeur plafonnée. L’objectif est de vérifier si l’utilisateur comprend la correction sans
+          perdre le signal principal.
+        </p>
+
+        <div class="card">
+          <div class="password-row">
+            <span class="password-chip">truc-truc-2027??</span>
+            <span class="pill pill--ok">Analyse locale</span>
+            <span class="pill pill--danger">raw &gt; brute</span>
+          </div>
+
+          <div class="result-card">
+            <div class="result-kicker">Résultat principal</div>
+            <div class="result-number">plafonné</div>
+            <div class="result-meta">
+              Attaque gagnante: <strong>pcfg</strong>. Le moteur a calculé une valeur brute au-dessus
+              de la borne; la valeur affichée au visiteur reste celle du capped rank.
+            </div>
+
+            <div class="duration-grid">
+              <div class="duration-card">
+                <span class="duration-label">Durée capped rank</span>
+                <div class="duration-value">116 milliards d’années</div>
+                <div class="duration-note">Affichage principal. Ordre de grandeur lisible pour un visiteur lambda.</div>
+              </div>
+              <div class="duration-card">
+                <span class="duration-label">Durée raw rank</span>
+                <div class="duration-value">4 410 milliards d’années</div>
+                <div class="duration-note">Valeur calculée par le modèle avant plafonnement.</div>
+              </div>
+            </div>
+
+            <div class="status-line">
+              <span class="status-label">Cap</span>
+              <span class="pill pill--warning">plafonné</span>
+              <span class="muted">raw rank &gt; capped rank</span>
+            </div>
+          </div>
+
+          <div class="table-card" style="margin-top: 18px;">
+            <div class="table-head">
+              <div>
+                <h2>Détail des modèles</h2>
+                <p>Les deux durées peuvent rester visibles, mais leur statut doit être clair.</p>
+              </div>
+              <span class="pill pill--soft">profil: experienced</span>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Modèle</th>
+                    <th>Raw rank</th>
+                    <th>Capped rank</th>
+                    <th>Durée capped</th>
+                    <th>Durée raw</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="algo">pcfg</td>
+                    <td class="rank">3.8e+31</td>
+                    <td class="rank">1.0e+30</td>
+                    <td class="rank">116 milliards d’années</td>
+                    <td class="rank">4 410 milliards d’années</td>
+                  </tr>
+                  <tr>
+                    <td class="algo">brute</td>
+                    <td class="rank">1.0e+30</td>
+                    <td class="rank">1.0e+30</td>
+                    <td class="rank">116 milliards d’années</td>
+                    <td class="rank">116 milliards d’années</td>
+                  </tr>
+                  <tr>
+                    <td class="algo">hybrid</td>
+                    <td class="rank">4.2e+28</td>
+                    <td class="rank">4.2e+28</td>
+                    <td class="rank">4,9 milliards d’années</td>
+                    <td class="rank">4,9 milliards d’années</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="panel">
+          <h3 class="panel-title">Message à conserver</h3>
+          <div class="cap-box">
+            <p style="margin: 0; color: var(--muted); line-height: 1.75;">
+              Si le cap existe, l’écran doit montrer le temps plafonné comme référence et le temps
+              brut comme contexte d’audit. Le visiteur comprend alors que la correction est volontaire.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 class="panel-title">Règle d’UX</h3>
+          <p style="margin: 0; color: var(--text); line-height: 1.7; font-weight: 600;">
+            Une valeur principale, une valeur secondaire, et une explication courte du plafonnement.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h3 class="panel-title">Statut</h3>
+          <div class="password-row" style="margin-bottom: 0;">
+            <span class="pill pill--warning">plafonné</span>
+            <span class="pill pill--soft">raw rank affichable en détail</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="foot">
+      Prototype statique pour évaluer la présentation simultanée des durées capped et raw.
+    </div>
+  </main>
+</body>
+</html>

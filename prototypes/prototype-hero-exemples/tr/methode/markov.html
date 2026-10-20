@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markov — Saldırı yöntemleri — Time2Crack</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600|ibm-plex-mono:400,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../site.css">
+  <style>:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #eef4ff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --muted-strong: #334155;
+  --line: #e2e8f0;
+  --line-strong: #c7dcff;
+  --brand: #2563eb;
+  --brand-soft: #e0eeff;
+  --brand-soft-2: #d0e4ff;
+  --success: #166534;
+  --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --header-h: 52px;
+  --container: 48rem;
+  --space-2: 0.375rem;
+  --space-3: 0.625rem;
+  --space-4: 1rem;
+  --space-5: 1.618rem;
+  --space-6: 2.618rem;
+  --text-sm: 0.8125rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.618rem;
+  --leading: 1.618;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading);
+}
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; border: 0; background: none; color: inherit; }
+
+.page-shell {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-6);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header__inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  min-height: var(--header-h);
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.site-logo__mark {
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #dbeafe, #bfdbfe);
+  border: 1px solid #93c5fd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand);
+  font-size: 0.9rem;
+}
+
+.site-logo__accent { color: var(--brand); }
+
+.site-nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.site-nav__primary,
+.site-nav__secondary {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.site-nav__secondary {
+  margin-left: auto;
+}
+
+.nav-link,
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease;
+}
+
+.nav-link:hover,
+.nav-toggle:hover,
+.nav-link:focus-visible,
+.nav-toggle:focus-visible {
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+
+.nav-link.is-active,
+.nav-toggle.is-active {
+  color: var(--brand);
+  background: var(--brand-soft);
+  font-weight: 500;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown__menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 230px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2) 0;
+  z-index: 30;
+}
+
+.dropdown__menu--lang {
+  min-width: 180px;
+}
+
+.dropdown__menu.is-open { display: block; }
+.dropdown__group-title {
+  display: block;
+  padding: 6px var(--space-4) 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.dropdown__separator {
+  height: 1px;
+  margin: var(--space-2) 0;
+  background: var(--line);
+}
+.dropdown__item {
+  display: block;
+  padding: 8px var(--space-4);
+  font-size: var(--text-sm);
+}
+.dropdown__item:hover,
+.dropdown__item:focus-visible {
+  background: var(--bg);
+  outline: none;
+}
+
+.hero {
+  padding: var(--space-6) 0 var(--space-5);
+}
+
+.hero__card {
+  background: linear-gradient(180deg, var(--surface-2), #f8fbff);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: var(--text-sm);
+  color: var(--success);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.hero__eyebrow::before {
+  content: "";
+  width: .55rem;
+  height: .55rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.hero__subtitle {
+  margin: var(--space-4) 0 0;
+  max-width: 60ch;
+  color: var(--muted-strong);
+  font-size: 1.05rem;
+}
+
+.input-section,
+.generator-container {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.input-section {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.input-group > label,
+.generator-container > h2 {
+  display: block;
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.generator-container {
+  margin-top: var(--space-5);
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+}
+
+.generator-container > p {
+  margin: 0 0 var(--space-4);
+  color: var(--muted-strong);
+}
+
+.generator-container small {
+  color: var(--muted);
+}
+
+.presets,
+.generator-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.presets {
+  margin: 0 0 var(--space-4);
+}
+
+.generator-buttons {
+  margin-top: var(--space-4);
+}
+
+.preset-btn,
+.btn {
+  padding: .8rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-weight: 600;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.preset-btn:hover,
+.btn:hover {
+  background: var(--bg);
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}
+
+.preset-btn {
+  min-width: 7rem;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: transparent;
+}
+
+.btn-secondary {
+  background: #fff;
+}
+
+.btn:disabled,
+.preset-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.generator-controls {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.control-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.control-group legend {
+  padding: 0 .35rem;
+  font-weight: 600;
+  color: var(--muted-strong);
+}
+
+.control-group label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.charset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+  margin-top: .9rem;
+}
+
+.charset-option {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: .7rem;
+  row-gap: .15rem;
+  padding: .85rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.charset-option input {
+  margin-top: .2rem;
+}
+
+.charset-label {
+  font-weight: 600;
+}
+
+.charset-range {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.strength-meter {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #fff, var(--bg));
+}
+
+.strength-bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.strength-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+}
+
+.strength-text {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .75rem;
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.entropy-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: .55rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.generator-output {
+  margin-top: var(--space-4);
+}
+
+.password-output {
+  width: 100%;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.feedback {
+  margin-top: var(--space-3);
+  padding: .75rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+  color: var(--muted-strong);
+}
+
+.cracking-results {
+  margin-top: var(--space-5);
+}
+
+.cracking-subtitle {
+  margin-top: .25rem;
+  color: var(--muted);
+}
+
+.brute-force-display {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.brute-time-label {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.brute-time-formatted {
+  margin-top: .25rem;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+
+.brute-time-breakdown {
+  margin-top: .35rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.attacks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.attack-card {
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.attack-name {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.attack-time {
+  margin-top: .25rem;
+  font-weight: 700;
+}
+
+.attack-rank {
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.best-attack {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+  padding: .9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.best-attack .label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack .value {
+  font-weight: 700;
+}
+
+.best-attack .time {
+  color: var(--muted-strong);
+}
+
+.best-attack-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--brand-soft);
+}
+
+.best-attack-label {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: var(--text-sm);
+}
+
+.best-attack-result {
+  margin: .35rem 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.profile-selector {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-selector__label {
+  display: block;
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
+
+.profile-selector__buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .5rem;
+}
+
+.profile-btn {
+  padding: .85rem .8rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  text-align: left;
+}
+
+.profile-btn--active {
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.profile-btn__name,
+.profile-info-card__header span:first-child {
+  display: block;
+  font-weight: 700;
+}
+
+.profile-btn__gpu,
+.profile-info-card__gpus {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.profile-info-card {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.profile-info-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  align-items: baseline;
+}
+
+.profile-info-card__desc {
+  display: block;
+  margin-top: .35rem;
+  color: var(--muted-strong);
+}
+
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: var(--space-4);
+}
+
+.context-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .9rem;
+  background: #fff;
+}
+
+.context-group__title {
+  margin-bottom: .75rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.context-row {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .45rem;
+}
+
+.context-row dt {
+  color: var(--muted);
+}
+
+.context-row dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  margin-top: var(--space-4);
+  overflow-x: auto;
+}
+
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#results-table th,
+#results-table td {
+  padding: .8rem .9rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+#results-table thead th {
+  background: var(--bg);
+  color: var(--muted-strong);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+#results-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+#status {
+  margin-top: var(--space-4);
+  color: var(--muted-strong);
+}
+
+.dict-loader {
+  margin-top: var(--space-4);
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.dict-loader__content {
+  display: grid;
+  gap: .5rem;
+}
+
+.dict-loader__text {
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.dict-loader__bar {
+  height: .7rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.dict-loader__progress {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-top: var(--space-4);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--muted-strong);
+  font-size: .85rem;
+}
+
+.badge--privacy {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.badge__dot {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.input-panel {
+  margin-top: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(1.1rem, 2.4vw, 1.5rem);
+}
+
+.input-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.input-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.text-input {
+  flex: 1 1 18rem;
+  min-width: 0;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  background: #fff;
+  color: var(--text);
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.toggle-btn,
+.cta-btn {
+  padding: 0.95rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  min-width: 8.2rem;
+  text-align: center;
+}
+
+.toggle-btn:hover,
+.cta-btn:hover { background: #1d4ed8; }
+
+.input-hint {
+  margin: var(--space-3) 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.card {
+  grid-column: span 12;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card--split {
+  grid-column: span 6;
+}
+
+.card h2,
+.card h3 {
+  margin: 0 0 .8rem;
+  line-height: 1.15;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted-strong);
+}
+
+.card ul {
+  margin: .8rem 0 0 1.1rem;
+  color: var(--muted-strong);
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .9rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: .4rem .65rem;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+.section-title {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--text-lg);
+}
+
+.method-list,
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.method-link,
+.page-link {
+  display: block;
+  padding: .95rem 1rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.method-link:hover,
+.page-link:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  background: var(--brand-soft);
+}
+
+.method-link__title,
+.page-link__title {
+  display: block;
+  font-weight: 600;
+}
+
+.method-link__desc,
+.page-link__desc {
+  display: block;
+  margin-top: .2rem;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.footer {
+  max-width: var(--container);
+  margin: var(--space-6) auto 0;
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.footer__links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+}
+
+.footer__links a {
+  color: var(--muted-strong);
+}
+
+.footer__links a:hover { color: var(--brand); }
+
+.footer__meta {
+  margin-top: .8rem;
+  text-align: center;
+}
+
+.hamburger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 4px auto;
+  background: var(--text);
+  border-radius: 999px;
+}
+
+.drawer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .site-nav { display: none; }
+  .hamburger { display: inline-block; }
+  .drawer {
+    display: grid;
+    gap: .5rem;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--space-4) var(--space-4);
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .drawer[hidden] { display: none; }
+  .drawer__link, .drawer__summary {
+    display: block;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__details { margin: 0; }
+  .drawer__details summary {
+    list-style: none;
+    cursor: pointer;
+    padding: .8rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .drawer__nested {
+    margin-top: .5rem;
+    padding-left: .25rem;
+    display: grid;
+    gap: .5rem;
+  }
+  .method-list,
+  .link-grid,
+  .card--split,
+  .attacks-grid,
+  .context-grid,
+  .profile-selector__buttons,
+  .charset-grid {
+    grid-template-columns: 1fr;
+    grid-column: span 12;
+  }
+  .profile-info-card__header,
+  .best-attack,
+  .strength-text {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .hero { padding-top: var(--space-4); }
+}
+
+@media (max-width: 600px) {
+  .page-shell { padding-inline: var(--space-3); }
+  .site-header__inner { padding-inline: var(--space-3); }
+  .hero__title { font-size: 2rem; }
+}
+</style>
+</head>
+<body data-page="markov">
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-logo" href="../index.html">
+        <span class="site-logo__mark">🔒</span>
+        Time<span class="site-logo__accent">2</span>Crack
+      </a>
+      <nav class="site-nav" aria-label="Navigation principale">
+        <div class="site-nav__primary">
+          <a class="nav-link " href="../index.html">Tester un mot de passe</a>
+          <a class="nav-link " href="../generator.html">Générer un mot de passe</a>
+        </div>
+        <div class="site-nav__secondary">
+          <a class="nav-link " href="../faq.html">FAQ</a>
+          <a class="nav-link " href="../about.html">À propos</a>
+          <div class="dropdown">
+            <button class="nav-toggle" id="science-toggle" type="button" aria-expanded="false" aria-controls="science-menu">
+              Science <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="science-menu" role="menu" aria-label="Science">
+              <a class="dropdown__item" href="../how-time2crack-works.html" role="menuitem">Comment ça fonctionne</a>
+              <div class="dropdown__separator"></div>
+              <span class="dropdown__group-title">Méthodes d'attaque</span>
+              <a class="dropdown__item" href="index.html" role="menuitem">index</a><a class="dropdown__item" href="bruteforce.html" role="menuitem">Force brute</a><a class="dropdown__item" href="dictionary.html" role="menuitem">Dictionnaire</a><a class="dropdown__item" href="hybrid.html" role="menuitem">Hybride</a><a class="dropdown__item" href="mask.html" role="menuitem">Masque</a><a class="dropdown__item" href="markov.html" role="menuitem">Markov</a><a class="dropdown__item" href="pcfg.html" role="menuitem">PCFG</a><a class="dropdown__item" href="combinator.html" role="menuitem">Combinateur</a>
+              <div class="dropdown__separator"></div>
+              <a class="dropdown__item" href="../sources.html" role="menuitem">Sources</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="security-toggle" type="button" aria-expanded="false" aria-controls="security-menu">
+              Sécurité <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu" id="security-menu" role="menu" aria-label="Sécurité">
+              <a class="dropdown__item" href="../hibp.html" role="menuitem">HIBP</a>
+              <a class="dropdown__item" href="../privacy.html" role="menuitem">Confidentialité</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="nav-toggle" id="lang-toggle" type="button" aria-expanded="false" aria-controls="lang-menu">
+              Türkçe <span aria-hidden="true">▾</span>
+            </button>
+            <div class="dropdown__menu dropdown__menu--lang" id="lang-menu" role="menu" aria-label="Langue">
+              <a class="dropdown__item" href="../../fr/methode/markov.html" hreflang="fr" role="menuitem">Français</a><a class="dropdown__item" href="../../en/methode/markov.html" hreflang="en" role="menuitem">English</a><a class="dropdown__item" href="../../es/methode/markov.html" hreflang="es" role="menuitem">Español</a><a class="dropdown__item" href="../../pt/methode/markov.html" hreflang="pt" role="menuitem">Português</a><a class="dropdown__item" href="../../de/methode/markov.html" hreflang="de" role="menuitem">Deutsch</a><a class="dropdown__item" href="../../it/methode/markov.html" hreflang="it" role="menuitem">Italiano</a><a class="dropdown__item is-active" href="markov.html" hreflang="tr" role="menuitem">Türkçe</a><a class="dropdown__item" href="../../pl/methode/markov.html" hreflang="pl" role="menuitem">Polski</a><a class="dropdown__item" href="../../nl/methode/markov.html" hreflang="nl" role="menuitem">Nederlands</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <button class="hamburger" id="drawer-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="drawer" id="mobile-drawer" hidden>
+    <a class="drawer__link " href="../index.html">Tester un mot de passe</a>
+    <a class="drawer__link " href="../generator.html">Générer un mot de passe</a>
+    <a class="drawer__link " href="../faq.html">FAQ</a>
+    <a class="drawer__link " href="../about.html">À propos</a>
+    <details class="drawer__details">
+      <summary>Science</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="../how-time2crack-works.html">Comment ça fonctionne</a>
+        <a class="drawer__link" href="index.html">Combinateur</a><a class="drawer__link" href="bruteforce.html">Force brute</a><a class="drawer__link" href="dictionary.html">Dictionnaire</a><a class="drawer__link" href="hybrid.html">Hybride</a><a class="drawer__link" href="mask.html">Masque</a><a class="drawer__link" href="markov.html">Markov</a><a class="drawer__link" href="pcfg.html">PCFG</a><a class="drawer__link" href="combinator.html">Combinateur</a>
+        <a class="drawer__link" href="../sources.html">Sources</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Sécurité</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" href="../hibp.html">HIBP</a>
+        <a class="drawer__link" href="../privacy.html">Confidentialité</a>
+      </div>
+    </details>
+    <details class="drawer__details">
+      <summary>Langue</summary>
+      <div class="drawer__nested">
+        <a class="drawer__link" hreflang="fr" href="../../fr/methode/markov.html">Français</a><a class="drawer__link" hreflang="en" href="../../en/methode/markov.html">English</a><a class="drawer__link" hreflang="es" href="../../es/methode/markov.html">Español</a><a class="drawer__link" hreflang="pt" href="../../pt/methode/markov.html">Português</a><a class="drawer__link" hreflang="de" href="../../de/methode/markov.html">Deutsch</a><a class="drawer__link" hreflang="it" href="../../it/methode/markov.html">Italiano</a><a class="drawer__link" hreflang="tr" href="markov.html">Türkçe</a><a class="drawer__link" hreflang="pl" href="../../pl/methode/markov.html">Polski</a><a class="drawer__link" hreflang="nl" href="../../nl/methode/markov.html">Nederlands</a>
+      </div>
+    </details>
+  </div>
+<main class="page-shell">
+<h1 style="display:none">Markov saldırısı (probabilistic) - Kapsamlı Operasyon</h1>
+<blockquote>
+Project reference document Time2Crack
+</blockquote>
+<blockquote>Recipients: geliştiricileri, güvenlik araştırmacıları, gelişmiş kullanıcılar</blockquote>
+<hr>
+<h2>İçerikler</h2>
+<li><a href="markov.html#1-vue-densemble">Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış</a></li>
+<li><a href="markov.html#2-contexte-historique-et-académique">Tarihsel ve akademik arka plan</a></li>
+<li><a href="markov.html#3-fondements-mathématiques--les-chaînes-de-markov">Matematiksel temeller: Markov'un zincirleri</a></li>
+<li><a href="markov.html#4-architecture-dun-cracktool-markov">Bir Markov çatlakları mimarisi</a></li>
+<li><a href="markov.html#5-phase-1--entraînement-sur-corpus-de-mots-de-passe-réels">Aşama 1 - gerçek şifre eğitimi</a></li>
+<li><a href="markov.html#6-phase-2--génération-ordonnée-de-candidats">Aşama 2 - Adayların nesli</a></li>
+<li><a href="markov.html#7-réduction-de-lespace-de-recherche--la-clé-de-lefficacité">Araştırma Uzayını Yeniden Üretmek: Etkili Olmak</a></li>
+<li><a href="markov.html#8-variantes-et-implémentations-notables">Değişkenler ve uygulamalar</a></li>
+<li><a href="markov.html#9-comportement-face-à-différents-types-de-mots-de-passe">Farklı şifre türlerine karşı Davranış</a></li>
+<li><a href="markov.html#10-intégration-dans-time2crack--modélisation-et-paramètres">Time2Crack'e Entegrasyon: Modelleme ve Parametreler</a></li>
+<li><a href="markov.html#11-comparaison-avec-les-autres-attaques-probabilistes">Diğer olasılıksal saldırılar ile karşılaştırıldığında</a></li>
+<li><a href="markov.html#12-limites-de-lattaque-markov">Markov saldırısının sınırları</a></li>
+<li><a href="markov.html#13-défenses-efficaces">Etkili savunmalar</a></li>
+<li><a href="markov.html#14-références-bibliographiques">Referanslar Referanslar</a></li>
+<hr>
+<h2>1. Genel bakış</h2>
+<p>Markov Saldırısı bir şifre çatma yöntemidir <strong>Olasılıksal ve istatistiksel</strong> Hangi adaylar gerçek insan şifreleri arasındaki geçişin gözlemlenen frekanslarına güvenerek aday üretirler. alfabetik sırayla tüm olası kombinasyonları test etmek yerine - en olası en azından, insan şifrelerinin bulunduğu hesaplama çabasını yoğunlaştırır.</p>
+<strong>Basit şartlarda</strong> : Yeterli GPU ve iyi eğitimli bir Markov modeli olan bir saldırgan, "p@ssword" ve "sun2024" test etmeden önce "aaaaaa", "aaaaab" veya "xqzfkw" - çünkü insanlar kelimeler gibi görünen şifreler yaratır.
+<strong>Ölçülen verimlilik</strong> Dürmuth et al. (2015) Rock You corpus (14 milyon şifre) üzerinde araştırma, bir Markov 5 modelinin gerçek arama alanını gerçek arama alanını 5 modeline indirdiğini gösteriyor <strong>brüt alanın% 0.6'sı</strong> Tipik bir insan yapısıyla şifreler için -% 99.4 indirim.
+<hr>
+<h2>2. Tarihsel ve akademik arka plan</h2>
+<h3>2.1 Origins</h3>
+<p>Markov kanallarının şifre çatlaklarına uygulanması, resmi akademik yayınlardan daha erkendir. 2000'lerden bu yana benzer modeller kullandı, ancak 2010'lardan titiz formalizasyon tarihleri.</p>
+<strong>Chronology ofroads</strong> :
+YılEvent Event Event
+- ►- !!!
+2005 2005 2005 2005Nakashima &amp; Oyama: n-gramların ilk resmi uygulaması şifrelere
+2009 2009 2009Weir et al. (IEEE S&amp;P): PCFG - doğrudan rakip, pozisyon yapısal olasılıklar
+2012 2012 2012Ma et al. (USENIX Security): 70M parolasındaki olasılıksal modellerin karşılaştırmalı çalışması
+2013 2013 2013 2013Durmuth: İlk OMEN birkaç korpus üzerinde analizler
+2015 2015 2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESORICS 2015) - büyük akademik referans
+2016Wheeler (zxcvbn) gerçek entropikte gerçek entropilerin etkinliğini doğrular
+2018 2018 2018OMEN+: pürüzsüz ve interpolasyon ile gelişmiş sürüm
+2019-2022Markov hibrit çalışma + sinir ağları (PassGAN, FuzzyPSM)
+<h3>2.2 Referans gövdesi</h3>
+<p>Markov modelleme eğitimi bilinen veri sızıntılarından şifre veritabanına dayanmaktadır:</p>
+<ul>
+<li><strong>RockYou (2009)</strong> 14.3 milyon açık şifre - evrensel referans korpus</li>
+</ul>
+<li><strong>LinkedIn (2012)</strong> : 6.5 milyon un-salted SHA-1 hashs ( 4,4M çatlakları dahil)</li>
+<li><strong>Adobe (2013)</strong> : 153 milyon tanımlayıcı (3DES hashs – frekans analizi tarafından kırıldı)</li>
+<li><strong>Collection #1-5 (2019)</strong> : 2.7 milyar çift tanım /password</li>
+<li><strong>I Been Pwned (2024)</strong> : ~14 milyar tek ortak bilgi</li>
+<p>Bu korpus, insan şifrelerinin gerçek istatistik dağılımını ortaya koyuyor, bu da üniformalı bir dağıtımdan radikal şekilde farklıdır.</p>
+<hr>
+<h2>3. Mathematical Foundations: Markov'un Zincirleri</h2>
+<h3>3.1 Formal tanım</h3>
+<p>Markov sipariş zinciri <em>k</em> Bir alfabe üzerinde <em>k</em> Önceki karakterler:</p>
+<pre><code class="language-plaintext">P(cₙ | c₁c₂...cₙ₋₁) = P(cₙ | cₙ₋ₖ...cₙ₋₁)</code></pre>
+<p>Şifre için genellikle 95 baskılanabilir ASCII karakterleri içerir (26 daha düşük vaka + 26 üst durumda + 10 basamak + 33 sembolü).</p>
+<strong>Sipariş 1 (bigram)</strong> :
+<pre><code class="language-plaintext">P("password") = P("p") × P("a"|"p") × P("s"|"a") × P("s"|"s") × ...</code></pre>
+<strong>5 (Dürmuth 2015'e göreoptimal)</strong> :
+<pre><code class="language-plaintext">P("password") = P("p") × P("a"|"p") × P("s"|"pa") × P("s"|"pas")
+                × P("w"|"pass") × P("o"|"passw") × P("r"|"passwo")
+                × P("d"|"passwor")</code></pre>
+<p>Sipariş 5 "passw" gibi bağlamları yakalamak, en büyük takip "o" - bir sipariş modeline erişilemez bilgi 1.</p>
+<h3>3.2 Geçiş matrisi</h3>
+<p>95 karakterden 1'in üzerinde bir sipariş için, geçiş matrisi boyutu <strong>95 × 95 = 9,025 giriş</strong>Sipariş için 5, bu gider <strong>955 × 95 = -7.7 × 1010 teorik girdiler</strong> - ama siparişin çoğunluğu n-grams 5 asla gerçek verilerde görünmüyor. Uygulamalar boş veri yapıları (tries, hash haritaları) sadece n-gramları depolamak için kullanıyor.</p>
+<h3>3.3 Log olasılık ve sıralama</h3>
+<p>8+-karacter parolalarında yüzenlardan kaçınmak (10-20), araçların çalışması 10-20) <strong>günlük olasılıklar</strong> :</p>
+<pre><code class="language-plaintext">log P("password") = log P("p") + log P("a"|"p") + log P("s"|"a") + ...</code></pre>
+<p>Bu değer, bu değerdir <strong>Markov</strong> Adaylar puan sıralamasında üretilir, yani en azından muhtemelen.</p>
+<h3>3.4 Neden 5 sipariş?</h3>
+<p>Empirical Research (Dürmuth 2015, Ma et al. 2012) bunu gösteriyor:</p>
+<li><strong>Sipariş 1</strong> : Bireysel karakterlerin frekanslarını yakalamak (örneğin, küçük bir, o yaygın), azaltma -% 50%</li>
+<li><strong>2.</strong> : Ortak büyükramları yakalamak (pa, ss, wo, rd), azaltım ~% 75%</li>
+<li><strong>Sipariş 3</strong> : trigramları yakalamak (örneğin, ass, ssw), azaltma -% 90</li>
+<li><strong>Sipariş 4</strong> : geri dönüşler başlar, azaltım ~95%</li>
+<li><strong>Sipariş 5</strong> Rock'ta Mükemmel Ampirik, azaltım -99%</li>
+<li><strong>Sipariş 6+++</strong> : overfitting, model memorizes eğitim şifrelerini genelleştirmeksizin genelleştirin</li>
+<hr>
+<h2>4. Bir Markov çatlakları mimarisi</h2>
+<h3>4.1 Ana bileşenler</h3>
+<pre><code class="language-plaintext">┌─────────────────────────────────────────────────────────────┐
+│                    OUTIL DE CRACKING MARKOV                 │
+├─────────────────┬───────────────────┬───────────────────────┤
+│  Phase          │  Composant        │  Rôle                 │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Entraînement   │ Corpus Parser     │ Lit les mots de passe │
+│                 │ N-gram Counter    │ Compte les transitions│
+│                 │ Probability Table │ Normalise en probas   │
+│                 │ Model Serializer  │ Sauvegarde le modèle  │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Génération     │ Candidate Gen     │ Énumère par score     │
+│                 │ Length Controller │ Filtre par longueur   │
+│                 │ Threshold Filter  │ Coupe les improbables │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Attaque        │ Hash Engine       │ Compare aux cibles    │
+│                 │ GPU Interface     │ Hashcat backend       │
+└─────────────────┴───────────────────┴───────────────────────┘</code></pre>
+<h3>4.2 Hashcat ile entegrasyon</h3>
+<p>Uygulamadaki en yaygın uygulama, uygulamadaki en yaygın uygulamadır <strong>Hashcat stdin modu</strong> (<code>-a 0</code> Dış jeneratör ile) veya Python modülleri aracılığıyla <code>statsgen</code> (PK aracıkit’ten):</p>
+<pre><code class="language-bash"># Exemple d'attaque Markov pratique
+python statsgen.py rockyou.txt --output markov<em>Model.stats
+python maskegen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes.txt</em></code></pre>
+<p>Özel araçlar gibi <strong>OMEN</strong> (Bir sonraki şifrenin Markov Estimatoru) doğrudan sıralanmış adayların listelerini oluşturur.</p>
+<hr>
+<h2>5. Aşama 1 - Gerçek şifre eğitiminin Bedeni</h2>
+<h3>5.1. n-gramların Ekstraksiyonu</h3>
+<p>Korpus'taki her şifre için, tüm n-gramlar çıkarılır (bir başlangıç işareti ile). <code>^</code> Ve son <code>$</code>)</p>
+<p>Örnek with "hello" (order 2):
+</p><pre><code class="language-plaintext">^h, he, el, ll, lo, o$</code></pre><p></p>
+<p>"P@ss1" (order 2) ile örnek:
+</p><pre><code class="language-plaintext">^P, P@, @s, ss, s1, 1!, !$</code></pre><p></p>
+<h3>5.2 Konting ve standardizasyon</h3>
+<p>Her bağlamda (n-1 önceki karakterler), her bir karakterin olayları sayılıyor ve normalleştirildi:</p>
+<pre><code class="language-plaintext">Contexte "pa" → {s: 847, r: 12, t: 8, l: 3, ...}
+→ P(s|pa) = 847/870 = 0.973
+→ P(r|pa) = 12/870 = 0.014</code></pre>
+<p>Bu dağıtımlar insan dil alışkanlıklarını ortaya çıkarır: "pa"dan sonra insanlar büyük ölçüde "s" (password, pass, pablo...).</p>
+<h3>Direnmek</h3>
+<p>Başarısız n-gramların sorunu: Eğer "xq" asla korpus, P(c)xq'da görünmezse = 0 herhangi bir c için - hangi nesilleri bloklar.</p>
+<li><strong>Add-one (Laplace)</strong> : Tüm hesaplara 1 ekleyin</li>
+<li><strong>İyi-Turing</strong> : n-gramların olasılığı, hiç görmediklerine yeniden dağıtın</li>
+<li><strong>Kneser-Ney</strong> : Sanat yönteminin durumu, OMEN+</li>
+<p>Ayrıca, eğitim korpusundan gelen adayların modeline izin verir - biraz yeni şifreleri kapsamak için çok önemlidir.</p>
+<h3>5.4 Modelin öğrendiği şey</h3>
+<p>RockYou'de eğitimden sonra, bir Markov 5order modeli gibi içselleştirilmiş modeller:</p>
+<li><strong>Digital suffixes</strong> Sayılar şifrenin sonunda büyük görünüyor (+ "123", "2024", "1!").</li>
+<li><strong>Şimdiki başlangıçlar</strong> "pa", "my", "lo", "ch", "123", "abc" sık başlangıçlar</li>
+<li><strong>İlk ödeme</strong> : İlk pozisyondaki üstlük, zincirin ortasından çok daha büyük.</li>
+<li><strong>Ortadaki nadir semboller</strong> "@", "#", "!" özellikle mektupların veya ekinlerin değiştirilmesinde görünüyor</li>
+<li><strong>İnsan Repetitions</strong> : "aa", "ll", "ee" nadir konsonantların tekrarlarından daha sık.</li>
+<hr>
+<h2>6. Aşama 2 - Adayların nesli</h2>
+<h3>6.1 Puanın sorunu enumeration</h3>
+<p>Hata Markov'un sıra dışı bir problem olması için adaylarını tahmin edin. Tüm olası adayların olasılıklarını hesaplayamayız (948 x 6 × 1015 8 tank için).</p>
+<p>Çözüm: <strong>Heuristic arama önceliği kuyruğu ile</strong> Algoritma Dijkstra'ya benzer:</p>
+<li>En muhtemel başlangıçlarla çizgiyi ilk yapın (<code>^a</code>, <code>^p</code>, <code>^1</code>...)</li>
+<li>Her aşamada, büyük olasılıkla kısmi aday adayı ortadan kaldırmak</li>
+<li>Her olası karakterle uzatın, genişletilmiş adayın puanını hesaplayın</li>
+<li>Hedef uzunluğu ulaştıysa, sorun adayı</li>
+<li>Değilse, dosya geri dön</li>
+<p>Bu yaklaşım, tüm alanı ezberlemeden yaklaşık azaltımı sağlar.</p>
+<h3>6.2. Threshold eşi</h3>
+<p>milyarlarca uygunsuz adayı oluşturmaktan kaçınmak için, bir <strong>Minimum puan minimum puan</strong> Hangi kısmi bir aday ortadan kaldırılır (sladding).</p>
+<pre><code class="language-plaintext">Si log P(candidatpartiel) &lt; THRESHOLD → abandon de cette branche</code></pre>
+<p>Threshold kritik bir parametredir: çok yüksek → Sınırda şifreleri özlüyorsunuz; çok düşük → çok fazla aday üretiyorsunuz ve saldırıyı yavaşlatıyorsunuz.</p>
+<h3>6.3 Toplam yönetim</h3>
+<p>Markov modelleri eğitilir ve genellikle çalışır <strong>Sabit uzunlukta</strong>Tipik bir saldırı:</p>
+<li>Uzunluk 6: N adaylarını olasılık düzenine sokmak için üretir</li>
+<li>Uzunluk 7: Idem</li>
+<li>Uzunluk 8: Idem (en yaygın uzun korpus)</li>
+<li>Uzunluks 9-12: kapsama alanı</li>
+<p>Rock'ta uzun dağıtım: 8 tank =% 24, 7 tank =% 21, 9 tank =% 12, 6 tank =% 10...</p>
+<hr>
+<h2>7. Araştırma Uzayını Yeniden Üretmek: Etkililik Anahtar</h2>
+<h3>7.1 Empirical niceification (Dürmuth 2015)</h3>
+<p>Tamam alfabe ile 8 karakterin şifresi için (94 tank):</p>
+Yöntem YöntemiAraştırma alanıDayanıklılık faktörü
+►- !!!- !!!
+Gross power948 6 × 10151× (reference)
+Markov Sipariş 1~3 × 1015~2×
+Markov Sipariş 3~6 × 1013-100 ×
+Markov 5 sipariş~3.6 × 1010~166 000×
+Markov 5 (tipik insan) sipariş~4 × 107<strong>~150 milyon ×</strong>
+<p>"redük uzay" ve "tipik insan alanı" arasındaki fark, gerçek insan şifrelerinin yoğunlaştığı gerçeği tarafından açıklanabilir. <strong>En yüksek%% büyük olasılıkla</strong> Modele bağlı olarak.</p>
+<h3>7.2 Neden İnsanlar Tahmin edilebilir</h3>
+<p>Markov tarafından kullanılan tahmin edilebilir faktörler:</p>
+<strong>Dil kısıtlamaları</strong> Şifre mevcut kelimelerden elde edilir. "letmein", "sunshine", "iloveyou" İngilizce'nin phonotic kurallarına uymak - mektupların geçişleri son derece olası.
+<strong>Bilişsel kısıtlamalar</strong> İnsanlar gerçekten rastgele dizileri hatırlamaz. “xqzfw9@” gibi rastgele bir şifre nadiren kendiliğinden seçilir.
+<strong>Kültürel desenler</strong> Bu modeller şifre alanında yüksek yoğunluk kümeleri oluşturur.
+<strong>Tahmin edilebilir ikameler</strong> Bu değişiklikler, modelin bir parçası oluştururlar.
+<strong>Sayılar ve semboller</strong> : Şifrenin sonundaki rakamlar (passwd123) başlangıçtaki rakamlardan 10 × daha sıktır. Suffix sembolleri (passwd!) merkezi pozisyondan daha sık.
+<h3>7.3 klavye kalıplarının durumu</h3>
+<p>Klavye dizileri (qwerty, asdf, zxcv, 1234, azerty...) özellikle savunmasızdır.</p>
+<li>Karakter geçişleri klavye topolojinin kısıtlamaları takip eder</li>
+<li>Her anahtardan sadece 4-8 acil komşular ilgili</li>
+<li>Bu desenler dahil olmak üzere bir Markov modeli korpus'a yol açtı <strong>% 99.7%</strong> (Genel insan kelimeleri için% 99,4)</li>
+<p>Time2Crack (şu anki sürüm), bu ayrım artık sabit bir taşıma değildir.The Markov v2 modeli dahil eder. <code>kbPat</code> Bir sıralamada bir sinyal olarak,<code>markovExpectedGuesses</code>Daha sonra "insan benzeri" ve "random-like" rejimleri arasında sürekli bir uzlaş.</p>
+<hr>
+<h2>8. Değişkenler ve Uygulamalar</h2>
+<h3>8.1 OMEN (Yeni şifrelerin Markov Estimatoru)</h3>
+<strong>Tarafından Geliştirilen</strong> Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge (ESORICS 2015)
+<strong>Erişilebilirlik</strong> : Açık kaynak (GitHub)
+<strong>Ana inovasyon</strong> : Seviye puanı ile optimize edilen zamanlama ( olasılık adımları tarafından tahmin)
+<p>OMEN, olasılıkların bir ayrımını kullanır <strong>Bütün seviyeleri</strong> nesli hızlandırmak için:
+</p><li>Her n-gram tam bir puan alır (0 = çok olası, 10 = olası)</li>
+<li>Bir şifrenin puanlarının toplamı onun <strong>Genel puan</strong></li>
+<li>Şifreler genel puan sıralamasında oluşturulur</li><p></p>
+<p>Bu yaklaşım, pahalı öncelik kuyruğu olmadan sipariş verme sorununu zarif bir şekilde çözmektedir.</p>
+<h3>8.2 OMEN+</h3>
+<p>OMEN'in Hazırlanması:
+</p><li><strong>Kneser-Neyy</strong> Daha iyi genelleme için</li>
+<li><strong>Multi-order interpolasyon</strong> : Sipariş tahminlerini birleştirir 3, 4 ve 5</li>
+<li><strong>Eşdeğerlik</strong> Ampirik korpus dağılımına dayanarak</li><p></p>
+<p>Raporlanmış performans: +15 ila +20%, eşit bütçe ile orijinal OMEN'ye karşı kırıldı.</p>
+<h3>8.3 Statsgen / PACK (Password Analysis and Cracking Kit)</h3>
+<strong>Tarafından Geliştirilen</strong> : Peter Kacherginsky (iphelix)
+<strong>Yaklaşım Yaklaşım Yaklaşım</strong> OMEN'den daha hafif, Hashcat uyumlu maskeler ve istatistikler üretir
+<strong>Tipik kullanım kullanımı</strong> : Gelecekteki saldırıları adapte etmek için bir dizi çatlak şifre analizi
+<h3>8.4 John TheRipper – Markov Mode</h3>
+<p>John TheRipper birbiriyle bütünleşiyor <strong>yerli Markov modu</strong> ( Samuele Giovanni Tonon tarafından gelişmiş):</p>
+<pre><code class="language-bash">john --markov --min-length=6 --max-length=8 hashes.txt</code></pre>
+<p>Parametre parametresi <code>--markov-threshold</code> (0-400): kesme eşini kontrol edin. 150 = önerilen standart parametre.</p>
+<p>JtR Markov modu dosyalarında depolanan önceden hesaplanan istatistikler kullanır <code>.mkv</code> (markov stats dosyaları) tarafından yaratılan <code>calc<em>İstatistik</em></code>.</p>
+<h3>8.5 Markov Hybrid Modeller</h3>
+<strong>Markov + kurallar</strong> Markov adayları üretmek, sonra Hashcat dönüşüm kuralları uygulamak
+<strong>Markov + Sözlük</strong> : Markov şifrelerini hibrit saldırılar için temel olarak kullanın
+<strong>Markov + PCFG</strong> : Olasılıksal sipariş Markov'u yapısal stresle birleştirir PCFG
+<p>Bu hibritleştirmeler, CPU/GPU bütçe kapsamını maksimize etmek için profesyonel çatlaklarda kullanılır.</p>
+<h3>8.6 Modern Dil Modelleri (LLM/LSTM) – Markov'a yeni başlayanlar</h3>
+<p>LSTM ve Transformer ağları Markov kanallarının genelleştirilmesi olarak görülebilir:
+</p><li>Markov sipariş k = k tokens sabit bağlam pencere pencere pencere</li>
+<li>LSTM = değişken ve sınırsız bağlam penceresi (uzun süreli bellek)</li>
+<li>Dönüşüm = genel dikkat tüm sıraya</li><p></p>
+<p>PassGAN (2017), FLA (2019), PassBERT (2022) modern korpusta çatlaklarda% 20-30 oranında klasik Markov modellerini aştı.</p>
+<hr>
+<h2>9. Farklı şifre türlerine karşı Davranış</h2>
+<h3>9.1 doğal kelimelerden şifreler</h3>
+<strong>Örnekler</strong> : Güneş, letmein, ejderha, iloveyou
+<strong>Vulnerability</strong> : Aşırı uç
+<strong>Mechanism</strong> : Model mevcut İngilizce dizilerine çok yüksek bir olasılık tahsis eder. Bu kelimeler görünür <strong>En iyi 0.001%</strong> Oluşturulan adaylar.
+<strong>Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman</strong> : MD5 / SHA-1
+<h3>9.2 Leetspeak substitutions ile Kelimeler</h3>
+<strong>Örnekler</strong> : p@sw0rd, L3tm3In, $unsh1ne
+<strong>Vulnerability</strong> Yüksek Lisans : Yüksek
+<strong>Mechanism</strong> Model, "@" sık sık sık "p" takip ettiğini öğrendi (çünkü "p@ss..." korpus'ta çok yaygındır), "0" genellikle "w" (w0rd...), vb. en yaygın alt kurumlar geçiş olasılığına entegre edilmiştir.
+<strong>Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman</strong> : dakikaya kadar
+<h3>9.3 Dijital ek ile kelimeler</h3>
+<strong>Örnekler</strong> Parola123, güneş2024, dragon1!
+<strong>Vulnerability</strong> Yüksek Lisans : Yüksek
+<strong>Mechanism</strong> Sayısal ekler, modelin mektup için yüksek bir olasılık olduğu kadar yaygındır: "123", "1", "2024", "12" en muhtemel ekler.
+<strong>Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman</strong> : Birkaç dakikaya saniye
+<h3>9.4 Verilen isimler ve uygun isimler</h3>
+<strong>Örnekler</strong> Thomas92, AnneM@rie, NICOLAS
+<strong>Vulnerability</strong> orta derecede yüksek
+<strong>Mechanism</strong> : Ortak isimler (İngilizce) referans korpusunda iyi temsil edilir. İngilizce korpus (Fransız, Polonya, vs.) modelden daha az yararlanır.
+<strong>Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman</strong> : İlk adın popülaritesine bağlı olarak saatler
+<h3>9.5 Görünüşe göre rastgele yapının kelimelerini geç, ancak mnemoteknik</h3>
+<strong>Örnekler</strong> Tr0ub4dor&amp;3 (XKCD), Il0v3myC@t!
+<strong>Vulnerability</strong> orta orta orta orta
+<strong>Mechanism</strong> Bu şifreler bir insan yapısına sahiptir (baseword + substituions + suffix), ancak temel ve özel dönüşümler Markov adaylarının en üst kısmında değildir.
+<strong>Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman</strong> : Uzun ve hash algoritmasına göre günler saatler
+<h3>9.6 Klavye Desenleri</h3>
+<strong>Örnekler</strong> : qwerty, 1234567, azerty, qweasdzxcc
+<strong>Vulnerability</strong> : Aşırı (doğal kelimelerden daha kötü)
+<strong>Mechanism</strong> : klavye geçişleri o kadar korpus'ta temsil edilir ki, model ilk binlerce aday arasında onları sıralamaktadır - bazen ilk on.
+<strong>Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman</strong> : milisaniyelere mikrosaniye
+<h3>9.7 Gerçekten Rastgele Şifreler</h3>
+<strong>Örnekler</strong> xQz7@mK9, 4 #pL$2nR, kRf9!Ws3
+<strong>Vulnerability</strong> : Düşük sıfır için
+<strong>Mechanism</strong> : Bu şifrelerdeki karakter geçişleri insan şifreleri üzerinde eğitilmiş bir modelde çok düşük olasılıklara sahiptir. üretilen alanın son yüzdelerinde bulunurlar.
+<strong>Davranış</strong> Güvenlik gerçek "maliyet" brüt entropidir.
+<strong>Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman</strong> : brüt güçten veya daha büyük karşılaştırılabilir
+<h3>9.8 Pasphrases</h3>
+<strong>Örnekler</strong> At-battery-staple-correct, monchieneestlouisXIV
+<strong>Vulnerability</strong> : değişken
+<strong>Karmaşık mekanizma mekanizması</strong> :
+<li>Bir Markov modeli kısa bir geçişte Inter-word geçişleri yakalayabilir (2 kelime) eğer bu kombinasyonlar korpusta ortaksa</li>
+<li>Ancak uzun süreli geçişler (4+ kelime), Markov tarafından sipariş edilen aday uzayı sadece tüm tipik kısa şifreleri tüketerek onlara ulaşacak.</li>
+<li>Saldırı Saldırı Saldırı <strong>Combinator</strong> Genellikle Markov'dan geçişte daha etkilidir.</li>
+<hr>
+<h2>10. Time2Crack'e Entegrasyon: Modelleme ve Parametreler</h2>
+<h3>Genel hesaplama mantığı (v2)</h3>
+<p>Time2Crack şimdi Markov'u modeller <strong>beklenen rütbe</strong> (rank-based) sabit azaltma faktörleri yerine.</p>
+<p>Hesaplama çizgisi:</p>
+<li>Segmentlerdeki Unicode tokenization in Segments <code>L</code>/<code>D</code>/<code>S</code>,</li>
+<li>Bir insan rütbesinin iskelet + form + jetonlarla tahmin edilmesi,</li>
+<li>Yapısal sinyallerin modülasyonu (p&gt;<code>kbPat</code>, <code>seq</code>, <code>dt</code>, <code>rep</code>, <code>hybridVuln</code>)</li>
+<li>Sürekli bir "hayal benzeri" rejime karşı apolasyon <code>charset</code> ve uzunluğu,</li>
+<li>Zaman dönüşümü <code>budgetTime(rangestime, vitesse<em>hash)</em></code>.</li>
+<h3>10.2 Unicode Hediyeleme ve Kalibrated Profile Tarafından Language</h3>
+<p>Markov v2 modeli Unicode sınıflarını kullanır (<code>\p{L}</code>, <code>\p{N}</code>Aksi takdirde sembolü) ve dil başına bir kalibre profili (bu zamandan beri yüklendi). <code>data/markov-calibration.json</code>İç geri çekilme ile.</p>
+<p>Profil içerir:</p>
+<li><code>skeletonRanks</code> (<code>L8D2</code>, <code>L8D2S1</code>...)</li>
+<li><code>shapeRanks</code> (<code>LD</code>, <code>LDS</code>...)</li>
+<li><code>tokenRanks</code> Sınıf / uzunluk,</li>
+<li>dil multipliers (İngilizce).<code>shapeMultipliers</code>)</li>
+<li>sinyal multipliers (İngilizce)<code>signalMultipliers</code>).</li>
+<h3>10.3. Sürekli interpolasyon (üst eşiklerin sonu)</h3>
+<p>Eski model (0.003 / 0.006 / 0.25 / 0.9) v2 modeli bu mantığı sürekli interpolasyonla değiştirir:</p>
+<li><code>humanRank</code> (muhtemelen yapısal alan),</li>
+<li><code>randomRank</code> (kahkala yakın, bağlı).</li>
+<p>Rastgele ağırlık, insan sinyallerinin uzunluğu, tank ve gücünün sürekli bir fonksiyonudur, böylece yapay durmalardan kaçın.</p>
+<h3>10.4 Güven ve uygulanabilirlik puanı</h3>
+<p>Time2Crack Scoring Model (function) <code>annotateScenarioApplicability()</code>) Markov'a olan tüm bağlantılar:</p>
+<strong>Temel güven</strong> : 0.75 (line 4800)
+Yorumlama: Markov saldırısı kabul edilir <strong>orta derecede güvenilir güvenilir</strong> - nöral tahminden daha güvenilir (0.7) veya PRINCE (0.7), sözlükten (0.9) veya oluk tablolarından daha az (0.95).
+<strong>Applicability puan</strong> (line 4873-4874):
+<pre><code class="language-javascript">case "markov":
+  return context.looksHuman ? 0.76 : 0.34;</code></pre>
+<li><code>looksHuman = true</code> → puan 0.76: Markov saldırısı <strong>Çok uygulanabilir</strong>Ancak model insan normalliklerini kullanacak</li>
+<li><code>looksHuman = false</code> → puan 0.34: uygulanabilir ama brute kuvveti üzerinde büyük avantaj olmadan</li>
+<strong>Kanıt puanı</strong> ( 4829-4830):
+<pre><code class="language-javascript">case "markov":
+  return Number(!!context.looksHuman) + Number(!!context.kbPat)
+       + Number(!!context.seq)        + Number(!!context.rep);</code></pre>
+Markov'un açık puanının şifre artışlarının her sinyali.
+<h3>10</h3>
+<p>Markov v2 ile, yapısal sinyaller zaten tahmin edilen sıraya entegre edilmiştir. HF ayarlaması bu nedenle Markov için çifte sayma önlemek için tarafsızdır.</p>
+<h3>1.0.6 Bağlanmada Öncelik</h3>
+<p>Birden fazla saldırı benzer zamanlarda (&lt; 1ms of fark), Time2Crack bir semantik önceliğine göre en alakalı olanı seçer:</p>
+<pre><code class="language-javascript">const tieBreakPriority = {
+  // ...
+  markov: 8,    // Statistical n-gram — broad coverage
+  // ...
+};</code></pre>
+<p>Markov, istatistiki normalleri istismar eden yararlı bir tamamlayıcı saldırıdır. İnsan yapısıyla şifreler için brüt kuvvetten öncedir, ancak sözlüğe ve daha doğrudan olan karma saldırılara öncelik verir.</p>
+<h3>10.7 Ultra-weak davası</h3>
+<p>ultra-düşük şifreler için <code>isWeakPassword()</code>Markov minimum rütbeye dayanan bir zaman kullanır ()<code>weakGuessTime</code>sabit bir sabit yerine:</p>
+<pre><code class="language-javascript">if (weak) {
+  rows.push({ ..., sec: weakGuessTime(a.rate), note: t("nWeakPassword"), cat: "markov" });
+}</code></pre>
+<p>Sebep: ultra uzun bir şifre (password, 123456, qwerty...) <strong>Top-100 mutlak</strong> Markov uzayı - önce test edilecek, hesaplamanın doğruluğu irrelevant.</p>
+<hr>
+<h2>11. Diğer olasılıksal saldırılarla karşılaştırıldığında</h2>
+<h3>11.1 Markov vs PCFG</h3>
+BoyutMarkovPCFGGG
+- !!!--- ►- ►
+<strong>Analiz Birimi</strong>Bireysel karakter geçişleriSegment yapıları (L/D/S)
+<strong>Yaralanan bilgiler</strong>Local Regularities (n-gram)Global (grammar)
+<strong>Kuvvet</strong>Doğal kelimeler, sürekli desenlerKelimeler + sayılar, kompozit yapılar
+<strong>Limit Limit Limit</strong>Küresel yapıları yakalamazYerel geçişleri yakalamayın
+<strong>Complementarity</strong>Saf kelimeler için idealŞifre için ideal123
+<strong>Optimal örnek</strong>"sunshine"Sunshine#93
+<strong>Time2Crack</strong>Markov = 8, PCFG = 6PCFG, yapı tespit edilirse daha doğru
+<h3>1.1.2 Markov vs. Rule-Based Attack</h3>
+BoyutMarkovKural tabanlı
+- !!!--- ►--- !!!
+<strong>Yaklaşım Yaklaşım Yaklaşım</strong>Nesil ab initioabilisticMevcut bir sözlüğün dönüşümü
+<strong>Coverage</strong>Tüm muhtemel şifrelerSözlük kelime çevirisi
+<strong>Kuvvet</strong>Nadiren ya da hafif olmayan kelimelerBilinen kelimelerin geleneksel dönüşümleri
+<strong>Limit Limit Limit</strong>Mevcut mutasyonlar için diktatör+rules'ten daha az etkiliSözlüğün tamamen kalitesine bağlı olarak
+<h3>11.3 Markov vs Neural Networks (PassGAN, LSTM)</h3>
+BoyutMarkov (Order 5)Nöronal ağ ağı
+- !!!-- ---- --
+<strong>Karmaşıklık</strong>Ey)O(n2 × d) (Transformer)
+<strong>Gerekli Veriler Gerekli</strong>1-10M yeterli örnekler10M-1B iyi sonuçlar için
+<strong>yorumlanabilirlik</strong>Total (probability tables)Black box
+<strong>Generalisation Generalisation</strong>Yerel bağlamda sınırlı kGenel potansiyel
+<strong>Crack oranı</strong>Referans+20-30% modern şifreler
+<strong>Nesil hız</strong>Çok hızlıSlower
+<h3>11.4 Global konumlandırma</h3>
+<p>Profesyonel bir çatlaklarda, tipik sipariş:</p>
+<li><strong>Sözlük</strong> (credlist) - tam şifreler</li>
+<li><strong>Credential thingsing</strong> - yeniden kullanılan ID /mdp çiftleri</li>
+<li><strong>Şifre spreyleme</strong> – üst-20 yaygın</li>
+<li><strong>Hybrid Hybrid Hybrid Hybrid</strong> - dico + Hashcat kuralları</li>
+<li><strong>PCFGGG</strong> - L+D yapısı tespit edilirse</li>
+<li><strong>Maske Maske</strong> - pozisyonsel desen tespit edilirse</li>
+<li><strong>Markov</strong> - genel istatistik kapsamı</li>
+<li><strong>Neural</strong> - Mevcut bütçe varsa</li>
+<li><strong>Gross power</strong> - son tatil</li>
+<p>Markov sık sık sık <strong>arka arka arka plan</strong> Ön brute kuvveti: daha hedefli saldırılardan kaçan insan şifrelerini etkili bir şekilde kapsar.</p>
+<hr>
+<h2>12. Markov Saldırısının Sınırları</h2>
+<h3>12.1 Eğitim vücuduna bağlı</h3>
+<p>Model, korpusu kadar iyidir. İngilizce şifreleri (RockYou, LinkedIn) yanlış anlamalar:
+</p><li>Yüksek morfolojik yoğunluk dillerinde şifreler (Polonya, Çek, Finlandiya)</li>
+<li>Tanımlanmamış kültürlere dayanan şifreler (geçmiş mandarin, Romanized Arabic)</li>
+<li>Özel alanlardan gelen şifreler sızıntılardan yoksundur (medical slang, nadir teknik jargon)</li><p></p>
+<strong>Katılımcı çözüm</strong> : Dil ve alan tarafından belirli modelleri eğitmek (farklı korpus gerektirir).
+<h3>12.2 Uzun vadeli bağımsızlık</h3>
+<p>Bir Markov 5 modeli 5 karakterden daha fazla görmüyor. 12 karakterin şifresi için, burada en iyi 12. karakterle "stargate2004" gibi ilişki kuramıyor! ”Markov yerel olarak algılıyor ama dünya çapında değil – PCFG burada daha iyi.</p>
+<h3>12.3 Insensitivity to kompozisyonal structures</h3>
+<p>"HorseStapleBattery" (duygun majusculum + 3 concatenated words) Markov için zordur, çünkü Inter-word Transitions (e→S, e→B) beklenmediktir.</p>
+<h3>12.4 Rastgelelikteki Rastgele Şifre</h3>
+<p>tarafından oluşturulan bir şifre <code>/dev/urandom</code> 12+ alfanumeric karakterler Markov tarafından sömürülemez bir yapıya sahip değildir. Saldırı zamanı Markov ham güçle birleşir.</p>
+<h3>12.5 Güncellenen şifre politikası için hassaslık</h3>
+<p>Bir organizasyon katı kurallara izin verdiyse (uzun ≥ 16, zorunlu 1 sermaye + 1 sayısal + 1 sembolü), sonuçlanmış şifreler, eğitimin korpusunun farklı bir dağılımına sahip olabilir - modelin etkinliğini azaltır.</p>
+<hr>
+<h2>13. Etkili savunmalar</h2>
+<h3>13.1 Markov'u tamamen tarafsızlaştırıyor</h3>
+<strong>Rastgele şifre jeneratörleri</strong> Herhangi bir şifre yöneticisi (Bitwarden, 1Password, KeePass) bir kriptografik olarak güvenli bir jeneratör, Markov tarafından desteklenmeyen diziler üretiyor. 16 rastgele karakterin bir şifresi saldırıdan bağımsız olarak ulaşmıyor.
+<strong>rastgele uzunluk</strong> : Daha düşük bir tankla bile (yalnızca) 16 rastgele karakter 26.16
+<h3>13.2 Markov'un etkinliğini büyük ölçüde azaltır</h3>
+<strong>Nadir kelimelerin uzun geçişleri</strong> : Boşanmış nadir kelimeler en üst Markov adayları dışında, özellikle kelimeler farklı dillerden veya özel vocabullardan geliyorsa.
+<strong>Yaygın leetspeak yedeklerinden kaçının</strong> : Substituions a→@, e→3, vs. modele entegre edilir, ancak standart olmayan dönüşümler (a→
+<strong>klavye kalıpları ve doğal kelimelerden kaçının</strong> Markov'un maksimum kırılganlığı.
+<h3>13.3 Markov'a karşı ne savunmuyor</h3>
+<strong>Komplekslik gereksinimleri (majuscule + sayısal + sembolü)</strong> : Eğer bu elementler doğal bir kelimeye eklenirse (P@sw0rd!), model bu kalıpları yakalar. <strong>Sahte güvenlik</strong> algılanan.
+<strong>Temel leetspeak alt kurumlar</strong> : Model tarafından tamamen yakalanır (@"+"s", "3"+"y"...).
+<strong>Digital Suffixes/prefixes</strong> : "word + 123" veya "word + 2024" desenleri ilk test edilen arasındadır.
+<h3>13.4 Final Önerisi</h3>
+<p>Markov'a karşı en etkili savunma (ve herhangi bir olasılıksal saldırı)<strong>Herhangi bir öngörülebilir insan yapısını ortadan kaldırır.</strong>Şifre yaratımını güvenli bir rastgele jeneratöre devre dışı bırakmak için hangi tutarlar.</p>
+<hr>
+<h2>14. Referanslar</h2>
+<h3>Akademikler (önemli)</h3>
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., Nürnberger, S., &amp; Rüegge, A. (2015).</strong>
+OMEN: Daha hızlı bir şifre sipariş edilmiş bir Markov Enumerator kullanarak tahmin edin.
+<em>Mühendislik Güvenli Yazılım ve Sistemler (ESSoS 2015)</em>LNCS 8978, pp. 119-132.
+→ Markov olasılıksal kalibrasyon için ana referans Time2Crack (RockYou 14M, Order 5)
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong>
+Probabilistic Password Modelleri Çalışması.
+<em>IEEE Güvenlik ve Gizlilik Sempozyumu (S&amp;P 2014)</em>.
+→ Empirical Karşılaştırma Markov, PCFG, 70M şifreleri
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong>
+Probabilistic Context-Free Grammars kullanarak şifre izleme.
+<em>IEEE Güvenlik ve Gizlilik Sempozyumu (S&amp;P 2009)</em>.
+→ Yapısal olasılıksal yöntemler üzerinde çalışma (Markov rakibi)
+<strong>Wheeler, D.L. (2016).</strong>
+zxcvbn: Low-Budget Password Strength tahmin.
+<em>25. USENIX Güvenlik Sempozyumu</em>.
+→ Gerçek şifre kuvvet tahminleri için n-gramların etkinliğini doğrulayın
+<strong>Pasquini, D., Cian soğutuculia, M., Ateniese, G., &amp; Bernaschi, M. (2021).</strong>
+Bias'ı Gerçek Dünya Şifrelerini Derin Öğrenme ve Dinamik Dictionaries aracılığıyla modellemek.
+<em>30. USENIX Güvenlik Sempozyumu</em>.
+→ Quantitative karşılaştırma Markov vs modern korpus üzerinde derin öğrenme
+<strong>Hitaj, B., Gasti, P., Ateniese, G., &amp; Perez-Cruz, F. (2019).</strong>
+PassGAN: Şifre Tahmini için Derin Öğrenme Yaklaşımı.
+<em>ACNS 2019</em>.
+Markov Neural Successor, Time2Crack için karşılaştırma noktası <code>descNeural</code>
+<h3>Açık kaynak uygulamaları</h3>
+<strong>OMEN</strong> httpsgit:hub.com/RUB-SysSec/OMEN
+<strong>John TheRipper (Markov modu)</strong> https://www.openwall.com/john/doc/MARKOV.shtml
+<strong>PACK (statsgen/maskgen)</strong> httpsgit:hub.com/iphelix/pack
+<strong>Hashcat</strong> https://hashcat.net/hashcat/
+<h3>Korpus kaynakları</h3>
+<strong>RockYou (2009)</strong> : RockYou sosyal ağ kusurundan 14,3M şifreleri
+<strong>Have I Been Pwned</strong> https://haveibeenpwned.com – ~14 milyar toplam bilgi (Troy Hunt)
+<strong>SecLists</strong> : https://github.com/danielmiessler/SecLists - referans sözlükleri ve kelime listeleri
+<h3>Web kaynakları Time2Crack uygulamasında atıfta bulundu</h3>
+<strong>Springer (chapter Markov/probabilistic çatlaklar).</strong>
+https://link.springer.com/chapter/10.1007/978-319-24174-67
+→ İlgili kaynak <code>descMarkov</code> (app.js) araştırma alanının istatistiksel önceliklendirme ile etkili azaltılması için.
+<hr>
+<em>Time2Crack projesi için üretilen doküman - son güncelleme: 2026-04-01</em>
+<em>Uygulamada uygulanmasına dayanarak.js (Markov v2 sıra tabanlı) ve akademik yayınlar alıntılandı.</em>
+</main>
+
+  <footer class="footer">
+    <div class="footer__links">
+      <a href="../about.html">À propos</a>
+      <a href="../sources.html">Sources</a>
+      <a href="../privacy.html">Confidentialité</a>
+      <a href="../hibp.html">HIBP</a>
+    </div>
+    <div class="footer__meta">Copie locale avec contenu réel des pages existantes et navigation interne fonctionnelle.</div>
+  </footer>
+<script src="../../site.js"></script>
+<script type="module" src="../../engine-bridge.js"></script>
+</body>
+</html>

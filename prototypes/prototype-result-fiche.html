@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time2Crack - Prototype fiche résultats</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600,700|ibm-plex-mono:400,500,600&display=swap">
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --surface: #ffffff;
+      --surface-2: #eef4ff;
+      --surface-3: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --muted-2: #94a3b8;
+      --blue: #2563eb;
+      --blue-2: #1d4ed8;
+      --blue-soft: #dbeafe;
+      --green: #16a34a;
+      --amber: #d97706;
+      --red: #dc2626;
+      --border: #dbe3ef;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 8px 30px rgba(15, 23, 42, 0.10);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.09), transparent 28%),
+        radial-gradient(circle at top right, rgba(22, 163, 74, 0.07), transparent 22%),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .frame {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.08);
+      color: var(--blue);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .title {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0 0 26px;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.65;
+    }
+
+    .hero-card,
+    .panel,
+    .table-card,
+    .note-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-card {
+      padding: 24px;
+    }
+
+    .password-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .password-chip {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.98rem;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue-2);
+      font-size: 0.84rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .pill--soft {
+      background: #eff6ff;
+      color: var(--text);
+    }
+
+    .pill--warning {
+      background: #fff7ed;
+      color: #9a3412;
+    }
+
+    .pill--ok {
+      background: #ecfdf5;
+      color: #166534;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .result-card {
+      position: relative;
+      overflow: hidden;
+      padding: 26px 24px 24px;
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.06), transparent 42%),
+        var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .result-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--blue), #38bdf8);
+    }
+
+    .result-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 14px;
+    }
+
+    .result-main {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .result-number {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: clamp(2.4rem, 6vw, 4.1rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+
+    .result-meta {
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.55;
+      max-width: 54ch;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .info {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+    }
+
+    .info-label {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .info-value small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .side {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      padding: 20px;
+    }
+
+    .panel-title {
+      margin: 0 0 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .profile-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+    }
+
+    .profile-name {
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .profile-desc {
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    .profile-time {
+      font-family: "IBM Plex Mono", monospace;
+      text-align: right;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .profile-time strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--blue-2);
+      margin-top: 4px;
+    }
+
+    .status-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .status-line .status-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .status-line .status-value {
+      font-weight: 600;
+    }
+
+    .table-card {
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .table-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .table-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+    }
+
+    th, td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #fbfdff;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    td {
+      font-size: 0.95rem;
+    }
+
+    .algo {
+      font-weight: 600;
+    }
+
+    .rank {
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .capped {
+      color: var(--red);
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 6px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .note-card {
+      padding: 18px 20px;
+      margin-top: 16px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.04), transparent 56%), var(--surface);
+    }
+
+    .note-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .note-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .cap-box {
+      border-left: 4px solid var(--amber);
+      padding-left: 14px;
+    }
+
+    .foot {
+      margin-top: 22px;
+      color: var(--muted-2);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 920px) {
+      .frame {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .page {
+        padding: 18px 14px 28px;
+      }
+
+      .hero-card,
+      .panel,
+      .result-card,
+      .note-card {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .table-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .profile-row {
+        flex-direction: column;
+      }
+
+      .profile-time {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="eyebrow"><span class="dot"></span> Prototype de fiche résultats</div>
+
+    <div class="frame">
+      <section>
+        <h1 class="title">Le résultat le plus utile, affiché sans bruit.</h1>
+        <p class="subtitle">
+          Cette fiche met la valeur principale en avant, puis garde sous la main les détails
+          dont un visiteur technique a vraiment besoin: attaque gagnante, valeur brute,
+          valeur plafonnée et contexte de calcul.
+        </p>
+
+        <div class="hero-card">
+          <div class="password-row">
+            <span class="password-chip">a!rk-23durain</span>
+            <span class="pill pill--ok">Analyse locale</span>
+            <span class="pill pill--soft">Aucun mot de passe transmis</span>
+          </div>
+
+          <div class="result-card">
+            <div class="result-kicker">Résultat principal</div>
+            <div class="result-main">
+              <div class="result-number">40 500 tentatives</div>
+              <div class="result-meta">
+                Attaque gagnante: <strong>hybrid</strong>.
+                La valeur affichée correspond ici à la sortie brute, car aucun plafonnement
+                n’a été appliqué sur ce mot de passe.
+              </div>
+            </div>
+
+            <div class="info-grid">
+              <div class="info">
+                <span class="info-label">Raw rank</span>
+                <div class="info-value">40 500
+                  <small>Sortie directe du meilleur modèle.</small>
+                </div>
+              </div>
+              <div class="info">
+                <span class="info-label">Capped rank</span>
+                <div class="info-value">40 500
+                  <small>Identique ici, car aucun cap n’a été déclenché.</small>
+                </div>
+              </div>
+              <div class="info">
+                <span class="info-label">Attaque gagnante</span>
+                <div class="info-value">hybrid
+                  <small>Base dictionnaire + mutation légère.</small>
+                </div>
+              </div>
+              <div class="info">
+                <span class="info-label">Temps estimé</span>
+                <div class="info-value">1.17e-8 s
+                  <small>Sur l’attaque la plus rapide, profil standard.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="status-line">
+              <span class="status-label">Cap</span>
+              <span class="status-value pill pill--warning">non plafonné</span>
+              <span class="muted">raw rank = capped rank</span>
+            </div>
+          </div>
+
+          <div class="note-card">
+            <h3>Ce que le visiteur voit d’abord</h3>
+            <p>
+              Un chiffre lisible, l’attaque la plus efficace, et la lecture de risque.
+              Les détails techniques restent à portée de main, mais ne prennent pas le dessus
+              sur le signal principal.
+            </p>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-head">
+            <div>
+              <h2>Détail des modèles</h2>
+              <p>Vue compacte pour comprendre pourquoi le résultat principal sort comme ça.</p>
+            </div>
+            <span class="pill pill--soft">profil: experienced</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Modèle</th>
+                  <th>Raw rank</th>
+                  <th>Capped rank</th>
+                  <th>Lecture</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="algo">hybrid</td>
+                  <td class="rank">40 500</td>
+                  <td class="rank">40 500</td>
+                  <td>Meilleur candidat. Le plus rapide.</td>
+                </tr>
+                <tr>
+                  <td class="algo">brute</td>
+                  <td class="rank">3.323e+23</td>
+                  <td class="rank">3.323e+23</td>
+                  <td class="muted">Borne supérieure.</td>
+                </tr>
+                <tr>
+                  <td class="algo">pcfg</td>
+                  <td class="rank">3.290e+23</td>
+                  <td class="rank">3.290e+23</td>
+                  <td class="muted">Hors du signal utile ici.</td>
+                </tr>
+                <tr>
+                  <td class="algo">dictionary</td>
+                  <td class="rank">null</td>
+                  <td class="rank">null</td>
+                  <td class="muted">Non applicable.</td>
+                </tr>
+                <tr>
+                  <td class="algo">markov</td>
+                  <td class="rank">null</td>
+                  <td class="rank">null</td>
+                  <td class="muted">Séquence trop improbable.</td>
+                </tr>
+                <tr>
+                  <td class="algo">mask</td>
+                  <td class="rank">null</td>
+                  <td class="rank">null</td>
+                  <td class="muted">Pattern non reconnu.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="panel">
+          <div class="panel-title">Lecture rapide</div>
+          <div class="profile-grid">
+            <div class="profile-row">
+              <div>
+                <div class="profile-name">Standard</div>
+                <div class="profile-desc">Attaquant compétent, 12 GPUs.</div>
+              </div>
+              <div class="profile-time">
+                424.39 s
+                <strong>SHA-256</strong>
+              </div>
+            </div>
+            <div class="profile-row">
+              <div>
+                <div class="profile-name">Professionnel</div>
+                <div class="profile-desc">Infrastructure cloud, environ 100 GPUs.</div>
+              </div>
+              <div class="profile-time">
+                50.92 s
+                <strong>SHA-256</strong>
+              </div>
+            </div>
+            <div class="profile-row">
+              <div>
+                <div class="profile-name">État</div>
+                <div class="profile-desc">Adversaire très dimensionné, ~10k GPUs.</div>
+              </div>
+              <div class="profile-time">
+                0.51 s
+                <strong>SHA-256</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Quand le cap existe</div>
+          <div class="cap-box">
+            <p style="margin: 0; color: var(--muted); line-height: 1.65;">
+              Si un modèle dépasse la borne brute, la fiche peut afficher:
+            </p>
+            <ul style="margin: 12px 0 0 18px; color: var(--text); line-height: 1.7;">
+              <li><strong>raw rank</strong> pour la valeur calculée</li>
+              <li><strong>capped rank</strong> pour la valeur effectivement affichée</li>
+              <li><strong>cap reason</strong> pour expliquer l’écart</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Pourquoi cette structure</div>
+          <p style="margin: 0; color: var(--muted); line-height: 1.75;">
+            Le but est d’éviter deux erreurs opposées: afficher un seul gros chiffre sans contexte,
+            ou noyer le visiteur dans trop de métriques. Ici, l’écran raconte d’abord la décision,
+            puis prouve le calcul derrière.
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="foot">
+      Prototype statique. Les nombres affichés correspondent à un exemple de moteur et servent
+      à juger la hiérarchie d’information, pas à remplacer le rendu final de l’application.
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,1 @@
+git checkout codex-site-publish && git checkout v2.1 -- app.js app.min.js && git commit -m "Fix ReferenceError: barWrapper and input not defined in global functions" && git push origin codex-site-publish && git checkout v2.1

@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time2Crack - Prototype fiche résultats plafonnée</title>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=ibm-plex-sans:300,400,500,600,700|ibm-plex-mono:400,500,600&display=swap">
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --blue: #2563eb;
+      --blue-soft: #dbeafe;
+      --amber: #d97706;
+      --red: #dc2626;
+      --green: #16a34a;
+      --border: #dbe3ef;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 8px 30px rgba(15, 23, 42, 0.10);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(220, 38, 38, 0.08), transparent 26%),
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.09), transparent 24%),
+        linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
+    }
+
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 20px 44px;
+    }
+
+    .frame {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(220, 38, 38, 0.08);
+      color: var(--red);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 18px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+    }
+
+    .title {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -0.04em;
+      line-height: 1.02;
+    }
+
+    .subtitle {
+      margin: 0 0 26px;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.65;
+    }
+
+    .hero-card,
+    .panel,
+    .table-card,
+    .note-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-card { padding: 24px; }
+
+    .password-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .password-chip {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.98rem;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      word-break: break-word;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pill--ok { background: #ecfdf5; color: #166534; }
+    .pill--soft { background: #eff6ff; color: #1d4ed8; }
+    .pill--warning { background: #fff7ed; color: #9a3412; }
+    .pill--danger { background: #fee2e2; color: #991b1b; }
+
+    .result-card {
+      position: relative;
+      overflow: hidden;
+      padding: 26px 24px 24px;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.06), transparent 42%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .result-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--red), #f97316);
+    }
+
+    .result-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--red);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 14px;
+    }
+
+    .result-main {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .result-number {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: clamp(2.3rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 1.02;
+    }
+
+    .result-meta {
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.55;
+      max-width: 56ch;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .info {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+
+    .info-label {
+      display: block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .info-value small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .status-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .status-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .side {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      padding: 20px;
+    }
+
+    .panel-title {
+      margin: 0 0 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .table-card {
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .table-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .table-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #fbfdff;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .algo { font-weight: 600; }
+    .rank { font-family: "IBM Plex Mono", monospace; font-weight: 600; white-space: nowrap; }
+    .capped { color: var(--red); font-size: 0.84rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px; }
+    .muted { color: var(--muted); }
+
+    .cap-box {
+      border-left: 4px solid var(--amber);
+      padding-left: 14px;
+    }
+
+    .foot {
+      margin-top: 22px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 920px) {
+      .frame { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .page { padding: 18px 14px 28px; }
+      .hero-card, .panel, .note-card { padding-left: 18px; padding-right: 18px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .table-head { flex-direction: column; align-items: flex-start; }
+      .password-row { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="eyebrow"><span class="dot"></span> Prototype plafonné</div>
+
+    <div class="frame">
+      <section>
+        <h1 class="title">Quand le modèle dépasse la borne brute, il faut le dire clairement.</h1>
+        <p class="subtitle">
+          Cette variante montre le cas où la sortie brute du modèle est plus haute que la borne
+          brute. La fiche expose la correction au lieu de l’absorber silencieusement.
+        </p>
+
+        <div class="hero-card">
+          <div class="password-row">
+            <span class="password-chip">truc-truc-2027??</span>
+            <span class="pill pill--ok">Analyse locale</span>
+            <span class="pill pill--soft">Aucun mot de passe transmis</span>
+            <span class="pill pill--danger">raw &gt; brute</span>
+          </div>
+
+          <div class="result-card">
+            <div class="result-kicker">Résultat principal</div>
+            <div class="result-main">
+              <div class="result-number">1.0e+30 tentatives</div>
+              <div class="result-meta">
+                Attaque gagnante: <strong>pcfg</strong>. La valeur affichée est plafonnée à la borne
+                brute, mais la sortie réelle du modèle dépassait cette limite.
+              </div>
+            </div>
+
+            <div class="info-grid">
+              <div class="info">
+                <span class="info-label">Raw rank</span>
+                <div class="info-value">3.8e+31
+                  <small>Valeur calculée par le modèle avant correction.</small>
+                </div>
+              </div>
+              <div class="info">
+                <span class="info-label">Capped rank</span>
+                <div class="info-value">1.0e+30
+                  <small>Ramené à la borne brute.</small>
+                </div>
+              </div>
+              <div class="info">
+                <span class="info-label">Attaque gagnante</span>
+                <div class="info-value">pcfg
+                  <small>Modèle le plus favorable dans ce scénario.</small>
+                </div>
+              </div>
+              <div class="info">
+                <span class="info-label">Cap reason</span>
+                <div class="info-value">above_bruteforce
+                  <small>Le modèle a dépassé la limite théorique.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="status-line">
+              <span class="status-label">Cap</span>
+              <span class="pill pill--warning">plafonné</span>
+              <span class="muted">raw rank &gt; capped rank</span>
+            </div>
+          </div>
+
+          <div class="table-card" style="margin-top: 18px;">
+            <div class="table-head">
+              <div>
+                <h2>Détail des modèles</h2>
+                <p>Le tableau explique pourquoi la valeur visible a été ramenée à la borne.</p>
+              </div>
+              <span class="pill pill--soft">profil: experienced</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Modèle</th>
+                    <th>Raw rank</th>
+                    <th>Capped rank</th>
+                    <th>État</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="algo">pcfg</td>
+                    <td class="rank">3.8e+31</td>
+                    <td class="rank">1.0e+30</td>
+                    <td><span class="capped">plafonné</span></td>
+                  </tr>
+                  <tr>
+                    <td class="algo">brute</td>
+                    <td class="rank">1.0e+30</td>
+                    <td class="rank">1.0e+30</td>
+                    <td class="muted">borne</td>
+                  </tr>
+                  <tr>
+                    <td class="algo">hybrid</td>
+                    <td class="rank">4.2e+28</td>
+                    <td class="rank">4.2e+28</td>
+                    <td class="muted">ok</td>
+                  </tr>
+                  <tr>
+                    <td class="algo">dictionary</td>
+                    <td class="rank">null</td>
+                    <td class="rank">null</td>
+                    <td class="muted">non applicable</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-card hero-card" style="margin-top: 16px;">
+          <h3 style="margin: 0 0 8px; font-size: 1rem;">Ce que cette version vérifie</h3>
+          <p style="margin: 0; color: var(--muted); line-height: 1.65;">
+            Le visiteur voit immédiatement qu’une correction a eu lieu. On ne cache pas le dépassement
+            sous un simple chiffre final. Le message important est lisible en une seconde: le modèle
+            a été plafonné, mais on conserve la trace du calcul brut.
+          </p>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="panel">
+          <div class="panel-title">Lecture utilisateur</div>
+          <div class="cap-box">
+            <p style="margin: 0; color: var(--muted); line-height: 1.75;">
+              Le meilleur compromis produit est d’afficher la valeur plafonnée comme vérité
+              de référence, tout en rendant visible le raw rank quand il existe.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Message court</div>
+          <p style="margin: 0; color: var(--text); line-height: 1.7; font-weight: 600;">
+            La fiche dit: “voici ce que le moteur calcule, voici ce que je peux afficher, et voici
+            pourquoi les deux diffèrent.”
+          </p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Règle visible</div>
+          <div class="password-row" style="margin-bottom: 0;">
+            <span class="pill pill--warning">plafonné</span>
+            <span class="pill pill--soft">cap_reason: above_bruteforce</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="foot">
+      Prototype statique pour juger la hiérarchie d’information dans le cas où le plafond est atteint.
+    </div>
+  </main>
+</body>
+</html>

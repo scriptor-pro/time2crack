@@ -32,16 +32,19 @@ Projectreferentiedocument Time2Crack
 <h3>2.1 Oorsprong</h3>
 <p>De toepassing van Markov's kanalen op wachtwoord kraken is eerder dan formele academische publicaties. Offensive security beoefenaars gebruikt soortgelijke modellen sinds de jaren 2000, maar strenge formalisering dateert voornamelijk uit de 2010s.</p>
 <strong>Chronologie van mijlpalen</strong> :
-JaarGebeurtenis
----------------------
-2005Nakashima &amp; Oyama: eerste formele toepassing van n-grams op wachtwoorden
-2009Weir et al. (IEEE S&amp;P): directe concurrent, posities structurele kansen
-2012Ma et al. (USENIX Security): Vergelijkende studie van probabilistische modellen op 70M wachtwoorden
-2013Durmuth: eerste VROUWENanalyses op verschillende corpus
-2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>VROUWEN</strong> (ESORICS 2015) 
-2016Wheeler (zxcvbn) bevestigt de effectiviteit van n-grams bij het schatten van werkelijke entropie
-2018VROUWEN+: verbeterde versie met gladmaken en interpoleren
-2019Markov hybride werk + neurale netwerken (PassGAN, FuzzyPSM)
+<table class="about-table">
+<thead><tr><th>Jaar</th><th>Gebeurtenis</th></tr></thead>
+<tbody>
+<tr><td>2005</td><td>Nakashima &amp; Oyama: eerste formele toepassing van n-grams op wachtwoorden</td></tr>
+<tr><td>2009</td><td>Weir et al. (IEEE S&amp;P): directe concurrent, posities structurele kansen</td></tr>
+<tr><td>2012</td><td>Ma et al. (USENIX Security): Vergelijkende studie van probabilistische modellen op 70M wachtwoorden</td></tr>
+<tr><td>2013</td><td>Durmuth: eerste VROUWENanalyses op verschillende corpus</td></tr>
+<tr><td>2015</td><td>Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>VROUWEN</strong> (ESORICS 2015) </td></tr>
+<tr><td>2016</td><td>Wheeler (zxcvbn) bevestigt de effectiviteit van n-grams bij het schatten van werkelijke entropie</td></tr>
+<tr><td>2018</td><td>VROUWEN+: verbeterde versie met gladmaken en interpoleren</td></tr>
+<tr><td>2019</td><td>Markov hybride werk + neurale netwerken (PassGAN, FuzzyPSM)</td></tr>
+</tbody>
+</table>
 <h3>2.2 Referentieorgaan</h3>
 <p>Modeltraining Markov is gebaseerd op wachtwoorddatabases van bekende datalekken:</p>
 <ul>
@@ -158,13 +161,16 @@ python maskergen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hash
 <h2>7. Het verminderen van onderzoeksruimte: de sleutel tot effectiviteit</h2>
 <h3>7.1 Empirische kwantificering (Dürmuth 2015)</h3>
 <p>Voor een wachtwoord van 8 tekens met het volledige alfabet (94 tanks):</p>
-MethodeOnderzoeksruimteVerminderingsfactor
------------------------------------------------------
-Brutosterkte948 6 × 10151× (referentie)
-Markov Order 1~3 × 1015~2×
-Markov Order 3~6 × 1013~100×
-Markov Order 5~3,6 × 1010~166 000×
-Markov Order 5 (typisch menselijk)~4 × 107<strong>~150 miljoen×</strong>
+<table class="about-table">
+<thead><tr><th>Methode</th><th>Zoekruimte</th><th>Reductiefactor</th></tr></thead>
+<tbody>
+<tr><td>Brute force</td><td>94<sup>8</sup> ≈ 6 × 10<sup>15</sup></td><td>1× (referentie)</td></tr>
+<tr><td>Markov orde 1</td><td>~3 × 10<sup>15</sup></td><td>~2×</td></tr>
+<tr><td>Markov orde 3</td><td>~6 × 10<sup>13</sup></td><td>~100×</td></tr>
+<tr><td>Markov orde 5</td><td>~3,6 × 10<sup>10</sup></td><td>~166.000×</td></tr>
+<tr><td>Markov orde 5 (typisch menselijk)</td><td>~4 × 10<sup>7</sup></td><td><strong>~150 miljoen×</strong></td></tr>
+</tbody>
+</table>
 <p>Het verschil tussen "gereduceerde ruimte" en "typische menselijke ruimte" kan worden verklaard door het feit dat echte menselijke wachtwoorden geconcentreerd zijn in <strong>top-k% waarschijnlijk</strong> Afhankelijk van het model.</p>
 <h3>7.2 Waarom mensen voorspelbaar zijn</h3>
 <p>De door Markov gebruikte voorspelbaarheidsfactoren:</p>
@@ -317,31 +323,40 @@ Elk signaal van "menselijk karakter" van het wachtwoord verhoogt Markov's duidel
 <hr>
 <h2>11. Vergelijking met andere probabilistische aanvallen</h2>
 <h3>11,1 Markov vs PCFG</h3>
-AfmetingenMarkovPCFG
-----------------------------
-<strong>Meeteenheid</strong>Overgangen van individuele tekensSegmentstructuren (L/D/S)
-<strong>Opgenomen informatie</strong>Lokale regelmaat (n-gram)Wereldwijd (grammatica)
-<strong>Aandringen</strong>Natuurlijke woorden, continue patronenWoorden + getallen, samengestelde structuren
-<strong>Maximumhoeveelheid</strong>Bevat geen mondiale structurenLokale overgangen niet vastleggen
-<strong>Complementariteit</strong>Ideaal voor pure woordenIdeaal voor Wachtwoord123
-<strong>Optimaal voorbeeld</strong>"zonneschijn"Sunshine#93
-<strong>Orde in Time2Crack</strong>Markov = 8, PCFG = 6PCFG nauwkeuriger indien structuur gedetecteerd
+<table class="about-table">
+<thead><tr><th>Dimensie</th><th>Markov</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td><strong>Analyse-eenheid</strong></td><td>Overgangen tussen tekens</td><td>Segmentstructuren (L/D/S)</td></tr>
+<tr><td><strong>Vastgelegde informatie</strong></td><td>Lokale regelmatigheden (n-grammen)</td><td>Globale regelmatigheden (grammatica)</td></tr>
+<tr><td><strong>Sterk in</strong></td><td>Natuurlijke woorden, doorlopende patronen</td><td>Woorden + cijfers, samengestelde structuren</td></tr>
+<tr><td><strong>Beperking</strong></td><td>Mist globale structuren</td><td>Mist lokale overgangen</td></tr>
+<tr><td><strong>Aanvulling</strong></td><td>Ideaal voor pure woorden</td><td>Ideaal voor Password123</td></tr>
+<tr><td><strong>Optimaal voorbeeld</strong></td><td>"sunshine"</td><td>"Sunshine#93"</td></tr>
+<tr><td><strong>Volgorde in Time2Crack</strong></td><td>Markov = 8, PCFG = 6</td><td>PCFG nauwkeuriger als een structuur wordt herkend</td></tr>
+</tbody>
+</table>
 <h3>11.2 Markov vs. Regelgebonden aanval</h3>
-AfmetingenMarkovRegelmatig
-----------------------››
-<strong>Aanpak</strong>Generatie ab initio probabilsticTransformatie van een bestaand woordenboek
-<strong>Dekking</strong>Alle waarschijnlijk wachtwoordenVertalingen van woordenboek woorden
-<strong>Aandringen</strong>Zeldzame of enigszins niet-woordelijke woordenTraditionele transformaties van bekende woorden
-<strong>Maximumhoeveelheid</strong>Minder effectief dan dictator+regels voor huidige mutatiesAfhankelijk van de kwaliteit van het woordenboek
+<table class="about-table">
+<thead><tr><th>Dimensie</th><th>Markov</th><th>Op regels gebaseerd</th></tr></thead>
+<tbody>
+<tr><td><strong>Aanpak</strong></td><td>Probabilistische generatie vanaf nul</td><td>Transformatie van een bestaand woordenboek</td></tr>
+<tr><td><strong>Dekking</strong></td><td>Alle waarschijnlijke wachtwoorden</td><td>Varianten van woordenboekwoorden</td></tr>
+<tr><td><strong>Sterk in</strong></td><td>Zeldzame of licht afwijkende woorden</td><td>Klassieke transformaties van bekende woorden</td></tr>
+<tr><td><strong>Beperking</strong></td><td>Minder effectief dan woordenboek + regels voor gangbare varianten</td><td>Volledig afhankelijk van de kwaliteit van het woordenboek</td></tr>
+</tbody>
+</table>
 <h3>11.3 Markov vs Neural Networks (PassGAN, LSTM)</h3>
-AfmetingenMarkov (orde 5)Neuronale netwerk
-------------------------------------------------
-<strong>Complexiteit</strong>O(k ×) door voorspellingO(n2 × d) (Transformer)
-<strong>Vereiste gegevens</strong>1-10M voorbeelden voldoende10M-1B voor goede resultaten
-<strong>Vertolking</strong>Totaal (waarschijnlijkheidstabellen)Zwarte doos
-<strong>Generalisering</strong>Beperkt tot lokale context kAlgemeen potentieel
-<strong>Kraaksnelheid</strong>Rubrieknummer+20-30% op moderne wachtwoorden
-<strong>Generatiesnelheid</strong>Zeer snelLangzamer
+<table class="about-table">
+<thead><tr><th>Dimensie</th><th>Markov (orde 5)</th><th>Neuraal netwerk</th></tr></thead>
+<tbody>
+<tr><td><strong>Complexiteit</strong></td><td>O(k × Σ) per voorspelling</td><td>O(n² × d) (Transformer)</td></tr>
+<tr><td><strong>Benodigde data</strong></td><td>1-10M voorbeelden volstaan</td><td>10M-1B voor goede resultaten</td></tr>
+<tr><td><strong>Interpreteerbaarheid</strong></td><td>Volledig (kansentabellen)</td><td>Black box</td></tr>
+<tr><td><strong>Generalisatie</strong></td><td>Beperkt tot de lokale context k</td><td>Mogelijk globaal</td></tr>
+<tr><td><strong>Kraakpercentage</strong></td><td>Referentie</td><td>+20-30% bij moderne wachtwoorden</td></tr>
+<tr><td><strong>Generatiesnelheid</strong></td><td>Zeer snel</td><td>Trager</td></tr>
+</tbody>
+</table>
 <h3>11.4 Algemene positionering</h3>
 <p>In een professionele kraken workflow is de typische volgorde:</p>
 <li><strong>Woordenboek</strong> (credlist) Bekende exacte wachtwoorden</li>

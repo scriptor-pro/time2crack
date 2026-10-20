@@ -39,19 +39,22 @@ Projectreferentiedocument Time2Crack
 <h3>2.1 Oorsprong: John the Ripper en mutatieregels</h3>
 <p>De hybride aanval is formeel geboren met <strong>John de Ripper</strong> (Solar Designer, 1996), de eerste publieke tool om een woordenlijst te combineren met een configureerbare regel engine. Voorafgaand aan John de Ripper, woordenboek aanvallen getest rauwe woorden; John introduceerde het idee dat elk woord genereert een familie van kandidaten.</p>
 <strong>Chronologie van mijlpalen</strong> :
-JaarGebeurtenis
----------------------
-1979Morris &amp; Thompson: gebruikers vervangen letters om hun wachtwoorden te "veiligen"
-1996John the Ripper 1.0: eerste publieke regel engine, JtR syntax (<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)
-2000Alec Muffett documenteert dat 80% van het echte kraken door wordlist+regels gaat, niet brute kracht
-2006Hashcat 0,01: migratie op GPU, regels gaan van 1M→1000M kandidaten / seconde
-2009RockYou: 14.3M duidelijke wachtwoorden maken empirische kalibratie van de meest effectieve regels mogelijk
-2012Gosney (Passwordscon): 8 GPU GTX 580, best64 regels, crack 90% LinkedIn in &lt; 6 dagen
-2013Löfstrand: publiceert "best64.rule," 64 regels voor 85-90% van de huidige menselijke transformaties
-2014Ma et al. (IEEE S&amp;P): eerste academische studie waarin de effectiviteit wordt gekwantificeerd op regelschaal
-2016Hashcat open source: geïntegreerde best64, MD5 snelheid 2 TH/s op 8× GTX 1080
-2019Hashcat 6.0: OneRegleToRegleThemAll spel (52k regels) gegenereerd door ML op corpus van wachtwoorden
-2023NSA Advisory: beveelt expliciet het testen van bedrijfswachtwoorden met hybride tools aan
+<table class="about-table">
+<thead><tr><th>Jaar</th><th>Gebeurtenis</th></tr></thead>
+<tbody>
+<tr><td>1979</td><td>Morris &amp; Thompson: gebruikers vervangen letters om hun wachtwoorden te "veiligen"</td></tr>
+<tr><td>1996</td><td>John the Ripper 1.0: eerste publieke regel engine, JtR syntax (<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)</td></tr>
+<tr><td>2000</td><td>Alec Muffett documenteert dat 80% van het echte kraken door wordlist+regels gaat, niet brute kracht</td></tr>
+<tr><td>2006</td><td>Hashcat 0,01: migratie op GPU, regels gaan van 1M→1000M kandidaten / seconde</td></tr>
+<tr><td>2009</td><td>RockYou: 14.3M duidelijke wachtwoorden maken empirische kalibratie van de meest effectieve regels mogelijk</td></tr>
+<tr><td>2012</td><td>Gosney (Passwordscon): 8 GPU GTX 580, best64 regels, crack 90% LinkedIn in &lt; 6 dagen</td></tr>
+<tr><td>2013</td><td>Löfstrand: publiceert "best64.rule," 64 regels voor 85-90% van de huidige menselijke transformaties</td></tr>
+<tr><td>2014</td><td>Ma et al. (IEEE S&amp;P): eerste academische studie waarin de effectiviteit wordt gekwantificeerd op regelschaal</td></tr>
+<tr><td>2016</td><td>Hashcat open source: geïntegreerde best64, MD5 snelheid 2 TH/s op 8× GTX 1080</td></tr>
+<tr><td>2019</td><td>Hashcat 6.0: OneRegleToRegleThemAll spel (52k regels) gegenereerd door ML op corpus van wachtwoorden</td></tr>
+<tr><td>2023</td><td>NSA Advisory: beveelt expliciet het testen van bedrijfswachtwoorden met hybride tools aan</td></tr>
+</tbody>
+</table>
 <h3>2.2 Oprichting van empirische studies</h3>
 <strong>Klein (1990)</strong> 
 <strong>Weir et al. (2009, IEEE S&amp;P)</strong> Het PCFG model wordt voorgesteld maar geldig door de manier waarop de hashcat regels betrekking hebben op 78% van de transformaties waargenomen in RockYou. Demonstreert dat de wachtwoorden "Password1" en "P@ssw0rd" behoren tot de eerste 100 kandidaten gegenereerd door best64 op het woord "wachtwoord."
@@ -74,18 +77,21 @@ JaarGebeurtenis
 <h2>3. Conceptuele stichtingen: Waarom de hybride werken</h2>
 <h3>3.1 Het menselijk gedrag van "veilig"</h3>
 <p>Wanneer een systeem legt regels van complexiteit (majuscule, nummer, symbool), gebruikers niet willekeurig genereren . <strong>voorspelbare transformaties toepassen op memorizeerbare woorden</strong> :</p>
-Menselijke strategieVoorbeeldGerelateerde hybride regel
---------------------------------------------------------------
-Hoofdletter maken van de eerste letter"Sunshine" → "Sunshine"<code>c</code> (kapitaliseren eerst)
-Tel alles"Sunshine" → "SUNSHINE"<code>u</code> (bovenal)
-Aan het einde een cijfer toevoegen"zonneschijn" → "zonneschijn1"<code>$1</code> (bijlage "1")
-Jaar toevoegen"sunshine" → "sunshine2024"<code>$2 $0 $2 $4</code>
-E→3 vervangen"zonneschijn" → "zonneschijn"<code>s e 3</code> (vervangen door 3)
-Vervangen a→@"wachtwoord" → "p@ssword"<code>s a @</code>
-Omgekeerd woord"sunshine" → "enihsnus"<code>r</code> (omkeringen)
-Dubbel woord"zon" → "zonzon"<code>d</code> (dupliceren)
-Toevoegen ! definitief"zonneschijn" → "zonneschijn!"<code>$!</code>
-Meerdere combineren"wachtwoord" → "P@ssw0rd1"<code>c s a @ s o 0 $1</code>
+<table class="about-table">
+<thead><tr><th>Menselijke strategie</th><th>Voorbeeld</th><th>Bijbehorende hybride regel</th></tr></thead>
+<tbody>
+<tr><td>Eerste letter als hoofdletter</td><td>"sunshine" → "Sunshine"</td><td><code>c</code> (capitalize first)</td></tr>
+<tr><td>Alles in hoofdletters</td><td>"sunshine" → "SUNSHINE"</td><td><code>u</code> (uppercase all)</td></tr>
+<tr><td>Een cijfer aan het eind toevoegen</td><td>"sunshine" → "sunshine1"</td><td><code>$1</code> (append "1")</td></tr>
+<tr><td>Het jaartal toevoegen</td><td>"sunshine" → "sunshine2024"</td><td><code>$2 $0 $2 $4</code></td></tr>
+<tr><td>e→3 vervangen</td><td>"sunshine" → "sunshin3"</td><td><code>s e 3</code> (substitute e by 3)</td></tr>
+<tr><td>a→@ vervangen</td><td>"password" → "p@ssword"</td><td><code>s a @</code></td></tr>
+<tr><td>Het woord omkeren</td><td>"sunshine" → "enihsnus"</td><td><code>r</code> (reverse)</td></tr>
+<tr><td>Het woord verdubbelen</td><td>"sun" → "sunsun"</td><td><code>d</code> (duplicate)</td></tr>
+<tr><td>Een ! aan het eind toevoegen</td><td>"sunshine" → "sunshine!"</td><td><code>$!</code></td></tr>
+<tr><td>Meerdere combineren</td><td>"password" → "P@ssw0rd1"</td><td><code>c s a @ s o 0 $1</code></td></tr>
+</tbody>
+</table>
 <p>Deze transformaties <strong>lijkt creatief</strong> aan de gebruiker. <strong>precies de eerste die de aanvaller probeert</strong> Zij komen overeen met de beperkingen die het veiligheidsbeleid oplegt.</p>
 <h3>3.2 Het concept van efficiënte vermindering van de ruimte</h3>
 <p>Een 10-karakter wachtwoord met letters+cijfers+symbolen heeft een ruwe sleutelruimte-kracht van 94^10, 5,4 × 10^19 combinaties. Te groot om in een redelijke tijd te reizen.</p>
@@ -214,28 +220,31 @@ u $2 $0 $2 $3 → "PASSWORD2023" (uppercase + append year)</code></pre>
 <h2>6. Best64 regels: het referentiespel</h2>
 <p>Best64 is de set van 64 standaard regels van referentie in academische literatuur en industrie. Hier zijn de belangrijkste regels en hun empirische rechtvaardiging:</p>
 <h3>6.1 De 20 meest effectieve regels (in volgorde van uitvoering)</h3>
-RangArtikelTransformatie% wachtwoorden behandeld (mei 2014)
-------------------------------]----------------
-1<code>:</code>Grof woord-18%
-2<code>c</code>Hoofdletter~11%
-3<code>u</code>Hoofdletter alles6
-4<code>$1</code>Invoegen "1"~5%
-5<code>l</code>Kleine letters~4%
-6<code>$!</code>Voeg " toe!"~3%
-7<code>s a @</code>a→@2,8%
-8<code>c $1</code>Hoofdletter + "1"~ 2,5%
-9<code>$2</code>"2" toevoegen~2,1%
-10<code>r</code>Omgekeerd~1,9%
-11<code>$!</code> + <code>c</code>Hoofdletter + "!"~1,7%
-12<code>s o 0</code>o→0~ 1,6%
-13<code>d</code>Dupliceren~1,4
-14<code>s e 3</code>e→3~1,3%
-15<code>$1 $2 $3</code>Voeg "123" toe~1,2
-16<code>c $1 $2 $3</code>Kapitalisatie + "123"~1,1%
-17<code>$0</code>"0" toevoegen~1,0%
-18<code>^1</code>Prepareer "1"~0,9%
-19<code>s i 1</code>i→1~0,8%
-20<code>c $! $1</code>Hoofdletter + "!1"~0,7%
+<table class="about-table">
+<thead><tr><th>Rang</th><th>Regel</th><th>Transformatie</th><th>% gedekte wachtwoorden (Ma 2014)</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><code>:</code></td><td>Woord ongewijzigd</td><td>~18%</td></tr>
+<tr><td>2</td><td><code>c</code></td><td>Capitalize first</td><td>~11%</td></tr>
+<tr><td>3</td><td><code>u</code></td><td>Uppercase all</td><td>~6%</td></tr>
+<tr><td>4</td><td><code>$1</code></td><td>Append "1"</td><td>~5%</td></tr>
+<tr><td>5</td><td><code>l</code></td><td>Lowercase all</td><td>~4%</td></tr>
+<tr><td>6</td><td><code>$!</code></td><td>Append "!"</td><td>~3%</td></tr>
+<tr><td>7</td><td><code>s a @</code></td><td>a→@</td><td>~2,8%</td></tr>
+<tr><td>8</td><td><code>c $1</code></td><td>Capitalize + "1"</td><td>~2,5%</td></tr>
+<tr><td>9</td><td><code>$2</code></td><td>Append "2"</td><td>~2,1%</td></tr>
+<tr><td>10</td><td><code>r</code></td><td>Reverse</td><td>~1,9%</td></tr>
+<tr><td>11</td><td><code>$!</code> + <code>c</code></td><td>Capitalize + "!"</td><td>~1,7%</td></tr>
+<tr><td>12</td><td><code>s o 0</code></td><td>o→0</td><td>~1,6%</td></tr>
+<tr><td>13</td><td><code>d</code></td><td>Duplicate</td><td>~1,4%</td></tr>
+<tr><td>14</td><td><code>s e 3</code></td><td>e→3</td><td>~1,3%</td></tr>
+<tr><td>15</td><td><code>$1 $2 $3</code></td><td>Append "123"</td><td>~1,2%</td></tr>
+<tr><td>16</td><td><code>c $1 $2 $3</code></td><td>Capitalize + "123"</td><td>~1,1%</td></tr>
+<tr><td>17</td><td><code>$0</code></td><td>Append "0"</td><td>~1,0%</td></tr>
+<tr><td>18</td><td><code>^1</code></td><td>Prepend "1"</td><td>~0,9%</td></tr>
+<tr><td>19</td><td><code>s i 1</code></td><td>i→1</td><td>~0,8%</td></tr>
+<tr><td>20</td><td><code>c $! $1</code></td><td>Capitalize + "!1"</td><td>~0,7%</td></tr>
+</tbody>
+</table>
 <strong>Cumulatieregels 1</strong> : ~55% van op dict gebaseerde wachtwoorden
 <strong>Cumulatieregels 1</strong> : ~68% van dict-gebaseerde wachtwoorden
 <strong>Cumulatieregels 1</strong> : ~79% van op dict-gebaseerde wachtwoorden
@@ -267,16 +276,19 @@ RangArtikelTransformatie% wachtwoorden behandeld (mei 2014)
 <strong>Prevalentie</strong> Veras et al. (2014) vinden dat ~73% van de "verplichte" wachtwoorden het cijfer in achtervoegsel toevoegen. Slechts ~12% prefix het.
 <h3>7.3 Categorie 3: Leervervangers</h3>
 <p>Systematische vervanging van letters door soortgelijke cijfers of symbolen:</p>
-VervangingEmpirische frequentie
---]----------------------
-a → @23% van de wachtwoorden met @
-e → 331% van de wachtwoorden met 3
-i → 119% van de wachtwoorden met 1
-o → 027% wachtwoorden met 0
-S → $14% van de wachtwoorden met $
-l → 18%
-t → 76%
-g → 94%
+<table class="about-table">
+<thead><tr><th>Vervanging</th><th>Empirische frequentie</th></tr></thead>
+<tbody>
+<tr><td>a → @</td><td>23% van de wachtwoorden met @</td></tr>
+<tr><td>e → 3</td><td>31% van de wachtwoorden met 3</td></tr>
+<tr><td>i → 1</td><td>19% van de wachtwoorden met 1</td></tr>
+<tr><td>o → 0</td><td>27% van de wachtwoorden met 0</td></tr>
+<tr><td>s → $</td><td>14% van de wachtwoorden met $</td></tr>
+<tr><td>l → 1</td><td>8%</td></tr>
+<tr><td>t → 7</td><td>6%</td></tr>
+<tr><td>g → 9</td><td>4%</td></tr>
+</tbody>
+</table>
 <p>Gecombineerde vervangingen ("P@ssw0rd") lijken complex maar worden gegenereerd in een paar regels: <code>c s a @ s o 0</code>Zij behoren tot de <strong>500 eerste kandidaten</strong> Op wachtwoord.</p>
 <h3>7.4 Categorie 4: Symbolische achtervoegsels</h3>
 <p>Gebruik maken van de verplichting om een speciaal karakter te hebben:</p>
@@ -311,12 +323,15 @@ s e 3 s a @ c $!  → "P@ssw3rd!" (multiple substitutions + capitalize + !)</cod
 <p>Deze strategie wordt uitgevoerd in hashcat via het sorteren van de woordenlijst door het verlagen van de frequentie in combinatie met de woord-eerste strategie. Het verklaart waarom "Password1" (afgeleid van "wachtwoord," het woord #1) wordt gekraakt in milliseconden, terwijl "Soleil1" (afkomstig van "zon," woord ~5000 uit het Franse woordenboek) een paar seconden kan duren.</p>
 <h3>8.2 Mediane positie in zoekruimte</h3>
 <p>De belangrijkste maatregel is: <strong>het mediane aantal geteste kandidaten voordat het doelwachtwoord wordt gevonden</strong>. Ma et al. (2014) geven empirische metingen:</p>
-DerdeVoorbeeldMediane aanvragers voordat zij een
---------------------------------------------------------------------
-TOP100"wachtwoord1," "P@ssword"450 500
-Gemeenschappelijke dobbelstenen (top-10k)Sunshine1, sunshine.5 000 15 000
-Minder vaak"Paillon2024"50 000 200.000
-Zonder woordenboek"Xk7#mP9q"N.v.t. (niet van toepassing zijnde hybride)
+<table class="about-table">
+<thead><tr><th>Categorie</th><th>Voorbeeld</th><th>Mediaan kandidaten tot succes</th></tr></thead>
+<tbody>
+<tr><td>TOP100</td><td>"password1", "P@ssword"</td><td>~450–500</td></tr>
+<tr><td>Gangbaar woordenboek (top-10k)</td><td>"Sunshine1", "sunshine!"</td><td>~5.000–15.000</td></tr>
+<tr><td>Minder gangbaar woordenboek</td><td>"Papillon2024"</td><td>~50.000–200.000</td></tr>
+<tr><td>Niet in een woordenboek</td><td>"Xk7#mP9q"</td><td>N.v.t. (hybride niet van toepassing)</td></tr>
+</tbody>
+</table>
 <p>Deze metingen zijn de directe basis van Time2Crack constanten:
 </p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
 const HYBRID<em>KEYSPACE</em>DICT = 8<em>1 000; // Ma et al. 2014
@@ -440,27 +455,33 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <hr>
 <h2>12. Relatie met afgeleide aanvallen</h2>
 <h3>12.1 Hybrid vs. Puur woordenboek</h3>
-CriteriaPuur woordenboekHybride
----------------------------------------
-Geteste kandidatenWoorden van correcte lijstWoorden + al hun varianten
-Dekking (RockYou)-18%~79-85% (met beste64)
-Sleutelruimte (200k woorden)200 000200 000 × 64 = 12,8M
-ToepasselijkheidWachtwoord = exact woordWachtwoord afgeleid van een woord
-Kwetsbaar voorbeeld"zonneschijn" (exact)Sunshine1!
-Bestand voorbeeld"Sunshine1""xK9#mQ7@" (geen root)
+<table class="about-table">
+<thead><tr><th>Criterium</th><th>Puur woordenboek</th><th>Hybride</th></tr></thead>
+<tbody>
+<tr><td>Geteste kandidaten</td><td>Exacte woorden uit de lijst</td><td>Woorden + al hun varianten</td></tr>
+<tr><td>Dekking (RockYou)</td><td>~18%</td><td>~79-85% (met best64)</td></tr>
+<tr><td>Keyspace (200k woorden)</td><td>200.000</td><td>200.000 × 64 = 12,8M</td></tr>
+<tr><td>Toepasbaarheid</td><td>Wachtwoord = exact woord</td><td>Wachtwoord afgeleid van een woord</td></tr>
+<tr><td>Kwetsbaar voorbeeld</td><td>"sunshine" (exact)</td><td>"Sunshine1!", "sunsh1ne"</td></tr>
+<tr><td>Bestendig voorbeeld</td><td>"Sunshine1"</td><td>"xK9#mQ7@" (geen stamwoord)</td></tr>
+</tbody>
+</table>
 <h3>12.2 Hybrid vs Regelgebaseerd</h3>
 <p>De regelgebaseerde aanval in Time2Crack is conceptueel vergelijkbaar maar met een veel bredere set regels:</p>
 <pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000; // vs 128M voor volledige hybride</em></code></pre>
 <p>Het verschil: de beste64 model hybride (64 regels, focus op gemeenschappelijke menselijke transformaties). De regel gebaseerde aanval modellen bredere games zoals d3ad0ne (34k regels) of OneRuleToRuleThemAll (52k regels), gebruikt wanneer best64 faalt. De regel-gebaseerd is de "tweede lijn" hybride </p>
 <h3>12.3 Hybrid vs. PCFG</h3>
 <p>PCFG (Probabilistic Context-Free Grammar, Weir 2009) modelleert de grammaticale structuur van het wachtwoord om kandidaten te genereren.</p>
-CriteriaHybridePCFG
-----------------------------
-AanpakBasiswoord + transformatieregelsAlgemene grammaticale structuur
-ForcerenBestaande woorden gemuteerdStructuurtype "word+Digits"
-Voorbeeld"zonneschijn" → "zonneschijn"Detecteert de structuur "Caps+lower+digit"
-ComplementariteitTriggers op <code>dictWord</code>Triggers op gedetecteerde structuur
-Sleutelruimte (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> dynamisch berekend
+<table class="about-table">
+<thead><tr><th>Criterium</th><th>Hybride</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td>Aanpak</td><td>Basiswoord + transformatieregels</td><td>Globale grammaticale structuur</td></tr>
+<tr><td>Sterk punt</td><td>Aangepaste bestaande woorden</td><td>Structuren van het type "Woord+Cijfers"</td></tr>
+<tr><td>Voorbeeld</td><td>"sunshine" → "Sunshine1"</td><td>Herkent de structuur "Hoofd+klein+cijfer"</td></tr>
+<tr><td>Aanvulling</td><td>Reageert op <code>dictWord</code></td><td>Reageert op een herkende structuur</td></tr>
+<tr><td>Keyspace (Time2Crack)</td><td>500 / 8k / 128M</td><td><code>pcfgKeyspace(pw)</code>, dynamisch berekend</td></tr>
+</tbody>
+</table>
 <p>PCFG kan aanvallen wachtwoorden zonder root woordenboek als hun <strong>structuur</strong> komt vaak voor (ex: "Thelonious8" → geen woord van de dico maar structuur Capitalize+lower+digit zeer voorspelbaar).</p>
 <h3>12.4 Hybrid vs Morfologisch (morf)</h3>
 <p>De morfologische aanval test taalkundige varianten (flexions, variaties). Het is een generalisatie van de hybride voor talen met rijke morfologie:</p>
@@ -470,22 +491,28 @@ Sleutelruimte (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> dynamisch
 <hr>
 <h2>13. Benchmarks per hash-algoritme</h2>
 <h3>13.1 Tijd voor de drie hybride sleutelruimtes (12× RTX 5090)</h3>
-AlgoritmePercentage (H/s)GEMEENSCHAPPELIJK (500)DICT (8k)FULL (128M)
------------------------------ [57]--------------- [57]
-MD52 634 GH/s0,19 ns3,0 ns49 μs
-SHA-1837 GH/s0,60 ns9,6 ns153 μs
-SHA-256332 GH/s1.5 ns24 ns386 μs
-NTLM4 081 GH/s0,12 ns2,0 ns31 μs
-bcrypt (kosten 10)114 kH/s4,4 ms0,07 s19 min.
-Argon2id1.000 H/s0,5 s8 s36 uur
+<table class="about-table">
+<thead><tr><th>Algoritme</th><th>Snelheid (H/s)</th><th>COMMON (500)</th><th>DICT (8k)</th><th>FULL (128M)</th></tr></thead>
+<tbody>
+<tr><td>MD5</td><td>2.634 GH/s</td><td>0,19 ns</td><td>3,0 ns</td><td>49 μs</td></tr>
+<tr><td>SHA-1</td><td>837 GH/s</td><td>0,60 ns</td><td>9,6 ns</td><td>153 μs</td></tr>
+<tr><td>SHA-256</td><td>332 GH/s</td><td>1,5 ns</td><td>24 ns</td><td>386 μs</td></tr>
+<tr><td>NTLM</td><td>4.081 GH/s</td><td>0,12 ns</td><td>2,0 ns</td><td>31 μs</td></tr>
+<tr><td>bcrypt (kosten 10)</td><td>114 kH/s</td><td>4,4 ms</td><td>0,07 s</td><td>19 min</td></tr>
+<tr><td>Argon2id</td><td>1.000 H/s</td><td>0,5 s</td><td>8 s</td><td>36 uur</td></tr>
+</tbody>
+</table>
 <strong>Lezen</strong> : voor MD5 en NTLM wordt zelfs de FULL keyspace (128M-kandidaten) gekraakt in een paar dozijn microseconden.
 <strong>Argon2id</strong> is het enige algoritme dat sterk weerstand biedt, zelfs voor gewone woorden: 0,5 seconden voor een GEMEENSCHAPPELIJK woord, 8 seconden voor een dictwoord. Deze tijden blijven kort in absolute waarde, maar vertegenwoordigen een vertraging van x10^12 vs MD5 
 <h3>13.2 Impact van het aanvalsprofiel</h3>
 <p>Time2Crack biedt twee profielen (Ervaren 12 GPU, Professional 100 GPU). Voor de hybride, het profiel verschil is direct evenredig:</p>
-ProfielGPU'sMultiplierVOLLEDIGE bcrypt
-------------------------------- [57]
-Ervaren12× RTX 50901×19 min.
-Professioneel~100 GPU~8×~2 min
+<table class="about-table">
+<thead><tr><th>Profiel</th><th>GPU’s</th><th>Factor</th><th>FULL bcrypt</th></tr></thead>
+<tbody>
+<tr><td>Ervaren</td><td>12× RTX 5090</td><td>1×</td><td>19 min</td></tr>
+<tr><td>Professioneel</td><td>~100 GPU</td><td>~8×</td><td>~2 min</td></tr>
+</tbody>
+</table>
 <p>Voor MD5, SHA-1, NTLM: het profiel verandert de tijd van microseconden naar nanoseconden, zonder enige praktische impact, beide zijn onmiddellijk.</p>
 <hr>
 <h2>14. Concrete voorbeelden van hybride kraken</h2>
@@ -547,27 +574,33 @@ Professioneel~100 GPU~8×~2 min
 <strong>Wachtwoorden van echt willekeurige woorden</strong> : "tabouret-marmot-ginger-flash" vier willekeurige woorden. Hybride aanval in de klassieke modus genereert geen combinaties van 4 woorden (dit is de rol van de combinator). Passphrase weerstaat de standaard hybride.
 <h3>16.2 Wat is GEEN resistentie tegen Hybride</h3>
 <p>De meest voorkomende "versterkingsstrategieën" verzetten zich niet tegen:</p>
-StrategieVoorbeeldResistentie
--------------------------››
-Hoofdletter maken van de eerste letterZonneschijnArtikel <code>c</code>, rij 2
-Een cijfer toevoegen"sunshine1"Artikel <code>$1</code>, rij 4
-Toevoegen symboolSunshine.Artikel <code>$!</code>, rij 6
-E→3 vervangen"suns3ine"Artikel <code>s e 3</code>, top-20
-Alles combinerenSuns3ine.Een samengestelde regel, top-100
-Kies een zeldzaam woordPapillon123.
-Dubbel woord"zonzon"Artikel <code>d</code>, top-30
-Omgekeerd"enihsnus"Artikel <code>r</code>, top-15
+<table class="about-table">
+<thead><tr><th>Strategie</th><th>Voorbeeld</th><th>Weerstand</th></tr></thead>
+<tbody>
+<tr><td>Eerste letter als hoofdletter</td><td>"Sunshine"</td><td>❌ Regel <code>c</code>, rang 2</td></tr>
+<tr><td>Een cijfer toevoegen</td><td>"sunshine1"</td><td>❌ Regel <code>$1</code>, rang 4</td></tr>
+<tr><td>Een symbool toevoegen</td><td>"sunshine!"</td><td>❌ Regel <code>$!</code>, rang 6</td></tr>
+<tr><td>e→3 vervangen</td><td>"sunshin3"</td><td>❌ Regel <code>s e 3</code>, top-20</td></tr>
+<tr><td>Alles combineren</td><td>"Sunshin3!"</td><td>❌ Samengestelde regel, top-100</td></tr>
+<tr><td>Een zeldzaam woord kiezen</td><td>"papillon123"</td><td>❌ Staat toch in wordlists</td></tr>
+<tr><td>Het woord verdubbelen</td><td>"sunsun"</td><td>❌ Regel <code>d</code>, top-30</td></tr>
+<tr><td>Omkeren</td><td>"enihsnus"</td><td>❌ Regel <code>r</code>, top-15</td></tr>
+</tbody>
+</table>
 <strong>Conclusie</strong> Elke strategie op basis van "neem een woord + wijzigen" is kwetsbaar voor de hybride. De uitzondering is zo'n complexe en zeldzame wijziging dat het niet wordt gedekt door een regel ..maar als de gebruiker moet onthouden deze complexe transformatie, hij eindigt meestal kiezen voor iets voorspelbaar.
 <h3>16.3. Resistent hash-algoritmen</h3>
 <p>Zelfs als een wachtwoord kwetsbaar is voor de structurele hybride, kan het hash-algoritme de aanval economisch onlevenbaar maken:</p>
-AlgoritmeTijd voor DICT (8k gissingen)Oefenaanval
-----------------------------------------------------------------
-MD5 / NTLM~3 nanosecondenDirect
-SHA-25624 nanosecondenDirect
-bcrypt kosten 100,07 secondenTriviaal
-bcrypt kosten 14~1 secondeUitvoerbaar
-Argon2id (standaard)~10 secondenUitvoerbaar
-Argon2id (sterk parametraat)~100 secondenLangzaam maar mogelijk
+<table class="about-table">
+<thead><tr><th>Algoritme</th><th>Tijd voor DICT (8k pogingen)</th><th>Aanval in de praktijk</th></tr></thead>
+<tbody>
+<tr><td>MD5 / NTLM</td><td>~3 nanoseconden</td><td>Direct</td></tr>
+<tr><td>SHA-256</td><td>~24 nanoseconden</td><td>Direct</td></tr>
+<tr><td>bcrypt kosten 10</td><td>~0,07 seconden</td><td>Triviaal</td></tr>
+<tr><td>bcrypt kosten 14</td><td>~1 seconde</td><td>Haalbaar</td></tr>
+<tr><td>Argon2id (standaard)</td><td>~8 seconden</td><td>Haalbaar</td></tr>
+<tr><td>Argon2id (sterke parameters)</td><td>~100 seconden</td><td>Traag maar mogelijk</td></tr>
+</tbody>
+</table>
 <strong>Argon2id</strong> met hoge parameters (t=4, m=65536) is het enige algoritme dat de hybride echt duur maakt, zelfs op zwakke wachtwoorden.
 <h3>16.4 Praktische aanbevelingen</h3>
 <li><strong>Wachtwoordbeheer gebruiken</strong> : genereert zuivere willekeurige, niet van toepassing hybride</li>

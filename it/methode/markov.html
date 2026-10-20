@@ -32,16 +32,19 @@ Documento di riferimento del progetto Time2Crack
 <h3>2.1 Origini</h3>
 <p>L'applicazione dei canali di Markov al cracking password è prima delle pubblicazioni accademiche formali. I professionisti della sicurezza offensivi hanno usato modelli simili dal 2000, ma la formalizzazione rigorosa risale principalmente al 2010.</p>
 <strong>Cronologia delle pietre miliari</strong> :
-AnnoEvento
-----------------
-2005Nakashima &amp; Oyama: prima applicazione formale di n-grams a password
-2009Weir et al. (IEEE S&amp;P): PCFG — concorrente diretto, posizioni probabilità strutturali
-2012Ma et al. (USENIX Security): Studio comparativo dei modelli probabilistici sulle password 70M
-2013Durmuth: prime analisi OMEN su diversi corpus
-2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OM</strong> (ESORICS 2015) — importante riferimento accademico
-2016Wheeler (zxcvbn) conferma l'efficacia di n-grams nel stimare l'entropia reale
-2018OMEN+: versione migliorata con levigatura e interpolazione
-2019–2022Markov lavoro ibrido + reti neurali (PassGAN, FuzzyPSM)
+<table class="about-table">
+<thead><tr><th>Anno</th><th>Evento</th></tr></thead>
+<tbody>
+<tr><td>2005</td><td>Nakashima &amp; Oyama: prima applicazione formale di n-grams a password</td></tr>
+<tr><td>2009</td><td>Weir et al. (IEEE S&amp;P): PCFG — concorrente diretto, posizioni probabilità strutturali</td></tr>
+<tr><td>2012</td><td>Ma et al. (USENIX Security): Studio comparativo dei modelli probabilistici sulle password 70M</td></tr>
+<tr><td>2013</td><td>Durmuth: prime analisi OMEN su diversi corpus</td></tr>
+<tr><td>2015</td><td>Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OM</strong> (ESORICS 2015) — importante riferimento accademico</td></tr>
+<tr><td>2016</td><td>Wheeler (zxcvbn) conferma l'efficacia di n-grams nel stimare l'entropia reale</td></tr>
+<tr><td>2018</td><td>OMEN+: versione migliorata con levigatura e interpolazione</td></tr>
+<tr><td>2019–2022</td><td>Markov lavoro ibrido + reti neurali (PassGAN, FuzzyPSM)</td></tr>
+</tbody>
+</table>
 <h3>2.2 Ente di riferimento</h3>
 <p>La formazione del modello Markov si basa su database di password da perdite di dati note:</p>
 <ul>
@@ -158,13 +161,16 @@ python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes
 <h2>7. Ridurre lo spazio di ricerca: La chiave per l'efficacia</h2>
 <h3>7.1 Quantificazione empirica (Dürmuth 2015)</h3>
 <p>Per una password di 8 caratteri con l'alfabeto completo (94 serbatoi):</p>
-MetodoSpazio di ricercaFattore di riduzione
---------------------------------------
-Forza lorda948 6 × 10151× (riferimento)
-Markov Ordine 1~3 × 1015♪
-Markov Ordine 3~6 × 1013- 100?
-Markov Ordine 5Voce principale:~ 166 000 ×
-Markov Ordine 5 (tipo umano)~4 × 107<strong>~ 150 milioni ×</strong>
+<table class="about-table">
+<thead><tr><th>Metodo</th><th>Spazio di ricerca</th><th>Fattore di riduzione</th></tr></thead>
+<tbody>
+<tr><td>Forza bruta</td><td>94<sup>8</sup> ≈ 6 × 10<sup>15</sup></td><td>1× (riferimento)</td></tr>
+<tr><td>Markov ordine 1</td><td>~3 × 10<sup>15</sup></td><td>~2×</td></tr>
+<tr><td>Markov ordine 3</td><td>~6 × 10<sup>13</sup></td><td>~100×</td></tr>
+<tr><td>Markov ordine 5</td><td>~3,6 × 10<sup>10</sup></td><td>~166.000×</td></tr>
+<tr><td>Markov ordine 5 (umano tipico)</td><td>~4 × 10<sup>7</sup></td><td><strong>~150 milioni×</strong></td></tr>
+</tbody>
+</table>
 <p>La differenza tra "spazio ridotto" e "spazio umano fisico" può essere spiegata dal fatto che le password umane reali sono concentrate in <strong>top-k% molto probabilmente</strong> A seconda del modello.</p>
 <h3>7.2 Perché gli esseri umani sono prevedibili</h3>
 <p>I fattori di prevedibilità utilizzati da Markov:</p>
@@ -317,31 +323,40 @@ Ogni segnale di "carattere umano" della password aumenta il punteggio evidente d
 <hr>
 <h2>11. Confronto con altri attacchi probabilistici</h2>
 <h3>11.1 Markov vs PCFG</h3>
-DimensioneMarkovPCF
-------------------------
-<strong>Unità di analisi</strong>Transizioni individuali di carattereStrutture di segmento (L/D/S)
-<strong>Informazioni acquisite</strong>Regolarità locali (n-gram)Globale (grammatica)
-<strong>Forza su</strong>Parole naturali, schemi continuiParole + numeri, strutture composte
-<strong>Limite</strong>Non cattura le strutture globaliNon catturare transizioni locali
-<strong>Complementari</strong>Ideale per parole pureIdeale per Password123
-<strong>Esempio ottimale</strong>"sunshine"Sole #93
-<strong>Ordine in Time2Crack</strong>Markov = 8, PCFG = 6PCFG più accurato se la struttura rilevata
+<table class="about-table">
+<thead><tr><th>Dimensione</th><th>Markov</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td><strong>Unità di analisi</strong></td><td>Transizioni tra caratteri</td><td>Strutture di segmenti (L/D/S)</td></tr>
+<tr><td><strong>Informazione catturata</strong></td><td>Regolarità locali (n-grammi)</td><td>Regolarità globali (grammatica)</td></tr>
+<tr><td><strong>Punto di forza</strong></td><td>Parole naturali, schemi continui</td><td>Parole + cifre, strutture composte</td></tr>
+<tr><td><strong>Limite</strong></td><td>Non coglie le strutture globali</td><td>Non coglie le transizioni locali</td></tr>
+<tr><td><strong>Complementarità</strong></td><td>Ideale per parole pure</td><td>Ideale per Password123</td></tr>
+<tr><td><strong>Esempio ottimale</strong></td><td>"sunshine"</td><td>"Sunshine#93"</td></tr>
+<tr><td><strong>Ordine in Time2Crack</strong></td><td>Markov = 8, PCFG = 6</td><td>PCFG più preciso se viene rilevata una struttura</td></tr>
+</tbody>
+</table>
 <h3>11.2 Markov vs. Attacco basato sulla regola</h3>
-DimensioneMarkovA base di regole
----------------------
-<strong>Approccio</strong>Generazione ad initio probabilisticoTrasformazione di un dizionario esistente
-<strong>Copertura</strong>Tutte le password probabiliTraduzioni di parole dizionario
-<strong>Forza su</strong>Parole rare o leggermente non dizionarieTradizionali trasformazioni di parole conosciute
-<strong>Limite</strong>Meno efficace del dittatore+regole per le mutazioni attualiDipende interamente dalla qualità del dizionario
+<table class="about-table">
+<thead><tr><th>Dimensione</th><th>Markov</th><th>Basato su regole</th></tr></thead>
+<tbody>
+<tr><td><strong>Approccio</strong></td><td>Generazione probabilistica da zero</td><td>Trasformazione di un dizionario esistente</td></tr>
+<tr><td><strong>Copertura</strong></td><td>Tutte le password probabili</td><td>Varianti delle parole del dizionario</td></tr>
+<tr><td><strong>Punto di forza</strong></td><td>Parole rare o leggermente fuori dizionario</td><td>Trasformazioni classiche di parole note</td></tr>
+<tr><td><strong>Limite</strong></td><td>Meno efficace di dizionario + regole per le varianti comuni</td><td>Dipende interamente dalla qualità del dizionario</td></tr>
+</tbody>
+</table>
 <h3>11.3 Markov vs Neural Networks (PassGAN, LSTM)</h3>
-DimensioneMarkov (Ordine 5)Rete neuronale
---------------------------------
-<strong>Complessità</strong>O(k ×) per previsioneO(n2 × d) (Transformer)
-<strong>Dati richiesti</strong>1-10M esempi sufficienti10M-1B per buoni risultati
-<strong>Interpretazione</strong>Totale (tavole di probabilità)Scatola nera
-<strong>Generalizzazione</strong>Limitato al contesto locale kPotenziale complessivo
-<strong>Tassi di prelievo</strong>Riferimento+20-30% su password moderne
-<strong>Velocità di generazione</strong>Molto veloceLentamente
+<table class="about-table">
+<thead><tr><th>Dimensione</th><th>Markov (ordine 5)</th><th>Rete neurale</th></tr></thead>
+<tbody>
+<tr><td><strong>Complessità</strong></td><td>O(k × Σ) per previsione</td><td>O(n² × d) (Transformer)</td></tr>
+<tr><td><strong>Dati necessari</strong></td><td>Bastano 1-10M esempi</td><td>10M-1B per buoni risultati</td></tr>
+<tr><td><strong>Interpretabilità</strong></td><td>Totale (tabelle di probabilità)</td><td>Scatola nera</td></tr>
+<tr><td><strong>Generalizzazione</strong></td><td>Limitata al contesto locale k</td><td>Potenzialmente globale</td></tr>
+<tr><td><strong>Tasso di cracking</strong></td><td>Riferimento</td><td>+20-30% sulle password moderne</td></tr>
+<tr><td><strong>Velocità di generazione</strong></td><td>Molto veloce</td><td>Più lenta</td></tr>
+</tbody>
+</table>
 <h3>11.4 Posizionamento globale</h3>
 <p>In un flusso di lavoro professionale di cracking, l'ordine tipico è:</p>
 <li><strong>Dizionario</strong> (credlist) — note password esatte</li>

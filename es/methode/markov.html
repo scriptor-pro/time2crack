@@ -32,16 +32,19 @@ Documento de referencia del proyecto Time2Crack
 <h3>2.1 Origen</h3>
 <p>La aplicación de los canales de Markov a la grieta de contraseñas es anterior a las publicaciones académicas formales. Los profesionales de seguridad ofensivos utilizaron modelos similares desde los años 2000, pero la formalización rigurosa data principalmente de los años 2010.</p>
 <strong>Cronología de los hitos</strong> :
-AñoEvento
------------------
-2005Nakashima &amp;quot; Oyama: primera aplicación formal de n-gramos a contraseñas
-2009Weir et al. (IEEE S flexibleP): PCFG — competidor directo, posiciones de las probabilidades estructurales
-2012Ma et al. (USENIX Security): Estudio comparativo de modelos probabilísticos sobre contraseñas de 70M
-2013Durmuth: primer análisis OMEN sobre varios corpus
-2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESORICS 2015) - importante referencia académica
-2016Wheeler (zxcvbn) confirma la eficacia de los n-gramos en la estimación de la entropía real
-2018OMEN+: versión mejorada con suavidad e interpolación
-2019–2022Trabajo híbrido Markov + redes neuronales (PassGAN, FuzzyPSM)
+<table class="about-table">
+<thead><tr><th>Año</th><th>Acontecimiento</th></tr></thead>
+<tbody>
+<tr><td>2005</td><td>Nakashima &amp;quot; Oyama: primera aplicación formal de n-gramos a contraseñas</td></tr>
+<tr><td>2009</td><td>Weir et al. (IEEE S flexibleP): PCFG — competidor directo, posiciones de las probabilidades estructurales</td></tr>
+<tr><td>2012</td><td>Ma et al. (USENIX Security): Estudio comparativo de modelos probabilísticos sobre contraseñas de 70M</td></tr>
+<tr><td>2013</td><td>Durmuth: primer análisis OMEN sobre varios corpus</td></tr>
+<tr><td>2015</td><td>Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESORICS 2015) - importante referencia académica</td></tr>
+<tr><td>2016</td><td>Wheeler (zxcvbn) confirma la eficacia de los n-gramos en la estimación de la entropía real</td></tr>
+<tr><td>2018</td><td>OMEN+: versión mejorada con suavidad e interpolación</td></tr>
+<tr><td>2019–2022</td><td>Trabajo híbrido Markov + redes neuronales (PassGAN, FuzzyPSM)</td></tr>
+</tbody>
+</table>
 <h3>2.2 Cuerpo de referencia</h3>
 <p>La formación del modelo Markov se basa en bases de datos de contraseña de las filtraciones de datos conocidas:</p>
 <ul>
@@ -158,13 +161,16 @@ python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes
 <h2>7. Reducing Research Space: The Key to Effectiveness</h2>
 <h3>7.1 Cuantificación empírica (Dürmuth 2015)</h3>
 <p>Para una contraseña de 8 caracteres con el alfabeto completo (94 tanques):</p>
-MétodoEspacio de investigaciónFactor de reducción
---------------
-Fuerza bruta948 6 × 10151× (referencia)
-Orden de Markov 1~3 × 1015~2×
-Orden 3 de Markov~6 × 1013~100×
-Markov Order 5~3.6 × 1010~166 000×
-Markov Orden 5 (típico humano)~4 × 107<strong>~150 millones×</strong>
+<table class="about-table">
+<thead><tr><th>Método</th><th>Espacio de búsqueda</th><th>Factor de reducción</th></tr></thead>
+<tbody>
+<tr><td>Fuerza bruta</td><td>94<sup>8</sup> ≈ 6 × 10<sup>15</sup></td><td>1× (referencia)</td></tr>
+<tr><td>Markov orden 1</td><td>~3 × 10<sup>15</sup></td><td>~2×</td></tr>
+<tr><td>Markov orden 3</td><td>~6 × 10<sup>13</sup></td><td>~100×</td></tr>
+<tr><td>Markov orden 5</td><td>~3,6 × 10<sup>10</sup></td><td>~166.000×</td></tr>
+<tr><td>Markov orden 5 (humano típico)</td><td>~4 × 10<sup>7</sup></td><td><strong>~150 millones×</strong></td></tr>
+</tbody>
+</table>
 <p>La diferencia entre "espacio reducido" y "espacio humano típico" se explica por el hecho de que las contraseñas humanas reales se concentran en <strong>lo más probable</strong> Según el modelo.</p>
 <h3>7.2 Por qué los humanos son predecibles</h3>
 <p>Los factores de previsibilidad utilizados por Markov:</p>
@@ -317,31 +323,40 @@ Cada señal de " carácter humano" de la contraseña aumenta la puntuación obvi
 <hr>
 <h2>11. Comparación con otros ataques probabilísticos</h2>
 <h3>11.1 Markov vs PCFG</h3>
-DimensionMarkovPCFG
---------------------
-<strong>Unidad de análisis</strong>Transiciones individuales de carácterEstructuras de segmento (L/D/S)
-<strong>Información capturada</strong>Recursos ordinarios locales (n-gram)Global (grammar)
-<strong>Fuerza</strong>Palabras naturales, patrones continuosPalabras + números, estructuras compuestas
-<strong>Limit</strong>No capta estructuras globalesNo capture las transiciones locales
-<strong>Complementaridad</strong>Ideal para palabras purasIdeal para Contraseña123
-<strong>Ejemplo óptimo</strong>"Sunshine"Sol#93
-<strong>Orden en Time2Crack</strong>Markov = 8, PCFG = 6PCFG más precisa si la estructura detectada
+<table class="about-table">
+<thead><tr><th>Dimensión</th><th>Markov</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td><strong>Unidad de análisis</strong></td><td>Transiciones entre caracteres</td><td>Estructuras de segmentos (L/D/S)</td></tr>
+<tr><td><strong>Información capturada</strong></td><td>Regularidades locales (n-gramas)</td><td>Regularidades globales (gramática)</td></tr>
+<tr><td><strong>Punto fuerte</strong></td><td>Palabras naturales, patrones continuos</td><td>Palabras + dígitos, estructuras compuestas</td></tr>
+<tr><td><strong>Límite</strong></td><td>No capta las estructuras globales</td><td>No capta las transiciones locales</td></tr>
+<tr><td><strong>Complementariedad</strong></td><td>Ideal para palabras puras</td><td>Ideal para Password123</td></tr>
+<tr><td><strong>Ejemplo óptimo</strong></td><td>"sunshine"</td><td>"Sunshine#93"</td></tr>
+<tr><td><strong>Orden en Time2Crack</strong></td><td>Markov = 8, PCFG = 6</td><td>PCFG más preciso si se detecta una estructura</td></tr>
+</tbody>
+</table>
 <h3>11.2 Markov vs. Rule-Based Attack</h3>
-DimensionMarkovBasado en normas
-----------------------------
-<strong>Enfoque</strong>Generation ab initio probabilisticTransformación de un diccionario existente
-<strong>Cobertura</strong>Todas las contraseñas probablesTraducciones de palabras de diccionario
-<strong>Fuerza</strong>Palabras raras o ligeramente no diccionarioTransformaciones tradicionales de palabras conocidas
-<strong>Limit</strong>Menos eficaz que el dictador+reglas para las mutaciones actualesDepende enteramente de la calidad del diccionario
+<table class="about-table">
+<thead><tr><th>Dimensión</th><th>Markov</th><th>Basado en reglas</th></tr></thead>
+<tbody>
+<tr><td><strong>Enfoque</strong></td><td>Generación probabilística desde cero</td><td>Transformación de un diccionario existente</td></tr>
+<tr><td><strong>Cobertura</strong></td><td>Todas las contraseñas probables</td><td>Variantes de palabras del diccionario</td></tr>
+<tr><td><strong>Punto fuerte</strong></td><td>Palabras raras o ligeramente fuera del diccionario</td><td>Transformaciones clásicas de palabras conocidas</td></tr>
+<tr><td><strong>Límite</strong></td><td>Menos eficaz que diccionario + reglas para las variantes habituales</td><td>Depende por completo de la calidad del diccionario</td></tr>
+</tbody>
+</table>
 <h3>11.3 Markov vs Neural Networks (PassGAN, LSTM)</h3>
-DimensionMarkov (Order 5)Red neuronal
---------------- Sí.- Sí.
-<strong>Complejidad</strong>O(k ×) por predicciónO(n2 × d) (Transformer)
-<strong>Datos necesarios</strong>1-10M ejemplos suficientes10M-1B para buenos resultados
-<strong>Interpretabilidad</strong>Total (cuadros de responsabilidad)Caja negra
-<strong>Generalización</strong>Limitado al contexto local kPotencial general
-<strong>Tasa de crack</strong>Referencia+20-30% en contraseñas modernas
-<strong>Velocidad de generación</strong>Muy rápido.Más lento
+<table class="about-table">
+<thead><tr><th>Dimensión</th><th>Markov (orden 5)</th><th>Red neuronal</th></tr></thead>
+<tbody>
+<tr><td><strong>Complejidad</strong></td><td>O(k × Σ) por predicción</td><td>O(n² × d) (Transformer)</td></tr>
+<tr><td><strong>Datos necesarios</strong></td><td>Bastan 1-10M ejemplos</td><td>10M-1B para buenos resultados</td></tr>
+<tr><td><strong>Interpretabilidad</strong></td><td>Total (tablas de probabilidades)</td><td>Caja negra</td></tr>
+<tr><td><strong>Generalización</strong></td><td>Limitada al contexto local k</td><td>Potencialmente global</td></tr>
+<tr><td><strong>Tasa de crackeo</strong></td><td>Referencia</td><td>+20-30% en contraseñas modernas</td></tr>
+<tr><td><strong>Velocidad de generación</strong></td><td>Muy rápida</td><td>Más lenta</td></tr>
+</tbody>
+</table>
 <h3>11.4 Posición mundial</h3>
 <p>En un flujo de trabajo profesional, el orden típico es:</p>
 <li><strong>Diccionario</strong> (credlist) - contraseñas exactas conocidas</li>

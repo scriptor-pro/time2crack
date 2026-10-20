@@ -39,19 +39,22 @@ Documento de referencia del proyecto Time2Crack
 <h3>2.1 Origen: John el Destripador y reglas de mutación</h3>
 <p>El ataque híbrido nace formalmente con <strong>John el Destripador</strong> (Solar Designer, 1996), la primera herramienta pública para combinar una lista de palabras con un motor de reglas configurable. Antes de John el Ripper, los ataques de diccionario probaron palabras crudas; Juan introdujo la noción de que cada palabra genera una familia de candidatos.</p>
 <strong>Cronología de los hitos</strong> :
-AñoEvento
------------------
-1979Morris &amp; Thompson: los usuarios sustituyen números de cartas para "segurar" sus contraseñas
-1996John the Ripper 1.0: primer motor de regla pública, sintaxis JtR (<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)
-2000Alec Muffett documenta que el 80% de la verdadera grieta pasa a través de wordlist+rules, no fuerza bruta
-2006Hashcat 0.01: migración en GPU, reglas van desde 1M→1000M candidatos/segundo
-2009RockYou: 14.3M contraseñas claras permiten calibrar empíricamente las reglas más efectivas
-2012Gosney (Passwordscon): 8 GPU GTX 580, mejores64 reglas, crack 90% LinkedIn en 6 días
-2013Löfstrand: publica "best64.rule", 64 reglas que abarcan el 85-90% de las transformaciones humanas actuales
-2014Ma et al.
-2016Hashcat open source: integrated best64, MD5 speed 2 TH/s on 8× GTX 1080
-2019Hashcat 6.0: OneRuleToRuleThemAll juego (52k rules) generado por ML en corpus de contraseñas
-2023NSA Advisory: explícitamente recomienda probar contraseñas corporativas con herramientas híbridas
+<table class="about-table">
+<thead><tr><th>Año</th><th>Acontecimiento</th></tr></thead>
+<tbody>
+<tr><td>1979</td><td>Morris &amp; Thompson: los usuarios sustituyen números de cartas para "segurar" sus contraseñas</td></tr>
+<tr><td>1996</td><td>John the Ripper 1.0: primer motor de regla pública, sintaxis JtR (<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)</td></tr>
+<tr><td>2000</td><td>Alec Muffett documenta que el 80% de la verdadera grieta pasa a través de wordlist+rules, no fuerza bruta</td></tr>
+<tr><td>2006</td><td>Hashcat 0.01: migración en GPU, reglas van desde 1M→1000M candidatos/segundo</td></tr>
+<tr><td>2009</td><td>RockYou: 14.3M contraseñas claras permiten calibrar empíricamente las reglas más efectivas</td></tr>
+<tr><td>2012</td><td>Gosney (Passwordscon): 8 GPU GTX 580, mejores64 reglas, crack 90% LinkedIn en 6 días</td></tr>
+<tr><td>2013</td><td>Löfstrand: publica "best64.rule", 64 reglas que abarcan el 85-90% de las transformaciones humanas actuales</td></tr>
+<tr><td>2014</td><td>Ma et al.</td></tr>
+<tr><td>2016</td><td>Hashcat open source: integrated best64, MD5 speed 2 TH/s on 8× GTX 1080</td></tr>
+<tr><td>2019</td><td>Hashcat 6.0: OneRuleToRuleThemAll juego (52k rules) generado por ML en corpus de contraseñas</td></tr>
+<tr><td>2023</td><td>NSA Advisory: explícitamente recomienda probar contraseñas corporativas con herramientas híbridas</td></tr>
+</tbody>
+</table>
 <h3>2.2 Estudios empíricos fundacionales</h3>
 <strong>Klein (1990)</strong> — Análisis de 15,000 contraseñas Unix. Reconoce que el 24,2% son crackable por diccionario puro, pero que el 32% adicional son crackable con transformaciones simples (capitalización, adición de dígito final). Total: 56,2% con una herramienta híbrida primitiva.
 <strong>Weir et al. (2009, IEEE S flexibleP)</strong> — Propone el modelo PCFG pero válido por la forma en que las reglas hashcat cubren el 78% de las transformaciones observadas en RockYou. Demuestra que las contraseñas "Password1" y "P@ssw0rd" están entre los primeros 100 candidatos generados por best64 en la palabra "password".
@@ -74,18 +77,21 @@ AñoEvento
 <h2>3. Fundaciones conceptuales: Por qué funciona el híbrido</h2>
 <h3>3.1 El comportamiento humano de "seguro"</h3>
 <p>Cuando un sistema impone reglas de complejidad (majuscule, número, símbolo), los usuarios no generan al azar — ellos <strong>aplicar transformaciones predecibles a palabras memorizables</strong> :</p>
-Estrategia humanaEjemploRegla híbrida relacionada
-------------------
-Capitalización de la primera carta"sunshine" → "Sunshine"<code>c</code> (capitalizar primero)
-Cuenta todos"Sunshine" → "SUNSHINE"<code>u</code> (por cada caso)
-Añadir un dígito al final"sunshine" → "sunshine1"<code>$1</code> (apéndices "1")
-Año"sunshine" → "sunshine2024"<code>$2 $0 $2 $4</code>
-Replace e→3"sunshine" → "suns3ine"<code>s e 3</code> (Sustituto e 3)
-Replace a→@"password" → "p@ssword"<code>s a @</code>
-Palabra inversa"sunshine" → "enihsnus"<code>r</code> (reversos)
-Doble palabra"sun" → "sunsun"<code>d</code> (duplicado)
-Añadir! final"sunshine" → "sunshine!"<code>$!</code>
-Combinar múltiples"password" → "P@ssw0rd1"<code>c s a @ s o 0 $1</code>
+<table class="about-table">
+<thead><tr><th>Estrategia humana</th><th>Ejemplo</th><th>Regla híbrida correspondiente</th></tr></thead>
+<tbody>
+<tr><td>Poner en mayúscula la primera letra</td><td>"sunshine" → "Sunshine"</td><td><code>c</code> (capitalize first)</td></tr>
+<tr><td>Todo en mayúsculas</td><td>"sunshine" → "SUNSHINE"</td><td><code>u</code> (uppercase all)</td></tr>
+<tr><td>Añadir un dígito al final</td><td>"sunshine" → "sunshine1"</td><td><code>$1</code> (append "1")</td></tr>
+<tr><td>Añadir el año</td><td>"sunshine" → "sunshine2024"</td><td><code>$2 $0 $2 $4</code></td></tr>
+<tr><td>Sustituir e→3</td><td>"sunshine" → "sunshin3"</td><td><code>s e 3</code> (substitute e by 3)</td></tr>
+<tr><td>Sustituir a→@</td><td>"password" → "p@ssword"</td><td><code>s a @</code></td></tr>
+<tr><td>Invertir la palabra</td><td>"sunshine" → "enihsnus"</td><td><code>r</code> (reverse)</td></tr>
+<tr><td>Duplicar la palabra</td><td>"sun" → "sunsun"</td><td><code>d</code> (duplicate)</td></tr>
+<tr><td>Añadir un ! final</td><td>"sunshine" → "sunshine!"</td><td><code>$!</code></td></tr>
+<tr><td>Combinar varias</td><td>"password" → "P@ssw0rd1"</td><td><code>c s a @ s o 0 $1</code></td></tr>
+</tbody>
+</table>
 <p>Estas transformaciones <strong>parece creativo</strong> al usuario. <strong>exactamente los primeros que el atacante intenta</strong> Corresponden a las limitaciones impuestas por las políticas de seguridad.</p>
 <h3>3.2 El concepto de espacio reducido eficiente</h3>
 <p>Una contraseña de 10 caracteres con letras+digits+symbols tiene una fuerza clave-espacio cruda de 94^10, 5,4 × 10^19 combinaciones. Demasiado grande para viajar en un tiempo razonable.</p>
@@ -214,28 +220,31 @@ u $2 $0 $2 $3 → "PASSWORD2023" (uppercase + append year)</code></pre>
 <h2>6. Best64 reglas: el juego de referencia</h2>
 <p>Best64 es el conjunto de 64 reglas estándar de referencia en literatura e industria académica. Aquí están las reglas más importantes y su justificación empírica:</p>
 <h3>6.1 Las 20 normas más eficaces (en orden de ejecución)</h3>
-RankArtículoTransformación% contraseñas cubiertas (mayo de 2014)
-------.------------
-1<code>:</code>Palabras brutas~18%
-2<code>c</code>Capitalizar primero~11%
-3<code>u</code>Caso superior~6%
-4<code>$1</code>Apéndice "1"~5%
-5<code>l</code>Maleta inferior~4%
-6<code>$!</code>Apéndice "!"~3%
-7<code>s a @</code>a→@~2.8%
-8<code>c $1</code>Capitalizar + "1"~2.5%
-9<code>$2</code>Apéndice "2"~2.1%
-10<code>r</code>Inversión~1.9%
-11<code>$!</code> + <code>c</code>Capitalizar + "!"~1.7%
-12<code>s o 0</code>o→0~1.6%
-13<code>d</code>Duplicar~1.4%
-14<code>s e 3</code>e→3~1.3%
-15<code>$1 $2 $3</code>Apéndice "123"~1.2%
-16<code>c $1 $2 $3</code>Capitalizar + "123"~1.1%
-17<code>$0</code>Apéndice "0"~1.0%
-18<code>^1</code>Prepa "1"~0,9%
-19<code>s i 1</code>i→1~0,8%
-20<code>c $! $1</code>Capitalizar + "!1"~0,7%
+<table class="about-table">
+<thead><tr><th>Rango</th><th>Regla</th><th>Transformación</th><th>% de contraseñas cubiertas (Ma 2014)</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><code>:</code></td><td>Palabra tal cual</td><td>~18%</td></tr>
+<tr><td>2</td><td><code>c</code></td><td>Capitalize first</td><td>~11%</td></tr>
+<tr><td>3</td><td><code>u</code></td><td>Uppercase all</td><td>~6%</td></tr>
+<tr><td>4</td><td><code>$1</code></td><td>Append "1"</td><td>~5%</td></tr>
+<tr><td>5</td><td><code>l</code></td><td>Lowercase all</td><td>~4%</td></tr>
+<tr><td>6</td><td><code>$!</code></td><td>Append "!"</td><td>~3%</td></tr>
+<tr><td>7</td><td><code>s a @</code></td><td>a→@</td><td>~2,8%</td></tr>
+<tr><td>8</td><td><code>c $1</code></td><td>Capitalize + "1"</td><td>~2,5%</td></tr>
+<tr><td>9</td><td><code>$2</code></td><td>Append "2"</td><td>~2,1%</td></tr>
+<tr><td>10</td><td><code>r</code></td><td>Reverse</td><td>~1,9%</td></tr>
+<tr><td>11</td><td><code>$!</code> + <code>c</code></td><td>Capitalize + "!"</td><td>~1,7%</td></tr>
+<tr><td>12</td><td><code>s o 0</code></td><td>o→0</td><td>~1,6%</td></tr>
+<tr><td>13</td><td><code>d</code></td><td>Duplicate</td><td>~1,4%</td></tr>
+<tr><td>14</td><td><code>s e 3</code></td><td>e→3</td><td>~1,3%</td></tr>
+<tr><td>15</td><td><code>$1 $2 $3</code></td><td>Append "123"</td><td>~1,2%</td></tr>
+<tr><td>16</td><td><code>c $1 $2 $3</code></td><td>Capitalize + "123"</td><td>~1,1%</td></tr>
+<tr><td>17</td><td><code>$0</code></td><td>Append "0"</td><td>~1,0%</td></tr>
+<tr><td>18</td><td><code>^1</code></td><td>Prepend "1"</td><td>~0,9%</td></tr>
+<tr><td>19</td><td><code>s i 1</code></td><td>i→1</td><td>~0,8%</td></tr>
+<tr><td>20</td><td><code>c $! $1</code></td><td>Capitalize + "!1"</td><td>~0,7%</td></tr>
+</tbody>
+</table>
 <strong>Reglas de cálculo 1-10</strong> : ~55% de las contraseñas basadas en dict
 <strong>Reglas de cálculo 1–20</strong> : ~68% de las contraseñas basadas en dict
 <strong>Reglas de cálculo 1-64</strong> : ~79% de las contraseñas basadas en dict
@@ -267,16 +276,19 @@ RankArtículoTransformación% contraseñas cubiertas (mayo de 2014)
 <strong>Prevalencia</strong> Veras et al. (2014) encuentran que ~73% de las contraseñas "mandatorias" añaden la figura en sufijo. Sólo ~12% prefijo.
 <h3>7.3 Categoría 3: Sustituciones Leet</h3>
 <p>Sustitución sistemática de letras con números o símbolos similares:</p>
-SustituciónFrecuencia empírica
-------------------
-a →23% de contraseñas con @
-e → 331% de contraseñas con 3
-i → 119% de contraseñas con 1
-o → 027% de contraseñas con 0
-s → $14% de contraseñas con $
-l → 18%
-t → 76%
-g → 94%
+<table class="about-table">
+<thead><tr><th>Sustitución</th><th>Frecuencia empírica</th></tr></thead>
+<tbody>
+<tr><td>a → @</td><td>23% de las contraseñas con @</td></tr>
+<tr><td>e → 3</td><td>31% de las contraseñas con 3</td></tr>
+<tr><td>i → 1</td><td>19% de las contraseñas con 1</td></tr>
+<tr><td>o → 0</td><td>27% de las contraseñas con 0</td></tr>
+<tr><td>s → $</td><td>14% de las contraseñas con $</td></tr>
+<tr><td>l → 1</td><td>8%</td></tr>
+<tr><td>t → 7</td><td>6%</td></tr>
+<tr><td>g → 9</td><td>4%</td></tr>
+</tbody>
+</table>
 <p>Las sustituciones combinadas ("P@ssw0rd") parecen complejas pero se generan en algunas reglas: <code>c s a @ s o 0</code>Están entre los <strong>500 primeros candidatos</strong> En "password".</p>
 <h3>7.4 Categoría 4: Sufijos simbólicos</h3>
 <p>Explotar la obligación de tener un carácter especial:</p>
@@ -311,12 +323,15 @@ s e 3 s a @ c $!  → "P@ssw3rd!" (multiple substitutions + capitalize + !)</cod
 <p>Esta estrategia se implementa en hashcat a través de la clasificación de la lista de palabras disminuyendo la frecuencia combinada con la primera estrategia. Explica por qué "Password1" (derivado de "password", la palabra #1) se rompe en milisegundos, mientras que "Soleil1" (derivado de "sun", palabra ~5000 del diccionario francés) puede tomar unos segundos.</p>
 <h3>8.2 Posición mediana en el espacio de búsqueda</h3>
 <p>La medida clave es <strong>el número medio de candidatos probados antes de encontrar la contraseña de destino</strong>. Ma et al. (2014) proporcionan mediciones empíricas:</p>
-TerceraEjemploSolicitantes medianas antes de encontrar
---------------
-TOP100"password1", "P@ssword"~450-500
-Dictado común (top-10k)"Sunshine1", "sunshine!"~5 000–15 000
-Menos común"Paillon2024"~50 000–200,000
-Sin diccionario"Xk7#mP9q"N/A (hibrido inaplicable)
+<table class="about-table">
+<thead><tr><th>Categoría</th><th>Ejemplo</th><th>Mediana de candidatos hasta el acierto</th></tr></thead>
+<tbody>
+<tr><td>TOP100</td><td>"password1", "P@ssword"</td><td>~450–500</td></tr>
+<tr><td>Diccionario común (top-10k)</td><td>"Sunshine1", "sunshine!"</td><td>~5.000–15.000</td></tr>
+<tr><td>Diccionario menos frecuente</td><td>"Papillon2024"</td><td>~50.000–200.000</td></tr>
+<tr><td>Fuera de diccionario</td><td>"Xk7#mP9q"</td><td>N/A (híbrido no aplicable)</td></tr>
+</tbody>
+</table>
 <p>Estas mediciones son la base directa de las constantes Time2Crack:
 </p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
 const HYBRID<em>KEYSPACE</em>DICT = 8<em>000; // Ma et al. 2014 — median current dictator
@@ -440,27 +455,33 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <hr>
 <h2>12. Relación con los ataques derivados</h2>
 <h3>12.1 Diccionario híbrido vs. puro</h3>
-CriteriosPure Dictionaryhíbrido
---------- Sí.--------
-Candidatos probadosPalabras de la lista correctaPalabras + todas sus variantes
-Cubierta (RockYou)~18%~79-85% (con el mejor64)
-Keyspace (200k words)200 000200 000 × 64 = 12,8M
-AplicabilidadContraseña = palabra exactaContraseña derivada de una palabra
-Ejemplo Vulnerable"sunshine" (exacto)"¡Sunshine1!", "Sunsh1ne"
-Ejemplo resistente"Sunshine1""xK9#mQ7@" (sin raíz)
+<table class="about-table">
+<thead><tr><th>Criterio</th><th>Diccionario puro</th><th>Híbrido</th></tr></thead>
+<tbody>
+<tr><td>Candidatos probados</td><td>Palabras exactas de la lista</td><td>Palabras + todas sus variantes</td></tr>
+<tr><td>Cobertura (RockYou)</td><td>~18%</td><td>~79-85% (con best64)</td></tr>
+<tr><td>Keyspace (200k palabras)</td><td>200.000</td><td>200.000 × 64 = 12,8M</td></tr>
+<tr><td>Aplicabilidad</td><td>Contraseña = palabra exacta</td><td>Contraseña derivada de una palabra</td></tr>
+<tr><td>Ejemplo vulnerable</td><td>"sunshine" (exacta)</td><td>"Sunshine1!", "sunsh1ne"</td></tr>
+<tr><td>Ejemplo resistente</td><td>"Sunshine1"</td><td>"xK9#mQ7@" (sin palabra base)</td></tr>
+</tbody>
+</table>
 <h3>12.2 Hybrid vs Rule-Based</h3>
 <p>El ataque basado en reglas en Time2Crack es conceptualmente similar pero con un conjunto mucho más amplio de reglas:</p>
 <pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000; // vs 128M para híbrido completo</em></code></pre>
 <p>La diferencia: el mejor64 modelo híbrido (64 reglas, se centran en las transformaciones humanas comunes). Los modelos de ataque basados en reglas más amplios como d3ad0ne (34k rules) o OneRuleToRuleThemAll (52k rules), utilizado cuando el mejor64 falla. La regla es el híbrido "segundo línea" — más lento pero más completo.</p>
 <h3>12.3 Hybrid vs PCFG</h3>
 <p>PCFG (Probabilistic Context-Free Grammar, Weir 2009) modela la estructura gramática de la contraseña para generar candidatos.</p>
-CriterioshíbridoPCFG
--------------------
-EnfoquePalabras básicas + reglas de transformaciónEstructura gramatical global
-FuerzaPalabras existentes mutadasEstructuras tipo "palabra + dígitos"
-EjemploSunshine → "Sunshine1"Detecta la estructura "Caps+lower+digit"
-ComplementaridadLos desencadenantes <code>dictWord</code>Los desencadenantes de la estructura detectada
-Keyspace (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> calculada dinámicamente
+<table class="about-table">
+<thead><tr><th>Criterio</th><th>Híbrido</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td>Enfoque</td><td>Palabra base + reglas de transformación</td><td>Estructura gramatical global</td></tr>
+<tr><td>Punto fuerte</td><td>Palabras existentes modificadas</td><td>Estructuras de tipo "Palabra+Dígitos"</td></tr>
+<tr><td>Ejemplo</td><td>"sunshine" → "Sunshine1"</td><td>Detecta la estructura "Mayús+minús+dígito"</td></tr>
+<tr><td>Complementariedad</td><td>Se activa con <code>dictWord</code></td><td>Se activa con una estructura detectada</td></tr>
+<tr><td>Keyspace (Time2Crack)</td><td>500 / 8k / 128M</td><td><code>pcfgKeyspace(pw)</code>, calculado dinámicamente</td></tr>
+</tbody>
+</table>
 <p>PCFG puede atacar contraseñas sin diccionario raíz si su <strong>estructura</strong> es común (ex: "Thelonious8" → ninguna palabra del dico pero la estructura Capitalize+lower+digit muy predecible).</p>
 <h3>12.4 híbrido vs morfológico (morfológico)</h3>
 <p>El ataque morfológico prueba variantes lingüísticas (flexiones, variaciones). Es una generalización del híbrido para idiomas con morfología rica:</p>
@@ -470,22 +491,28 @@ Keyspace (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> calculada din�
 <hr>
 <h2>13. Parámetros por algoritmo de hash</h2>
 <h3>13.1 Tiempo para los tres espacios clave híbridos (12× RTX 5090)</h3>
-AlgoritmTasa (H/s)COMMON (500)DICT (8k)FULL (128M)
---------------------------------------------------------------------------
-MD52 634 GH/s0,19 ns3.0 ns49 μs
-SHA-1837 GH/s0,60 ns9,6 ns153 μs
-SHA-256332 GH/s1.5 ns24 ns386 μs
-NTLM4.081 GH/s0,12 ns2.0 ns31 μs
-bcrypt (cost 10)114 kH/s4.4 ms0.07 s19 min
-Argon2id1.000 H/s0,5 s8 s36 horas
+<table class="about-table">
+<thead><tr><th>Algoritmo</th><th>Velocidad (H/s)</th><th>COMMON (500)</th><th>DICT (8k)</th><th>FULL (128M)</th></tr></thead>
+<tbody>
+<tr><td>MD5</td><td>2.634 GH/s</td><td>0,19 ns</td><td>3,0 ns</td><td>49 μs</td></tr>
+<tr><td>SHA-1</td><td>837 GH/s</td><td>0,60 ns</td><td>9,6 ns</td><td>153 μs</td></tr>
+<tr><td>SHA-256</td><td>332 GH/s</td><td>1,5 ns</td><td>24 ns</td><td>386 μs</td></tr>
+<tr><td>NTLM</td><td>4.081 GH/s</td><td>0,12 ns</td><td>2,0 ns</td><td>31 μs</td></tr>
+<tr><td>bcrypt (coste 10)</td><td>114 kH/s</td><td>4,4 ms</td><td>0,07 s</td><td>19 min</td></tr>
+<tr><td>Argon2id</td><td>1.000 H/s</td><td>0,5 s</td><td>8 s</td><td>36 horas</td></tr>
+</tbody>
+</table>
 <strong>Lectura</strong> : para MD5 y NTLM, incluso el espacio clave FULL (128M candidatos) se rompe en unas docenas de microsegundos. El algoritmo de hash es casi irrelevante para palabras comunes.
 <strong>Argon2id</strong> es el único algoritmo que resiste significativamente incluso para palabras comunes: 0.5 segundos para una palabra COMMON, 8 segundos para un dictWord. Estos tiempos permanecen cortos en valor absoluto pero representan una desaceleración de x10^12 vs MD5 — haciendo ataques a gran escala económicamente inviable.
 <h3>13.2 Impacto del perfil de ataque</h3>
 <p>Time2Crack ofrece dos perfiles (Experimentado 12 GPU, Profesional 100 GPU). Para el híbrido, la diferencia de perfil es directamente proporcional:</p>
-PerfilGPUsMultiplicadorFULL bcrypt
-------.----------------
-Experiencias12× RTX 50901×19 min
-Cuadro orgánico~100 GPU~8×~2 min
+<table class="about-table">
+<thead><tr><th>Perfil</th><th>GPU</th><th>Multiplicador</th><th>FULL bcrypt</th></tr></thead>
+<tbody>
+<tr><td>Experimentado</td><td>12× RTX 5090</td><td>1×</td><td>19 min</td></tr>
+<tr><td>Profesional</td><td>~100 GPU</td><td>~8×</td><td>~2 min</td></tr>
+</tbody>
+</table>
 <p>Para MD5, SHA-1, NTLM: el perfil cambia el tiempo de microsegundos a nanosegundos, sin ningún impacto práctico, ambos son instantáneos.</p>
 <hr>
 <h2>14. Ejemplos concretos de cracking híbrido</h2>
@@ -547,27 +574,33 @@ Cuadro orgánico~100 GPU~8×~2 min
 <strong>Frases de palabras muy aleatorias</strong> : "tabouret-marmot-ginger-flash" — cuatro palabras aleatorias. Ataque híbrido en modo clásico no genera combinaciones de 4 palabras (este es el papel del combinador). Passphrase resiste al híbrido estándar.
 <h3>16.2 ¿Qué es la resistencia NO al híbrido</h3>
 <p>Las estrategias más comunes de "fortalecimiento" no resisten:</p>
-EstrategiaEjemploResistencia
----------------------------------
-Capitalización de la primera cartaSunshineArtículo <code>c</code>, fila 2
-Añadir un dígito"Sunshine1"Artículo <code>$1</code>, fila 4
-Agregar símbolo"¡Sunshine!"Artículo <code>$!</code>, fila 6
-Replace e→3"suns3ine"Artículo <code>s e 3</code>, top-20
-Combine todo"¡Suns3ine!"Una regla compuesta, arriba-100
-Elige una palabra rara"Papillon123"
-Doble palabra"sunsun"Artículo <code>d</code>, top-30
-Inversión"enihsnus"Artículo <code>r</code>, top-15
+<table class="about-table">
+<thead><tr><th>Estrategia</th><th>Ejemplo</th><th>Resistencia</th></tr></thead>
+<tbody>
+<tr><td>Mayúscula en la primera letra</td><td>"Sunshine"</td><td>❌ Regla <code>c</code>, rango 2</td></tr>
+<tr><td>Añadir un dígito</td><td>"sunshine1"</td><td>❌ Regla <code>$1</code>, rango 4</td></tr>
+<tr><td>Añadir un símbolo</td><td>"sunshine!"</td><td>❌ Regla <code>$!</code>, rango 6</td></tr>
+<tr><td>Sustituir e→3</td><td>"sunshin3"</td><td>❌ Regla <code>s e 3</code>, top-20</td></tr>
+<tr><td>Combinarlo todo</td><td>"Sunshin3!"</td><td>❌ Regla compuesta, top-100</td></tr>
+<tr><td>Elegir una palabra rara</td><td>"papillon123"</td><td>❌ Sigue estando en las wordlists</td></tr>
+<tr><td>Duplicar la palabra</td><td>"sunsun"</td><td>❌ Regla <code>d</code>, top-30</td></tr>
+<tr><td>Invertir</td><td>"enihsnus"</td><td>❌ Regla <code>r</code>, top-15</td></tr>
+</tbody>
+</table>
 <strong>Conclusión</strong> Cualquier estrategia basada en "tomar una palabra + modificarla" es vulnerable al híbrido. La excepción es una modificación tan compleja y rara que no está cubierta por ninguna regla, pero si el usuario tiene que recordar esta transformación compleja, generalmente termina eligiendo algo predecible.
 <h3>16.3. algoritmos de hash resistentes</h3>
 <p>Incluso si una contraseña es vulnerable al híbrido estructural, el algoritmo hah puede hacer el ataque económicamente inviable:</p>
-AlgoritmTiempo para DICT (8k suposiciones)Ataque de prácticas
----------------------- Sí.
-MD5 / NTLM~3 nanosegundosInstantáneo
-SHA-256~24 nanosegundosInstantáneo
-bcrypt cost 10~0.07 segundosTrivial
-bcrypt cost 14~1 segundoFactible
-Argon2id (predeterminado)~10 segundosFactible
-Argon2id (fuerte parametrado)~100 segundosDespacio pero posible
+<table class="about-table">
+<thead><tr><th>Algoritmo</th><th>Tiempo para DICT (8k intentos)</th><th>Ataque en la práctica</th></tr></thead>
+<tbody>
+<tr><td>MD5 / NTLM</td><td>~3 nanosegundos</td><td>Instantáneo</td></tr>
+<tr><td>SHA-256</td><td>~24 nanosegundos</td><td>Instantáneo</td></tr>
+<tr><td>bcrypt coste 10</td><td>~0,07 segundos</td><td>Trivial</td></tr>
+<tr><td>bcrypt coste 14</td><td>~1 segundo</td><td>Factible</td></tr>
+<tr><td>Argon2id (por defecto)</td><td>~8 segundos</td><td>Factible</td></tr>
+<tr><td>Argon2id (parámetros fuertes)</td><td>~100 segundos</td><td>Lento pero posible</td></tr>
+</tbody>
+</table>
 <strong>Argon2id</strong> con parámetros altos (t=4, m=65536) es el único algoritmo que hace que el híbrido realmente caro, incluso en contraseñas débiles.
 <h3>16.4 Recomendaciones prácticas</h3>
 <li><strong>Utilice un administrador de contraseñas</strong> : genera puro híbrido aleatorio, inaplicable</li>

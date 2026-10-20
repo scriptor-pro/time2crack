@@ -32,16 +32,19 @@ Dokument referencyjny projektu Time2Crack
 <h3>2.1 Początki</h3>
 <p>Zastosowanie kanałów Markova do łamania haseł jest wcześniej niż formalne publikacje akademickie. Ofensywni specjaliści bezpieczeństwa stosowali podobne modele od 2000 roku, ale rygorystyczna formalizacja pochodzi głównie z 2010 roku.</p>
 <strong>Chronologia etapów pośrednich</strong> :
-RokZdarzenie
-Więc...To...
-2005Nakashima &amp; Oyama: pierwsze formalne zastosowanie n-gramów do haseł
-2009Weir et al. (IEEE S &amp; P): PCFG - bezpośredni konkurent, pozycja prawdopodobieństwa strukturalnego
-2012Ma et al. (USENIX Security): Badanie porównawcze modeli probabilistycznych na hasłach 70M
-2013Durmut: pierwsze analizy OMEN na kilku ciałach
-2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESORICS 2015) - główny punkt odniesienia akademicki
-2016Wheeler (zxcvbn) potwierdza skuteczność n-gramów w szacowaniu rzeczywistej entropii
-2018OMEN +: ulepszona wersja z wygładzaniem i interpolacją
-2019- 2022Praca hybrydowa Markov + sieci neuronowe (PassGAN, FuzzyPSM)
+<table class="about-table">
+<thead><tr><th>Rok</th><th>Wydarzenie</th></tr></thead>
+<tbody>
+<tr><td>2005</td><td>Nakashima &amp; Oyama: pierwsze formalne zastosowanie n-gramów do haseł</td></tr>
+<tr><td>2009</td><td>Weir et al. (IEEE S &amp; P): PCFG - bezpośredni konkurent, pozycja prawdopodobieństwa strukturalnego</td></tr>
+<tr><td>2012</td><td>Ma et al. (USENIX Security): Badanie porównawcze modeli probabilistycznych na hasłach 70M</td></tr>
+<tr><td>2013</td><td>Durmut: pierwsze analizy OMEN na kilku ciałach</td></tr>
+<tr><td>2015</td><td>Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESORICS 2015) - główny punkt odniesienia akademicki</td></tr>
+<tr><td>2016</td><td>Wheeler (zxcvbn) potwierdza skuteczność n-gramów w szacowaniu rzeczywistej entropii</td></tr>
+<tr><td>2018</td><td>OMEN +: ulepszona wersja z wygładzaniem i interpolacją</td></tr>
+<tr><td>2019</td><td>- 2022Praca hybrydowa Markov + sieci neuronowe (PassGAN, FuzzyPSM)</td></tr>
+</tbody>
+</table>
 <h3>2.2 Organ referencyjny</h3>
 <p>Szkolenie modelu Markov opiera się na bazach haseł ze znanych wycieków danych:</p>
 <ul>
@@ -158,13 +161,16 @@ python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes
 <h2>7. Zmniejszenie przestrzeni badawczej: klucz do skuteczności</h2>
 <h3>7.1 Obliczenie empiryczne (Dürmuth 2015)</h3>
 <p>Hasło 8 znaków z pełnym alfabetem (94 zbiorniki):</p>
-MetodaPrzestrzeń badawczaWspółczynnik redukcji
-Czy...- Tak.- Tak.
-Moc brutto948 6 × 10151 × (odniesienie)
-Zamówienie Markov 1~ 3 × 1015~ 2 ×
-Zamówienie Markov 3~ 6 × 1013~ 100 ×
-Zamówienie Markov 5~ 3.6 × 1010~ 166 000 ×
-Markov Order 5 (typowy człowiek)~ 4 × 107<strong>- 150 milionów ×</strong>
+<table class="about-table">
+<thead><tr><th>Metoda</th><th>Przestrzeń przeszukiwania</th><th>Współczynnik redukcji</th></tr></thead>
+<tbody>
+<tr><td>Brute force</td><td>94<sup>8</sup> ≈ 6 × 10<sup>15</sup></td><td>1× (punkt odniesienia)</td></tr>
+<tr><td>Markov rzędu 1</td><td>~3 × 10<sup>15</sup></td><td>~2×</td></tr>
+<tr><td>Markov rzędu 3</td><td>~6 × 10<sup>13</sup></td><td>~100×</td></tr>
+<tr><td>Markov rzędu 5</td><td>~3,6 × 10<sup>10</sup></td><td>~166 000×</td></tr>
+<tr><td>Markov rzędu 5 (typowy człowiek)</td><td>~4 × 10<sup>7</sup></td><td><strong>~150 mln×</strong></td></tr>
+</tbody>
+</table>
 <p>Różnica między "zredukowaną przestrzenią" a "typową przestrzenią ludzką" może być wyjaśniona faktem, że prawdziwe ludzkie hasła są skoncentrowane w <strong>top- k% najprawdopodobniej</strong> W zależności od modelu.</p>
 <h3>7.2 Dlaczego ludzie są przewidywalni</h3>
 <p>Czynniki przewidywalności stosowane przez Markova:</p>
@@ -317,31 +323,40 @@ Każdy sygnał "ludzkiego charakteru" hasła zwiększa oczywisty wynik Markova.
 <hr>
 <h2>11. Porównanie z innymi atakami probabilistycznymi</h2>
 <h3>11. 1 Markov vs PCFG</h3>
-WymiarMarkov PrzewodniczącyPCFG
-To...Bo...Czy...
-<strong>Jednostka analityczna</strong>Indywidualne zmiany znakówStruktury segmentu (L / D / S)
-<strong>Informacje przechwycone</strong>Lokalne prawidłowości (n- gram)Globalny (gramatyka)
-<strong>Siła</strong>Naturalne słowa, ciągłe wzorySłowa + liczby, struktury kompozytowe
-<strong>Limit</strong>Nie obejmuje struktur globalnychNie przechwytywać lokalnych przejść
-<strong>Komplementarność</strong>Idealny do czystych słówIdealny dla Password123
-<strong>Optymalny przykład</strong>"słońce"Sunshine # 93
-<strong>Zamówienie w Time2Crack</strong>Markov = 8, PCFG = 6PCFG dokładniejszy, jeśli wykryta struktura
+<table class="about-table">
+<thead><tr><th>Wymiar</th><th>Markov</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td><strong>Jednostka analizy</strong></td><td>Przejścia między znakami</td><td>Struktury segmentów (L/D/S)</td></tr>
+<tr><td><strong>Uchwycona informacja</strong></td><td>Lokalne regularności (n-gramy)</td><td>Globalne regularności (gramatyka)</td></tr>
+<tr><td><strong>Mocna strona</strong></td><td>Naturalne słowa, ciągłe wzorce</td><td>Słowa + cyfry, struktury złożone</td></tr>
+<tr><td><strong>Ograniczenie</strong></td><td>Nie wychwytuje struktur globalnych</td><td>Nie wychwytuje przejść lokalnych</td></tr>
+<tr><td><strong>Uzupełnianie się</strong></td><td>Idealny dla czystych słów</td><td>Idealny dla Password123</td></tr>
+<tr><td><strong>Optymalny przykład</strong></td><td>"sunshine"</td><td>"Sunshine#93"</td></tr>
+<tr><td><strong>Kolejność w Time2Crack</strong></td><td>Markov = 8, PCFG = 6</td><td>PCFG dokładniejszy po wykryciu struktury</td></tr>
+</tbody>
+</table>
 <h3>11.2 Markov vs.</h3>
-WymiarMarkov PrzewodniczącyRule- based
-To...Bo.../
-<strong>Podejście</strong>Generacja ab initio probabilisticTransformacja istniejącego słownika
-<strong>Zakres</strong>Wszystkie możliwe hasłaTłumaczenia słowników
-<strong>Siła</strong>Rzadko lub nieznacznie niesłowne słowaTradycyjne przekształcenia znanych słów
-<strong>Limit</strong>Mniej skuteczne niż dyktator + zasady dla obecnych mutacjiZależy wyłącznie od jakości słownika
+<table class="about-table">
+<thead><tr><th>Wymiar</th><th>Markov</th><th>Oparty na regułach</th></tr></thead>
+<tbody>
+<tr><td><strong>Podejście</strong></td><td>Probabilistyczne generowanie od zera</td><td>Przekształcanie istniejącego słownika</td></tr>
+<tr><td><strong>Pokrycie</strong></td><td>Wszystkie prawdopodobne hasła</td><td>Odmiany słów ze słownika</td></tr>
+<tr><td><strong>Mocna strona</strong></td><td>Rzadkie lub nieco odbiegające od słownika słowa</td><td>Klasyczne przekształcenia znanych słów</td></tr>
+<tr><td><strong>Ograniczenie</strong></td><td>Mniej skuteczny niż słownik + reguły przy typowych odmianach</td><td>Zależy całkowicie od jakości słownika</td></tr>
+</tbody>
+</table>
 <h3>11.3 Markov vs Neural Networks (PassGAN, LSTM)</h3>
-WymiarMarkov (zarządzenie 5)Sieć neuronalna
-To...- Nie.- Nie.
-<strong>Kompleksowość</strong>O (k ×) przez przewidywanieO (n2 × d) (transformator)
-<strong>Wymagane dane</strong>1-10M przykłady wystarczające10M- 1B dla dobrych wyników
-<strong>Interpretability</strong>Ogółem (tabele prawdopodobieństwa)Czarne pudełko
-<strong>Ogólizacja</strong>Ograniczone do kontekstu lokalnego kPotencjał ogólny
-<strong>Współczynnik załamania</strong>Odniesienie+ 20- 30% na nowoczesnych hasłach
-<strong>Prędkość generacji</strong>Bardzo szybkoWolniej
+<table class="about-table">
+<thead><tr><th>Wymiar</th><th>Markov (rząd 5)</th><th>Sieć neuronowa</th></tr></thead>
+<tbody>
+<tr><td><strong>Złożoność</strong></td><td>O(k × Σ) na predykcję</td><td>O(n² × d) (Transformer)</td></tr>
+<tr><td><strong>Wymagane dane</strong></td><td>Wystarczy 1-10 mln przykładów</td><td>10 mln-1 mld dla dobrych wyników</td></tr>
+<tr><td><strong>Interpretowalność</strong></td><td>Pełna (tabele prawdopodobieństw)</td><td>Czarna skrzynka</td></tr>
+<tr><td><strong>Uogólnianie</strong></td><td>Ograniczone do lokalnego kontekstu k</td><td>Potencjalnie globalne</td></tr>
+<tr><td><strong>Skuteczność łamania</strong></td><td>Punkt odniesienia</td><td>+20-30% dla nowoczesnych haseł</td></tr>
+<tr><td><strong>Szybkość generowania</strong></td><td>Bardzo szybka</td><td>Wolniejsza</td></tr>
+</tbody>
+</table>
 <h3>11.4 Globalne pozycjonowanie</h3>
 <p>W profesjonalnym procesie krakingu typowa kolejność to:</p>
 <li><strong>Słownik</strong> (lista kredytowa) - znane dokładne hasła</li>

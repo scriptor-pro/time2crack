@@ -39,19 +39,22 @@ Dokument referencyjny projektu Time2Crack
 <h3>2.1 Początki: John Rozpruwacz i zasady mutacji</h3>
 <p>Atak hybrydowy jest urodzony z <strong>John Rozpruwacz</strong> (Solar Designer, 1996), pierwsze publiczne narzędzie do łączenia listy słów z konfigurowalnym silnikiem reguły. Przed Johnem Rozpruwaczem, ataki słownika testowane surowe słowa; John wprowadził pojęcie, że każde słowo generuje rodzinę kandydatów.</p>
 <strong>Chronologia etapów pośrednich</strong> :
-RokZdarzenie
-Więc...To...
-1979Morris &amp; Thompson: użytkownicy zastępują numery liter do "zabezpieczenia" ich haseł
-1996John Rozpruwacz 1.0: pierwszy silnik rządowy, składnia JtR (<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)
-2000Alec Muffett dokumentuje, że 80% prawdziwych pęknięć przechodzi przez wordlist + zasady, a nie brutalne siły
-2006Hashcat 0.01: migracja na GPU, zasady iść od 1M → 1000M kandydatów / second
-2009RockYou: 14.3M jasne hasła pozwalają empirycznej kalibracji najbardziej skutecznych zasad
-2012Gosney (Passwordscon): 8 GPU GTX 580, best64 zasady, crack 90% LinkedIn w &lt; 6 dni
-2013Löfstrand: publikuje "best64.rule", 64 zasady obejmujące 85- 90% obecnych transformacji ludzkich
-2014Ma et al. (IEEE S &amp; P): pierwsze studium akademickie określające skuteczność ilościową według rangi zasad
-2016Hashcat open source: zintegrowany best64, MD5 prędkość 2 TH / s na 8 × GTX 1080
-2019Hashcat 6.0: OneRuleToRuleThemAll gra (52k zasady) generowane przez ML na korpus haseł
-2023NSA Advisory: wyraźnie zaleca testowanie haseł korporacyjnych za pomocą narzędzi hybrydowych
+<table class="about-table">
+<thead><tr><th>Rok</th><th>Wydarzenie</th></tr></thead>
+<tbody>
+<tr><td>1979</td><td>Morris &amp; Thompson: użytkownicy zastępują numery liter do "zabezpieczenia" ich haseł</td></tr>
+<tr><td>1996</td><td>John Rozpruwacz 1.0: pierwszy silnik rządowy, składnia JtR (<code>:</code>, <code>c</code>, <code>u</code>, <code>r</code>, <code>d</code>...)</td></tr>
+<tr><td>2000</td><td>Alec Muffett dokumentuje, że 80% prawdziwych pęknięć przechodzi przez wordlist + zasady, a nie brutalne siły</td></tr>
+<tr><td>2006</td><td>Hashcat 0.01: migracja na GPU, zasady iść od 1M → 1000M kandydatów / second</td></tr>
+<tr><td>2009</td><td>RockYou: 14.3M jasne hasła pozwalają empirycznej kalibracji najbardziej skutecznych zasad</td></tr>
+<tr><td>2012</td><td>Gosney (Passwordscon): 8 GPU GTX 580, best64 zasady, crack 90% LinkedIn w &lt; 6 dni</td></tr>
+<tr><td>2013</td><td>Löfstrand: publikuje "best64.rule", 64 zasady obejmujące 85- 90% obecnych transformacji ludzkich</td></tr>
+<tr><td>2014</td><td>Ma et al. (IEEE S &amp; P): pierwsze studium akademickie określające skuteczność ilościową według rangi zasad</td></tr>
+<tr><td>2016</td><td>Hashcat open source: zintegrowany best64, MD5 prędkość 2 TH / s na 8 × GTX 1080</td></tr>
+<tr><td>2019</td><td>Hashcat 6.0: OneRuleToRuleThemAll gra (52k zasady) generowane przez ML na korpus haseł</td></tr>
+<tr><td>2023</td><td>NSA Advisory: wyraźnie zaleca testowanie haseł korporacyjnych za pomocą narzędzi hybrydowych</td></tr>
+</tbody>
+</table>
 <h3>2.2 Założenie badań empirycznych</h3>
 <strong>Klein (1990)</strong> - Analiza 15.000 haseł Unix. Uznaje, że 24,2% jest kruche na czysty słownik, ale 32% dodatkowe są kruche z prostych przekształceń (kapitalizacja, dodanie ostatecznej cyfry). Razem: 56,2% z prymitywnym narzędziem hybrydowym.
 <strong>Weir et al. (2009, IEEE S &amp; P)</strong> - Proponuje model PCFG, ale ważny ze względu na to, że zasady hashcat obejmują 78% przemian zaobserwowanych w RockYou. Dowodzi, że hasła "Password1" i "P @ ssw0rd" należą do pierwszych 100 kandydatów generowanych przez best64 na słowo "hasło".
@@ -74,18 +77,21 @@ Więc...To...
 <h2>3. Fundacje koncepcyjne: Dlaczego Hybrid działa</h2>
 <h3>3.1 Ludzkie zachowanie "bezpiecznego"</h3>
 <p>Kiedy system nakłada zasady złożoności (majuskule, liczba, symbol), użytkownicy nie generują losowo - one <strong>stosować przewidywalne transformacje do zapamiętywalnych słów</strong> :</p>
-Strategia człowiekaPrzykładPowiązana zasada hybrydowa
-Więc...Czy...Więc...
-Kapitalizacja pierwszej litery"słońce" → "słońce"<code>c</code> (najpierw kapitalizuj)
-Policz wszystkie"słońce" → "SUNSHINE"<code>u</code> (uppercase all)
-Dodaj cyfrę na końcu"słońce" → "słońce" 1 "<code>$1</code> (dodatki "1")
-Dodaj rok"słoneczny" → "słoneczny 2024"<code>$2 $0 $2 $4</code>
-Zastąp e → 3"słońce" → "słońce"<code>s e 3</code> (zastąpić e przez 3)
-Zastąpić → @"hasło" → "p @ sssword"<code>s a @</code>
-Odwrócone słowo"słońce" → "enihsnus"<code>r</code> (odwraca)
-Podwójne słowo"słońce" → "słońce"<code>d</code> (duplikat)
-Dodaj!"słońce" → "słońce!"<code>$!</code>
-Połącz wiele"hasło" → "P @ ssw0rd1"<code>c s a @ s o 0 $1</code>
+<table class="about-table">
+<thead><tr><th>Ludzka strategia</th><th>Przykład</th><th>Odpowiadająca reguła hybrydowa</th></tr></thead>
+<tbody>
+<tr><td>Wielka pierwsza litera</td><td>"sunshine" → "Sunshine"</td><td><code>c</code> (capitalize first)</td></tr>
+<tr><td>Wszystko wielkimi literami</td><td>"sunshine" → "SUNSHINE"</td><td><code>u</code> (uppercase all)</td></tr>
+<tr><td>Dodanie cyfry na końcu</td><td>"sunshine" → "sunshine1"</td><td><code>$1</code> (append "1")</td></tr>
+<tr><td>Dodanie roku</td><td>"sunshine" → "sunshine2024"</td><td><code>$2 $0 $2 $4</code></td></tr>
+<tr><td>Zamiana e→3</td><td>"sunshine" → "sunshin3"</td><td><code>s e 3</code> (substitute e by 3)</td></tr>
+<tr><td>Zamiana a→@</td><td>"password" → "p@ssword"</td><td><code>s a @</code></td></tr>
+<tr><td>Odwrócenie słowa</td><td>"sunshine" → "enihsnus"</td><td><code>r</code> (reverse)</td></tr>
+<tr><td>Podwojenie słowa</td><td>"sun" → "sunsun"</td><td><code>d</code> (duplicate)</td></tr>
+<tr><td>Dodanie ! na końcu</td><td>"sunshine" → "sunshine!"</td><td><code>$!</code></td></tr>
+<tr><td>Połączenie kilku</td><td>"password" → "P@ssw0rd1"</td><td><code>c s a @ s o 0 $1</code></td></tr>
+</tbody>
+</table>
 <p>Te przekształcenia <strong>wydają się kreatywne</strong> do użytkownika. <strong>dokładnie te pierwsze, które napastnik próbuje</strong> Odpowiadają one ograniczeniom narzuconym przez politykę bezpieczeństwa.</p>
 <h3>3.2 Koncepcja efektywnej redukcji przestrzeni kosmicznej</h3>
 <p>Hasło 10- znakowe z literami + cyfry + symbole posiada surową siłę klawiszową 94 ^ 10, 5,4 × 10 ^ 19 kombinacji. Zbyt duże, aby podróżować w rozsądnym czasie.</p>
@@ -214,28 +220,31 @@ u $2 $0 $2 $3 → "PASSWORD2023" (uppercase + append year)</code></pre>
 <h2>6. Zasady Best64: gra referencyjna</h2>
 <p>Best64 jest zbiorem 64 standardowych zasad odniesienia w literaturze akademickiej i przemyśle. Oto najważniejsze zasady i ich empiryczne uzasadnienie:</p>
 <h3>6.1 20 najskuteczniejszych przepisów (w kolejności)</h3>
-WskaźnikArtykułTransformacja% objętych haseł (maj 2014 r.)
-Czy...Więc...{C: $aaccff} Tłumaczenie:- Tak.
-1<code>:</code>Słowo brutto18%
-2<code>c</code>Najpierw kapitalizuj11%
-3<code>u</code>Uppercase all- 6%
-4<code>$1</code>Dołącz "1"- 5%
-5<code>l</code>Wszystkie małe4%
-6<code>$!</code>Dołącz "!"3%
-7<code>s a @</code>a → @- 2,8%
-8<code>c $1</code>Capitalize + "1"- 2,5%
-9<code>$2</code>Dołącz "2"2, 1%
-10<code>r</code>Cofnij- 1,9%
-11<code>$!</code> + <code>c</code>Kapitalizuj + "!"- 1,7%
-12<code>s o 0</code>0-
-13<code>d</code>Powielanie-
-14<code>s e 3</code>e → 31, 3%
-15<code>$1 $2 $3</code>Dołącz "123"1, 2%
-16<code>c $1 $2 $3</code>Capitalize + "123"- 1,1%
-17<code>$0</code>Dołącz "0"1, 0%
-18<code>^1</code>Przygotowanie "1"0, 9%
-19<code>s i 1</code>10, 8%
-20<code>c $! $1</code>Kapitalizacja + "! 1"0, 7%
+<table class="about-table">
+<thead><tr><th>Pozycja</th><th>Reguła</th><th>Przekształcenie</th><th>% objętych haseł (Ma 2014)</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><code>:</code></td><td>Słowo bez zmian</td><td>~18%</td></tr>
+<tr><td>2</td><td><code>c</code></td><td>Capitalize first</td><td>~11%</td></tr>
+<tr><td>3</td><td><code>u</code></td><td>Uppercase all</td><td>~6%</td></tr>
+<tr><td>4</td><td><code>$1</code></td><td>Append "1"</td><td>~5%</td></tr>
+<tr><td>5</td><td><code>l</code></td><td>Lowercase all</td><td>~4%</td></tr>
+<tr><td>6</td><td><code>$!</code></td><td>Append "!"</td><td>~3%</td></tr>
+<tr><td>7</td><td><code>s a @</code></td><td>a→@</td><td>~2,8%</td></tr>
+<tr><td>8</td><td><code>c $1</code></td><td>Capitalize + "1"</td><td>~2,5%</td></tr>
+<tr><td>9</td><td><code>$2</code></td><td>Append "2"</td><td>~2,1%</td></tr>
+<tr><td>10</td><td><code>r</code></td><td>Reverse</td><td>~1,9%</td></tr>
+<tr><td>11</td><td><code>$!</code> + <code>c</code></td><td>Capitalize + "!"</td><td>~1,7%</td></tr>
+<tr><td>12</td><td><code>s o 0</code></td><td>o→0</td><td>~1,6%</td></tr>
+<tr><td>13</td><td><code>d</code></td><td>Duplicate</td><td>~1,4%</td></tr>
+<tr><td>14</td><td><code>s e 3</code></td><td>e→3</td><td>~1,3%</td></tr>
+<tr><td>15</td><td><code>$1 $2 $3</code></td><td>Append "123"</td><td>~1,2%</td></tr>
+<tr><td>16</td><td><code>c $1 $2 $3</code></td><td>Capitalize + "123"</td><td>~1,1%</td></tr>
+<tr><td>17</td><td><code>$0</code></td><td>Append "0"</td><td>~1,0%</td></tr>
+<tr><td>18</td><td><code>^1</code></td><td>Prepend "1"</td><td>~0,9%</td></tr>
+<tr><td>19</td><td><code>s i 1</code></td><td>i→1</td><td>~0,8%</td></tr>
+<tr><td>20</td><td><code>c $! $1</code></td><td>Capitalize + "!1"</td><td>~0,7%</td></tr>
+</tbody>
+</table>
 <strong>Zasady kumulacji 1- 10</strong> : ~ 55% haseł opartych na dyktaturze
 <strong>Zasady kumulacji 1-20</strong> : ~ 68% haseł opartych na dyktaturze
 <strong>Zasady kumulacji 1- 64</strong> : ~ 79% haseł opartych na dyktaturze
@@ -267,16 +276,19 @@ Czy...Więc...{C: $aaccff} Tłumaczenie:- Tak.
 <strong>Rozpowszechnienie</strong> Veras et al. (2014) stwierdza, że ~ 73% "obowiązkowych" haseł dodaje liczbę w przyrostku. Tylko ~ 12% przedrostka.
 <h3>7.3 Kategoria 3: substytucje podpory</h3>
 <p>Systematyczne zastępowanie liter podobnymi numerami lub symbolami:</p>
-ZastąpienieCzęstotliwość empiryczna
-- Nie.- Tak.
-a → @23% haseł z @
-e → 331% haseł z 3
-119% haseł z 1
-027% haseł z 0
-s → $14% haseł z $
-18%
-76%
-94%
+<table class="about-table">
+<thead><tr><th>Zamiana</th><th>Częstość empiryczna</th></tr></thead>
+<tbody>
+<tr><td>a → @</td><td>23% haseł z @</td></tr>
+<tr><td>e → 3</td><td>31% haseł z 3</td></tr>
+<tr><td>i → 1</td><td>19% haseł z 1</td></tr>
+<tr><td>o → 0</td><td>27% haseł z 0</td></tr>
+<tr><td>s → $</td><td>14% haseł z $</td></tr>
+<tr><td>l → 1</td><td>8%</td></tr>
+<tr><td>t → 7</td><td>6%</td></tr>
+<tr><td>g → 9</td><td>4%</td></tr>
+</tbody>
+</table>
 <p>Połączone substytucje ("P @ ssw0rd") wydają się złożone, ale są generowane w kilku zasadach: <code>c s a @ s o 0</code>Są wśród <strong>500 pierwszych kandydatów</strong> Na "hasło".</p>
 <h3>7.4 Kategoria 4: Dodatki symboliczne</h3>
 <p>Wykorzystać obowiązek posiadania specjalnego charakteru:</p>
@@ -311,12 +323,15 @@ s e 3 s a @ c $!  → "P@ssw3rd!" (multiple substitutions + capitalize + !)</cod
 <p>Strategia ta jest wdrażana w hashcat poprzez sortowanie listy słów poprzez zmniejszanie częstotliwości w połączeniu ze strategią Word- first. Wyjaśnia, dlaczego "Password1" (pochodzące z "hasła", słowo # 1) jest łamane w milisekundach, podczas gdy "Soleil1" (pochodzące z "słońce", słowo ~ 5000 z francuskiego słownika) może zająć kilka sekund.</p>
 <h3>8.2 Pozycja mediana w przestrzeni poszukiwawczej</h3>
 <p>Kluczowym środkiem jest <strong>mediana liczby testowanych kandydatów przed znalezieniem docelowego hasła</strong>. Ma et al. (2014) zapewnić pomiary empiryczne:</p>
-TrzeciPrzykładMediana wnioskodawców przed ustaleniem
-Czy...Czy...Więc...
-TOP100"password1", "P @ sssword"- 450- 500
-Mieszanka (top- 10k)"Sunshine1", "sunshine!"~ 5 000-15 000
-Często"Paillon2024"- 50 000 - 200 000
-Bez słownikaXk7 # mP9qNie dotyczy
+<table class="about-table">
+<thead><tr><th>Kategoria</th><th>Przykład</th><th>Mediana kandydatów do trafienia</th></tr></thead>
+<tbody>
+<tr><td>TOP100</td><td>"password1", "P@ssword"</td><td>~450–500</td></tr>
+<tr><td>Popularny słownik (top-10k)</td><td>"Sunshine1", "sunshine!"</td><td>~5 000–15 000</td></tr>
+<tr><td>Rzadszy słownik</td><td>"Papillon2024"</td><td>~50 000–200 000</td></tr>
+<tr><td>Poza słownikiem</td><td>"Xk7#mP9q"</td><td>N/D (hybryda nie ma zastosowania)</td></tr>
+</tbody>
+</table>
 <p>Pomiary te stanowią bezpośrednią podstawę stałych Time2Crack:
 </p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
 const HYBRID<em>KEYSPACE</em>DICT = 8<em>000; / / Ma et al. 2014 - mediana obecnego dyktatora
@@ -440,27 +455,33 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <hr>
 <h2>12. Związek z atakami pochodnymi</h2>
 <h3>12.1 Hybryda kontra czysty słownik</h3>
-KryteriaCzysty słownikHybryd
-Czy...- Nie.Czy...
-Badani kandydaciPrawidłowa lista słówSłowa + wszystkie ich warianty
-Okładka (RockYou)18%- 79- 85% (z best64)
-Klawiatura (słowa 200k)200 000200 000 × 64 = 12, 8M
-StosowanieHasło = dokładne słowoHasło pochodzące ze słowa
-Przykład podatny"słońce" (dokładnie)"Sunshine1!", "sunsh1ne"
-Przykład oporny"Sunshine1""xK9 # mQ7 @" (no root)
+<table class="about-table">
+<thead><tr><th>Kryterium</th><th>Czysty słownik</th><th>Hybryda</th></tr></thead>
+<tbody>
+<tr><td>Testowani kandydaci</td><td>Dokładne słowa z listy</td><td>Słowa + wszystkie ich warianty</td></tr>
+<tr><td>Pokrycie (RockYou)</td><td>~18%</td><td>~79-85% (z best64)</td></tr>
+<tr><td>Keyspace (200 tys. słów)</td><td>200 000</td><td>200 000 × 64 = 12,8M</td></tr>
+<tr><td>Zastosowanie</td><td>Hasło = dokładne słowo</td><td>Hasło utworzone ze słowa</td></tr>
+<tr><td>Podatny przykład</td><td>"sunshine" (dokładnie)</td><td>"Sunshine1!", "sunsh1ne"</td></tr>
+<tr><td>Odporny przykład</td><td>"Sunshine1"</td><td>"xK9#mQ7@" (brak słowa bazowego)</td></tr>
+</tbody>
+</table>
 <h3>12, 2 Hybrid vs Rule- Based</h3>
 <p>Atak oparty na regułach w Time2Crack jest koncepcyjnie podobny, ale z znacznie szerszym zestawem zasad:</p>
 <pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000; / / vs 128M dla pełnej hybrydy</em></code></pre>
 <p>Różnica: best64 model hybryda (64 zasady, skupić się na wspólnych transformacji człowieka). Regularnie oparte modele ataków szersze gry jak d3ad0ne (34k zasady) lub OneRuleToRuleRuleThemAll (52k zasady), używane, gdy best64 zawiedzie. Reguła oparta jest na "drugiej linii" hybryda - wolniej, ale bardziej kompleksowe.</p>
 <h3>12, 3 Hybrid vs PCFG</h3>
 <p>PCFG (Probabilistic Context- Free Grammar, Weir 2009) modeluje strukturę gramatyczną hasła do generowania kandydatów.</p>
-KryteriaHybrydPCFG
-Czy...Czy...Czy...
-PodejściePodstawowe zasady transformacji słowa +Globalna struktura gramatyczna
-MocIstniejące słowa zmutowaneTyp struktury "słowo + cyfry"
-Przykład"sunshine" → "Sunshine1"Wykrywa strukturę "Caps + lower + digital"
-KomplementarnośćPodajniki <code>dictWord</code>Przyczepy na wykrytej strukturze
-Klawiatura (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> dynamicznie obliczona
+<table class="about-table">
+<thead><tr><th>Kryterium</th><th>Hybryda</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td>Podejście</td><td>Słowo bazowe + reguły przekształceń</td><td>Globalna struktura gramatyczna</td></tr>
+<tr><td>Mocna strona</td><td>Zmodyfikowane istniejące słowa</td><td>Struktury typu "Słowo+Cyfry"</td></tr>
+<tr><td>Przykład</td><td>"sunshine" → "Sunshine1"</td><td>Wykrywa strukturę "Wielka+małe+cyfra"</td></tr>
+<tr><td>Uzupełnianie się</td><td>Uruchamia się przy <code>dictWord</code></td><td>Uruchamia się po wykryciu struktury</td></tr>
+<tr><td>Keyspace (Time2Crack)</td><td>500 / 8k / 128M</td><td><code>pcfgKeyspace(pw)</code>, liczony dynamicznie</td></tr>
+</tbody>
+</table>
 <p>PCFG może atakować hasła bez słownika root <strong>struktura</strong> jest powszechne (ex: "Thelonious8" → brak słowa dico, ale struktura Capitalize + niższy + cyfra bardzo przewidywalny).</p>
 <h3>12. 4 Hybryda vs Morfologia (morf)</h3>
 <p>Atak morfologiczny testuje warianty językowe (fleksyny, odmiany). Jest to uogólnienie hybrydy dla języków z bogatą morfologią:</p>
@@ -470,22 +491,28 @@ Klawiatura (Time2Crack)500 / 8k / 128M<code>pcfgKeyspace(pw)</code> dynamicznie 
 <hr>
 <h2>13. Wskaźniki według algorytmu haszu</h2>
 <h3>13.1 Czas na trzy hybrydowe klawisze (12 × RTX 5090)</h3>
-AlgorytmWspółczynnik (H / s)WSPÓLNA (500)DICT (8k)FULL (128M)
-To...To...- Tak.To...- Tak.
-MD52 634 GH / s0,19 ns3,0 ns49 μs
-SHA-1837 GH / s0,60 ns9,6 ns153 μs
-SHA-256332 GH / s1,5 ns24 ns386 μs
-NTLM4 081 GH / s0,12 ns2,0 ns31 μs
-bcrypt (koszt 10)114 kH / s4,4 ms0,07 s19 min
-Argon2id1 000 H / s0,5 s8 s36 godziny
+<table class="about-table">
+<thead><tr><th>Algorytm</th><th>Szybkość (H/s)</th><th>COMMON (500)</th><th>DICT (8k)</th><th>FULL (128M)</th></tr></thead>
+<tbody>
+<tr><td>MD5</td><td>2 634 GH/s</td><td>0,19 ns</td><td>3,0 ns</td><td>49 μs</td></tr>
+<tr><td>SHA-1</td><td>837 GH/s</td><td>0,60 ns</td><td>9,6 ns</td><td>153 μs</td></tr>
+<tr><td>SHA-256</td><td>332 GH/s</td><td>1,5 ns</td><td>24 ns</td><td>386 μs</td></tr>
+<tr><td>NTLM</td><td>4 081 GH/s</td><td>0,12 ns</td><td>2,0 ns</td><td>31 μs</td></tr>
+<tr><td>bcrypt (koszt 10)</td><td>114 kH/s</td><td>4,4 ms</td><td>0,07 s</td><td>19 min</td></tr>
+<tr><td>Argon2id</td><td>1 000 H/s</td><td>0,5 s</td><td>8 s</td><td>36 godziny</td></tr>
+</tbody>
+</table>
 <strong>Czytanie</strong> : dla MD5 i NTLM nawet przestrzeń klawiszowa FULL (128M kandydaci) jest pęknięta w kilka tuzinów mikrosekund. Algorytm haszu jest prawie nieistotny dla zwykłych słów.
 <strong>Argon2id</strong> jest jedynym algorytmem, który opiera się znacznie nawet dla zwykłych słów: 0.5 sekund dla wspólnego słowa, 8 sekund dla Dyctic Word. Te czasy pozostają krótkie w wartości bezwzględnej, ale stanowią spowolnienie x10 ^ 12 vs MD5 - co duże ataki skali ekonomicznie niewykonalne.
 <h3>13.2 Wpływ profilu atakującego</h3>
 <p>Time2Crack oferuje dwa profile (Doświadczony 12 GPU, Professional 100 GPU). Dla hybrydy różnica profilu jest wprost proporcjonalna:</p>
-ProfilGPUMnożnikFULL bcrypt
-Bo...Czy...{C: $aaccff} Tłumaczenie:- Tak.
-Doświadczony12 × RTX 50901 ×19 min
-Profesjonalne- 100 GPU~ 8 ×- 4 min.
+<table class="about-table">
+<thead><tr><th>Profil</th><th>GPU</th><th>Mnożnik</th><th>FULL bcrypt</th></tr></thead>
+<tbody>
+<tr><td>Doświadczony</td><td>12× RTX 5090</td><td>1×</td><td>19 min</td></tr>
+<tr><td>Profesjonalny</td><td>~100 GPU</td><td>~8×</td><td>~2 min</td></tr>
+</tbody>
+</table>
 <p>Dla MD5, SHA-1, NTLM: profil zmienia czas z mikrosekund na nanosekundy - bez żadnego wpływu praktycznego, oba są chwilowe.</p>
 <hr>
 <h2>14. Konkretne przykłady krakingu hybrydowego</h2>
@@ -547,27 +574,33 @@ Profesjonalne- 100 GPU~ 8 ×- 4 min.
 <strong>Passphrases of really random words</strong> : "tabouret- marmot- ginger- flash" - cztery przypadkowe słowa. Atak hybrydowy w trybie klasycznym nie generuje kombinacji 4 słów (jest to rola combinatora). Passphrase opiera się standardowej hybrydy.
 <h3>16. 2 Czym NIE jest oporność na hybrydę</h3>
 <p>Najczęstsze strategie "wzmacniania" nie sprzeciwiają się:</p>
-StrategiaPrzykładOporność
-To...Czy.../
-Kapitalizacja pierwszej literySłoneczkoArtykuł <code>c</code>, wiersz 2
-Dodaj cyfrę"sunshine1"Artykuł <code>$1</code>, wiersz 4
-Dodaj symbol"Słoneczko!"Artykuł <code>$!</code>, wiersz 6
-Zastąp e → 3"Suns3ine"Artykuł <code>s e 3</code>, top- 20
-Połącz wszystkie"Suns3ine!"Reguła złożona, top-100
-Wybierz rzadkie słowo"Papillon123"
-Podwójne słowo"Słońce"Artykuł <code>d</code>, top- 30
-Cofnij"enihsnus"Artykuł <code>r</code>, top-15
+<table class="about-table">
+<thead><tr><th>Strategia</th><th>Przykład</th><th>Odporność</th></tr></thead>
+<tbody>
+<tr><td>Wielka pierwsza litera</td><td>"Sunshine"</td><td>❌ Reguła <code>c</code>, pozycja 2</td></tr>
+<tr><td>Dodanie cyfry</td><td>"sunshine1"</td><td>❌ Reguła <code>$1</code>, pozycja 4</td></tr>
+<tr><td>Dodanie symbolu</td><td>"sunshine!"</td><td>❌ Reguła <code>$!</code>, pozycja 6</td></tr>
+<tr><td>Zamiana e→3</td><td>"sunshin3"</td><td>❌ Reguła <code>s e 3</code>, top-20</td></tr>
+<tr><td>Połączenie wszystkiego</td><td>"Sunshin3!"</td><td>❌ Reguła złożona, top-100</td></tr>
+<tr><td>Wybór rzadkiego słowa</td><td>"papillon123"</td><td>❌ Mimo to w wordlistach</td></tr>
+<tr><td>Podwojenie słowa</td><td>"sunsun"</td><td>❌ Reguła <code>d</code>, top-30</td></tr>
+<tr><td>Odwrócenie</td><td>"enihsnus"</td><td>❌ Reguła <code>r</code>, top-15</td></tr>
+</tbody>
+</table>
 <strong>Wniosek</strong> Każda strategia oparta na "weź słowo + zmodyfikuj go" jest podatna na hybrydę. Wyjątkiem jest tak skomplikowana i rzadka modyfikacja, że nie jest ona objęta żadną regułą - ale jeśli użytkownik musi pamiętać o tej złożonej transformacji, zazwyczaj kończy wybierając coś przewidywalnego.
 <h3>16.3. Wytrzymałe algorytmy haszu</h3>
 <p>Nawet jeśli hasło jest wrażliwe na hybrydę strukturalną, algorytm haszu może sprawić, że atak będzie ekonomicznie niewykonalny:</p>
-AlgorytmCzas na DICT (zgadywanie 8k)Ćwicz atak
-To...Więc...To...
-MD5 / NTLM~3 nanosekundyNatychmiastowy
-SHA-25624 nanosekundNatychmiastowy
-bcrypt koszt 10- 0.07 sekundyTrivial
-bcrypt koszt 14~1 sekundaWykonalne
-Argon2id (domyślnie)10 sekundWykonalne
-Argon2id (silny parametr)100 sekundPowoli, ale możliwe.
+<table class="about-table">
+<thead><tr><th>Algorytm</th><th>Czas dla DICT (8k prób)</th><th>Atak w praktyce</th></tr></thead>
+<tbody>
+<tr><td>MD5 / NTLM</td><td>~3 nanosekundy</td><td>Natychmiast</td></tr>
+<tr><td>SHA-256</td><td>~24 nanosekundy</td><td>Natychmiast</td></tr>
+<tr><td>bcrypt koszt 10</td><td>~0,07 sekundy</td><td>Banalny</td></tr>
+<tr><td>bcrypt koszt 14</td><td>~1 sekunda</td><td>Wykonalny</td></tr>
+<tr><td>Argon2id (domyślny)</td><td>~8 sekundy</td><td>Wykonalny</td></tr>
+<tr><td>Argon2id (mocne parametry)</td><td>~100 sekundy</td><td>Wolny, ale możliwy</td></tr>
+</tbody>
+</table>
 <strong>Argon2id</strong> z wysokimi parametrami (t = 4, m = 65536) jest jedynym algorytmem, który sprawia, że hybryda jest bardzo droga, nawet na słabych haseł.
 <h3>16. 4 Zalecenia praktyczne</h3>
 <li><strong>Użyj menedżera hasła</strong> : generuje czysty losowy, nieobowiązujący hybryda</li>

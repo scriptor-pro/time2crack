@@ -33,16 +33,19 @@ Project reference document Time2Crack
 <h3>2.1 Origins</h3>
 <p>The application of Markov's channels to password cracking is earlier than formal academic publications. Offensive security practitioners used similar models since the 2000s, but rigorous formalization dates mainly from the 2010s.</p>
 <strong>Chronology of milestones</strong> :
-YearEvent
--------------------
-2005Nakashima &amp; Oyama: first formal application of n-grams to passwords
-2009Weir et al. (IEEE S&amp;P): PCFG — direct competitor, positions structural probabilities
-2012Ma et al. (USENIX Security): Comparative study of probabilistic models on 70M passwords
-2013Durmuth: first OMEN analyses on several corpus
-2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESORICS 2015) — major academic reference
-2016Wheeler (zxcvbn) confirms the effectiveness of n-grams in estimating actual entropy
-2018OMEN+: improved version with smoothing and interpolation
-2019–2022Markov hybrid work + neural networks (PassGAN, FuzzyPSM)
+<table class="about-table">
+<thead><tr><th>Year</th><th>Event</th></tr></thead>
+<tbody>
+<tr><td>2005</td><td>Nakashima &amp; Oyama: first formal application of n-grams to passwords</td></tr>
+<tr><td>2009</td><td>Weir et al. (IEEE S&amp;P): PCFG — direct competitor, positions structural probabilities</td></tr>
+<tr><td>2012</td><td>Ma et al. (USENIX Security): Comparative study of probabilistic models on 70M passwords</td></tr>
+<tr><td>2013</td><td>Durmuth: first OMEN analyses on several corpus</td></tr>
+<tr><td>2015</td><td>Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESORICS 2015) — major academic reference</td></tr>
+<tr><td>2016</td><td>Wheeler (zxcvbn) confirms the effectiveness of n-grams in estimating actual entropy</td></tr>
+<tr><td>2018</td><td>OMEN+: improved version with smoothing and interpolation</td></tr>
+<tr><td>2019–2022</td><td>Markov hybrid work + neural networks (PassGAN, FuzzyPSM)</td></tr>
+</tbody>
+</table>
 <h3>2.2 Reference body</h3>
 <p>Markov model training is based on password databases from known data leaks:</p>
 <ul>
@@ -159,13 +162,16 @@ python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes
 <h2>7. Reducing Research Space: The Key to Effectiveness</h2>
 <h3>7.1 Empirical quantification (Dürmuth 2015)</h3>
 <p>For a password of 8 characters with the complete alphabet (94 tanks):</p>
-MethodResearch spaceReduction factor
-----------------------------------------------------
-Gross strength948 6 × 10151× (reference)
-Markov Order 1~3 × 1015~2×
-Markov Order 3~6 × 1013~100×
-Markov Order 5~3.6 × 1010~166 000×
-Markov Order 5 (typical human)~4 × 107<strong>~150 million×</strong>
+<table class="about-table">
+<thead><tr><th>Method</th><th>Search space</th><th>Reduction factor</th></tr></thead>
+<tbody>
+<tr><td>Brute force</td><td>94<sup>8</sup> ≈ 6 × 10<sup>15</sup></td><td>1× (reference)</td></tr>
+<tr><td>Markov order 1</td><td>~3 × 10<sup>15</sup></td><td>~2×</td></tr>
+<tr><td>Markov order 3</td><td>~6 × 10<sup>13</sup></td><td>~100×</td></tr>
+<tr><td>Markov order 5</td><td>~3.6 × 10<sup>10</sup></td><td>~166,000×</td></tr>
+<tr><td>Markov order 5 (typical human)</td><td>~4 × 10<sup>7</sup></td><td><strong>~150 million×</strong></td></tr>
+</tbody>
+</table>
 <p>The difference between "reduced space" and "typical human space" can be explained by the fact that real human passwords are concentrated in <strong>top-k% most likely</strong> Depending on the model.</p>
 <h3>7.2 Why Humans Are Predictable</h3>
 <p>The predictability factors used by Markov:</p>
@@ -318,31 +324,40 @@ Each signal of "human character" of the password increments Markov's obvious sco
 <hr>
 <h2>11. Comparison with other probabilistic attacks</h2>
 <h3>11.1 Markov vs PCFG</h3>
-DimensionMarkovPCFG
---------------------------
-<strong>Unit of analysis</strong>Individual character transitionsSegment structures (L/D/S)
-<strong>Information captured</strong>Local Regularities (n-gram)Global (grammar)
-<strong>Force on</strong>Natural words, continuous patternsWords + numbers, composite structures
-<strong>Limit</strong>Does not capture global structuresDo not capture local transitions
-<strong>Complementarity</strong>Ideal for pure wordsIdeal for Password123
-<strong>Optimal example</strong>"sunshine"Sunshine#93
-<strong>Order in Time2Crack</strong>Markov = 8, PCFG = 6PCFG more accurate if structure detected
+<table class="about-table">
+<thead><tr><th>Dimension</th><th>Markov</th><th>PCFG</th></tr></thead>
+<tbody>
+<tr><td><strong>Unit of analysis</strong></td><td>Transitions between characters</td><td>Segment structures (L/D/S)</td></tr>
+<tr><td><strong>Information captured</strong></td><td>Local regularities (n-grams)</td><td>Global regularities (grammar)</td></tr>
+<tr><td><strong>Strong on</strong></td><td>Natural words, continuous patterns</td><td>Words + digits, composite structures</td></tr>
+<tr><td><strong>Limit</strong></td><td>Misses global structures</td><td>Misses local transitions</td></tr>
+<tr><td><strong>Complementarity</strong></td><td>Ideal for pure words</td><td>Ideal for Password123</td></tr>
+<tr><td><strong>Optimal example</strong></td><td>"sunshine"</td><td>"Sunshine#93"</td></tr>
+<tr><td><strong>Order in Time2Crack</strong></td><td>Markov = 8, PCFG = 6</td><td>PCFG more accurate when a structure is detected</td></tr>
+</tbody>
+</table>
 <h3>11.2 Markov vs. Rule-Based Attack</h3>
-DimensionMarkovRule-based
----------------------------------
-<strong>Approach</strong>Generation ab initio probabilisticTransformation of an existing dictionary
-<strong>Coverage</strong>All likely passwordsTranslations of dictionary words
-<strong>Force on</strong>Rare or slightly non-dictionary wordsTraditional transformations of known words
-<strong>Limit</strong>Less effective than dictator+rules for current mutationsDepends entirely on the quality of the dictionary
+<table class="about-table">
+<thead><tr><th>Dimension</th><th>Markov</th><th>Rule-based</th></tr></thead>
+<tbody>
+<tr><td><strong>Approach</strong></td><td>Probabilistic generation from scratch</td><td>Transformation of an existing dictionary</td></tr>
+<tr><td><strong>Coverage</strong></td><td>All likely passwords</td><td>Mutations of dictionary words</td></tr>
+<tr><td><strong>Strong on</strong></td><td>Rare or slightly off-dictionary words</td><td>Classic transformations of known words</td></tr>
+<tr><td><strong>Limit</strong></td><td>Less effective than dictionary + rules for common mutations</td><td>Depends entirely on the quality of the dictionary</td></tr>
+</tbody>
+</table>
 <h3>11.3 Markov vs Neural Networks (PassGAN, LSTM)</h3>
-DimensionMarkov (Order 5)Neuronal network
-----------------------------------------------
-<strong>Complexity</strong>O(k ×) by predictionO(n2 × d) (Transformer)
-<strong>Data required</strong>1-10M examples sufficient10M-1B for good results
-<strong>Interpretability</strong>Total (probability tables)Black box
-<strong>Generalisation</strong>Limited to local context kOverall potential
-<strong>Crack rate</strong>Reference+20-30% on modern passwords
-<strong>Generation speed</strong>Very fastSlower
+<table class="about-table">
+<thead><tr><th>Dimension</th><th>Markov (order 5)</th><th>Neural network</th></tr></thead>
+<tbody>
+<tr><td><strong>Complexity</strong></td><td>O(k × Σ) per prediction</td><td>O(n² × d) (Transformer)</td></tr>
+<tr><td><strong>Data required</strong></td><td>1-10M examples are enough</td><td>10M-1B for good results</td></tr>
+<tr><td><strong>Interpretability</strong></td><td>Full (probability tables)</td><td>Black box</td></tr>
+<tr><td><strong>Generalization</strong></td><td>Limited to the local context k</td><td>Potentially global</td></tr>
+<tr><td><strong>Crack rate</strong></td><td>Reference</td><td>+20-30% on modern passwords</td></tr>
+<tr><td><strong>Generation speed</strong></td><td>Very fast</td><td>Slower</td></tr>
+</tbody>
+</table>
 <h3>11.4 Global positioning</h3>
 <p>In a professional cracking workflow, the typical order is:</p>
 <li><strong>Dictionary</strong> (credlist) — known exact passwords</li>

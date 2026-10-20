@@ -1,0 +1,62 @@
+#!/bin/bash
+# Met à jour les infos du dernier commit (date, message, build) dans les pages
+# qui contiennent <span id="commit-date">, <span id="commit-message"> ou
+# <span id="build-version">, puis les ajoute au commit qui vient d'être fait.
+
+# L'amend ci-dessous relance post-commit : on sort pour éviter la boucle.
+[ -n "$T2C_POST_COMMIT" ] && exit 0
+
+REPO_DIR="$(git rev-parse --show-toplevel)" || exit 0
+GIT_DIR="$(git rev-parse --git-dir)"
+cd "$REPO_DIR" || exit 0
+
+# Ne jamais réécrire un commit pendant un rebase, un merge ou un cherry-pick.
+for f in rebase-merge rebase-apply MERGE_HEAD CHERRY_PICK_HEAD; do
+  [ -e "$GIT_DIR/$f" ] && exit 0
+done
+
+# Pages candidates : on ignore celles qui ont des modifications non commitées,
+# pour ne pas les embarquer dans l'amend.
+FILES=()
+for f in index.html */how-time2crack-works.html; do
+  [ -f "$f" ] || continue
+  grep -qE 'id="(commit-date|commit-message|build-version)"' "$f" || continue
+  git diff --quiet HEAD -- "$f" 2>/dev/null || continue
+  FILES+=("$f")
+done
+[ ${#FILES[@]} -eq 0 ] && exit 0
+
+BUILD="$(git rev-list --count HEAD)"
+COMMIT_DATE="$(git log -1 --format=%ci | cut -c1-19)"
+COMMIT_MSG="$(git log -1 --format=%s)"
+
+python3 - "$BUILD" "$COMMIT_DATE" "$COMMIT_MSG" "${FILES[@]}" <<'PYEOF' || exit 0
+import html, re, sys
+
+build, date, msg, *files = sys.argv[1:]
+if len(msg) > 40:
+    msg = msg[:40] + '...'
+values = {
+    'build-version': 'build #' + build,
+    'commit-date': date,
+    'commit-message': html.escape(msg, quote=False),
+}
+for path in files:
+    with open(path, encoding='utf-8') as f:
+        text = f.read()
+    new = text
+    for span_id, value in values.items():
+        new = re.sub(r'(<span id="%s">)[^<]*(</span>)' % span_id,
+                     lambda m: m.group(1) + value + m.group(2), new)
+    if new != text:
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(new)
+PYEOF
+
+# Rien n'a changé : pas d'amend.
+git diff --quiet HEAD -- "${FILES[@]}" && exit 0
+
+# --only : n'embarque que ces fichiers, même si d'autres changements sont indexés.
+T2C_POST_COMMIT=1 git commit --amend --no-edit --no-verify -q --only -- "${FILES[@]}" \
+  && echo "✔ Infos de commit mises à jour (${#FILES[@]} pages, build #$BUILD)"
+exit 0

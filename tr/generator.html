@@ -858,6 +858,8 @@
       generatedPassword.value = password;
       copyBtn.disabled = false;
       showFeedback(STR.msg.generated, 'success');
+      // Statistiques Umami : seule la longueur choisie est envoyée, jamais le mot de passe.
+      window.umami?.track('password-generated', { length });
       await calculateCrackingTime(password);
     }
 

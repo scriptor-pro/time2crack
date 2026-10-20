@@ -1076,8 +1076,17 @@ async function init() {
     });
   });
   let i = null;
+  // Statistiques Umami : un événement « password-tested » quand la saisie s'arrête 2 s.
+  // Seul le nom de l'événement est envoyé : ni le mot de passe, ni sa longueur, ni le résultat.
+  let tracked = "",
+    trackTimer = null;
   o.addEventListener("input", () => {
     const e2 = o.value;
+    clearTimeout(trackTimer);
+    e2 &&
+      (trackTimer = setTimeout(() => {
+        o.value === e2 && e2 !== tracked && ((tracked = e2), window.umami?.track("password-tested"));
+      }, 2e3));
     try {
       analyze(e2);
     } catch (e3) {

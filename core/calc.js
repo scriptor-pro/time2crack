@@ -3,7 +3,7 @@
 //
 // Pipeline :
 //   1. analyzePatterns(password)    → context (flags, métriques)
-//   2. estimateRank(password, opts) → { standard, optimistic, worst_case, details }
+//   2. estimateRank(password, opts) → { standard, attack_rank, optimistic, worst_case, details }
 //   3. rankToAllSeconds(rank)       → { md5, sha1, sha256, ntlm, bcrypt, argon2 }
 //
 // Les deux couches sont strictement séparées :
@@ -75,7 +75,7 @@ export function calcCrackTime(password, options = {}) {
 
   // Temps de la meilleure attaque (pour affichage "Attaque la plus rapide")
   // Cherche le minimum parmi tous les algorithmes pour cette attaque
-  const bestAttackRank = rank.details[rank.best_attack]?.rank ?? null;
+  const bestAttackRank = rank.attack_rank ?? rank.details[rank.best_attack]?.rank ?? null;
   let bestAttackSeconds = null;
   if (bestAttackRank !== null) {
     // Calcule le temps pour chaque algo et prend le minimum

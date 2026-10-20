@@ -5,7 +5,7 @@
 
 const DB_NAME    = 'time2crack';
 const STORE_NAME = 'cache';
-const DB_VERSION = 1; // Bump this when wordlists or models change incompatibly
+const DB_VERSION = 2; // Bump this when wordlists or models change incompatibly
 
 // ──────────────────────────────────────────────────────────────────────────────
 // INVALIDATION DE CACHE

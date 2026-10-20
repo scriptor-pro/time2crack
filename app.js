@@ -1,14 +1,6 @@
 (function () {
   "use strict";
 
-  // Safe DOM access helper — returns null if element not found (caller must use isReal() check)
-  const safe = (id) => {
-    return document.getElementById(id);
-  };
-
-  // Check if element exists and is real (not null)
-  const isReal = (el) => el !== null && el !== undefined;
-
   // ============================================================
   // I18N
   // ============================================================
@@ -59,10 +51,12 @@
   let BLOOM_RESULT = null;   // "found" | "not_found" | "error" | null
 
   // ============================================================
-  // ML MODEL (ONNX Runtime)
+  // ML MODEL
   // ============================================================
-  let ML_NORMALIZATION = null;   // Mean and std for feature normalization (loaded with ONNX model)
+  let ML_MODEL = null;           // TensorFlow.js model
+  let ML_NORMALIZATION = null;   // Mean and std for feature normalization
   let ML_LOADING = false;        // Prevent double-load
+  const ML_PRED_CACHE = new Map(); // password -> probability
   const ML_MIN_LENGTH = 10;
   const ML_SCORE_MIN = 35;
   const ML_SCORE_MAX = 80;
@@ -121,8 +115,8 @@
       hfModeOn: "Calibration: high-fidelity",
       hfModeOff: "Calibration: standard",
       tooltipBenchmarkTitle: "Hardware benchmark",
-      tooltipBenchmarkText: "All estimates use <strong>12× NVIDIA RTX 4090 GPUs (2025 benchmarks)</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), representing an experienced attacker.",
-      tooltipAmateur: "1× RTX 4090",
+      tooltipBenchmarkText: "All estimates use <strong>12× NVIDIA RTX 5090 GPUs (2025 benchmarks)</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), representing an experienced attacker.",
+      tooltipAmateur: "1× RTX 5090",
       tooltipAmateurSpeed: "12× slower",
       tooltipPro: "100 GPU Cloud",
       tooltipProSpeed: "~8× faster",
@@ -247,10 +241,10 @@
       copyBtn: "Copy",
       copyBtnAria: "Copy password",
       copied: "Copied!",
-      badgeExperienced: "Pirate experienced: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirate experienced: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirate professional: 100 GPU Cloud",
       tabExperienced: "Experienced",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Professional",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Strong",
@@ -281,8 +275,8 @@
       bloomNotFound: "Not found in RockYou dataset.",
       bloomLoading: "Loading RockYou filter (~17 MB)…",
       bloomError: "Could not load RockYou filter.",
-      descBrute: "<p>Brute force attacks test every possible character combination, one by one, until the correct password is found. The only limit is available computing power: with a modern GPU like the RTX 4090, an attacker can test up to <em>169 billion</em> MD5 hashes per second.</p><p>A 6-character alphanumeric password (62 symbols) has 62⁶ = 56 billion combinations — cracked in under a second. At 10 characters, roughly 70 minutes. At 14 characters with uppercase, digits and symbols (95 symbols), combinations exceed 10²⁷: even a <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>nation-state adversary cannot crack that</a> before the Sun dies.</p><p>Brute force is ineffective against long passwords but devastates short ones. Every extra character multiplies cracking time by the size of the alphabet used.</p>",
-      descDict: "<p>Dictionary attacks do not test every combination: they test only real passwords already used by millions of people. These lists come from massive data breaches — <a href='https://haveibeenpwned.com/' target='_blank' rel='noopener'>Have I Been Pwned</a> catalogs over 14 billion compromised passwords.</p><p>Speed is identical to brute force — 169 GH/s on MD5 — but the search space is reduced to a few hundred million entries instead of trillions. <a href='https://ieeexplore.ieee.org/document/6234435' target='_blank' rel='noopener'>Academic studies show</a> that over 50% of real-world passwords appear in the top 10 million entries of a dictionary list.</p><p>If your password is a real word or a first name, consider it compromised within seconds.</p>",
+      descBrute: "<p>Brute force attacks test every possible character combination, one by one, until the correct password is found. The only limit is available computing power: with a modern GPU like the RTX 5090, an attacker can test up to <em>228 billion|228 milliards|228 Milliarden|228 miliardos|228 milyar|228 miliardi|228 miljard</em> MD5 hashes per second.</p><p>A 6-character alphanumeric password (62 symbols) has 62⁶ = 56 billion combinations — cracked in under a second. At 10 characters, roughly 70 minutes. At 14 characters with uppercase, digits and symbols (95 symbols), combinations exceed 10²⁷: even a <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>nation-state adversary cannot crack that</a> before the Sun dies.</p><p>Brute force is ineffective against long passwords but devastates short ones. Every extra character multiplies cracking time by the size of the alphabet used.</p>",
+      descDict: "<p>Dictionary attacks do not test every combination: they test only real passwords already used by millions of people. These lists come from massive data breaches — <a href='https://haveibeenpwned.com/' target='_blank' rel='noopener'>Have I Been Pwned</a> catalogs over 14 billion compromised passwords.</p><p>Speed is identical to brute force — 228 GH/s on MD5 — but the search space is reduced to a few hundred million entries instead of trillions. <a href='https://ieeexplore.ieee.org/document/6234435' target='_blank' rel='noopener'>Academic studies show</a> that over 50% of real-world passwords appear in the top 10 million entries of a dictionary list.</p><p>If your password is a real word or a first name, consider it compromised within seconds.</p>",
       descHybrid: "<p>Hybrid attacks combine a dictionary with automatic transformation rules. The attacker starts from a known word — \"sunshine\" — then applies hundreds of mutations: initial capital (Sunshine), trailing digits (sunshine123), substitutions (sunsh1ne), year suffixes (sunshine2024), punctuation (sunshine!).</p><p><a href='https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd' target='_blank' rel='noopener'>Benchmarks published by the Hashcat team</a> show that Hashcat can apply over 1,000 rules per dictionary entry, generating billions of variants in minutes. <a href='https://ieeexplore.ieee.org/document/6956583' target='_blank' rel='noopener'>Academic security studies</a> confirm that \"Password1!\", \"qwerty2023\" and \"Sunshine!\" fall in under 60 seconds.</p><p>If your password is a recognizable word with a few visual modifications, it is vulnerable.</p>",
       descMask: "<p>Mask attacks exploit the predictable structure of human-chosen passwords. Rather than testing all combinations randomly, the attacker targets <em>recurring patterns</em> observed in data breaches: one uppercase followed by lowercase letters and two digits (\"Thomas42\"); or a common word followed by a year (\"Summer2024\").</p><p>Hashcat allows precisely defining such masks: <code>?u?l?l?l?l?d?d</code> means \"one uppercase, four lowercase, two digits\". <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>Wheeler's research (2016)</a> has shown that 30 to 40% of real-world passwords follow one of the ten most common mask patterns.</p><p>A structured 8-character password can fall in seconds where brute force would take hours.</p>",
       descRainbow: "<p>A rainbow table is a precomputed database that maps hashes to their original passwords. Rather than computing hashes in real time, the attacker computes them <em>once</em> and stores them. To crack a stolen hash, a simple lookup suffices — like searching a word in a printed dictionary.</p><p>This technique is particularly devastating against unsalted algorithms like MD5 and SHA-1. Tables covering all alphanumeric passwords up to 8 characters take only a few terabytes, commercially accessible. <a href='https://www.hivesystems.com/blog/are-your-passwords-in-the-green' target='_blank' rel='noopener'>Hive Systems publishes annual tables</a> showing the effectiveness of this method.</p><p>The countermeasure is <em>salting</em>: adding a unique random value before hashing makes any precomputed table useless. That is why bcrypt and Argon2id include automatic salting — unlike MD5 and SHA-1 which remain vulnerable.</p>",
@@ -300,7 +294,7 @@
       skip: "Aller au contenu principal",
       subtitle:
         "Et si un pirate s'en prenait à votre mot de passe\u00a0? Tapez-le pour voir combien de temps il résisterait. Tout est calculé sur votre appareil\u00a0— rien ne quitte votre navigateur.",
-      inputLabel: "Testez votre mot de passe",
+      inputLabel: "Tester la solidité d'un mot de passe ici :",
       placeholder: "Votre mot de passe…",
       show: "Afficher",
       hide: "Masquer",
@@ -350,7 +344,7 @@
       hfModeOn: "Calibration : haute fidelite",
       hfModeOff: "Calibration : standard",
       tooltipBenchmarkTitle: "Référence matérielle",
-      tooltipBenchmarkText: "Toutes les estimations utilisent <strong>12× NVIDIA RTX 4090 GPUs</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), représentant un attaquant expérimenté.",
+      tooltipBenchmarkText: "Toutes les estimations utilisent <strong>12× NVIDIA RTX 5090 GPUs</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), représentant un attaquant expérimenté.",
       tooltipAmateur: "Amateur (1 GPU)",
       tooltipAmateurSpeed: "12× plus lent",
       tooltipPro: "Professionnel",
@@ -476,10 +470,10 @@
       copyBtn: "Copier",
       copyBtnAria: "Copier le mot de passe",
       copied: "Copié !",
-       badgeExperienced: "Pirate expérimenté: 12× RTX 4090 (2025)",
+       badgeExperienced: "Pirate expérimenté: 12× RTX 5090 (2025)",
        badgeProfessional: "Pirate professionnel: 100 GPU Cloud",
        tabExperienced: "Expérimenté",
-       tabExperiencedGpus: "12× RTX 4090 GPUs",
+       tabExperiencedGpus: "12× RTX 5090 GPUs",
        tabProfessional: "Professionnel",
        tabProfessionalGpus: "~100 GPUs",
        patternStrong: "Robuste",
@@ -511,8 +505,8 @@
        bloomLoading: "Chargement du filtre RockYou (~17 Mo)…",
        bloomError: "Impossible de charger le filtre RockYou.",
        attackDescriptions: "Tout savoir sur les types d'attaque",
-       descBrute: "<p>L'attaque par force brute teste toutes les combinaisons possibles de caractères, une par une. La seule limite est la puissance de calcul : avec un GPU moderne comme le RTX 4090, un attaquant peut tester jusqu'à <em>169 milliards</em> de hachages MD5 par seconde.</p><p>Un mot de passe de 6 caractères alphanumériques représente 62⁶ = 56 milliards de combinaisons — moins d'une seconde. À 10 caractères, environ 70 minutes. À 14 caractères avec majuscules, chiffres et symboles, on dépasse 10²⁷ combinaisons : même un <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>État-nation ne pourrait pas craquer ça</a> avant la mort du Soleil.</p><p>La force brute est inefficace contre les mots de passe longs, mais dévaste les courts. Chaque caractère supplémentaire multiplie le temps de craquage par la taille de l'alphabet utilisé.</p>",
-       descDict: "<p>L'attaque par dictionnaire ne teste pas toutes les combinaisons : elle teste uniquement les mots de passe réels déjà utilisés par des millions de personnes. Les bases <a href='https://haveibeenpwned.com/' target='_blank' rel='noopener'>Have I Been Pwned</a> répertorient plus de 14 milliards de mots de passe compromis.</p><p>La vitesse est identique à la force brute — 169 GH/s sur MD5 — mais l'espace de recherche est réduit à quelques centaines de millions d'entrées au lieu de billions. <a href='https://ieeexplore.ieee.org/document/6234435' target='_blank' rel='noopener'>Selon les études universitaires</a>, plus de 50 % des mots de passe réels figurent dans les top 10 millions d'une liste de dictionnaire.</p><p>Si votre mot de passe est un vrai mot ou un prénom, considérez-le comme compromis en quelques secondes.</p>",
+       descBrute: "<p>L'attaque par force brute teste toutes les combinaisons possibles de caractères, une par une. La seule limite est la puissance de calcul : avec un GPU moderne comme le RTX 5090, un attaquant peut tester jusqu'à <em>228 billion|228 milliards|228 Milliarden|228 miliardos|228 milyar|228 miliardi|228 miljard</em> de hachages MD5 par seconde.</p><p>Un mot de passe de 6 caractères alphanumériques représente 62⁶ = 56 milliards de combinaisons — moins d'une seconde. À 10 caractères, environ 70 minutes. À 14 caractères avec majuscules, chiffres et symboles, on dépasse 10²⁷ combinaisons : même un <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>État-nation ne pourrait pas craquer ça</a> avant la mort du Soleil.</p><p>La force brute est inefficace contre les mots de passe longs, mais dévaste les courts. Chaque caractère supplémentaire multiplie le temps de craquage par la taille de l'alphabet utilisé.</p>",
+       descDict: "<p>L'attaque par dictionnaire ne teste pas toutes les combinaisons : elle teste uniquement les mots de passe réels déjà utilisés par des millions de personnes. Les bases <a href='https://haveibeenpwned.com/' target='_blank' rel='noopener'>Have I Been Pwned</a> répertorient plus de 14 milliards de mots de passe compromis.</p><p>La vitesse est identique à la force brute — 228 GH/s sur MD5 — mais l'espace de recherche est réduit à quelques centaines de millions d'entrées au lieu de billions. <a href='https://ieeexplore.ieee.org/document/6234435' target='_blank' rel='noopener'>Selon les études universitaires</a>, plus de 50 % des mots de passe réels figurent dans les top 10 millions d'une liste de dictionnaire.</p><p>Si votre mot de passe est un vrai mot ou un prénom, considérez-le comme compromis en quelques secondes.</p>",
        descHybrid: "<p>L'attaque hybride combine un dictionnaire avec des règles de transformation automatiques. L'attaquant part d'un mot connu — \"soleil\" — puis applique des centaines de mutations : majuscule (Soleil), chiffres (soleil123), substitutions (s0l3il), suffixes d'années (soleil2024), ponctuation (soleil!).</p><p>Les benchmarks <a href='https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd' target='_blank' rel='noopener'>publiés par l'équipe Hashcat</a> montrent que Hashcat peut appliquer plus de 1 000 règles par entrée, générant des milliards de variantes en quelques minutes. <a href='https://ieeexplore.ieee.org/document/6956583' target='_blank' rel='noopener'>Des études académiques</a> confirment que \"Password1!\", \"azerty2023\" et \"Soleil!\" tombent en moins de 60 secondes.</p><p>Si votre mot de passe est un mot reconnaissable avec quelques modifications visuelles, il est vulnérable.</p>",
        descMask: "<p>L'attaque par masque exploite la structure prévisible des mots de passe humains. Plutôt que de tester toutes les combinaisons au hasard, l'attaquant cible des <em>schémas récurrents</em> : une majuscule suivie de minuscules et deux chiffres (\"Thomas42\") ; ou un mot commun suivi d'une année (\"Summer2024\").</p><p>Hashcat permet de définir précisément ces masques : <code>?u?l?l?l?l?d?d</code> = \"une majuscule, quatre minuscules, deux chiffres\". <a href='https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/wheeler' target='_blank' rel='noopener'>Wheeler (2016)</a> a montré que 30 à 40 % des mots de passe réels suivent un des dix masques les plus fréquents.</p><p>Un mot de passe de 8 caractères structuré peut tomber en secondes là où la force brute prendrait des heures.</p>",
        descRainbow: "<p>Une table arc-en-ciel est une base de données précalculée qui associe des hachages à leurs mots de passe d'origine. Plutôt que de calculer les hachages en temps réel, l'attaquant les calcule <em>une seule fois</em> et les stocke. Pour craquer un hachage volé, une simple recherche dans la table suffit.</p><p>Cette technique est particulièrement dévastatrice contre les algorithmes non salés comme MD5 et SHA-1. Des tables couvrant tous les mots de passe alphanumériques jusqu'à 8 caractères occupent quelques téraoctets, accessibles sur le marché. <a href='https://www.hivesystems.com/blog/are-your-passwords-in-the-green' target='_blank' rel='noopener'>Hive Systems publie chaque année</a> des tableaux montrant l'efficacité de cette méthode.</p><p>La parade est le <em>salage</em> : ajouter une valeur aléatoire unique avant le hachage rend toute table précalculée inutile. C'est pourquoi bcrypt et Argon2id intègrent un sel automatique, contrairement à MD5 et SHA-1.</p>",
@@ -575,7 +569,7 @@
       thSpeed: "Velocidad (12 GPU)",
       thTime: "Tiempo estimado",
       tooltipBenchmarkTitle: "Referencia de hardware",
-      tooltipBenchmarkText: "Todas las estimaciones usan <strong>12× NVIDIA RTX 4090 GPUs</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), representando un atacante experimentado.",
+      tooltipBenchmarkText: "Todas las estimaciones usan <strong>12× NVIDIA RTX 5090 GPUs</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), representando un atacante experimentado.",
       tooltipAmateur: "Aficionado (1 GPU)",
       tooltipAmateurSpeed: "12× más lento",
       tooltipPro: "Profesional",
@@ -689,10 +683,10 @@
       copyBtn: "Copiar",
       copyBtnAria: "Copiar contraseña",
       copied: "¡Copiado!",
-      badgeExperienced: "Pirata experimentado: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirata experimentado: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirata profesional: 100 GPU Cloud",
       tabExperienced: "Experimentado",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Profesional",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Fuerte",
@@ -768,7 +762,7 @@
       thSpeed: "Velocidade (12 GPU)",
       thTime: "Tempo estimado",
       tooltipBenchmarkTitle: "Referência de hardware",
-      tooltipBenchmarkText: "Todas as estimativas usam <strong>12× NVIDIA RTX 4090 GPUs</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), representando um atacante experiente.",
+      tooltipBenchmarkText: "Todas as estimativas usam <strong>12× NVIDIA RTX 5090 GPUs</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), representando um atacante experiente.",
       tooltipAmateur: "Amador (1 GPU)",
       tooltipAmateurSpeed: "12× mais lento",
       tooltipPro: "Profissional",
@@ -880,10 +874,10 @@
       copyBtn: "Copiar",
       copyBtnAria: "Copiar senha",
       copied: "Copiado!",
-      badgeExperienced: "Pirata experiente: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirata experiente: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirata profissional: 100 GPU Cloud",
       tabExperienced: "Experiente",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Profissional",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Forte",
@@ -959,7 +953,7 @@
       thSpeed: "Geschwindigkeit (12 GPU)",
       thTime: "Geschätzte Zeit",
       tooltipBenchmarkTitle: "Hardware-Referenz",
-      tooltipBenchmarkText: "Alle Schätzungen verwenden <strong>12× NVIDIA RTX 4090 GPUs</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), was einen erfahrenen Angreifer darstellt.",
+      tooltipBenchmarkText: "Alle Schätzungen verwenden <strong>12× NVIDIA RTX 5090 GPUs</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), was einen erfahrenen Angreifer darstellt.",
       tooltipAmateur: "Amateur (1 GPU)",
       tooltipAmateurSpeed: "12× langsamer",
       tooltipPro: "Professionell",
@@ -1072,10 +1066,10 @@
       copyBtn: "Kopieren",
       copyBtnAria: "Passwort kopieren",
       copied: "Kopiert!",
-      badgeExperienced: "Pirat erfahren: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirat erfahren: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirat professionell: 100 GPU Cloud",
       tabExperienced: "Erfahren",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Professionell",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Stark",
@@ -1150,7 +1144,7 @@
       thSpeed: "Hız (12 GPU)",
       thTime: "Tahmini zaman",
       tooltipBenchmarkTitle: "Donanım referansı",
-      tooltipBenchmarkText: "Tüm tahminler <strong>12× NVIDIA RTX 4090 GPU</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM) kullanır, deneyimli bir saldırganı temsil eder.",
+      tooltipBenchmarkText: "Tüm tahminler <strong>12× NVIDIA RTX 5090 GPU</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM) kullanır, deneyimli bir saldırganı temsil eder.",
       tooltipAmateur: "Amatör (1 GPU)",
       tooltipAmateurSpeed: "12× daha yavaş",
       tooltipPro: "Profesyonel",
@@ -1260,10 +1254,10 @@
       copyBtn: "Kopyala",
       copyBtnAria: "Şifreyi kopyala",
       copied: "Kopyalandı!",
-      badgeExperienced: "Bilgisayar deneyimli: 12× RTX 4090 (2025)",
+      badgeExperienced: "Bilgisayar deneyimli: 12× RTX 5090 (2025)",
       badgeProfessional: "Bilgisayar profesyonel: 100 GPU Cloud",
       tabExperienced: "Deneyimli",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Profesyonel",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Güçlü",
@@ -1339,7 +1333,7 @@
       thSpeed: "Velocità (12 GPU)",
       thTime: "Tempo stimato",
       tooltipBenchmarkTitle: "Riferimento hardware",
-      tooltipBenchmarkText: "Tutte le stime utilizzano <strong>12× NVIDIA RTX 4090 GPU</strong> (~2027 GH/s MD5, ~3462 GH/s NTLM), rappresentando un attaccante esperto.",
+      tooltipBenchmarkText: "Tutte le stime utilizzano <strong>12× NVIDIA RTX 5090 GPU</strong> (~2737 GH/s MD5, ~4674 GH/s NTLM), rappresentando un attaccante esperto.",
       tooltipAmateur: "Dilettante (1 GPU)",
       tooltipAmateurSpeed: "12× più lento",
       tooltipPro: "Professionale",
@@ -1451,10 +1445,10 @@
       copyBtn: "Copia",
       copyBtnAria: "Copia password",
       copied: "Copiato!",
-      badgeExperienced: "Pirata esperto: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirata esperto: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirata professionale: 100 GPU Cloud",
       tabExperienced: "Esperto",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Professionale",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Forte",
@@ -1634,10 +1628,10 @@
       copyBtn: "Kopiuj",
       copyBtnAria: "Kopiuj hasło",
       copied: "Skopiowano!",
-      badgeExperienced: "Pirat doświadczony: 12× RTX 4090 (2025)",
+      badgeExperienced: "Pirat doświadczony: 12× RTX 5090 (2025)",
       badgeProfessional: "Pirat profesjonalny: 100 GPU Cloud",
       tabExperienced: "Doświadczony",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Profesjonalny",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Silne",
@@ -1815,10 +1809,10 @@
       copyBtn: "Kopiëren",
       copyBtnAria: "Kopieer wachtwoord",
       copied: "Gekopieerd!",
-      badgeExperienced: "Piraat ervaren: 12× RTX 4090 (2025)",
+      badgeExperienced: "Piraat ervaren: 12× RTX 5090 (2025)",
       badgeProfessional: "Piraat professioneel: 100 GPU Cloud",
       tabExperienced: "Ervaren",
-      tabExperiencedGpus: "12× RTX 4090 GPUs",
+      tabExperiencedGpus: "12× RTX 5090 GPUs",
       tabProfessional: "Professioneel",
       tabProfessionalGpus: "~100 GPUs",
       patternStrong: "Sterk",
@@ -1855,10 +1849,10 @@
   }
 
   function syncA11yLabels() {
-    const langToggleBtn = safe("lang-toggle");
+    const langToggleBtn = document.getElementById("lang-toggle");
     if (langToggleBtn) langToggleBtn.setAttribute("aria-label", t("languageAria") || "Change language");
 
-    if (isReal(barWrapper)) barWrapper.setAttribute("aria-label", t("strengthAria"));
+    if (barWrapper) barWrapper.setAttribute("aria-label", t("strengthAria"));
 
     if (resetBtn) resetBtn.setAttribute("aria-label", t("resetAria"));
 
@@ -1896,7 +1890,7 @@
     DICT_PENDING_LANG = null;
     
     // Show loading indicator
-    const dictLoadingEl = safe('dict-loading');
+    const dictLoadingEl = document.getElementById('dict-loading');
     if (dictLoadingEl) {
       dictLoadingEl.hidden = false;
     }
@@ -2022,19 +2016,110 @@
     },
   };
 
+  function mergeNumericMaps(baseMap, extraMap) {
+    const out = Object.assign({}, baseMap || {});
+    for (const [key, value] of Object.entries(extraMap || {})) {
+      if (!isFinite(value) || value <= 0) continue;
+      if (!isFinite(out[key]) || out[key] <= 0 || value < out[key]) {
+        out[key] = value;
+      }
+    }
+    return out;
+  }
+
+  function corpusStatsToPcfgCalibration(stats) {
+    if (!stats || typeof stats !== "object") return null;
+    const total = Number(stats.total_passwords || 0);
+    if (!isFinite(total) || total <= 0) return null;
+
+    const skeletonRanks = {};
+    for (const [key, count] of Object.entries(stats.skeletons || {})) {
+      if (!isFinite(count) || count <= 0) continue;
+      skeletonRanks[key] = Math.max(1, Math.round(total / count));
+    }
+
+    const shapeCounts = {};
+    for (const [skeletonKey, count] of Object.entries(stats.skeletons || {})) {
+      if (!isFinite(count) || count <= 0) continue;
+      const shapeKey = skeletonKey.replace(/\d+\+?/g, "").replace(/\d+/g, "");
+      shapeCounts[shapeKey] = (shapeCounts[shapeKey] || 0) + count;
+    }
+
+    const shapeRanks = {};
+    for (const [key, count] of Object.entries(shapeCounts)) {
+      if (!isFinite(count) || count <= 0) continue;
+      shapeRanks[key] = Math.max(1, Math.round(total / count));
+    }
+
+    const tokenRanks = { L: {}, D: {}, S: {} };
+    for (const cls of ["L", "D", "S"]) {
+      const buckets = (stats.segments && stats.segments[cls]) || {};
+      for (const [bucket, entry] of Object.entries(buckets)) {
+        const count = entry && typeof entry === "object" ? Number(entry.count || 0) : Number(entry || 0);
+        if (!isFinite(count) || count <= 0) continue;
+        tokenRanks[cls][bucket] = Math.max(1, Math.round(total / count));
+      }
+    }
+
+    return {
+      version: 1,
+      global: {
+        skeletonRanks,
+        shapeRanks,
+        tokenRanks,
+      },
+    };
+  }
+
+  function mergePcfgCalibration(base, extra) {
+    if (!extra) return base;
+    if (!base) return extra;
+
+    const gBase = base.global || {};
+    const gExtra = extra.global || {};
+
+    return {
+      ...base,
+      global: {
+        ...gBase,
+        defaultRank: gBase.defaultRank || gExtra.defaultRank || 50000,
+        skeletonRanks: mergeNumericMaps(gBase.skeletonRanks, gExtra.skeletonRanks),
+        shapeRanks: mergeNumericMaps(gBase.shapeRanks, gExtra.shapeRanks),
+        tokenRanks: {
+          L: mergeNumericMaps((gBase.tokenRanks || {}).L, (gExtra.tokenRanks || {}).L),
+          D: mergeNumericMaps((gBase.tokenRanks || {}).D, (gExtra.tokenRanks || {}).D),
+          S: mergeNumericMaps((gBase.tokenRanks || {}).S, (gExtra.tokenRanks || {}).S),
+        },
+        orderMultipliers: Object.assign({}, gBase.orderMultipliers || {}, gExtra.orderMultipliers || {}),
+        shapeMultipliers: Object.assign({}, gBase.shapeMultipliers || {}, gExtra.shapeMultipliers || {}),
+        classFallback: Object.assign({ L: 32, D: 10, S: 22 }, gBase.classFallback || {}, gExtra.classFallback || {}),
+      },
+      langs: base.langs || {},
+    };
+  }
+
   async function loadPcfgCalibration() {
     if (PCFG_CALIBRATION || PCFG_CALIB_LOADING) return;
     PCFG_CALIB_LOADING = true;
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/pcfg-calibration.json", { signal: controller.signal });
-      clearTimeout(timeout);
-      if (!res.ok) throw new Error(res.status);
-      const json = await res.json();
-      if (json && typeof json === "object") PCFG_CALIBRATION = json;
-    } catch (err) {
-      console.warn("PCFG calibration load failed:", err.message);
+      const [baseRes, corpusRes] = await Promise.all([
+        fetch("data/pcfg-calibration.json"),
+        fetch("data/corpus/common-zxcvbn-pcfg.json"),
+      ]);
+
+      let baseJson = null;
+      let corpusJson = null;
+
+      if (baseRes.ok) baseJson = await baseRes.json();
+      if (corpusRes.ok) corpusJson = await corpusRes.json();
+
+      const corpusCal = corpusStatsToPcfgCalibration(corpusJson);
+      if (baseJson && typeof baseJson === "object") {
+        PCFG_CALIBRATION = mergePcfgCalibration(baseJson, corpusCal);
+      } else if (corpusCal) {
+        PCFG_CALIBRATION = corpusCal;
+      }
+    } catch {
       PCFG_CALIBRATION = null;
     } finally {
       PCFG_CALIB_LOADING = false;
@@ -2133,15 +2218,11 @@
     if (MARKOV_CALIBRATION || MARKOV_CALIB_LOADING) return;
     MARKOV_CALIB_LOADING = true;
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/markov-calibration.json", { signal: controller.signal });
-      clearTimeout(timeout);
+      const res = await fetch("data/markov-calibration.json");
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
       if (json && typeof json === "object") MARKOV_CALIBRATION = json;
-    } catch (err) {
-      console.warn("Markov calibration load failed:", err.message);
+    } catch {
       MARKOV_CALIBRATION = null;
     } finally {
       MARKOV_CALIB_LOADING = false;
@@ -2247,15 +2328,11 @@
     if (NEURAL_CALIBRATION || NEURAL_CALIB_LOADING) return;
     NEURAL_CALIB_LOADING = true;
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/neural-calibration.json", { signal: controller.signal });
-      clearTimeout(timeout);
+      const res = await fetch("data/neural-calibration.json");
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
       if (json && typeof json === "object") NEURAL_CALIBRATION = json;
-    } catch (err) {
-      console.warn("Neural calibration load failed:", err.message);
+    } catch {
       NEURAL_CALIBRATION = null;
     } finally {
       NEURAL_CALIB_LOADING = false;
@@ -2355,15 +2432,11 @@
     if (PRINCE_CALIBRATION || PRINCE_CALIB_LOADING) return;
     PRINCE_CALIB_LOADING = true;
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const res = await fetch("data/prince-calibration.json", { signal: controller.signal });
-      clearTimeout(timeout);
+      const res = await fetch("data/prince-calibration.json");
       if (!res.ok) throw new Error(res.status);
       const json = await res.json();
       if (json && typeof json === "object") PRINCE_CALIBRATION = json;
-    } catch (err) {
-      console.warn("Prince calibration load failed:", err.message);
+    } catch {
       PRINCE_CALIBRATION = null;
     } finally {
       PRINCE_CALIB_LOADING = false;
@@ -2424,9 +2497,9 @@
     if (BLOOM_LOADING || BLOOM_LOADED) return;
     BLOOM_LOADING = true;
 
-    const bloomLoadingEl = safe("bloom-loading");
-    const bloomBtnEl = safe("bloom-check-btn");
-    const bloomTriggerEl = safe("bloom-trigger");
+    const bloomLoadingEl = $("bloom-loading");
+    const bloomBtnEl = $("bloom-check-btn");
+    const bloomTriggerEl = $("bloom-trigger");
 
     if (bloomLoadingEl) bloomLoadingEl.hidden = false;
     if (bloomBtnEl) bloomBtnEl.disabled = true;
@@ -2487,12 +2560,12 @@
    * Update bloom filter UI banners based on state
    */
   function updateBloomBanner(state) {
-    const bannerEl = safe("bloom-banner");
-    const safeEl = safe("bloom-safe");
-    const errorEl = safe("bloom-error");
-    const badge = safe("rockyou-status-badge");
-    const hintEl = safe("rockyou-hint");
-    const wrapperEl = safe("qp-rockyou-wrapper");
+    const bannerEl = $("bloom-banner");
+    const safeEl = $("bloom-safe");
+    const errorEl = $("bloom-error");
+    const badge = $("rockyou-status-badge");
+    const hintEl = $("rockyou-hint");
+    const wrapperEl = $("qp-rockyou-wrapper");
 
     if (bannerEl) bannerEl.hidden = state !== "found";
     if (safeEl) safeEl.hidden = state !== "not_found";
@@ -2893,7 +2966,7 @@
    */
   async function predictHumanPattern(pw) {
     // Lazy load ML model on first prediction
-    if (!ML_SESSION || !ML_NORMALIZATION) {
+    if (!ML_SESSION && ML_NORMALIZATION == null) {
       await loadMLModel();
     }
 
@@ -2944,7 +3017,7 @@
         : "When will your password be cracked?");
     
     // Update canonical URL dynamically for SEO
-    const canonicalLink = safe('canonical-link');
+    const canonicalLink = document.getElementById('canonical-link');
     if (canonicalLink) {
       canonicalLink.setAttribute('href', `https://time2crack.eu/?lang=${lang}`);
     }
@@ -2967,7 +3040,7 @@
     if (textSpan) textSpan.textContent = isVisible ? t("hide") : t("show");
     toggleBtn.setAttribute("aria-label", isVisible ? t("hideAria") : t("showAria"));
     // Update lang selector (globe button + menu)
-    const langCodeSpan = safe("lang-code");
+    const langCodeSpan = document.getElementById("lang-code");
     if (langCodeSpan) {
       langCodeSpan.textContent = lang.toUpperCase();
     }
@@ -2991,9 +3064,9 @@
   }
 
   // Lang selector: toggle dropdown menu
-  const langToggle = safe("lang-toggle");
-  const langMenu = safe("lang-menu");
-  const langSelector = safe("lang-selector");
+  const langToggle = document.getElementById("lang-toggle");
+  const langMenu = document.getElementById("lang-menu");
+  const langSelector = document.getElementById("lang-selector");
   
   if (langToggle && langMenu) {
     langToggle.addEventListener("click", (e) => {
@@ -3032,21 +3105,8 @@
     }
   });
 
-  // Defer password analyzer initialization to DOMContentLoaded
-  // This ensures DOM is ready and prevents crashes on pages without password input
-  document.addEventListener("DOMContentLoaded", () => {
-    const $ = (id) => safe(id);
-    const input = $("pw-input");
-
-    // If page doesn't have password input, don't initialize analyzer
-    if (!input) return;
-
-    // Check for critical elements required by the analyzer
-    const resultsDiv = $("results");
-    if (!resultsDiv) return; // Can't render results without results div
-
-  // Only run password analysis code on pages that have the password input (index + generator)
-  if (input) {
+  const $ = (id) => document.getElementById(id);
+  const input = $("password-input");
   const toggleBtn = $("toggle-visibility");
   const strengthIcon = $("strength-icon");
   const strengthLabel = $("strength-label");
@@ -3109,20 +3169,6 @@
   let selectedProfileMult = 12;
   let userPinnedAlgo = false; // true once user manually changes ct-algo select
   let HIGH_FIDELITY = false;
-
-  function renderAttackTabs() {
-    // Re-render attack tabs with new language
-    if (input && input.value) {
-      render();
-    }
-  }
-
-  function updateAttackDescription() {
-    // Update attack method description with new language
-    if (input && input.value) {
-      render();
-    }
-  }
 
   function updateHighFidelityUI() {
     if (!hfStatus) return;
@@ -3425,7 +3471,7 @@
   }
 
   // Toggle visibility
-  if (toggleBtn) toggleBtn.addEventListener("click", () => {
+  toggleBtn.addEventListener("click", () => {
     const show = input.type === "password";
     input.type = show ? "text" : "password";
     const textSpan = toggleBtn.querySelector("span");
@@ -3682,14 +3728,6 @@
 
     return softCapGuesses(Math.min(blendedRank, full), MARKOV_SOFTCAP_KNEE, MARKOV_MAX_GUESSES);
   }
-
-  // PRINCE parameters (v2 rank-based model) — moved here to avoid TDZ references
-  const PRINCE_SOFTCAP_KNEE = 1e15;
-  const PRINCE_MAX_GUESSES = 1e19;
-
-  // Neural guessing parameters (v2 rank-based model) — moved here to avoid TDZ references
-  const NEURAL_SOFTCAP_KNEE = 1e15;
-  const NEURAL_MAX_GUESSES = 1e19;
 
   function getNeuralProfile(lang) {
     const source = NEURAL_CALIBRATION || DEFAULT_NEURAL_CALIBRATION;
@@ -3976,6 +4014,10 @@
   // Advanced rule engine keyspace (hashcat/JtR rule stacks)
   const RULE_KEYSPACE = 250e6;
 
+  // PRINCE parameters (v2 rank-based model)
+  const PRINCE_SOFTCAP_KNEE = 1e15;
+  const PRINCE_MAX_GUESSES = 1e19;
+
   // Morphological variants around dictionary roots
   // Kiesel et al. 2022 (PassMorph): ~150 variants/word (inflections + leet + diacritics) × 200k words
   const MORPH_KEYSPACE = 30e6;
@@ -3985,23 +4027,27 @@
   // CUPP README: 600–2000 candidates for a full profile; 500k is already generous with permutations
   const TARGETED_KEYSPACE = 500_000;
 
+  // Neural guessing parameters (v2 rank-based model)
+  const NEURAL_SOFTCAP_KNEE = 1e15;
+  const NEURAL_MAX_GUESSES = 1e19;
+
   // High-fidelity calibration controls
   const HF_MULT_MIN = 0.08;
   const HF_MULT_MAX = 20;
 
   // ============================================================
-  // HASH RATES — 12× RTX 4090 (Official Hashcat v6.2.6 benchmarks)
+  // HASH RATES — 12× RTX 5090 (Official Hashcat v6.2.6 benchmarks)
   // Source: https://gist.github.com/Chick3nman/32e662a5bb63bc4f51b847bb422222fd
   // ============================================================
   const ALGOS = [
-    { key: "md5",     name: "MD5",              rate: 168.9e9 * 12,  salted: false }, // 2,026.8 GH/s — Chick3nman RTX 4090 benchmark
-    { key: "sha1",    name: "SHA-1",             rate: 50.86e9 * 12,  salted: false }, // 610.3 GH/s
-    { key: "sha256",  name: "SHA-256",           rate: 22.68e9 * 12,  salted: false }, // 272.2 GH/s
-    { key: "ntlm",    name: "NTLM",              rate: 288.5e9 * 12,  salted: false }, // 3,462 GH/s
-    { key: "mysql",   name: "MySQL5",            rate: 22292e6 * 12,  salted: false }, // 267.5 GH/s — SHA1(SHA1(pw)), mode -m 300
-    { key: "bcrypt",  name: "bcrypt (cost 10)",  rate: 5750 * 12,     salted: true  }, // 69 kH/s — cost 5: 184kH/s/GPU → cost 10: /2^5
-    { key: "bcrypt12",name: "bcrypt (cost 12)",  rate: 1438 * 12,     salted: true  }, // 17.3 kH/s — cost 10: 5750/2^2
-    { key: "scrypt",  name: "scrypt",            rate: 7126 * 12,     salted: true  }, // 85.5 kH/s — N=16384 r=8 p=1, mode -m 8900
+    { key: "md5",     name: "MD5",              rate: 228.0e9 * 12,  salted: false }, // 2,736 GH/s (+35% RTX 5090 vs 4090: 2,027 GH/s)
+    { key: "sha1",    name: "SHA-1",             rate: 68.66e9 * 12,  salted: false }, // 824 GH/s (+35% vs 4090: 610 GH/s)
+    { key: "sha256",  name: "SHA-256",           rate: 30.62e9 * 12,  salted: false }, // 367 GH/s (+35% vs 4090: 272 GH/s)
+    { key: "ntlm",    name: "NTLM",              rate: 389.5e9 * 12,  salted: false }, // 4,674 GH/s (+35% vs 4090: 3,462 GH/s)
+    { key: "mysql",   name: "MySQL5",            rate: 30094e6 * 12,  salted: false }, // 361 GH/s (+35% vs 4090: 267 GH/s)
+    { key: "bcrypt",  name: "bcrypt (cost 10)",  rate: 7188 * 12,     salted: true  }, // 86 kH/s (+25% vs 4090: 69 kH/s, memory-bound)
+    { key: "bcrypt12",name: "bcrypt (cost 12)",  rate: 1798 * 12,     salted: true  }, // 21.6 kH/s (+25% vs 4090: 17.3 kH/s)
+    { key: "scrypt",  name: "scrypt",            rate: 8908 * 12,     salted: true  }, // 107 kH/s (+25% vs 4090: 85.5 kH/s, memory-bound)
     { key: "pbkdf2",  name: "PBKDF2-SHA256",     rate: Math.round(8865700 * 999 / 600000) * 12, salted: true }, // ~177 kH/s/GPU @ 600k iter (OWASP 2023) × 12
     { key: "argon2",  name: "Argon2id",          rate: 800,           salted: true  }, // ~800 H/s (conservative estimate)
   ];
@@ -5793,27 +5839,27 @@
   function setPendingState() {
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
-    if (resetBtn) resetBtn.classList.add("visible");
+    resetBtn.classList.add("visible");
     
     // Reset strength bar segments
     strengthSegments.forEach((seg) => seg.classList.remove("active"));
     if (strengthIcon) strengthIcon.textContent = "—";
-    if (isReal(strengthLabel)) {
+    if (strengthLabel) {
       strengthLabel.textContent = "—";
       strengthLabel.style.color = "";
     }
-    if (isReal(strengthBits)) strengthBits.textContent = "—";
-    if (isReal(barWrapper)) {
+    if (strengthBits) strengthBits.textContent = "—";
+    if (barWrapper) {
       barWrapper.classList.remove("strong");
       barWrapper.setAttribute("aria-valuenow", "0");
       barWrapper.setAttribute("aria-valuetext", "No password entered");
     }
-    if (isReal(resultLabelFast)) if (isReal(resultLabelFast)) resultLabelFast.textContent = "—";
-    if (isReal(crackDurationFast)) if (isReal(crackDurationFast)) crackDurationFast.textContent = "";
-    if (isReal(crackDateFast)) if (isReal(crackDateFast)) crackDateFast.textContent = "—";
-    if (isReal(resultSentenceFast)) if (isReal(resultSentenceFast)) resultSentenceFast.textContent = "";
-    if (isReal(liveDetailsVisible)) if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = true;
-    if (isReal(vulnTagsEl)) if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = "";
+    resultLabelFast.textContent = "—";
+    crackDurationFast.textContent = "";
+    crackDateFast.textContent = "—";
+    resultSentenceFast.textContent = "";
+    liveDetailsVisible.hidden = true;
+    vulnTagsEl.innerHTML = "";
   }
 
   input.addEventListener("input", () => {
@@ -5967,8 +6013,8 @@
   }
 
   function renderCharacterAnalysis(pw) {
-    const wrapper = safe("character-analysis-wrapper");
-    const container = safe("character-analysis");
+    const wrapper = document.getElementById("character-analysis-wrapper");
+    const container = document.getElementById("character-analysis");
 
     // Element may not exist (removed with Advanced Details panel)
     if (!wrapper) return;
@@ -5997,8 +6043,8 @@
 
   // Render heatmap in real-time (always visible, below crack time)
   function renderCharacterAnalysisLive(pw) {
-    const wrapper = safe("character-analysis-live-wrapper");
-    const container = safe("character-analysis-live");
+    const wrapper = document.getElementById("character-analysis-live-wrapper");
+    const container = document.getElementById("character-analysis-live");
 
     // Element must exist (required for real-time display)
     if (!wrapper || !container) return;
@@ -6032,55 +6078,45 @@
     const pw = inputPw;
 
     if (inputEmpty) {
-      if (resetBtn) resetBtn.classList.remove("visible");
+      resetBtn.classList.remove("visible");
       resultsDiv.classList.add("visible");
-      resultsDiv.classList.add("is-empty");
+      resultsDiv.classList.remove("is-empty");
       if (attackerFrame) attackerFrame.hidden = false;
 
       // Neutral strength state (visible placeholders)
       strengthSegments.forEach((seg) => seg.classList.remove("active"));
       if (strengthIcon) strengthIcon.textContent = "—";
-      if (isReal(strengthLabel)) {
+      if (strengthLabel) {
         strengthLabel.textContent = "—";
         strengthLabel.style.color = "";
       }
-      if (isReal(strengthBits)) strengthBits.textContent = "—";
-      if (isReal(barLabel)) barLabel.style.display = "flex";
-      if (isReal(barWrapper)) {
+      if (strengthBits) strengthBits.textContent = "—";
+      if (barLabel) barLabel.style.display = "flex";
+      if (barWrapper) {
         barWrapper.classList.remove("strong");
         barWrapper.setAttribute("aria-valuenow", "0");
         barWrapper.setAttribute("aria-valuetext", "No password entered");
       }
 
       // Reset attacker cards to neutral "—" state (mirrors initial HTML)
-      if (isReal(resultLabelFast)) resultLabelFast.textContent = "—";
-      if (isReal(crackDurationFast)) {
-        crackDurationFast.textContent = "—";
-        crackDurationFast.style.color = "";
-      }
-      if (isReal(crackDateFast)) {
-        crackDateFast.textContent = "—";
-        crackDateFast.style.color = "";
-      }
-      if (isReal(resultSentenceFast)) resultSentenceFast.textContent = "";
-      if (isReal(resultLabelPro)) resultLabelPro.textContent = "—";
-      if (isReal(crackDurationPro)) {
-        crackDurationPro.textContent = "—";
-        crackDurationPro.style.color = "";
-      }
-      if (isReal(crackDatePro)) {
-        crackDatePro.textContent = "—";
-        crackDatePro.style.color = "";
-      }
-      if (resultSentencePro) if (isReal(resultSentencePro)) resultSentencePro.textContent = "";
+      resultLabelFast.textContent = "—";
+      crackDurationFast.textContent = "—";
+      crackDurationFast.style.color = "";
+      crackDateFast.textContent = "—";
+      crackDateFast.style.color = "";
+      resultSentenceFast.textContent = "";
+      if (resultLabelPro) resultLabelPro.textContent = "—";
+      if (crackDurationPro) { crackDurationPro.textContent = "—"; crackDurationPro.style.color = ""; }
+      if (crackDatePro) { crackDatePro.textContent = "—"; crackDatePro.style.color = ""; }
+      if (resultSentencePro) resultSentencePro.textContent = "";
 
       // Reset quality/pattern/HIBP badges to "—"
       if (qualityBadge) { qualityBadge.textContent = "—"; qualityBadge.style.background = ""; qualityBadge.style.color = ""; }
       if (patternBadge) { patternBadge.textContent = "—"; patternBadge.style.background = ""; patternBadge.style.color = ""; }
 
       // Reset visible details when empty
-      if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = "";
-      if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = true;
+      vulnTagsEl.innerHTML = "";
+      liveDetailsVisible.hidden = true;
       if (ctFastestValue) {
         ctFastestValue.textContent = "—";
         ctFastestValue.style.color = "";
@@ -6100,7 +6136,7 @@
       return;
     }
 
-    if (resetBtn) resetBtn.classList.add("visible");
+    resetBtn.classList.add("visible");
     resultsDiv.classList.add("visible");
     resultsDiv.classList.remove("is-empty");
     if (attackerFrame) attackerFrame.hidden = false;  // Show force bar
@@ -6166,23 +6202,23 @@
     });
     
     // Icon + label (Forget et al. 2008: +58% comprehension)
-    if (isReal(barLabel)) barLabel.style.display = "flex";
+    if (barLabel) barLabel.style.display = "flex";
     if (strengthIcon) strengthIcon.textContent = scoreIcon(sc);
-    if (isReal(strengthLabel)) {
+    if (strengthLabel) {
       strengthLabel.textContent = scoreText(sc);
       strengthLabel.style.color = col;
     }
-    if (isReal(strengthBits)) {
+    if (strengthBits) {
       const bits = Math.round(ent);
       strengthBits.textContent = `(${bits} bits)`;
     }
-    if (isReal(barWrapper)) {
+    if (barWrapper) {
       barWrapper.setAttribute("aria-valuenow", sc);
       barWrapper.setAttribute("aria-valuetext", scoreText(sc));
     }
 
     // Update strength bar color indicator
-    if (isReal(barWrapper)) {
+    if (barWrapper) {
       if (sc >= 60) {
         barWrapper.classList.add("strong");
       } else {
@@ -6191,13 +6227,13 @@
     }
 
     // Live details visible (always visible below heatmap)
-    if (isReal(detailLengthLive)) detailLengthLive.textContent = pw.length;
-    if (isReal(detailCharsetLive)) detailCharsetLive.textContent = cs;
-    if (isReal(detailEntropyLive)) detailEntropyLive.textContent = Math.round(ent);
-    if (isReal(detailCombosLive)) detailCombosLive.textContent =
+    detailLengthLive.textContent = pw.length;
+    detailCharsetLive.textContent = cs;
+    detailEntropyLive.textContent = Math.round(ent);
+    detailCombosLive.textContent =
       ent > 60 ? "2^" + Math.round(ent) : fmtBig(Math.pow(2, ent));
 
-    if (isReal(liveDetailsVisible)) liveDetailsVisible.hidden = false;
+    liveDetailsVisible.hidden = false;
 
     // Tags
     const vulns = getVulns(pw);
@@ -6210,7 +6246,7 @@
       vulns.push({ t: t("vMLHuman") + ` (${Math.round(mlProb * 100)}%)`, l: "warn" });
     }
     
-    if (isReal(vulnTagsEl)) vulnTagsEl.innerHTML = vulns
+    vulnTagsEl.innerHTML = vulns
       .map(
         (v) =>
           '<span class="vuln-tag ' +
@@ -6252,8 +6288,8 @@
     const fastDur = fmtDuration(fastSec);
     const fastDt = fmtDate(fastSec);
 
-    if (isReal(crackDurationFast)) crackDurationFast.style.color = col;
-    if (isReal(crackDateFast)) crackDateFast.style.color = col;
+    crackDurationFast.style.color = col;
+    crackDateFast.style.color = col;
 
     // Map attack types to methodology anchor IDs
     const attackAnchorMap = {
@@ -6281,11 +6317,11 @@
     const fastestConfidenceText = fastest ? confidenceText(fastest.confidence) : "";
 
     if (fastDur.instant) {
-      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest
+      resultLabelFast.textContent = fastest
         ? fastest.atk + " — " + fastest.hash
         : "";
-      if (isReal(crackDurationFast)) crackDurationFast.textContent = t("lessSec");
-      if (isReal(crackDateFast)) crackDateFast.textContent = t("now");
+      crackDurationFast.textContent = t("lessSec");
+      crackDateFast.textContent = t("now");
       resultSentenceFast.innerHTML =
         t("instantVia") +
         (fastest ? " via " + fastest.atk + "." : ".") +
@@ -6293,19 +6329,19 @@
         fastestConfidenceText +
         methodAnchor;
     } else if (fastDur.inf || !fastDur.ok) {
-      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
-      if (isReal(crackDurationFast)) crackDurationFast.textContent = fastDur.text;
-      if (isReal(crackDateFast)) crackDateFast.textContent = t("beyondDate");
-      if (isReal(resultSentenceFast)) resultSentenceFast.innerHTML = fastest 
+      resultLabelFast.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
+      crackDurationFast.textContent = fastDur.text;
+      crackDateFast.textContent = t("beyondDate");
+      resultSentenceFast.innerHTML = fastest 
         ? t("unreachableFastest").replace("{attack}", "<strong>" + fastest.atk + "</strong>") +
             (fastestMethodDesc ? " " + fastestMethodDesc : "") +
             fastestConfidenceText +
             methodAnchor
         : t("unreachable") + fastestConfidenceText + methodAnchor;
     } else {
-      if (isReal(resultLabelFast)) resultLabelFast.textContent = fastest.atk + " — " + fastest.hash;
-      if (isReal(crackDurationFast)) crackDurationFast.textContent = fastDur.text;
-      if (isReal(crackDateFast)) crackDateFast.textContent = fastDt || t("beyondDate");
+      resultLabelFast.textContent = fastest.atk + " — " + fastest.hash;
+      crackDurationFast.textContent = fastDur.text;
+      crackDateFast.textContent = fastDt || t("beyondDate");
       resultSentenceFast.innerHTML =
         t("via") +
         " <strong>" +
@@ -6325,11 +6361,11 @@
     const proDt = fmtDate(proSec);
 
     if (proDur.instant) {
-      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest
+      resultLabelPro.textContent = fastest
         ? fastest.atk + " — " + fastest.hash
         : "";
-      if (isReal(crackDurationPro)) crackDurationPro.textContent = t("lessSec");
-      if (isReal(crackDatePro)) crackDatePro.textContent = t("now");
+      crackDurationPro.textContent = t("lessSec");
+      crackDatePro.textContent = t("now");
       resultSentencePro.innerHTML =
         t("instantVia") +
         (fastest ? " via " + fastest.atk + "." : ".") +
@@ -6337,19 +6373,19 @@
         fastestConfidenceText +
         methodAnchor;
     } else if (proDur.inf || !proDur.ok) {
-      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
-      if (isReal(crackDurationPro)) crackDurationPro.textContent = proDur.text;
-      if (isReal(crackDatePro)) crackDatePro.textContent = t("beyondDate");
-      if (isReal(resultSentencePro)) resultSentencePro.innerHTML = fastest 
+      resultLabelPro.textContent = fastest ? fastest.atk + " — " + fastest.hash : t("allAttacks");
+      crackDurationPro.textContent = proDur.text;
+      crackDatePro.textContent = t("beyondDate");
+      resultSentencePro.innerHTML = fastest 
         ? t("unreachableFastest").replace("{attack}", "<strong>" + fastest.atk + "</strong>") +
             (fastestMethodDesc ? " " + fastestMethodDesc : "") +
             fastestConfidenceText +
             methodAnchor
         : t("unreachable") + fastestConfidenceText + methodAnchor;
     } else {
-      if (isReal(resultLabelPro)) resultLabelPro.textContent = fastest.atk + " — " + fastest.hash;
-      if (isReal(crackDurationPro)) crackDurationPro.textContent = proDur.text;
-      if (isReal(crackDatePro)) crackDatePro.textContent = proDt || t("beyondDate");
+      resultLabelPro.textContent = fastest.atk + " — " + fastest.hash;
+      crackDurationPro.textContent = proDur.text;
+      crackDatePro.textContent = proDt || t("beyondDate");
       resultSentencePro.innerHTML =
         t("via") +
         " <strong>" +
@@ -6572,27 +6608,25 @@
   }
 
   // Reset
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      input.value = "";
-      input.type = "password";
-      const textSpan = toggleBtn.querySelector("span");
-      if (textSpan) textSpan.textContent = t("show");
-      toggleBtn.setAttribute("aria-label", t("showAria"));
+  resetBtn.addEventListener("click", () => {
+    input.value = "";
+    input.type = "password";
+    const textSpan = toggleBtn.querySelector("span");
+    if (textSpan) textSpan.textContent = t("show");
+    toggleBtn.setAttribute("aria-label", t("showAria"));
 
-      // Cancel pending renders/checks and force a fresh empty-state render
-      clearTimeout(timer);
-      userPinnedAlgo = false;
-      selectedAlgo = "sha256";
-      if (ctAlgo) ctAlgo.value = "sha256";
-      if (hibpAbort) hibpAbort.abort();
-      clearTimeout(hibpDebounce);
-      lastCheckedPw = "";
+    // Cancel pending renders/checks and force a fresh empty-state render
+    clearTimeout(timer);
+    userPinnedAlgo = false;
+    selectedAlgo = "sha256";
+    if (ctAlgo) ctAlgo.value = "sha256";
+    if (hibpAbort) hibpAbort.abort();
+    clearTimeout(hibpDebounce);
+    lastCheckedPw = "";
 
-      render();
-      input.focus();
-    });
-  }
+    render();
+    input.focus();
+  });
 
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -6604,7 +6638,7 @@
   // ============================================================
   // CHARACTER PREVIEW (brief reveal on type)
   // ============================================================
-  const charPreview = safe('char-preview');
+  const charPreview = document.getElementById('char-preview');
   let previewTimeout = null;
   let lastLength = 0;
 
@@ -6644,7 +6678,7 @@
   // INFO TOOLTIP
   // ============================================================
   const tooltipTrigger = document.querySelector('.info-tooltip-trigger');
-  const tooltip = safe('speed-tooltip');
+  const tooltip = document.getElementById('speed-tooltip');
   
   if (tooltipTrigger && tooltip) {
     let isTooltipVisible = false;
@@ -6732,10 +6766,10 @@
 
   // Test button (currently just triggers analysis, password is analyzed on input)
   // Initialize: hide strength label on page load
-  if (isReal(barLabel)) barLabel.style.display = "none";
+  if (barLabel) barLabel.style.display = "none";
 
   // Strength info tooltip toggle
-  if (isReal(strengthInfoBtn) && isReal(strengthTooltip)) {
+  if (strengthInfoBtn && strengthTooltip) {
     strengthInfoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       strengthTooltip.hidden = !strengthTooltip.hidden;
@@ -6750,26 +6784,24 @@
   }
 
   // Copy button
-  if (isReal(copyBtn)) {
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(input.value);
-
-        // Visual feedback - change aria-label since no visible text
-        copyBtn.classList.add('copied');
-        const originalLabel = copyBtn.getAttribute('aria-label');
-        copyBtn.setAttribute('aria-label', t('copied'));
-
-        // Reset after 2 seconds
-        setTimeout(() => {
-          copyBtn.classList.remove('copied');
-          copyBtn.setAttribute('aria-label', originalLabel);
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(input.value);
+      
+      // Visual feedback - change aria-label since no visible text
+      copyBtn.classList.add('copied');
+      const originalLabel = copyBtn.getAttribute('aria-label');
+      copyBtn.setAttribute('aria-label', t('copied'));
+      
+      // Reset after 2 seconds
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyBtn.setAttribute('aria-label', originalLabel);
       }, 2000);
-      } catch (err) {
-        console.error('Failed to copy:', err);
-      }
-    });
-  }
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  });
 
   // Hide copy button when user types
   input.addEventListener('input', () => {
@@ -6798,7 +6830,7 @@
       });
       // Show selected panel
       const panelId = tab.getAttribute("aria-controls");
-      const panel = safe(panelId);
+      const panel = document.getElementById(panelId);
       if (panel) panel.hidden = false;
     });
   });
@@ -6814,18 +6846,14 @@
       if (!BLOOM_LOADED && !BLOOM_LOADING) loadBloomFilter();
     });
   }
-  } // End of: if (input) block
 
   // Initialize i18n and load dictionary on page load
   // ML model is lazy-loaded when first password is entered (saves ~600KB initial load)
-  if (input) {
-    setLang(LANG);
-    loadDictionary(LANG); // Load in background, don't block initialization
-    loadPcfgCalibration();
-    loadMarkovCalibration();
-    loadNeuralCalibration();
-    loadPrinceCalibration();
-    render(); // Keep layout fully visible even with empty input
-  }
-  }); // End DOMContentLoaded
+  setLang(LANG);
+  loadDictionary(LANG); // Load in background, don't block initialization
+  loadPcfgCalibration();
+  loadMarkovCalibration();
+  loadNeuralCalibration();
+  loadPrinceCalibration();
+  render(); // Keep layout fully visible even with empty input
 })();

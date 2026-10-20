@@ -2,7 +2,8 @@
 // Orchestrateur de la couche 1 : estimation du rang de devinette.
 //
 // Fait tourner plusieurs modèles en parallèle et retourne :
-//   - standard   : min(dict, hybrid, pcfg, markov, mask) — attaquant compétent non ciblé
+//   - standard   : score global lissé, robuste aux bascules entre attaques
+//   - attack_rank: meilleur rang brut parmi les attaques applicables
 //   - optimistic : min(dict, hybrid) — attaquant avec accès à wordlists (cas favorable)
 //   - worst_case : brute force — borne supérieure garantie
 //   - best_attack : quel modèle donne le rang le plus bas
@@ -33,6 +34,7 @@ import { rankCombinator } from './combinator.js';
  *
  * @returns {{
  *   standard:    number,
+ *   attack_rank: number,
  *   optimistic:  number,
  *   worst_case:  number,
  *   best_attack: string,
@@ -54,6 +56,7 @@ export function estimateRank(password, options = {}) {
     const brute = rankBrute(password);
     return {
       standard:    hibpRank,
+      attack_rank: hibpRank,
       optimistic:  hibpRank,
       worst_case:  brute.rank,
       best_attack: 'dictionary',
@@ -111,11 +114,26 @@ export function estimateRank(password, options = {}) {
   const maskRank       = results.mask.rank;
   const combinatorRank = results.combinator.rank;
 
-  // standard = min de tous les modèles non-null (attaquant compétent)
-  const standardCandidates = [
+  // attack_rank = min de tous les modèles non-null applicables
+  const attackCandidates = [
     dictRank, hybridRank, pcfgRank, markovRank, maskRank, combinatorRank, bruteRank,
   ].filter(r => r !== null);
-  const standard = Math.min(...standardCandidates);
+  const attack_rank = Math.min(...attackCandidates);
+
+  // standard = score global lissé.
+  // On prend une moyenne géométrique sur les familles applicables, ce qui :
+  // - réduit les bascules brutales quand un modèle change de vainqueur
+  // - reste monotone dans chaque famille
+  // - évite de laisser un seul modèle dicter toute la sortie
+  const stableCandidates = [
+    dictRank, hybridRank, pcfgRank, markovRank, maskRank, combinatorRank,
+  ].filter(r => r !== null && r > 0);
+  const standard = stableCandidates.length > 0
+    ? Math.pow(
+        10,
+        stableCandidates.reduce((sum, r) => sum + Math.log10(r), 0) / stableCandidates.length,
+      )
+    : bruteRank;
 
   // optimistic = min des modèles à ancrage empirique direct
   const optimisticCandidates = [dictRank, hybridRank, combinatorRank].filter(r => r !== null);
@@ -139,6 +157,7 @@ export function estimateRank(password, options = {}) {
 
   return {
     standard,
+    attack_rank,
     optimistic,
     worst_case: bruteRank,
     best_attack,

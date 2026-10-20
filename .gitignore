@@ -1,1 +1,6 @@
 .superpowers/
+
+# Local env / large or private data
+.venv/
+*.found
+live-time2crack.eu/

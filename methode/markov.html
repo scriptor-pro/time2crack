@@ -1,0 +1,432 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Markov — Attack Methods — Time2Crack</title><link rel="preload" href="../style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<script src="../detect-language.js"></script>
+</head><body>  <header id="site-header"></header>
+<main>
+<h1 style="display:none">Markov attack (probabilistic) — Comprehensive operation</h1>
+<blockquote>
+Project reference document Time2Crack
+</blockquote>
+<blockquote>Recipients: developers, security researchers, advanced users</blockquote>
+<hr>
+<h2>Contents</h2>
+<li><a href="markov.html#1-vue-densemble">Overview</a></li>
+<li><a href="markov.html#2-contexte-historique-et-académique">Historical and academic background</a></li>
+<li><a href="markov.html#3-fondements-mathématiques--les-chaînes-de-markov">Mathematical foundations: Markov's chains</a></li>
+<li><a href="markov.html#4-architecture-dun-cracktool-markov">Architecture of a Markov cracktool</a></li>
+<li><a href="markov.html#5-phase-1--entraînement-sur-corpus-de-mots-de-passe-réels">Phase 1 — corpus training of real passwords</a></li>
+<li><a href="markov.html#6-phase-2--génération-ordonnée-de-candidats">Phase 2 — Orderly generation of candidates</a></li>
+<li><a href="markov.html#7-réduction-de-lespace-de-recherche--la-clé-de-lefficacité">Reducing Research Space: The Key to Effectiveness</a></li>
+<li><a href="markov.html#8-variantes-et-implémentations-notables">Notable variations and implementations</a></li>
+<li><a href="markov.html#9-comportement-face-à-différents-types-de-mots-de-passe">Behaviour against different types of passwords</a></li>
+<li><a href="markov.html#10-intégration-dans-time2crack--modélisation-et-paramètres">Integration into Time2Crack: Modeling and Parameters</a></li>
+<li><a href="markov.html#11-comparaison-avec-les-autres-attaques-probabilistes">Comparison with other probabilistic attacks</a></li>
+<li><a href="markov.html#12-limites-de-lattaque-markov">Limits of the Markov attack</a></li>
+<li><a href="markov.html#13-défenses-efficaces">Effective defences</a></li>
+<li><a href="markov.html#14-références-bibliographiques">References</a></li>
+<hr>
+<h2>1. Overview</h2>
+<p>Markov Attack is a password cracking method <strong>probabilistic and statistical</strong> which generates candidates by relying on the observed frequencies of transition between characters in real human passwords. Instead of testing all possible combinations in alphabetical order — as the raw force does — it sorts candidates from the most probable at least, concentrating the calculation effort where human passwords are actually located.</p>
+<strong>In simple terms</strong> : an attacker who has enough GPU and a well trained Markov model will test "letmein", "p@ssword" and "sun2024" before testing "aaaaaa", "aaaaab" or "xqzfkw" — because humans create passwords that look like words, not white noise.
+<strong>Measured efficiency</strong> : Dürmuth et al. (2015) research on the RockYou corpus (14 million passwords) shows that a Markov 5 model reduces the actual search space to <strong>0.6% of gross space</strong> for passwords with a typical human structure — a 99.4 % reduction.
+<hr>
+<h2>2. Historical and academic background</h2>
+<h3>2.1 Origins</h3>
+<p>The application of Markov's channels to password cracking is earlier than formal academic publications. Offensive security practitioners used similar models since the 2000s, but rigorous formalization dates mainly from the 2010s.</p>
+<strong>Chronology of milestones</strong> :
+YearEvent
+-------------------
+2005Nakashima &amp; Oyama: first formal application of n-grams to passwords
+2009Weir et al. (IEEE S&amp;P): PCFG — direct competitor, positions structural probabilities
+2012Ma et al. (USENIX Security): Comparative study of probabilistic models on 70M passwords
+2013Durmuth: first OMEN analyses on several corpus
+2015Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge: <strong>OMEN</strong> (ESORICS 2015) — major academic reference
+2016Wheeler (zxcvbn) confirms the effectiveness of n-grams in estimating actual entropy
+2018OMEN+: improved version with smoothing and interpolation
+2019–2022Markov hybrid work + neural networks (PassGAN, FuzzyPSM)
+<h3>2.2 Reference body</h3>
+<p>Markov model training is based on password databases from known data leaks:</p>
+<ul>
+<li><strong>RockYou (2009)</strong> : 14.3 million plain passwords — universal reference corpus</li>
+</ul>
+<li><strong>LinkedIn (2012)</strong> : 6.5 million non-salted SHA-1 hashs (including 4,4M cracked)</li>
+<li><strong>Adobe (2013)</strong> : 153 million identifiers (3DES hashs — cracked by frequency analysis)</li>
+<li><strong>Collection #1–5 (2019)</strong> : 2.7 billion pairs identifying/password</li>
+<li><strong>Have I Been Pwned (2024)</strong> : ~14 billion single aggregate credentials</li>
+<p>These corpus reveal the actual statistical distribution of human passwords, which differs radically from a uniform distribution.</p>
+<hr>
+<h2>3. Mathematical Foundations: Markov's Chains</h2>
+<h3>3.1 Formal definition</h3>
+<p>Markov chain of order <em>k</em> on an alphabet  <em>k</em> Previous characters:</p>
+<pre><code class="language-plaintext">P(cₙ | c₁c₂...cₙ₋₁) = P(cₙ | cₙ₋ₖ...cₙ₋₁)</code></pre>
+<p>For passwords, it usually includes 95 printable ASCII characters (26 lower case + 26 upper case + 10 digits + 33 symbols).</p>
+<strong>Order 1 (bigram)</strong> :
+<pre><code class="language-plaintext">P("password") = P("p") × P("a"|"p") × P("s"|"a") × P("s"|"s") × ...</code></pre>
+<strong>Order 5 (optimal according to Dürmuth 2015)</strong> :
+<pre><code class="language-plaintext">P("password") = P("p") × P("a"|"p") × P("s"|"pa") × P("s"|"pas")
+                × P("w"|"pass") × P("o"|"passw") × P("r"|"passwo")
+                × P("d"|"passwor")</code></pre>
+<p>Order 5 captures contexts like "after "passw", the most likely follow-up is "o" — information inaccessible to an order model 1.</p>
+<h3>3.2 The transition matrix</h3>
+<p>For an order of 1 over 95 characters, the transition matrix is size <strong>95 × 95 = 9,025 inputs</strong>. For Order 5, it goes to <strong>955 × 95 = ~7.7 × 1010 theoretical inputs</strong> — but the majority of order n-grams 5 never appear in the actual data. Implementations use hollow data structures (tries, hash maps) to store only observed n-grams.</p>
+<h3>3.3 Log probability and sorting</h3>
+<p>To avoid floating overruns on 8+-character passwords (probabilities of the order of 10−20), the tools work in <strong>log probabilities</strong> :</p>
+<pre><code class="language-plaintext">log P("password") = log P("p") + log P("a"|"p") + log P("s"|"a") + ...</code></pre>
+<p>This value is the <strong>score Markov</strong> Candidates are generated in descending order of score, i.e. the most likely at least likely.</p>
+<h3>3.4 Why Order 5?</h3>
+<p>Empirical research (Dürmuth 2015, confirmed by Ma et al. 2012) shows that:</p>
+<li><strong>Order 1</strong> : captures frequencies of individual characters (e, a, o common in tiny), reduction ~50%</li>
+<li><strong>Order 2</strong> : captures common bigrams (pa, ss, wo, rd), reduction ~75%</li>
+<li><strong>Order 3</strong> : captures trigrams (not, ass, ssw), reduction ~90%</li>
+<li><strong>Order 4</strong> : diminishing returns start, reduction ~95 %</li>
+<li><strong>Order 5</strong> : Optimum empirical on RockYou, reduction ~99.4%</li>
+<li><strong>Order 6+</strong> : overfitting, model memorizes training passwords without generalizing</li>
+<hr>
+<h2>4. Architecture of a Markov cracktool</h2>
+<h3>4.1 Main components</h3>
+<pre><code class="language-plaintext">┌─────────────────────────────────────────────────────────────┐
+│                    OUTIL DE CRACKING MARKOV                 │
+├─────────────────┬───────────────────┬───────────────────────┤
+│  Phase          │  Composant        │  Rôle                 │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Entraînement   │ Corpus Parser     │ Lit les mots de passe │
+│                 │ N-gram Counter    │ Compte les transitions│
+│                 │ Probability Table │ Normalise en probas   │
+│                 │ Model Serializer  │ Sauvegarde le modèle  │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Génération     │ Candidate Gen     │ Énumère par score     │
+│                 │ Length Controller │ Filtre par longueur   │
+│                 │ Threshold Filter  │ Coupe les improbables │
+├─────────────────┼───────────────────┼───────────────────────┤
+│  Attaque        │ Hash Engine       │ Compare aux cibles    │
+│                 │ GPU Interface     │ Hashcat backend       │
+└─────────────────┴───────────────────┴───────────────────────┘</code></pre>
+<h3>4.2 Integration with Hashcat</h3>
+<p>The most widespread implementation in practice is via the <strong>Hashcat stdin mode</strong> (<code>-a 0</code> with an external generator) or via Python modules as <code>statsgen</code> (from the PACK toolkit):</p>
+<pre><code class="language-bash"># Exemple d'attaque Markov pratique
+python statsgen.py rockyou.txt --output markov<em>model.stats
+python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes.txt</em></code></pre>
+<p>Dedicated tools like <strong>OMEN</strong> (Open Markov Estimator of Next passwords) directly generate lists of sorted candidates.</p>
+<hr>
+<h2>5. Phase 1 — Body of real password training</h2>
+<h3>5.1. Extraction of n-grams</h3>
+<p>For each password in the corpus, all n-grams are extracted (with a start marker). <code>^</code> and end <code>$</code>) :</p>
+<p>Example with "hello" (order 2):
+</p><pre><code class="language-plaintext">^h, he, el, ll, lo, o$</code></pre><p></p>
+<p>Example with "P@ss1!" (order 2):
+</p><pre><code class="language-plaintext">^P, P@, @s, ss, s1, 1!, !$</code></pre><p></p>
+<h3>5.2 Counting and standardization</h3>
+<p>For each context (n-1 previous characters), the occurrences of each following character are counted and normalized:</p>
+<pre><code class="language-plaintext">Contexte "pa" → {s: 847, r: 12, t: 8, l: 3, ...}
+→ P(s|pa) = 847/870 = 0.973
+→ P(r|pa) = 12/870 = 0.014</code></pre>
+<p>These distributions reveal human language habits: after "pa", people write massively "s" (password, pass, pablo...).</p>
+<h3>Smoothing</h3>
+<p>The problem of unobserved n-grams: if "xq" never appears in the corpus, P(c)xq) = 0 for any c — which blocks the generation. The most used smoothing techniques:</p>
+<li><strong>Add-one (Laplace)</strong> : add 1 to all accounts</li>
+<li><strong>Good-Turing</strong> : redistribute the probability of the n-grams seen once to those never seen</li>
+<li><strong>Kneser-Ney</strong> : state of the art method, used in OMEN+</li>
+<p>Smoothing also allows the model to generate candidates out of the training corpus — crucial to cover slightly new passwords.</p>
+<h3>5.4 What the model learns</h3>
+<p>After training on RockYou, a Markov 5-order model internalizes patterns like:</p>
+<li><strong>Digital suffixes</strong> : numbers appear massively at the end of the password (→ "123", "2024", "1!")</li>
+<li><strong>Current beginnings</strong> : "pa", "my", "lo", "ch", "123", "abc" are frequent beginnings</li>
+<li><strong>Initial payment</strong> : the uppercase in the first position is much more likely than in the middle of the chain</li>
+<li><strong>Rare symbols in the middle</strong> : "@", "#", "!" appear mainly in replacement of letters or suffix</li>
+<li><strong>Human Repetitions</strong> : "aa", "ll", "ee" are more frequent than duplicates of rare consonants</li>
+<hr>
+<h2>6. Phase 2 — Orderly generation of candidates</h2>
+<h3>6.1 The problem of score enumeration</h3>
+<p>Generating candidates in descending order of probability Markov is a non-trivial problem. We cannot simply calculate the probabilities of all possible candidates (948 x 6 × 1015 for 8 tanks) and then sort them out.</p>
+<p>The solution: <strong>Heuristic search with priority tail</strong> The algorithm is similar to Dijkstra:</p>
+<li>Initialize the line with the most likely beginnings (<code>^a</code>, <code>^p</code>, <code>^1</code>...)</li>
+<li>At each stage, depilate the most likely partial candidate</li>
+<li>Extend it with each possible character, calculate the score of the extended candidate</li>
+<li>If target length reached, issue candidate</li>
+<li>If not, file back</li>
+<p>This approach ensures an approximately decreasing sorting without memorizing the entire space.</p>
+<h3>6.2. Threshold threshold</h3>
+<p>To avoid generating billions of improbable candidates, a <strong>Minimum score</strong> below which a partial candidate is eliminated (sladding).</p>
+<pre><code class="language-plaintext">Si log P(candidatpartiel) &lt; THRESHOLD → abandon de cette branche</code></pre>
+<p>Threshold is a critical parameter: too high → you miss passwords at the limit; too low → you generate too many candidates and slow down the attack.</p>
+<h3>6.3 Length management</h3>
+<p>Markov models are trained and generally operate <strong>by fixed length</strong>A typical attack:</p>
+<li>Length 6: generate N candidates in descending order of probability</li>
+<li>Length 7 : Idem</li>
+<li>Length 8: Idem (most common length in corpus)</li>
+<li>Lengths 9-12: decreasing coverage</li>
+<p>Length distribution in RockYou: 8 tanks = 24%, 7 tanks = 21%, 9 tanks = 12%, 6 tanks = 10%...</p>
+<hr>
+<h2>7. Reducing Research Space: The Key to Effectiveness</h2>
+<h3>7.1 Empirical quantification (Dürmuth 2015)</h3>
+<p>For a password of 8 characters with the complete alphabet (94 tanks):</p>
+MethodResearch spaceReduction factor
+----------------------------------------------------
+Gross strength948 6 × 10151× (reference)
+Markov Order 1~3 × 1015~2×
+Markov Order 3~6 × 1013~100×
+Markov Order 5~3.6 × 1010~166 000×
+Markov Order 5 (typical human)~4 × 107<strong>~150 million×</strong>
+<p>The difference between "reduced space" and "typical human space" can be explained by the fact that real human passwords are concentrated in <strong>top-k% most likely</strong> Depending on the model.</p>
+<h3>7.2 Why Humans Are Predictable</h3>
+<p>The predictability factors used by Markov:</p>
+<strong>Language constraints</strong> passwords are derived from existing words. "letmein", "sunshine", "iloveyou" follow phonotic rules of English — the transitions of letters are highly probable.
+<strong>Cognitive constraints</strong> Humans do not remember really random sequences. A random password such as "xqzfw9@" is rarely chosen spontaneously.
+<strong>Cultural patterns</strong> These patterns create high density clusters in the password space.
+<strong>Predictable substitutions</strong> These changes are so common that they form part of the model.
+<strong>Position of numbers and symbols</strong> : the numbers at the end of the password (passwd123) are 10× more frequent than the numbers at the beginning. Suffix symbols (passwd!) are 5× more frequent than in the central position.
+<h3>7.3 The case of keyboard patterns</h3>
+<p>Keyboard sequences (qwerty, asdf, zxcv, 1234, azerty...) are particularly vulnerable.</p>
+<li>Character transitions follow the constraints of keyboard topology</li>
+<li>From each key, only 4-8 immediate neighbours are relevant</li>
+<li>A Markov model driven on corpus including these patterns achieves a reduction of <strong>99.7 %</strong> (vs 99.4% for general human words)</li>
+<p>In Time2Crack (current version), this distinction is no longer a fixed bearing. The Markov v2 model incorporates <code>kbPat</code> as a signal in a rank estimator (<code>markovExpectedGuesses</code>) then interpole continuously between "human-like" and "random-like" regimes.</p>
+<hr>
+<h2>8. Notable Variations and Implementations</h2>
+<h3>8.1 OMEN (Open Markov Estimator of Next passwords)</h3>
+<strong>Developed by</strong> : Dürmuth, Angelstorf, Horsch, Nürnberger, Rüegge (ESORICS 2015)
+<strong>Availability</strong> : Open source (GitHub)
+<strong>Main innovation</strong> : optimized scheduling by level score (summarization by probability steps)
+<p>OMEN uses a discretisation of probabilities in <strong>whole levels</strong> to accelerate the generation:
+</p><li>Each n-gram receives an integer score (0 = very likely, 10 = unlikely)</li>
+<li>The sum of the scores of a password is its <strong>overall score</strong></li>
+<li>Passwords are generated in ascending order of overall score</li><p></p>
+<p>This approach elegantly solves the problem of orderly enumeration without expensive priority tail.</p>
+<h3>8.2 OMEN+</h3>
+<p>Extension of OMEN with:
+</p><li><strong>Smoothing Kneser-Ney</strong> for better generalisation</li>
+<li><strong>Multi-order interpolation</strong> : combines order predictions 3, 4 and 5</li>
+<li><strong>Adaptation of threshold</strong> based on empirical corpus distribution</li><p></p>
+<p>Reported performance: +15 to +20% cracked passwords vs original OMEN with equal budget.</p>
+<h3>8.3 Statsgen / PACK (Password Analysis and Cracking Kit)</h3>
+<strong>Developed by</strong> : Peter Kacherginsky (iphelix)
+<strong>Approach</strong> : lighter than OMEN, generates Hashcat compatible masks and stats
+<strong>Typical use</strong> : analysis of a set of cracked passwords to adapt future attacks
+<h3>8.4 JohnTheRipper — Markov Mode</h3>
+<p>John TheRipper integrates a <strong>native Markov mode</strong> (developed by Samuele Giovanni Tonon):</p>
+<pre><code class="language-bash">john --markov --min-length=6 --max-length=8 hashes.txt</code></pre>
+<p>Parameter <code>--markov-threshold</code> (0-400): controls the cut-off threshold. 150 = recommended standard parameter.</p>
+<p>JtR Markov mode uses pre-calculated statistics stored in files <code>.mkv</code> (markov stats files) generated by <code>calc<em>stat</em></code>.</p>
+<h3>8.5 Markov Hybrid Models</h3>
+<strong>Markov + rules</strong> : generate Markov candidates, then apply Hashcat transformation rules
+<strong>Markov + dictionary</strong> : use Markov passwords as a basis for hybrid attacks
+<strong>Markov + PCFG</strong> : combine the probabilistic order Markov with the structural stress PCFG
+<p>These hybridizations are used in professional cracking configurations to maximize CPU/GPU budget coverage.</p>
+<h3>8.6 Modern Language Models (LLM/LSTM) — successors to Markov</h3>
+<p>LSTM and Transformer networks can be seen as generalizations of Markov channels:
+</p><li>Markov order k = k tokens fixed context window</li>
+<li>LSTM = variable and unbounded context window (long-term memory)</li>
+<li>Transform = overall attention to the entire sequence</li><p></p>
+<p>PassGAN (2017), FLA (2019), PassBERT (2022) surpassed classic Markov models by 20-30% in crack rates on modern corpus.</p>
+<hr>
+<h2>9. Behaviour against different types of passwords</h2>
+<h3>9.1 Passwords from natural words</h3>
+<strong>Examples</strong> : sunshine, letmein, dragon, iloveyou
+<strong>Vulnerability</strong> : extreme
+<strong>Mechanism</strong> : the model assigns very high probability to the sequences of the current English. These words appear in the <strong>top 0.001 %</strong> generated candidates.
+<strong>Time</strong> : milliseconds on MD5/SHA-1
+<h3>9.2 Words with leetspeak substitutions</h3>
+<strong>Examples</strong> : p@ssw0rd, L3tm3In, $unsh1ne
+<strong>Vulnerability</strong> : high
+<strong>Mechanism</strong> The model has learned that "@" often follows "p" (because "p@ss..." is very common in the corpus), that "0" often follows "w" (w0rd...), etc. The most common substitutions are integrated into the probability of transition.
+<strong>Time</strong> : seconds to minutes
+<h3>9.3 Words with digital suffix</h3>
+<strong>Examples</strong> : password123, sunshine2024, dragon1!
+<strong>Vulnerability</strong> : high
+<strong>Mechanism</strong> The numerical suffixes are so common that the model has a high probability for the letter→ transitions at the end of the sequence. "123", "1", "2024", "12" are the most likely suffixes.
+<strong>Time</strong> : seconds to a few minutes
+<h3>9.4 Given names and proper names</h3>
+<strong>Examples</strong> : Thomas92, AnneM@rie, NICOLAS
+<strong>Vulnerability</strong> moderate to high
+<strong>Mechanism</strong> : Common names (in English) are well represented in the reference corpus. Less common names in English corpus (French, Polish, etc.) benefit less from the model.
+<strong>Time</strong> : minutes to hours depending on the popularity of the first name
+<h3>9.5 Pass words of apparent random structure but mnemotechnic</h3>
+<strong>Examples</strong> : Tr0ub4dor&amp;3 (of article XKCD), Il0v3myC@t!
+<strong>Vulnerability</strong> moderate
+<strong>Mechanism</strong> These passwords have a human structure (baseword + substituions + suffix), but the base and the specific transformations are not in the top-k of Markov candidates. The model will eventually reach them, but they fall into the 10-30% of space.
+<strong>Time</strong> : hours to days according to length and hash algorithm
+<h3>9.6 Keyboard Patterns</h3>
+<strong>Examples</strong> : qwerty, 1234567, azerty, qweasdzxc
+<strong>Vulnerability</strong> : extreme (worse than natural words)
+<strong>Mechanism</strong> : keyboard transitions are so represented in the corpus that the model ranks them among the first thousands of candidates — sometimes the first tens.
+<strong>Time</strong> : microseconds to milliseconds
+<h3>9.7 Really Random Passwords</h3>
+<strong>Examples</strong> : xQz7@mK9, 4#pL$2nR, kRf9!Ws3
+<strong>Vulnerability</strong> : low to zero
+<strong>Mechanism</strong> : The character transitions in these passwords have very low probabilities in a model trained on human passwords. They are found in the last percentages of the space generated.
+<strong>Behaviour</strong> The real "cost" of security is gross entropy.
+<strong>Time</strong> : comparable to or greater than gross force
+<h3>9.8 Passphrases</h3>
+<strong>Examples</strong> : horse-battery-staple-correct, monchieneestlouisXIV
+<strong>Vulnerability</strong> : variable
+<strong>Complex mechanism</strong> :
+<li>A Markov model can capture inter-word transitions in a short passphrase (2 words) if these combinations are common in the corpus</li>
+<li>But for long passphrases (4+ words), the candidate space ordered by Markov will only reach them after exhausting all the typical short passwords</li>
+<li>Attack <strong>combinator</strong> is generally more effective than Markov on passphrases</li>
+<hr>
+<h2>10. Integration into Time2Crack: Modelling and Parameters</h2>
+<h3>General logic of calculation (v2)</h3>
+<p>Time2Crack now models Markov in <strong>expected rank</strong> (rank-based) rather than with fixed reduction factors.</p>
+<p>Calculation line:</p>
+<li>Unicode tokenization in segments <code>L</code>/<code>D</code>/<code>S</code>,</li>
+<li>estimation of a human rank via skeleton + shape + rows of tokens,</li>
+<li>modulation by structural signals (<code>kbPat</code>, <code>seq</code>, <code>dt</code>, <code>rep</code>, <code>hybridVuln</code>),</li>
+<li>continuous interpolation towards a "random-like" regime according to <code>charset</code> and length,</li>
+<li>time conversion via <code>budgetTime(rangestime, vitesse<em>hash)</em></code>.</li>
+<h3>10.2 Unicode Tokenization and Calibrated Profile by Language</h3>
+<p>The Markov v2 model uses Unicode classes (<code>\p{L}</code>, <code>\p{N}</code>, otherwise symbol) and a calibrated profile per language (loaded since <code>data/markov-calibration.json</code>, with internal fallback).</p>
+<p>The profile contains:</p>
+<li><code>skeletonRanks</code> (<code>L8D2</code>, <code>L8D2S1</code>, ...),</li>
+<li><code>shapeRanks</code> (<code>LD</code>, <code>LDS</code>, ...),</li>
+<li><code>tokenRanks</code> by class/length,</li>
+<li>language multipliers (<code>shapeMultipliers</code>),</li>
+<li>signal multipliers (<code>signalMultipliers</code>).</li>
+<h3>10.3. Continuous interpolation (end of steep thresholds)</h3>
+<p>The old model used bearings (0.003 / 0.006 / 0.25 / 0.9). The v2 model replaces this logic with continuous interpolation between:</p>
+<li><code>humanRank</code> (probable structural area),</li>
+<li><code>randomRank</code> (area close to crude, bounded).</li>
+<p>Random weight is a continuous function of the length, tank and strength of human signals, thus avoiding artificial discontinuities.</p>
+<h3>10.4 Confidence and applicability score</h3>
+<p>Time2Crack Scoring Model (function <code>annotateScenarioApplicability()</code>) allocates to Markov:</p>
+<strong>Basic confidence</strong> : 0.75 (line 4800)
+Interpretation: Markov attack is considered <strong>moderately reliable</strong> — more reliable than the neural estimate (0.7) or PRINCE (0.7), less than the dictionary (0.9) or the groove tables (0.95).
+<strong>Applicability score</strong> (line 4873-4874):
+<pre><code class="language-javascript">case "markov":
+  return context.looksHuman ? 0.76 : 0.34;</code></pre>
+<li><code>looksHuman = true</code> → score 0.76: Markov attack is <strong>very applicable</strong>, the model will exploit human regularities</li>
+<li><code>looksHuman = false</code> → score 0.34: applicable but without major advantage over brute force</li>
+<strong>Evidence score</strong> (line 4829-4830):
+<pre><code class="language-javascript">case "markov":
+  return Number(!!context.looksHuman) + Number(!!context.kbPat)
+       + Number(!!context.seq)        + Number(!!context.rep);</code></pre>
+Each signal of "human character" of the password increments Markov's obvious score.
+<h3>10.5 Adjustment HF</h3>
+<p>With Markov v2, the structural signals are already integrated into the estimated rank. The HF adjustment is therefore neutral for Markov in order to avoid double counting.</p>
+<h3>10.6 Priority in the tiebreak</h3>
+<p>When multiple attacks give similar times (&lt; 1ms of difference), Time2Crack chooses the most relevant according to a semantic priority:</p>
+<pre><code class="language-javascript">const tieBreakPriority = {
+  // ...
+  markov: 8,    // Statistical n-gram — broad coverage
+  // ...
+};</code></pre>
+<p>Markov is a useful complement attack that exploits statistical regularities. It takes precedence over gross force for passwords with human structure, but gives precedence to dictionary and hybrid attacks that are more direct.</p>
+<h3>10.7 Ultra-weak case</h3>
+<p>For ultra-low passwords (detected by <code>isWeakPassword()</code>), Markov uses a time based on a minimum rank (<code>weakGuessTime</code>) rather than a fixed constant:</p>
+<pre><code class="language-javascript">if (weak) {
+  rows.push({ ..., sec: weakGuessTime(a.rate), note: t("nWeakPassword"), cat: "markov" });
+}</code></pre>
+<p>Reasoning: an ultra-low password (password, 123456, qwerty...) is in the <strong>top-100 absolute</strong> Markov space — it will be tested first, the accuracy of the calculation is irrelevant.</p>
+<hr>
+<h2>11. Comparison with other probabilistic attacks</h2>
+<h3>11.1 Markov vs PCFG</h3>
+DimensionMarkovPCFG
+--------------------------
+<strong>Unit of analysis</strong>Individual character transitionsSegment structures (L/D/S)
+<strong>Information captured</strong>Local Regularities (n-gram)Global (grammar)
+<strong>Force on</strong>Natural words, continuous patternsWords + numbers, composite structures
+<strong>Limit</strong>Does not capture global structuresDo not capture local transitions
+<strong>Complementarity</strong>Ideal for pure wordsIdeal for Password123
+<strong>Optimal example</strong>"sunshine"Sunshine#93
+<strong>Order in Time2Crack</strong>Markov = 8, PCFG = 6PCFG more accurate if structure detected
+<h3>11.2 Markov vs. Rule-Based Attack</h3>
+DimensionMarkovRule-based
+---------------------------------
+<strong>Approach</strong>Generation ab initio probabilisticTransformation of an existing dictionary
+<strong>Coverage</strong>All likely passwordsTranslations of dictionary words
+<strong>Force on</strong>Rare or slightly non-dictionary wordsTraditional transformations of known words
+<strong>Limit</strong>Less effective than dictator+rules for current mutationsDepends entirely on the quality of the dictionary
+<h3>11.3 Markov vs Neural Networks (PassGAN, LSTM)</h3>
+DimensionMarkov (Order 5)Neuronal network
+----------------------------------------------
+<strong>Complexity</strong>O(k ×) by predictionO(n2 × d) (Transformer)
+<strong>Data required</strong>1-10M examples sufficient10M-1B for good results
+<strong>Interpretability</strong>Total (probability tables)Black box
+<strong>Generalisation</strong>Limited to local context kOverall potential
+<strong>Crack rate</strong>Reference+20-30% on modern passwords
+<strong>Generation speed</strong>Very fastSlower
+<h3>11.4 Global positioning</h3>
+<p>In a professional cracking workflow, the typical order is:</p>
+<li><strong>Dictionary</strong> (credlist) — known exact passwords</li>
+<li><strong>Credential stuffing</strong> — re-used ID/mdp pairs</li>
+<li><strong>Password spraying</strong> — top-20 common</li>
+<li><strong>Hybrid</strong> — dico + Hashcat rules</li>
+<li><strong>PCFG</strong> — if L+D structure detected</li>
+<li><strong>Mask</strong> — if positional pattern detected</li>
+<li><strong>Markov</strong> — general statistical coverage</li>
+<li><strong>Neural</strong> — if available budget</li>
+<li><strong>Gross strength</strong> — last resort</li>
+<p>Markov is often the <strong>background line</strong> front brute force: it effectively covers human passwords that have escaped more targeted attacks.</p>
+<hr>
+<h2>12. Limits of the Markov Attack</h2>
+<h3>12.1 Dependence on the body of training</h3>
+<p>The model is as good as its corpus. A corpus dominated by English passwords (RockYou, LinkedIn) misunderstands regularities:
+</p><li>Passwords in high morphological density languages (Polish, Czech, Finnish)</li>
+<li>Passwords based on unrepresented cultures (transliterated mandarin, Romanized Arabic)</li>
+<li>Passwords from specialized fields absent from leaks (medical slang, rare technical jargon)</li><p></p>
+<strong>Partial solution</strong> : to train specific models by language and field (approach requiring diverse corpus).
+<h3>12.2 Long-range interpositional independence</h3>
+<p>A Markov 5 model sees no more than 5 characters. For a password of 12 characters, it cannot correlate the 12th character with the 1st. A passphrase like "stargate2004!" has a global structure ("word + year +!") that Markov perceives locally but not globally — PCFG is better here.</p>
+<h3>12.3 Insensitivity to compositional structures</h3>
+<p>"HorseStapleBattery" (initial majusculum + 3 concatenated words) is difficult for Markov because inter-word transitions (e→S, e→B) are unexpected. The combinator attack or PCFG is better suited.</p>
+<h3>12.4 Random password ineffectiveness</h3>
+<p>A password generated by <code>/dev/urandom</code> with 12+ alphanumeric characters has no structure exploitable by Markov. The attack time Markov converges to the raw force.</p>
+<h3>12.5 Sensitivity to updated password policy</h3>
+<p>If an organization has imposed strict rules (length ≥ 16, mandatory 1 capital + 1 digit + 1 symbol), the resulting passwords may have a different distribution of the training corpus — reducing the effectiveness of the model.</p>
+<hr>
+<h2>13. Effective defences</h2>
+<h3>13.1 What completely neutralizes Markov</h3>
+<strong>Random password generators</strong> : any password manager (Bitwarden, 1Password, KeePass) with a cryptographically secure generator produces sequences without structure exploitable by Markov. A password of 16 random characters is out of reach regardless of the attack.
+<strong>Enough length with random</strong> : even with a reduced tank (a-z only), 16 random characters represent 26^16 
+<h3>13.2 Which greatly reduces the effectiveness of Markov</h3>
+<strong>Long passphrases of rare words</strong> : 4+ uncommon words separated are out of the top Markov candidates, especially if words come from different languages or specialized vocabularies.
+<strong>Avoid common leetspeak substitutes</strong> : Substituions a→@, e→3, etc. are integrated into the model, but non-standard transformations (a→
+<strong>Avoid keyboard patterns and natural words</strong> : Markov's maximum vulnerability.
+<h3>13.3 What does not defend against Markov</h3>
+<strong>Complexity requirements (majuscule + digit + symbol)</strong> : if these elements are added to a natural word (P@ssw0rd!), the model captures these patterns. <strong>false security</strong> perceived.
+<strong>Basic leetspeak substitutions</strong> : fully captured by the model (transitions "@"→"s", "3"→"y"...).
+<strong>Digital Suffixes/prefixes</strong> : "word + 123" or "word + 2024" patterns are among the first tested.
+<h3>13.4 Final recommendation</h3>
+<p>The most effective defence against Markov (and any probabilistic attack) is to<strong>eliminate any foreseeable human structure</strong>, which amounts to delegating password creation to a secure random generator.</p>
+<hr>
+<h2>14. References</h2>
+<h3>Academics (peer-reviewed)</h3>
+<strong>Dürmuth, M., Angelstorf, F., Horsch, J., Nürnberger, S., &amp; Rüegge, A. (2015).</strong>
+OMEN: Faster Password Guessing Using an Ordered Markov Enumerator.
+<em>Engineering Secure Software and Systems (ESSoS 2015)</em>, LNCS 8978, pp. 119–132.
+→ Main reference for Markov probabilistic calibration used in Time2Crack (RockYou 14M, Order 5)
+<strong>Ma, J., Yang, W., Luo, M., &amp; Li, N. (2014).</strong>
+A Study of Probabilistic Password Models.
+<em>IEEE Symposium on Security and Privacy (S&amp;P 2014)</em>.
+→ Empirical comparison Markov, PCFG, n-grams on 70M passwords
+<strong>Weir, M., Aggarwal, S., de Medeiros, B., &amp; Glodek, B. (2009).</strong>
+Password Tracking Using Probabilistic Context-Free Grammars.
+<em>IEEE Symposium on Security and Privacy (S&amp;P 2009)</em>.
+→ Founding work on structural probabilistic methods (Markov competitor)
+<strong>Wheeler, D.L. (2016).</strong>
+zxcvbn: Low-Budget Password Strength Estimate.
+<em>25th USENIX Security Symposium</em>.
+→ Confirms the effectiveness of n-grams for realistic password force estimation
+<strong>Pasquini, D., Cianfriglia, M., Ateniese, G., &amp; Bernaschi, M. (2021).</strong>
+Reducing Bias in Modeling Real-World Password Strength via Deep Learning and Dynamic Dictionaries.
+<em>30th USENIX Security Symposium</em>.
+→ Quantitative comparison Markov vs deep learning on modern corpus
+<strong>Hitaj, B., Gasti, P., Ateniese, G., &amp; Perez-Cruz, F. (2019).</strong>
+PassGAN: A Deep Learning Approach for Password Guessing.
+<em>ACNS 2019</em>.
+→ Markov Neural Successor, comparison point for Time2Crack <code>descNeural</code>
+<h3>Open source implementations</h3>
+<strong>OMEN</strong> https://github.com/RUB-SysSec/OMEN
+<strong>John TheRipper (Markov mode)</strong> https://www.openwall.com/john/doc/MARKOV.shtml
+<strong>PACK (statsgen/maskgen)</strong> https://github.com/iphelix/pack
+<strong>Hashcat</strong> https://hashcat.net/hashcat/
+<h3>Sources of corpus</h3>
+<strong>RockYou (2009)</strong> : 14,3M passwords from the RockYou social network flaw
+<strong>Have I Been Pwned</strong> https://haveibeenpwned.com — ~14 billion aggregate credentials (Troy Hunt)
+<strong>SecLists</strong> : https://github.com/danielmiessler/SecLists — reference dictionaries and wordlists
+<h3>Web sources cited in the Time2Crack application</h3>
+<strong>Springer (chapter Markov/probabilistic cracking).</strong>
+https://link.springer.com/chapter/10.1007/978-3-319-24174-67
+→ Related source in <code>descMarkov</code> (app.js) for the effective reduction of the research space by statistical prioritization.
+<hr>
+<em>Document generated for Time2Crack project — last update : 2026-04-01</em>
+<em>Based on implementation in app.js (Markov v2 rank-based) and academic publications cited</em>
+</main><footer id="site-footer"></footer><script src="../includes.js"></script><script src="../method-lang.js"></script></body></html>

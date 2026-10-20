@@ -562,10 +562,10 @@ Inversa"enishsnus"Regra <code>r</code>, top-15
 <p>Mesmo que uma senha seja vulnerável ao híbrido estrutural, o algoritmo de hash pode tornar o ataque economicamente inviável:</p>
 AlgoritmoTempo para DICT (8k palpites)Ataque de treino
 ------------------------------------------------------
-MD5 / NTLM&lt; 1 nanosegundoInstantânea
+MD5 / NTLM~3 nanossegundosInstantânea
 SHA-256~24 nanossegundosInstantânea
 custo do bcrypt 10~0,07 segundosTrivial
-custo do bcrypt 14~32 segundosPossível
+custo do bcrypt 14~1 segundoPossível
 Argon2id (padrão)~10 segundosPossível
 Argon2id (parametrato forte)~100 segundosLento, mas possível
 <strong>Argon2id</strong> com parâmetros elevados (t=4, m=65536) é o único algoritmo que torna o híbrido realmente caro, mesmo em senhas fracas.

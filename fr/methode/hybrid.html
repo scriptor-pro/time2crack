@@ -562,10 +562,10 @@ Inverser"enihsnus"❌ Règle <code>r</code>, top-15
 <p>Même si un mot de passe est vulnérable à l'hybride structurellement, l'algorithme de hachage peut rendre l'attaque économiquement inviable :</p>
 AlgorithmeTemps pour DICT (8k guesses)Praticité attaque
 -----------------------------------------------------------
-MD5 / NTLM&lt; 1 nanosecondeInstantané
+MD5 / NTLM~3 nanosecondesInstantané
 SHA-256~24 nanosecondesInstantané
 bcrypt cost 10~0,07 secondesTrivial
-bcrypt cost 14~32 secondesFaisable
+bcrypt cost 14~1 secondeFaisable
 Argon2id (défaut)~10 secondesFaisable
 Argon2id (paramétré fort)~100 secondesLent mais possible
 <strong>Argon2id</strong> avec des paramètres élevés (t=4, m=65536) est le seul algorithme qui rend l'hybride réellement coûteux, même sur des mots de passe faibles.

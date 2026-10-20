@@ -562,11 +562,11 @@ Indietro"enihsnus"Articolo <code>r</code>, top-15
 <p>Anche se una password è vulnerabile all'ibrido strutturale, l'algoritmo hash può rendere l'attacco economicamente inviabile:</p>
 AlgoritmoTempo per DICT (8k indovina)Attacco pratica
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-MD5 / NTLM&lt; 1 nanosecondoistanza istantanea
-SHA-256~24 nanosecondiistanza istantanea
+MD5 / NTLM~3 nanosecondiIstantaneo
+SHA-256~24 nanosecondiIstantaneo
 costo di bcrypt 10~0.07 secondiTriviale
-bcrypt costo 14- 32 secondiFessura
-Argon2id (default)10 secondiFessura
+bcrypt costo 14~1 secondoFattibile
+Argon2id (default)10 secondiFattibile
 Argon2id (forte parametrate)100 secondiLenta ma possibile
 <strong>Argon2id</strong> con parametri elevati (t=4, m=65536) è l'unico algoritmo che rende l'ibrido davvero costoso, anche su password deboli.
 <h3>16.4 Raccomandazioni pratiche</h3>

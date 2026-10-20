@@ -563,10 +563,10 @@ Reverse"enihsnus"Rule <code>r</code>, top-15
 <p>Even if a password is vulnerable to the structural hybrid, the hash algorithm can make the attack economically inviable:</p>
 AlgorithmTime for DICT (8k guesses)Practice attack
 -----------------------------------------------------------
-MD5 / NTLM&lt; 1 nanosecondInstant
+MD5 / NTLM~3 nanosecondsInstant
 SHA-256~24 nanosecondsInstant
 bcrypt cost 10~0.07 secondsTrivial
-bcrypt cost 14~32 secondsFeasible
+bcrypt cost 14~1 secondFeasible
 Argon2id (default)~10 secondsFeasible
 Argon2id (strong parametrate)~100 secondsSlow but possible
 <strong>Argon2id</strong> with high parameters (t=4, m=65536) is the only algorithm that makes the hybrid really expensive, even on weak passwords.

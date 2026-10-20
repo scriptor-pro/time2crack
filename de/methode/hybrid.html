@@ -562,11 +562,11 @@ Reverse"enihsnus"Artikel <code>r</code>, top-15
 <p>Auch wenn ein Passwort für den strukturellen Hybrid anfällig ist, kann der Hash-Algorithmus den Angriff wirtschaftlich unberechenbar machen:</p>
 AlgorithmenZeit für DICT (8k Vermutungen)Angriff auf die Praxis
 ------------------------------------------------
-MD5 / NTLM&lt; 1 NanosekundenSofort
+MD5 / NTLM~3 NanosekundenSofort
 SHA-256~24 NanosekundenSofort
 bcrypt kostet 10~0.07 SekundenTrivial
-bcrypt kostet 14~32 SekundenFetisch
-Argon2id (Standard)~10 SekundenFetisch
+bcrypt kostet 14~1 SekundeMachbar
+Argon2id (Standard)~10 SekundenMachbar
 Argon2id (starker Parameter)~100 SekundenLangsam, aber möglich
 <strong>Argon2id</strong> mit hohen Parametern (t=4, m=65536) ist der einzige Algorithmus, der den Hybriden auch bei schwachen Passwörtern wirklich teuer macht.
 <h3>16.4 Praktische Empfehlungen</h3>

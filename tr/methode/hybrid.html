@@ -562,11 +562,11 @@ Ters"enihsnus"Kural Kural Kuralı <code>r</code>, üst-15
 <p>Bir şifre yapısal hibrite karşı savunmasız olsa bile, hash algoritması saldırıyı ekonomik olarak dayanılmaz hale getirebilir:</p>
 AlgorithmDICT için zaman (8k tahminler)Uygulama saldırısı
 - !!!---- !!!--- *
-MD5 / NTLM&lt; 1 nanosaniyeAnında
+MD5 / NTLM~3 nanosaniyeAnında
 SHA-256~24 nanosaniyeAnında
 bcrypt maliyeti 10~0.07 saniyeTrivial
-bcrypt maliyeti 14~32 saniyeFeasible
-Argon2id (default)~ 10 saniyeFeasible
+bcrypt maliyeti 14~1 saniyeYapılabilir
+Argon2id (default)~ 10 saniyeYapılabilir
 Argon2id (güçlü paramet)~100 saniyeYavaş ama mümkün
 <strong>Argon2id</strong> Yüksek parametrelerle (t=4, m=65536), karmayı gerçekten pahalı kılan tek algoritmadır, hatta zayıf şifrelerde bile.
 <h3>16.4 Pratik Tavsiye</h3>

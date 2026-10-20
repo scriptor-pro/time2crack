@@ -562,11 +562,11 @@ Cofnij"enihsnus"Artykuł <code>r</code>, top-15
 <p>Nawet jeśli hasło jest wrażliwe na hybrydę strukturalną, algorytm haszu może sprawić, że atak będzie ekonomicznie niewykonalny:</p>
 AlgorytmCzas na DICT (zgadywanie 8k)Ćwicz atak
 To...Więc...To...
-MD5 / NTLM&lt; 1 nanosekundaNatychmiastowy
+MD5 / NTLM~3 nanosekundyNatychmiastowy
 SHA-25624 nanosekundNatychmiastowy
 bcrypt koszt 10- 0.07 sekundyTrivial
-bcrypt koszt 1432 sekundyStopniowe
-Argon2id (domyślnie)10 sekundStopniowe
+bcrypt koszt 14~1 sekundaWykonalne
+Argon2id (domyślnie)10 sekundWykonalne
 Argon2id (silny parametr)100 sekundPowoli, ale możliwe.
 <strong>Argon2id</strong> z wysokimi parametrami (t = 4, m = 65536) jest jedynym algorytmem, który sprawia, że hybryda jest bardzo droga, nawet na słabych haseł.
 <h3>16. 4 Zalecenia praktyczne</h3>

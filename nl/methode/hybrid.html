@@ -105,59 +105,63 @@ Projectreferentiedocument Time2Crack
 <p>Door deze concentratie kunnen 64 goed gekozen regels (best64) een dekking bereiken van 79-855%, waarbij 64 willekeurige regels slechts 10-15% zouden bereiken.</p>
 <h3>3.4 Interactie met de populariteit van het basiswoord</h3>
 <p>Hoe vaker het basiswoord, hoe eerder het afgeleide wachtwoord is in de lijst van de aanvaller prioriteit. De aanvaller beveelt zijn kandidaten in afnemende waarschijnlijkheid:</p>
-<pre><code class="language-plaintext">Candidats générés par l'attaquant (ordre de test) :
-<li>wachtwoord (bruto, meest voorkomende woord)</li>
-<li>Wachtwoord (kapitaliseren eerst)</li>
-<li>wachtwoord1 ($1)</li>
-<li>PASSWORD (bovenaan alle)</li>
-<li>Wachtwoord!</li>
-<li>p@ssword (substitueer a→@)</li>
-<li>passw0rd (substituut o→0)</li>
-<li>Wachtwoord1 (c + $1)</li>
-<li>P@ssword (c + s a @)</li>
-<li>wachtwoord123 ($12$3)</li>
-...
-<li>p@ssW0rd! (combinatiecomplex)</li></code></pre>
+<pre><code class="language-plaintext">Kandidaten die de aanvaller genereert (testvolgorde):
+  password        (kaal woord, meest gangbaar)
+  Password        (capitalize first)
+  password1       ($1)
+  PASSWORD        (uppercase all)
+  password!       ($!)
+  p@ssword        (substitute a→@)
+  passw0rd        (substitute o→0)
+  Password1       (c + $1)
+  P@ssword        (c + s a @)
+  password123     ($1 $2 $3)
+  ...
+  p@ssW0rd!       (complexe combinatie)</code></pre>
 <p>"wachtwoord" is het meest voorkomende woord → zijn derivaten worden eerst getest. "papillon" is minder gebruikelijk → zijn derivaten worden veel later getest. Deze prioritering is het centrale mechanisme dat de drie verschillende sleutelruimtes in Time2Crack verklaart.</p>
 <hr>
 <h2>4. Architectuur van een moderne hybride aanval</h2>
 <h3>4.1 Algemene pijpleiding</h3>
-<pre><code class="language-plaintext">Phase 1 : Sélection de la wordlist
-    ├── Passwords fuités triés par fréquence (RockYou, HIBP, Collections)
-    ├── Dictionnaire linguistique (fr.txt, en.txt, de.txt...)
-    ├── Wordlists thématiques (prénoms, villes, marques, séries TV)
-    └── Wordlists contextuelles (domaine cible, noms d'employés, termes métier)
-<p>Fase 2: Selectie van de regels Spel
-- - beste64.regel (evenwichtige referentie, 64 regels)
-OneRegleToRegleThemAll.rule (52.000 regels, ML-generated)
-D3ad0ne.rule (34.000 regels, empirisch)
-- JtR-regels (algemene regel, specifieke regel, extra regel)
-- - Aangepaste regels (aangepast aan het doeldomein)</p>
-<p>Fase 3: Uitbreiding (woordenlijst × regels)
-Voor elk woord w in woordenlijst:
-Voor elke regel in de regel:
-│ aanvrager = aanvraag(r,w)
-Promotie │ Als kandidaat
-Promotionele wachtrij │<em>van de</em>candidates.push(candidate)
---Order: (w1, regel 1), (w1, regel 2)... (w2, regel1)...
-of: (w1, regel 1), (w2, regel 1)... volgens strategie</p>
-<p>Fase 4: Haching en vergelijking (GPU)
-- - Verzenden door batch van ~10M kandidaten naar de GPU
-- Parallelle berekening van hashs (SIMD, 219 GH/s voor MD5)
-- Vergelijking met target hash(es)
-Als dit overeenkomt: FINDED </p>
-<p>Fase 5: Rapportage
-- - Gebarsten kandidaat + regel gebruikt + rang in lijst</p></code></pre>
+<pre><code class="language-plaintext">Fase 1: Keuze van de wordlist
+    ├── Gelekte wachtwoorden gesorteerd op frequentie (RockYou, HIBP, Collections)
+    ├── Taalwoordenboeken (fr.txt, en.txt, de.txt...)
+    ├── Thematische wordlists (voornamen, steden, merken, tv-series)
+    └── Contextuele wordlists (doeldomein, namen van medewerkers, vaktermen)
+
+Fase 2: Keuze van de regelset
+    ├── best64.rule (evenwichtige referentie, 64 regels)
+    ├── OneRuleToRuleThemAll.rule (52.000 regels, met ML gegenereerd)
+    ├── d3ad0ne.rule (34.000 regels, empirisch)
+    ├── JtR-regels (generated.rule, specific.rule, extra.rule)
+    └── Eigen regels (afgestemd op het doeldomein)
+
+Fase 3: Expansie (wordlist × regels)
+    ├── Voor elk woord w in de wordlist:
+    │     Voor elke regel r in de regelset:
+    │       kandidaat = apply(r, w)
+    │       Als kandidaat ≠ w en kandidaat nog niet getest:
+    │         kandidatenwachtrij.push(kandidaat)
+    └── Volgorde: (w1, regel1), (w1, regel2)... (w2, regel1)...
+        of: (w1, regel1), (w2, regel1)... afhankelijk van de strategie
+
+Fase 4: Hashen en vergelijken (GPU)
+    ├── Batches van ~10M kandidaten naar de GPU
+    ├── Parallelle berekening van de hashes (SIMD, 219 GH/s voor MD5)
+    ├── Vergelijking met de doelhash(es)
+    └── Bij een match: GEVONDEN — log(kandidaat, hash, regel)
+
+Fase 5: Rapportage
+    └── Gekraakte kandidaat + gebruikte regel + rang in de lijst</code></pre>
 <h3>4.2 Hashcat-methoden</h3>
 <p>Hashcat implementeert de hybride op twee verschillende manieren:</p>
 <strong>Modus -a 0 (woordenlijst + regels)</strong> Dit is de klassieke hybride modus.
 <pre><code class="language-bash">hashcat -a 0 -m 0 hashes.txt rockyou.txt -r best64.rule</code></pre>
-<strong>Modus -a 6 (woordenlijst + masker)</strong> : combineert een woordenlijst met een positionaal masker. Genereert alle combinaties <code>mot + suffixe<em>gemaskerd</em></code>.
+<strong>Modus -a 6 (woordenlijst + masker)</strong> : combineert een woordenlijst met een positionaal masker. Genereert alle combinaties <code>word + masked_suffix</code>.
 <pre><code class="language-bash">hashcat -a 6 -m 0 hashes.txt wordlist.txt ?d?d?d?d
-<h1 style="display:none">Test "sunshine0000," "sunshine0001, ..., "sunshine9999"</h1></code></pre>
+# Tries "sunshine0000", "sunshine0001", ..., "sunshine9999"</code></pre>
 <strong>Modus -a 7 (masker + woordlijst)</strong> : Inverse, gemaskerd voorvoegsel + woord.
 <pre><code class="language-bash">hashcat -a 7 -m 0 hashes.txt ?d?d wordlist.txt
-<h1 style="display:none">Test "00sunshine," "01sunshine," ..., "99sunshine"</h1></code></pre>
+# Tries "00sunshine", "01sunshine", ..., "99sunshine"</code></pre>
 <p>Time2Crack modelleert vooral de modus <code>-a 0</code> (overschrijvingsregels), die betrekking hebben op het overgrote deel van de daadwerkelijk gedocumenteerde hybride aanvallen.</p>
 <h3>4.3 Orde van kandidaten en prioriteitenstrategie</h3>
 <p>De volgorde waarin kandidaten worden getest is cruciaal.</p>
@@ -199,14 +203,14 @@ Voordeel: de meest effectieve regel (<code>: → mot brut</code>) wordt eerst to
 <li><code>'N</code> Afkappen op positie N (wachtwoord + <code>'4</code> → "pass")</li>
 <li><code>DN</code> Teken verwijderen op positie N</li>
 <strong>Voorwaardelijk</strong> :
-<li><code><n< code=""> - Pas de regel alleen toe als lengte &lt; N</n<></code></li>
-<li><code>&gt;N</code> De regel alleen toepassen als lengte &gt; N</li>
-<li><code>=N</code> De regel alleen toepassen als lengte = N</li>
+<li><code>&lt;N</code> — Past de regel alleen toe als de lengte &lt; N is</li>
+<li><code>&gt;N</code> — Past de regel alleen toe als de lengte &gt; N is</li>
+<li><code>=N</code> — Past de regel alleen toe als de lengte = N is</li>
 <h3>5.2. Samengestelde regels</h3>
 <p>Regels kunnen op één lijn worden geketend om complexe transformaties te creëren:</p>
 <pre><code class="language-plaintext">c $1          → "Password1" (capitalize + append 1)
 c $! $1       → "Password!1" (capitalize + append ! + 1)
-s a @ s e 3   → "p@ssw3rd" (substitute a→@ et e→3)
+s a @ s e 3   → "p@ssw3rd" (substitute a→@ and e→3)
 r $1          → "1drowssap" (reverse + append 1)
 u $2 $0 $2 $3 → "PASSWORD2023" (uppercase + append year)</code></pre>
 <p>Macht zit in de samenstelling: 64 eenvoudige regels genereren duizenden verschillende transformaties door combinatie.</p>
@@ -333,9 +337,9 @@ s e 3 s a @ c $!  → "P@ssw3rd!" (multiple substitutions + capitalize + !)</cod
 </tbody>
 </table>
 <p>Deze metingen zijn de directe basis van Time2Crack constanten:
-</p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
-const HYBRID<em>KEYSPACE</em>DICT = 8<em>1 000; // Ma et al. 2014
-cont HYBRID</em>KEYSPACE<em>FULL = 128e6; // Gosney 2012 </em></code></pre><p></p>
+</p><pre><code class="language-javascript">const HYBRID_KEYSPACE_COMMON = 500;    // Ma et al. 2014 — median, top-100
+const HYBRID_KEYSPACE_DICT   = 8_000;  // Ma et al. 2014 — median, common dictionary
+const HYBRID_KEYSPACE_FULL   = 128e6;  // Gosney 2012 — best64 × 2M words, exhaustive</code></pre>
 <h3>8.3 Voorwaarden die nodig zijn om de hybride toe te passen</h3>
 <p>Hybride aanval vereist het wachtwoord te zijn <strong>structureel afgeleid van een woordenboekwoord</strong>Time2Crack detecteert deze aandoening via <code>hybridVuln</code> :</p>
 <pre><code class="language-javascript">const hybridVuln = dictWord || (common &amp;&amp; /[a-z]/i.test(pw));</code></pre>
@@ -347,86 +351,92 @@ cont HYBRID</em>KEYSPACE<em>FULL = 128e6; // Gosney 2012 </em></code></pre><p></
 <h3>9.1 Volledige geannoteerde code</h3>
 <pre><code class="language-javascript">function addHybridAttacks(rows, hybridVuln, weak, common, dictWord) {
   if (hybridVuln || weak) {
-    // Sélection du keyspace selon la popularité du mot de base :
-    // common → mot dans HIBP top-400 → position ~500 dans la liste de l'attaquant
-    // dictWord → mot dans la wordlist → position ~8000
-    // sinon (hybridVuln sans dictWord ni common) → scan exhaustif ~128M
-    const hybridKS = common ? HYBRIDKEYSPACE<em>GEMEENSCHAPPELIJK
-dictWord? HYBRID</em>KEYSPACE<em>DICT
-HYBRID</em>KEYSPACE<em>Full;
-<p>voor (cont a van ALGOS) {
-rijen.push({
-atk: t("aHybrid");
-hash: a.name,
-tarief: a.rate,
-// budgetTime: de keyspace IS het aantal gissingen dat door 2 wordt verdeeld
-// (in tegenstelling tot BrutTime, hier worden kandidaten gerangschikt naar waarschijnlijkheid)
-droog: zwak ? zwakGoestijd(a.rate): budgetTime(hybridKS, a.rate),
-opmerking: zwak ? t("nWeakPassword") : t("nDictMut")
-kat: "hybride,"
-});
-}
-Anders {
-// Wachtwoord zonder structuur woordenboek → hybride niet van toepassing
-rijen.push({
-atk: t("aHybrid");
-hash: "(all),"
-tarief: 0,
-droog: nul, // N/A in de tabel
-Opmerking: t(nStructUnrecog),
-kat: "hybride,"
-});
-}
-}</p></em></code></pre>
+    // Keyspace chosen from the popularity of the base word:
+    // common → word in HIBP top-400 → position ~500 in the attacker's list
+    // dictWord → word in the wordlist → position ~8000
+    // otherwise (hybridVuln without dictWord or common) → exhaustive scan ~128M
+    const hybridKS = common ? HYBRID_KEYSPACE_COMMON
+      : dictWord ? HYBRID_KEYSPACE_DICT
+      : HYBRID_KEYSPACE_FULL;
+
+    for (const a of ALGOS) {
+      rows.push({
+        atk: t("aHybrid"),
+        hash: a.name,
+        rate: a.rate,
+        // budgetTime: the keyspace IS the number of guesses — no division by 2
+        // (unlike bruteTime, candidates here are ordered by probability)
+        sec: weak ? weakGuessTime(a.rate) : budgetTime(hybridKS, a.rate),
+        note: weak ? t("nWeakPassword") : t("nDictMut"),
+        cat: "hybrid",
+      });
+    }
+  } else {
+    // Password with no dictionary structure → hybrid not applicable
+    rows.push({
+      atk: t("aHybrid"),
+      hash: "(all)",
+      rate: 0,
+      sec: null,                     // N/A in the table
+      note: t("nStructUnrecog"),
+      cat: "hybrid",
+    });
+  }
+}</code></pre>
 <h3>9,2 <code>budgetTime</code> vs <code>bruteTime</code></h3>
 <p>Het onderscheid tussen beide functies is fundamenteel:</p>
-<pre><code class="language-javascript">// bruteTime : l'attaquant ne sait pas où est le mot de passe dans l'espace.
-// Il teste en moyenne la moitié avant de le trouver. → keyspace/2
+<pre><code class="language-javascript">// bruteTime: the attacker does not know where the password sits in the space.
+// On average they test half of it before finding it. → keyspace/2
 function bruteTime(keyspace, rate) {
   const ls = Math.log(keyspace / 2) - Math.log(rate);
   return Math.exp(ls);
 }
-<p>// budgetTijd: de aanvaller test kandidaten in dalende volgorde van waarschijnlijkheid.
-// Keyspace IS het aantal kandidaten dat wordt verwacht voordat (mediane positie) wordt gevonden.
-// Geen verdeling door 2 
-BegrotingsfunctieTijd, rente) {
-const ls = Math.log(guesses) - Math.log(rate);
-geeft wiskunde.exp(ls);
-}</p></code></pre>
+
+// budgetTime: the attacker tests candidates in decreasing order of probability.
+// The keyspace IS the expected number of candidates before a hit (median position).
+// No division by 2 — the median is already built into the Ma 2014 constants.
+function budgetTime(guesses, rate) {
+  const ls = Math.log(guesses) - Math.log(rate);
+  return Math.exp(ls);
+}</code></pre>
 <p>Voor de hybride, <code>budgetTime</code> is correct omdat de 500/8000/128M kandidaten empirische schattingen van de <strong>mediane positie</strong>, geen totale ruimte om te reizen.</p>
 <h3>9.3 Relatie met <code>isDictWord()</code></h3>
 <p>Detectie <code>dictWord</code> welke voorwaarden de keuze van hybride sleutelruimte wordt geproduceerd door <code>isDictWord()</code> :</p>
 <pre><code class="language-javascript">function isDictWord(pw) {
-  if (!DICTWORDS || !DICT<em>(W VERMELDING.size) return false;
-const l = pw.normalize("NFC").toLowerCase();
-<p>// Directe test: Is het wachtwoord zoals het in het woordenboek staat?
-indien (DICT)</p></em>WORDS.has(l)) return true;
-<p>// Leetified test: "s0le1l" → "zon" in de dico?
-const dl = deLeet(pw);
-als (dl!)<em>VERMELDING.has(dl) return true;</em></p>
-<p>// Test substring: "zonneschijn123" bevat "zonneschijn" in de dico?
-voor (const w van DICTW VERMELDING) {
-indien (l.includes(w) &amp;&amp;w.length &gt;= 4) return true;
-}</p>
-<p>Foutief retourneren;
-}</p></code></pre>
+  if (!DICT_WORDS || !DICT_WORDS.size) return false;
+  const l = pw.normalize("NFC").toLowerCase();
+
+  // Direct test: is the password in the dictionary as is?
+  if (DICT_WORDS.has(l)) return true;
+
+  // De-leeted test: "s0le1l" → "soleil" in the dictionary?
+  const dl = deLeet(pw);
+  if (dl !== l &amp;&amp; DICT_WORDS.has(dl)) return true;
+
+  // Substring test: does "sunshine123" contain "sunshine" from the dictionary?
+  for (const w of DICT_WORDS) {
+    if (l.includes(w) &amp;&amp; w.length &gt;= 4) return true;
+  }
+
+  return false;
+}</code></pre>
 <p>Deze detectie bepaalt niet alleen of de hybride van toepassing is, maar ook <strong>welke sleutelruimte</strong> (vaak vs dict) wordt gebruikt om de tijd te berekenen.</p>
 <hr>
 <h2>10. De drie hybride sleutelruimtes en hun rechtvaardiging</h2>
-<h3>10.1 HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500</h3>
+<h3>10.1 <code>HYBRID_KEYSPACE_COMMON</code> = 500</h3>
 <strong>Achtergrond</strong> Het wachtwoord is in GEMEENSCHAPPELIJK de hardgecodeerde lijst HIPP top-~400. Dit zijn enkele van de meest voorkomende wachtwoorden in de wereld ("wachtwoord," "letmein," "sunshine," "iloveyou" ...).
 <strong>Rechtvaardiging</strong> Ma et al. (2014) empirisch gemeten dat de mediane positie van een top-1000 wachtwoord in een hybride lijst gesorteerd op waarschijnlijkheid ~450 kandidaten is. Het getal 500 is een enigszins conservatieve schatting om tot ~400 rang te dekken.
 <strong>Interpretatie</strong> : een aanvaller die best64 toepast op een woordenlijst gesorteerd op frequentietests gemiddeld 500 kandidaten voor het vinden van het wachtwoord. Bij 2600 GH/s (MD5, 12× RTX 5090), 500 kandidaten = <strong>0,19 ns</strong>- Bijna onmiddellijk.
-<strong>Voorbeeld</strong> : "Sunshine1" → "sunshine" is in GEMEENSCHAPPELIJK → HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500 → <code>budgetTime(500, 2634e9)</code> 0,19 ns.
-<h3>10.2 HYBRID<em>KEYSPACE</em>DICT = 8.000</h3>
+<strong>Voorbeeld</strong> : "Sunshine1" → "sunshine" is in GEMEENSCHAPPELIJK → <code>HYBRID_KEYSPACE_COMMON</code> = 500 → <code>budgetTime(500, 2634e9)</code> 0,19 ns.
+<h3>10.2 <code>HYBRID_KEYSPACE_DICT</code> = 8.000</h3>
 <strong>Achtergrond</strong> Het wachtwoord is afgeleid van een woord uit de taalwoordenlijst, maar niet van GEMEENSCHAPPELIJK. Dit zijn gewone woordenschat woorden ("zon," "berg," "paillon"...) met transformaties.
 <strong>Rechtvaardiging</strong> Ma et al. (2014) meet een mediane positie van 2000 tot 15.000 afhankelijk van de populariteit van het woord in RockYou. De empirische mediaan is ~ 8000. Deze sleutelruimte weerspiegelt dat de aanvaller het woord en zijn varianten test na het vermoeien van de meer voorkomende kandidaten.
 <strong>Interpretatie</strong> : 8.000 kandidaten bij 2.600 GH/s (MD5) = <strong>3,0 ns</strong>Voor bcrypt (114 kH/s): 8.000 / 114 000 <strong>0,07 seconden</strong>.
-<strong>Voorbeeld</strong> : "Soleil2024" → "zon" in fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8000 → een paar nanoseconden op MD5, 0,07s op bcrypt.
-<h3>10.3 HYBRID<em>KEYSPACE</em>FULL = 128.000.000</h3>
+<strong>Voorbeeld</strong> : "Soleil2024" → "zon" in fr.txt → <code>HYBRID_KEYSPACE_DICT</code> = 8000 → een paar nanoseconden op MD5, 0,07s op bcrypt.
+<h3>10.3 <code>HYBRID_KEYSPACE_FULL</code> = 128.000.000</h3>
 <strong>Achtergrond</strong> : <code>hybridVuln</code> is waar (wachtwoord heeft een woordenboekstructuur) maar geen van beide <code>common</code> noch <code>dictWord</code> De aanvaller moet door de hele wordlijst bladeren met alle regels.
 <strong>Rechtvaardiging</strong> : Gosney (Passwordscon 2012) documenteert een woordenlijst van 3,5M woorden × best64 (64 regels) = 224M kandidaten in totaal. In de praktijk maken realistische woordenlijsten 2M woorden en de gedeeltelijke beste64 runs stoppen bij ~128M kandidaten voordat klimmen naar bredere regels.
-<strong>Formule</strong> : <code>2<em>000</em>000 mots × 64 règles = 128<em>000</em>000 candidats</code>
+<strong>Formule</strong> : <code>2_000_000 woorden × 64 regels = 128_000_000 kandidaten</code>
 <strong>Interpretatie</strong> : 128 miljoen kandidaten bij 2600 GH/s (MD5) <strong>49 µs</strong>. Op bcrypt (114 kH/s): ~19 minuten.
 <hr>
 <h2>11. Kalibratie van hoge trouw</h2>
@@ -435,20 +445,20 @@ indien (l.includes(w) &amp;&amp;w.length &gt;= 4) return true;
 <h3>HF multiplicators voor hybride</h3>
 <p>In <code>applyHighFidelityCalibration()</code> :</p>
 <pre><code class="language-javascript">case "hybrid":
-  // Mots très courants : crackés encore plus tôt que la médiane Ma 2014
-  // car les attaquants modernes trient word-first + règle-first simultanément.
-  // Réduction de 30% sur les temps déjà courts.
-  m <em>= context.vaak ? 0,7
-: context.dictWord ? 0,8
-- 1,0;
-Break;</em></code></pre>
+  // Very common words: cracked even earlier than the Ma 2014 median,
+  // because modern attackers sort word-first and rule-first at the same time.
+  // 30% reduction on times that are already short.
+  m *= context.common ? 0.7
+    : context.dictWord ? 0.8
+    : 1.0;
+  break;</code></pre>
 <strong>Rechtvaardiging</strong> :
 <li>Voor <code>common</code> : moderne gereedschappen (hashcat met <code>--markov-threshold</code>De beste kandidaten komen nog eerder aan.</li>
 <li>Voor <code>dictWord</code> : minder effect omdat de positie in de woordenlijst minder geconcentreerd is.</li>
 <li>Voor <code>hybridVuln</code> alleen (FULL keyspace): geen enkele vermindering van volledige sleutelruimte is al een conservatieve schatting.</li>
 <h3>11.3 Interacties met de monotone bewaker</h3>
 <p>De monotone bewaker zorgt ervoor dat geen gespecialiseerde aanval beweert te zijn <strong>sneller</strong> dat de ruwe kracht op de alfabetische subtekenreeks van het wachtwoord:</p>
-<pre><code class="language-javascript">// Pour chaque row non-brute :
+<pre><code class="language-javascript">// For each non-brute-force row:
 const floorAlpha = bruteTime(Math.pow(26, alphaOnly.length), algo.rate);
 if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <p>Voor korte woorden (bv. "cat" = 3 letters, vloer = 26^3/rate</p>
@@ -468,7 +478,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 </table>
 <h3>12.2 Hybrid vs Regelgebaseerd</h3>
 <p>De regelgebaseerde aanval in Time2Crack is conceptueel vergelijkbaar maar met een veel bredere set regels:</p>
-<pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000; // vs 128M voor volledige hybride</em></code></pre>
+<pre><code class="language-javascript">const RULE_KEYSPACE = 250_000_000;  // vs 128M for full hybrid</code></pre>
 <p>Het verschil: de beste64 model hybride (64 regels, focus op gemeenschappelijke menselijke transformaties). De regel gebaseerde aanval modellen bredere games zoals d3ad0ne (34k regels) of OneRuleToRuleThemAll (52k regels), gebruikt wanneer best64 faalt. De regel-gebaseerd is de "tweede lijn" hybride </p>
 <h3>12.3 Hybrid vs. PCFG</h3>
 <p>PCFG (Probabilistic Context-Free Grammar, Weir 2009) modelleert de grammaticale structuur van het wachtwoord om kandidaten te genereren.</p>
@@ -521,7 +531,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <li><code>isCommon("Password1")</code> → onwaar (niet in exact HIPP)</li>
 <li><code>isDictWord("Password1")</code> → waar ("wachtwoord" in DICTW VERMELDINGEN in kleine letters)</li>
 <li><code>COMMON.has("password")</code> → waar → <code>common = true</code></li>
-<li>Resultaat: HYBRID<em>KEYSPACE</em>GEMEENSCHAPPELIJK = 500</li>
+<li>Resultaat: <code>HYBRID_KEYSPACE_COMMON</code> = 500</li>
 <strong>MD5 tijd</strong> : 500 / 2,634e12 <strong>0,19 ns</strong> (snapshot)
 <strong>Tijd bcrypt kosten 10</strong> 500 / 114 000 <strong>4,4 milliseconden</strong>
 <strong>Regels getest vóór het vinden</strong> : <code>:</code> (bruto woord "wachtwoord" → nee), <code>c</code> ("Wachtwoord" → nee), <code>c $1</code> ("Wachtwoord1" → <strong>FIND</strong>, rij ~8)
@@ -530,15 +540,15 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <li><code>isCommon("Soleil2024")</code> → onwaar</li>
 <li><code>isDictWord("Soleil2024")</code> → waar ("zon" in fr.txt)</li>
 <li><code>COMMON.has("soleil")</code> → vals → <code>common = false</code>, <code>dictWord = true</code></li>
-<li>Resultaat: HYBRID<em>KEYSPACE</em>DICT = 8.000</li>
+<li>Resultaat: <code>HYBRID_KEYSPACE_DICT</code> = 8.000</li>
 <strong>MD5 tijd</strong> : 8 000 / 2,634e12 <strong>3,0 nanoseconden</strong>
 <strong>Tijd bcrypt kosten 10</strong> : 8 000 / 114 000 <strong>0,07 seconden</strong>
 <strong>Testvoorschriften</strong> : de aanvaller arriveert op ~5000 in de woordenlijst fr gesorteerd op frequentie, dan geldt <code>c $2 $0 $2 $4</code> ("Sun2024") in de rij ~3 van zijn regels → algemene positie ~15 003.
 <h3>14.3 Voorbeeld 3: "p@pillon!" (DICT met substituties)</h3>
 <strong>Analyse</strong> :
 <li><code>isDictWord("p@pillon!")</code> : de-leetification → "paillon" → in fr.txt → <code>dictWord = true</code></li>
-<li>Resultaat: HYBRID<em>KEYSPACE</em>DICT = 8.000</li>
-<strong>Testvoorschriften</strong> : "paillon" at ~15.000 of the dictionary fr. Rule <code>s a @ $!</code> → "p@pillon!" in rij ~12. Algemene positie: ~180.000. Altijd goed in HYBRID<em>KEYSPACE</em>DICT.
+<li>Resultaat: <code>HYBRID_KEYSPACE_DICT</code> = 8.000</li>
+<strong>Testvoorschriften</strong> : "paillon" at ~15.000 of the dictionary fr. Rule <code>s a @ $!</code> → "p@pillon!" in rij ~12. Algemene positie: ~180.000. Altijd goed in <code>HYBRID_KEYSPACE_DICT</code>.
 <h3>14.4 Voorbeeld 4: "xK9#mQ7@" (bestendig)</h3>
 <strong>Analyse</strong> :
 <li><code>isDictWord("xK9#mQ7@")</code> → onwaar (geen root woordenboek)</li>
@@ -549,7 +559,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <h3>14.5 Voorbeeld 5: "LinkedInB3st!"</h3>
 <strong>Analyse</strong> :
 <li><code>isDictWord("LinkedInB3st!")</code> : "linkin" → wordlist en.txt + <code>deLeet("b3st")</code> → "beste" → <code>dictWord = true</code></li>
-<li>Resultaat: HYBRID<em>KEYSPACE</em>DICT = 8.000</li>
+<li>Resultaat: <code>HYBRID_KEYSPACE_DICT</code> = 8.000</li>
 <p>Interessant geval: het wachtwoord bevat twee roots ("linkedin" en "best" via de-leetification). Hybride aanval is van toepassing omdat ten minste één root wordt gedetecteerd. In de praktijk zou een combinatoraanval (twee woorden gelijmd) hier nog effectiever zijn.</p>
 <hr>
 <h2>15. Hybride aanvalslimieten</h2>
@@ -643,7 +653,7 @@ Krachtschatting bibliotheek integratie mutatie regel detectie. Referentie voor d
 <strong>Gosney, J (2012)</strong>
 </em>8x Nvidia GTX 580 Cluster Hashcat Benchmarks / LinkedIn crack sessie<em>
 Wachtwoordencon 2012, Oslo.
-Documenteer de LinkedIn crack: best64 + wordlist 3.5M = 224M kandidaten, 90% gebarsten in 6 dagen.<em>KEYSPACE</em>FULL = 128M.
+Documenteer de LinkedIn crack: best64 + wordlist 3.5M = 224M kandidaten, 90% gebarsten in 6 dagen. Basis voor <code>HYBRID_KEYSPACE_FULL</code> = 128M.
 <strong>Löfstrand, K. (2013)</strong>
 </em>best64.rule <em>
 Intern, gepubliceerd op GitHub.
@@ -654,7 +664,7 @@ https://hashcat.net/hashcat/
 Officiële mode documentatie -a 0, -a 6, -a 7. Syntaxis van regels. Officiële GPU benchmarks op 12× RTX 5090.
 <strong>NotSoSecure (2019)</strong>
 </em>OneRegleToRegleThemAll <em>
-https://github.com/NotSoSecure/wachtwoord<em>kraken</em>regels
+https://github.com/NotSoSecure/password_cracking_rules
 52 218 regels gegenereerd door automatisch leren op corpus van gebarsten wachtwoorden.
 <h3>Referentiegereedschappen</h3>
 <strong>John de Ripper</strong> (Solar Designer, 1996

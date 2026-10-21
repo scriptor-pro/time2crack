@@ -106,18 +106,18 @@ Document de référence pour le projet Time2Crack
 <h3>3.4 Interaction avec la popularité du mot de base</h3>
 <p>Plus le mot de base est fréquent, plus le mot de passe dérivé est tôt dans la liste de priorité de l'attaquant. L'attaquant ordonne ses candidats par probabilité décroissante :</p>
 <pre><code class="language-plaintext">Candidats générés par l'attaquant (ordre de test) :
-<li>password        (mot brut, le plus courant)</li>
-<li>Password        (capitalize first)</li>
-<li>password1       ($1)</li>
-<li>PASSWORD        (uppercase all)</li>
-<li>password!       ($!)</li>
-<li>p@ssword        (substitute a→@)</li>
-<li>passw0rd        (substitute o→0)</li>
-<li>Password1       (c + $1)</li>
-<li>P@ssword        (c + s a @)</li>
-<li>password123   ($1 $2 $3)</li>
-...
-<li>p@ssW0rd!     (combinaison complexe)</li></code></pre>
+  password        (mot brut, le plus courant)
+  Password        (capitalize first)
+  password1       ($1)
+  PASSWORD        (uppercase all)
+  password!       ($!)
+  p@ssword        (substitute a→@)
+  passw0rd        (substitute o→0)
+  Password1       (c + $1)
+  P@ssword        (c + s a @)
+  password123     ($1 $2 $3)
+  ...
+  p@ssW0rd!       (combinaison complexe)</code></pre>
 <p>"password" est le mot le plus courant → ses dérivés sont testés en premier. "papillon" est moins courant → ses dérivés sont testés bien plus tard. Cette priorisation est le mécanisme central qui explique les trois keyspaces distincts dans Time2Crack.</p>
 <hr>
 <h2>4. Architecture d'une attaque hybride moderne</h2>
@@ -127,37 +127,41 @@ Document de référence pour le projet Time2Crack
     ├── Dictionnaire linguistique (fr.txt, en.txt, de.txt...)
     ├── Wordlists thématiques (prénoms, villes, marques, séries TV)
     └── Wordlists contextuelles (domaine cible, noms d'employés, termes métier)
-<p>Phase 2 : Sélection du jeu de règles
+
+Phase 2 : Sélection du jeu de règles
     ├── best64.rule (référence équilibrée, 64 règles)
-    ├── OneRuleToRuleThemAll.rule (52 000 règles, ML-generated)
-    ├── d3ad0ne.rule (34 000 règles, empirical)
-    ├── JtR rules (generated.rule, specific.rule, extra.rule)
-    └── Règles custom (adaptées au domaine cible)</p>
-<p>Phase 3 : Expansion (wordlist × règles)
+    ├── OneRuleToRuleThemAll.rule (52 000 règles, générées par ML)
+    ├── d3ad0ne.rule (34 000 règles, empiriques)
+    ├── Règles JtR (generated.rule, specific.rule, extra.rule)
+    └── Règles custom (adaptées au domaine cible)
+
+Phase 3 : Expansion (wordlist × règles)
     ├── Pour chaque mot w dans wordlist :
     │     Pour chaque règle r dans ruleset :
     │       candidat = apply(r, w)
     │       Si candidat ≠ w et candidat non déjà testé :
-    │         file<em>de</em>candidats.push(candidat)
+    │         file_de_candidats.push(candidat)
     └── Ordre : (w1, règle1), (w1, règle2)... (w2, règle1)...
-        ou : (w1, règle1), (w2, règle1)... selon la stratégie</p>
-<p>Phase 4 : Hachage et comparaison (GPU)
+        ou : (w1, règle1), (w2, règle1)... selon la stratégie
+
+Phase 4 : Hachage et comparaison (GPU)
     ├── Envoi par batch de ~10M candidats au GPU
     ├── Calcul parallèle des hashes (SIMD, 219 GH/s pour MD5)
     ├── Comparaison avec hash(es) cible(s)
-    └── Si match : TROUVÉ — log(candidat, hash, règle)</p>
-<p>Phase 5 : Reporting
-    └── Candidat cracké + règle utilisée + rang dans la liste</p></code></pre>
+    └── Si match : TROUVÉ — log(candidat, hash, règle)
+
+Phase 5 : Reporting
+    └── Candidat cracké + règle utilisée + rang dans la liste</code></pre>
 <h3>4.2 Modes d'opération hashcat</h3>
 <p>Hashcat implémente l'hybride de deux façons distinctes :</p>
 <strong>Mode -a 0 (wordlist + rules)</strong> : pour chaque mot de la wordlist, applique toutes les règles. C'est le mode hybride classique.
 <pre><code class="language-bash">hashcat -a 0 -m 0 hashes.txt rockyou.txt -r best64.rule</code></pre>
-<strong>Mode -a 6 (wordlist + mask)</strong> : combine une wordlist avec un masque positionnel. Génère toutes les combinaisons <code>mot + suffixe<em>masqué</em></code>.
+<strong>Mode -a 6 (wordlist + mask)</strong> : combine une wordlist avec un masque positionnel. Génère toutes les combinaisons <code>mot + suffixe_masqué</code>.
 <pre><code class="language-bash">hashcat -a 6 -m 0 hashes.txt wordlist.txt ?d?d?d?d
-<h1 style="display:none">Teste "sunshine0000", "sunshine0001", ..., "sunshine9999"</h1></code></pre>
+# Teste "sunshine0000", "sunshine0001", ..., "sunshine9999"</code></pre>
 <strong>Mode -a 7 (mask + wordlist)</strong> : inverse — préfixe masqué + mot.
 <pre><code class="language-bash">hashcat -a 7 -m 0 hashes.txt ?d?d wordlist.txt
-<h1 style="display:none">Teste "00sunshine", "01sunshine", ..., "99sunshine"</h1></code></pre>
+# Teste "00sunshine", "01sunshine", ..., "99sunshine"</code></pre>
 <p>Time2Crack modélise principalement le mode <code>-a 0</code> (règles de mutation), qui couvre la grande majorité des attaques hybrides réelles documentées.</p>
 <h3>4.3 Ordre des candidats et stratégie de priorisation</h3>
 <p>L'ordre dans lequel les candidats sont testés est critique. Deux stratégies principales :</p>
@@ -199,7 +203,7 @@ Avantage : la règle la plus efficace (<code>: → mot brut</code>) est appliqu�
 <li><code>'N</code> — Truncate at position N ("password" + <code>'4</code> → "pass")</li>
 <li><code>DN</code> — Delete character at position N</li>
 <strong>Conditionnels</strong> :
-<li><code><n< code=""> — Applique la règle seulement si longueur &lt; N</n<></code></li>
+<li><code>&lt;N</code> — Applique la règle seulement si longueur &lt; N</li>
 <li><code>&gt;N</code> — Applique la règle seulement si longueur &gt; N</li>
 <li><code>=N</code> — Applique la règle seulement si longueur = N</li>
 <h3>5.2 Règles composées</h3>
@@ -333,9 +337,9 @@ s e 3 s a @ c $!  → "P@ssw3rd!" (multiple substitutions + capitalize + !)</cod
 </tbody>
 </table>
 <p>Ces mesures sont la base directe des constantes de Time2Crack :
-</p><pre><code class="language-javascript">const HYBRID<em>KEYSPACE</em>COMMON = 500;    // Ma et al. 2014 — médiane top-100
-const HYBRID<em>KEYSPACE</em>DICT = 8<em>000;   // Ma et al. 2014 — médiane dict courant
-const HYBRID</em>KEYSPACE<em>FULL = 128e6;   // Gosney 2012 — best64 × 2M words exhaustif</em></code></pre><p></p>
+</p><pre><code class="language-javascript">const HYBRID_KEYSPACE_COMMON = 500;    // Ma et al. 2014 — médiane top-100
+const HYBRID_KEYSPACE_DICT   = 8_000;  // Ma et al. 2014 — médiane dictionnaire courant
+const HYBRID_KEYSPACE_FULL   = 128e6;  // Gosney 2012 — best64 × 2M mots, exhaustif</code></pre>
 <h3>8.3 Conditions nécessaires pour que l'hybride soit applicable</h3>
 <p>L'attaque hybride requiert que le mot de passe soit <strong>structurellement dérivable d'un mot de dictionnaire</strong>. Time2Crack détecte cette condition via <code>hybridVuln</code> :</p>
 <pre><code class="language-javascript">const hybridVuln = dictWord || (common &amp;&amp; /[a-z]/i.test(pw));</code></pre>
@@ -351,10 +355,11 @@ const HYBRID</em>KEYSPACE<em>FULL = 128e6;   // Gosney 2012 — best64 × 2M wor
     // common → mot dans HIBP top-400 → position ~500 dans la liste de l'attaquant
     // dictWord → mot dans la wordlist → position ~8000
     // sinon (hybridVuln sans dictWord ni common) → scan exhaustif ~128M
-    const hybridKS = common ? HYBRIDKEYSPACE<em>COMMON
-      : dictWord ? HYBRID</em>KEYSPACE<em>DICT
-      : HYBRID</em>KEYSPACE<em>FULL;
-<p>for (const a of ALGOS) {
+    const hybridKS = common ? HYBRID_KEYSPACE_COMMON
+      : dictWord ? HYBRID_KEYSPACE_DICT
+      : HYBRID_KEYSPACE_FULL;
+
+    for (const a of ALGOS) {
       rows.push({
         atk: t("aHybrid"),
         hash: a.name,
@@ -377,7 +382,7 @@ const HYBRID</em>KEYSPACE<em>FULL = 128e6;   // Gosney 2012 — best64 × 2M wor
       cat: "hybrid",
     });
   }
-}</p></em></code></pre>
+}</code></pre>
 <h3>9.2 <code>budgetTime</code> vs <code>bruteTime</code></h3>
 <p>La distinction entre les deux fonctions est fondamentale :</p>
 <pre><code class="language-javascript">// bruteTime : l'attaquant ne sait pas où est le mot de passe dans l'espace.
@@ -386,47 +391,52 @@ function bruteTime(keyspace, rate) {
   const ls = Math.log(keyspace / 2) - Math.log(rate);
   return Math.exp(ls);
 }
-<p>// budgetTime : l'attaquant teste les candidats en ordre de probabilité décroissante.
+
+// budgetTime : l'attaquant teste les candidats en ordre de probabilité décroissante.
 // Le keyspace IS le nombre de candidats attendus avant trouvaille (position médiane).
 // Pas de division par 2 — la médiane est déjà incorporée dans les constantes Ma 2014.
 function budgetTime(guesses, rate) {
   const ls = Math.log(guesses) - Math.log(rate);
   return Math.exp(ls);
-}</p></code></pre>
+}</code></pre>
 <p>Pour l'hybride, <code>budgetTime</code> est correct car les 500/8000/128M candidats sont des estimations empiriques de la <strong>position médiane</strong>, pas de l'espace total à parcourir.</p>
 <h3>9.3 Relation avec <code>isDictWord()</code></h3>
 <p>La détection <code>dictWord</code> qui conditionne le choix du keyspace hybride est produite par <code>isDictWord()</code> :</p>
 <pre><code class="language-javascript">function isDictWord(pw) {
-  if (!DICTWORDS || !DICT<em>WORDS.size) return false;
+  if (!DICT_WORDS || !DICT_WORDS.size) return false;
   const l = pw.normalize("NFC").toLowerCase();
-<p>// Test direct : le password est-il tel quel dans le dictionnaire ?
-  if (DICT</p></em>WORDS.has(l)) return true;
-<p>// Test de-leetifié : "s0le1l" → "soleil" dans le dico ?
+
+  // Test direct : le password est-il tel quel dans le dictionnaire ?
+  if (DICT_WORDS.has(l)) return true;
+
+  // Test de-leetifié : "s0le1l" → "soleil" dans le dico ?
   const dl = deLeet(pw);
-  if (dl !== l &amp;&amp; DICT<em>WORDS.has(dl)) return true;</em></p>
-<p>// Test substring : "sunshine123" contient "sunshine" dans le dico ?
-  for (const w of DICTWORDS) {
+  if (dl !== l &amp;&amp; DICT_WORDS.has(dl)) return true;
+
+  // Test substring : "sunshine123" contient "sunshine" dans le dico ?
+  for (const w of DICT_WORDS) {
     if (l.includes(w) &amp;&amp; w.length &gt;= 4) return true;
-  }</p>
-<p>return false;
-}</p></code></pre>
+  }
+
+  return false;
+}</code></pre>
 <p>Cette détection détermine non seulement si l'hybride est applicable, mais aussi <strong>quel keyspace</strong> (common vs dict) est utilisé pour le calcul du temps.</p>
 <hr>
 <h2>10. Les trois keyspaces hybrides et leur justification</h2>
-<h3>10.1 HYBRID<em>KEYSPACE</em>COMMON = 500</h3>
+<h3>10.1 <code>HYBRID_KEYSPACE_COMMON</code> = 500</h3>
 <strong>Contexte</strong> : le mot de passe est dans COMMON — la liste hardcodée HIBP top-~400. Ce sont des mots de passe parmi les plus courants au monde ("password", "letmein", "sunshine", "iloveyou"...).
 <strong>Justification</strong> : Ma et al. (2014) ont mesuré empiriquement que la position médiane d'un password top-1000 dans une liste hybride triée par probabilité est de ~450 candidats. Le chiffre 500 est une estimation légèrement conservatrice pour couvrir jusqu'au rang ~400.
 <strong>Interprétation</strong> : un attaquant appliquant best64 à une wordlist triée par fréquence teste en moyenne 500 candidats avant de trouver le password. À 2 600 GH/s (MD5, 12× RTX 5090), 500 candidats = <strong>0,19 ns</strong>. Pratiquement instantané.
-<strong>Exemple</strong> : "Sunshine1" → "sunshine" est dans COMMON → HYBRID<em>KEYSPACE</em>COMMON = 500 → <code>budgetTime(500, 2634e9)</code> ≈ 0,19 ns.
-<h3>10.2 HYBRID<em>KEYSPACE</em>DICT = 8 000</h3>
+<strong>Exemple</strong> : "Sunshine1" → "sunshine" est dans COMMON → <code>HYBRID_KEYSPACE_COMMON</code> = 500 → <code>budgetTime(500, 2634e9)</code> ≈ 0,19 ns.
+<h3>10.2 <code>HYBRID_KEYSPACE_DICT</code> = 8 000</h3>
 <strong>Contexte</strong> : le mot de passe dérive d'un mot de la wordlist linguistique, mais pas de COMMON. Ce sont des mots courants du vocabulaire ("soleil", "montagne", "papillon"...) avec des transformations.
 <strong>Justification</strong> : Ma et al. (2014) mesurent une position médiane de 2 000 à 15 000 selon la popularité du mot dans RockYou. La médiane empirique est ~8 000. Ce keyspace reflète que l'attaquant teste le mot et ses variantes après avoir épuisé les candidats plus communs.
 <strong>Interprétation</strong> : 8 000 candidats à 2 600 GH/s (MD5) = <strong>3,0 ns</strong>. Toujours quasi-instantané pour les hashes rapides. Pour bcrypt (114 kH/s) : 8 000 / 114 000 ≈ <strong>0,07 secondes</strong>.
-<strong>Exemple</strong> : "Soleil2024" → "soleil" dans fr.txt → HYBRID<em>KEYSPACE</em>DICT = 8 000 → quelques nanosecondes sur MD5, 0,07s sur bcrypt.
-<h3>10.3 HYBRID<em>KEYSPACE</em>FULL = 128 000 000</h3>
+<strong>Exemple</strong> : "Soleil2024" → "soleil" dans fr.txt → <code>HYBRID_KEYSPACE_DICT</code> = 8 000 → quelques nanosecondes sur MD5, 0,07s sur bcrypt.
+<h3>10.3 <code>HYBRID_KEYSPACE_FULL</code> = 128 000 000</h3>
 <strong>Contexte</strong> : <code>hybridVuln</code> est vrai (mot de passe a une structure dictionnaire) mais ni <code>common</code> ni <code>dictWord</code> ne correspondent précisément. L'attaquant doit parcourir toute la wordlist avec toutes les règles.
 <strong>Justification</strong> : Gosney (Passwordscon 2012) documente une wordlist de 3,5M mots × best64 (64 règles) = 224M candidats au total. En pratique, les wordlists réalistes font 2M mots et les runs best64 partiels s'arrêtent à ~128M candidats avant d'escalader vers des jeux de règles plus larges.
-<strong>Formule</strong> : <code>2<em>000</em>000 mots × 64 règles = 128<em>000</em>000 candidats</code>
+<strong>Formule</strong> : <code>2_000_000 mots × 64 règles = 128_000_000 candidats</code>
 <strong>Interprétation</strong> : 128M candidats à 2 600 GH/s (MD5) ≈ <strong>49 µs</strong>. Sur bcrypt (114 kH/s) : ~19 minutes.
 <hr>
 <h2>11. Calibration haute fidélité</h2>
@@ -438,10 +448,10 @@ function budgetTime(guesses, rate) {
   // Mots très courants : crackés encore plus tôt que la médiane Ma 2014
   // car les attaquants modernes trient word-first + règle-first simultanément.
   // Réduction de 30% sur les temps déjà courts.
-  m <em>= context.common ? 0.7
+  m *= context.common ? 0.7
     : context.dictWord ? 0.8
     : 1.0;
-  break;</em></code></pre>
+  break;</code></pre>
 <strong>Justification</strong> :
 <li>Pour <code>common</code> : les outils modernes (hashcat avec <code>--markov-threshold</code>) pré-trient les règles par efficacité empirique. Les meilleurs candidats arrivent encore plus tôt. Réduction de 30%.</li>
 <li>Pour <code>dictWord</code> : effet moindre car la position dans la wordlist est moins concentrée. Réduction de 20%.</li>
@@ -468,7 +478,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 </table>
 <h3>12.2 Hybride vs Rule-Based (attaque par règles)</h3>
 <p>L'attaque rule-based dans Time2Crack est conceptuellement similaire mais avec un jeu de règles beaucoup plus large :</p>
-<pre><code class="language-javascript">const RULE<em>KEYSPACE = 250</em>000<em>000;  // vs 128M pour hybride full</em></code></pre>
+<pre><code class="language-javascript">const RULE_KEYSPACE = 250_000_000;  // vs 128M pour hybride full</code></pre>
 <p>La différence : l'hybride modélise best64 (64 règles, focus sur les transformations humaines communes). L'attaque rule-based modélise des jeux plus larges comme d3ad0ne (34k règles) ou OneRuleToRuleThemAll (52k règles), utilisés quand best64 échoue. Le rule-based est l'hybride "de seconde ligne" — plus lent mais plus exhaustif.</p>
 <h3>12.3 Hybride vs PCFG</h3>
 <p>PCFG (Probabilistic Context-Free Grammar, Weir 2009) modélise la structure grammaticale du mot de passe pour générer des candidats. Différences :</p>
@@ -521,7 +531,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <li><code>isCommon("Password1")</code> → false (non dans HIBP exact)</li>
 <li><code>isDictWord("Password1")</code> → true ("password" dans DICTWORDS en minuscule)</li>
 <li><code>COMMON.has("password")</code> → true → <code>common = true</code></li>
-<li>Résultat : HYBRID<em>KEYSPACE</em>COMMON = 500</li>
+<li>Résultat : <code>HYBRID_KEYSPACE_COMMON</code> = 500</li>
 <strong>Temps MD5</strong> : 500 / 2,634e12 ≈ <strong>0,19 ns</strong> (instantané)
 <strong>Temps bcrypt cost 10</strong> : 500 / 114 000 ≈ <strong>4,4 millisecondes</strong>
 <strong>Règles testées avant trouvaille</strong> : <code>:</code> (mot brut "password" → non), <code>c</code> ("Password" → non), <code>c $1</code> ("Password1" → <strong>TROUVÉ</strong>, rang ~8)
@@ -530,15 +540,15 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <li><code>isCommon("Soleil2024")</code> → false</li>
 <li><code>isDictWord("Soleil2024")</code> → true ("soleil" dans fr.txt)</li>
 <li><code>COMMON.has("soleil")</code> → false → <code>common = false</code>, <code>dictWord = true</code></li>
-<li>Résultat : HYBRID<em>KEYSPACE</em>DICT = 8 000</li>
+<li>Résultat : <code>HYBRID_KEYSPACE_DICT</code> = 8 000</li>
 <strong>Temps MD5</strong> : 8 000 / 2,634e12 ≈ <strong>3,0 nanosecondes</strong>
 <strong>Temps bcrypt cost 10</strong> : 8 000 / 114 000 ≈ <strong>0,07 secondes</strong>
 <strong>Règles testées</strong> : l'attaquant arrive à "soleil" à la position ~5000 dans la wordlist fr triée par fréquence, puis applique <code>c $2 $0 $2 $4</code> ("Soleil2024") au rang ~3 de ses règles → position globale ~15 003.
 <h3>14.3 Exemple 3 : "p@pillon!" (DICT avec substitutions)</h3>
 <strong>Analyse</strong> :
 <li><code>isDictWord("p@pillon!")</code> : de-leetification → "papillon" → dans fr.txt → <code>dictWord = true</code></li>
-<li>Résultat : HYBRID<em>KEYSPACE</em>DICT = 8 000</li>
-<strong>Règles testées</strong> : "papillon" à la position ~15 000 du dictionnaire fr. Règle <code>s a @ $!</code> → "p@pillon!" au rang ~12. Position globale : ~180 000. Toujours bien dans le HYBRID<em>KEYSPACE</em>DICT.
+<li>Résultat : <code>HYBRID_KEYSPACE_DICT</code> = 8 000</li>
+<strong>Règles testées</strong> : "papillon" à la position ~15 000 du dictionnaire fr. Règle <code>s a @ $!</code> → "p@pillon!" au rang ~12. Position globale : ~180 000. Toujours bien dans le <code>HYBRID_KEYSPACE_DICT</code>.
 <h3>14.4 Exemple 4 : "xK9#mQ7@" (résistant)</h3>
 <strong>Analyse</strong> :
 <li><code>isDictWord("xK9#mQ7@")</code> → false (aucune racine dictionnaire)</li>
@@ -549,7 +559,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 <h3>14.5 Exemple 5 : "LinkedInB3st!" (DICT avec contexte)</h3>
 <strong>Analyse</strong> :
 <li><code>isDictWord("LinkedInB3st!")</code> : "linkedin" → wordlist en.txt + <code>deLeet("b3st")</code> → "best" → <code>dictWord = true</code></li>
-<li>Résultat : HYBRID<em>KEYSPACE</em>DICT = 8 000</li>
+<li>Résultat : <code>HYBRID_KEYSPACE_DICT</code> = 8 000</li>
 <p>Cas intéressant : le mot de passe contient deux racines ("linkedin" et "best" via de-leetification). L'attaque hybride est applicable car au moins une racine est détectée. En pratique, une attaque combinator (deux mots collés) serait encore plus efficace ici.</p>
 <hr>
 <h2>15. Limites de l'attaque hybride</h2>
@@ -643,7 +653,7 @@ ACM CHI 2015.
 <strong>Gosney, J. (2012)</strong>
 </em>8x Nvidia GTX 580 Cluster Hashcat Benchmarks / LinkedIn crack session<em>
 Passwordscon 2012, Oslo.
-— Documente le crack de LinkedIn : best64 + wordlist 3,5M = 224M candidats, 90% crackés en 6 jours. Fonde HYBRID<em>KEYSPACE</em>FULL = 128M.
+— Documente le crack de LinkedIn : best64 + wordlist 3,5M = 224M candidats, 90% crackés en 6 jours. Fonde <code>HYBRID_KEYSPACE_FULL</code> = 128M.
 <strong>Löfstrand, K. (2013)</strong>
 </em>best64.rule — Empirical selection of 64 hashcat rules<em>
 Interne, publié sur GitHub.
@@ -654,7 +664,7 @@ https://hashcat.net/hashcat/
 — Documentation officielle des modes -a 0, -a 6, -a 7. Syntaxe des règles. Benchmarks GPU officiels sur 12× RTX 5090.
 <strong>NotSoSecure (2019)</strong>
 </em>OneRuleToRuleThemAll — ML-generated hashcat rule set<em>
-https://github.com/NotSoSecure/password<em>cracking</em>rules
+https://github.com/NotSoSecure/password_cracking_rules
 — 52 218 règles générées par apprentissage automatique sur corpus de passwords crackés. Surpasse best64 de ~8% sur les corpus modernes.
 <h3>Outils de référence</h3>
 <strong>John the Ripper</strong> (Solar Designer, 1996–présent)

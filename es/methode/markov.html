@@ -85,40 +85,40 @@ Documento de referencia del proyecto Time2Crack
 <hr>
 <h2>4. Arquitectura de un cracktool Markov</h2>
 <h3>4.1 Componentes principales</h3>
-<pre><code class="language-plaintext">┌─────────────────────────────────────────────────────────────┐
-│                    OUTIL DE CRACKING MARKOV                 │
-├─────────────────┬───────────────────┬───────────────────────┤
-│  Phase          │  Composant        │  Rôle                 │
-├─────────────────┼───────────────────┼───────────────────────┤
-│  Entraînement   │ Corpus Parser     │ Lit les mots de passe │
-│                 │ N-gram Counter    │ Compte les transitions│
-│                 │ Probability Table │ Normalise en probas   │
-│                 │ Model Serializer  │ Sauvegarde le modèle  │
-├─────────────────┼───────────────────┼───────────────────────┤
-│  Génération     │ Candidate Gen     │ Énumère par score     │
-│                 │ Length Controller │ Filtre par longueur   │
-│                 │ Threshold Filter  │ Coupe les improbables │
-├─────────────────┼───────────────────┼───────────────────────┤
-│  Attaque        │ Hash Engine       │ Compare aux cibles    │
-│                 │ GPU Interface     │ Hashcat backend       │
-└─────────────────┴───────────────────┴───────────────────────┘</code></pre>
+<pre><code class="language-plaintext">┌──────────────────────────────────────────────────────────────────┐
+│                  HERRAMIENTA DE CRACKING MARKOV                  │
+├─────────────────┬───────────────────┬────────────────────────────┤
+│  Fase           │ Componente        │ Función                    │
+├─────────────────┼───────────────────┼────────────────────────────┤
+│  Entrenamiento  │ Corpus Parser     │ Lee las contraseñas        │
+│                 │ N-gram Counter    │ Cuenta transiciones        │
+│                 │ Probability Table │ Normaliza a probabilidades │
+│                 │ Model Serializer  │ Guarda el modelo           │
+├─────────────────┼───────────────────┼────────────────────────────┤
+│  Generación     │ Candidate Gen     │ Enumera por puntuación     │
+│                 │ Length Controller │ Filtra por longitud        │
+│                 │ Threshold Filter  │ Descarta lo improbable     │
+├─────────────────┼───────────────────┼────────────────────────────┤
+│  Ataque         │ Hash Engine       │ Compara con objetivos      │
+│                 │ GPU Interface     │ Backend de Hashcat         │
+└─────────────────┴───────────────────┴────────────────────────────┘</code></pre>
 <h3>4.2 Integración con Hashcat</h3>
 <p>La aplicación más generalizada en la práctica es a través de la <strong>Modo Stdin Hashcat</strong> (G)<code>-a 0</code> con un generador externo) o a través de módulos Python como <code>statsgen</code> (del kit de herramientas PACK):</p>
-<pre><code class="language-bash"># Exemple d'attaque Markov pratique
-python statsgen.py rockyou.txt --output markov<em>modelo.stats
-python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes.txt</em></code></pre>
+<pre><code class="language-bash"># Practical Markov attack example
+python statsgen.py rockyou.txt --output markov_model.stats
+python maskgen.py markov_model.stats | hashcat -a 0 -m 1000 target_hashes.txt</code></pre>
 <p>Herramientas dedicadas como <strong>OMEN</strong> (Open Markov Estimator of Next passwords) genera directamente listas de candidatos ordenados.</p>
 <hr>
 <h2>5. Fase 1 - Cuerpo de formación de contraseña real</h2>
 <h3>5.1. Extracción de n-gramos</h3>
 <p>Para cada contraseña en el cuerpo, todos los n-gramos se extraen (con un marcador de inicio). <code>^</code> y fin <code>$</code>)</p>
 <p>Ejemplo con "hola" (orden 2):
-</p><pre><code class="language-plaintext">^h, he, el, ll, lo, o$</code></pre><p></p>
+</p><pre><code class="language-plaintext">^h, he, el, ll, lo, o$</code></pre>
 <p>Ejemplo con "P@ss1!" (orden 2):
-</p><pre><code class="language-plaintext">^P, P@, @s, ss, s1, 1!, !$</code></pre><p></p>
+</p><pre><code class="language-plaintext">^P, P@, @s, ss, s1, 1!, !$</code></pre>
 <h3>5.2 Contabilidad y estandarización</h3>
 <p>Para cada contexto (n-1 caracteres anteriores), las ocurrencias de cada personaje siguiente se cuentan y se normalizan:</p>
-<pre><code class="language-plaintext">Contexte "pa" → {s: 847, r: 12, t: 8, l: 3, ...}
+<pre><code class="language-plaintext">Contexto "pa" → {s: 847, r: 12, t: 8, l: 3, ...}
 → P(s|pa) = 847/870 = 0.973
 → P(r|pa) = 12/870 = 0.014</code></pre>
 <p>Estas distribuciones revelan hábitos de lenguaje humano: después de "pa", la gente escribe masivamente "s" (password, pass, pablo...).</p>
@@ -148,7 +148,7 @@ python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes
 <p>Este enfoque garantiza una clasificación aproximadamente decreciente sin memorizar todo el espacio.</p>
 <h3>6.2. umbral del umbral</h3>
 <p>Para evitar generar miles de millones de candidatos improbables, <strong>Puntuación mínima</strong> debajo del cual se elimina un candidato parcial (esclavamiento).</p>
-<pre><code class="language-plaintext">Si log P(candidatpartiel) &lt; THRESHOLD → abandon de cette branche</code></pre>
+<pre><code class="language-plaintext">Si log P(candidato_parcial) &lt; THRESHOLD → se descarta esta rama</code></pre>
 <p>Threshold es un parámetro crítico: demasiado alto → se pierde contraseñas en el límite; demasiado bajo → se generan demasiados candidatos y ralentizar el ataque.</p>
 <h3>Gestión de la longitud</h3>
 <p>Los modelos Markov están entrenados y generalmente funcionan <strong>por longitud fija</strong>Un ataque típico:</p>
@@ -210,7 +210,7 @@ python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes
 <p>John TheRipper integra un <strong>modo nativo Markov</strong> (desarrollado por Samuele Giovanni Tonon):</p>
 <pre><code class="language-bash">john --markov --min-length=6 --max-length=8 hashes.txt</code></pre>
 <p>Parámetro <code>--markov-threshold</code> (0-400): controla el umbral de corte. 150 = parámetro estándar recomendado.</p>
-<p>El modo JtR Markov utiliza estadísticas precalculadas almacenadas en archivos <code>.mkv</code> (archivos de estadísticas de Markov) generados por <code>calc<em>stat</em></code>.</p>
+<p>El modo JtR Markov utiliza estadísticas precalculadas almacenadas en archivos <code>.mkv</code> (archivos de estadísticas de Markov) generados por <code>calc_stat</code>.</p>
 <h3>8.5 Modelos híbridos Markov</h3>
 <strong>Markov + reglas</strong> : generar candidatos Markov, luego aplicar reglas de transformación Hashcat
 <strong>Markov + diccionario</strong> : utilizar contraseñas Markov como base para ataques híbridos
@@ -276,7 +276,7 @@ python maskgen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes
 <li>estimación de un rango humano a través de esqueleto + forma + filas de fichas,</li>
 <li>modulación por señales estructurales (<code>kbPat</code>, <code>seq</code>, <code>dt</code>, <code>rep</code>, <code>hybridVuln</code>),</li>
 <li>interpolación continua hacia un régimen "como el azar" según <code>charset</code> y longitud,</li>
-<li>conversión del tiempo mediante <code>budgetTime(rangestime, vitesse<em>hash)</em></code>.</li>
+<li>conversión del tiempo mediante <code>budgetTime(estimated_rank, hash_rate)</code>.</li>
 <h3>10.2 Unicode Tokenization and Calibrated Profile by Language</h3>
 <p>El modelo Markov v2 utiliza clases de Unicode (<code>\p{L}</code>, <code>\p{N}</code>, de otro modo símbolo) y un perfil calibrado por idioma (cargado desde entonces <code>data/markov-calibration.json</code>, con retroceso interno).</p>
 <p>El perfil contiene:</p>

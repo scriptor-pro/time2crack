@@ -85,40 +85,40 @@ Project reference document Time2Crack
 <hr>
 <h2>4. Bir Markov çatlakları mimarisi</h2>
 <h3>4.1 Ana bileşenler</h3>
-<pre><code class="language-plaintext">┌─────────────────────────────────────────────────────────────┐
-│                    OUTIL DE CRACKING MARKOV                 │
-├─────────────────┬───────────────────┬───────────────────────┤
-│  Phase          │  Composant        │  Rôle                 │
-├─────────────────┼───────────────────┼───────────────────────┤
-│  Entraînement   │ Corpus Parser     │ Lit les mots de passe │
-│                 │ N-gram Counter    │ Compte les transitions│
-│                 │ Probability Table │ Normalise en probas   │
-│                 │ Model Serializer  │ Sauvegarde le modèle  │
-├─────────────────┼───────────────────┼───────────────────────┤
-│  Génération     │ Candidate Gen     │ Énumère par score     │
-│                 │ Length Controller │ Filtre par longueur   │
-│                 │ Threshold Filter  │ Coupe les improbables │
-├─────────────────┼───────────────────┼───────────────────────┤
-│  Attaque        │ Hash Engine       │ Compare aux cibles    │
-│                 │ GPU Interface     │ Hashcat backend       │
-└─────────────────┴───────────────────┴───────────────────────┘</code></pre>
+<pre><code class="language-plaintext">┌──────────────────────────────────────────────────────────┐
+│                    MARKOV KIRMA ARACI                    │
+├───────────┬───────────────────┬──────────────────────────┤
+│  Aşama    │ Bileşen           │ Görev                    │
+├───────────┼───────────────────┼──────────────────────────┤
+│  Eğitim   │ Corpus Parser     │ Parolaları okur          │
+│           │ N-gram Counter    │ Geçişleri sayar          │
+│           │ Probability Table │ Olasılığa dönüştürür     │
+│           │ Model Serializer  │ Modeli kaydeder          │
+├───────────┼───────────────────┼──────────────────────────┤
+│  Üretim   │ Candidate Gen     │ Puana göre sıralar       │
+│           │ Length Controller │ Uzunluğa göre süzer      │
+│           │ Threshold Filter  │ Düşük olasılıkları eler  │
+├───────────┼───────────────────┼──────────────────────────┤
+│  Saldırı  │ Hash Engine       │ Hedeflerle karşılaştırır │
+│           │ GPU Interface     │ Hashcat arka ucu         │
+└───────────┴───────────────────┴──────────────────────────┘</code></pre>
 <h3>4.2 Hashcat ile entegrasyon</h3>
 <p>Uygulamadaki en yaygın uygulama, uygulamadaki en yaygın uygulamadır <strong>Hashcat stdin modu</strong> (<code>-a 0</code> Dış jeneratör ile) veya Python modülleri aracılığıyla <code>statsgen</code> (PK aracıkit’ten):</p>
-<pre><code class="language-bash"># Exemple d'attaque Markov pratique
-python statsgen.py rockyou.txt --output markov<em>Model.stats
-python maskegen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashes.txt</em></code></pre>
+<pre><code class="language-bash"># Practical Markov attack example
+python statsgen.py rockyou.txt --output markov_model.stats
+python maskgen.py markov_model.stats | hashcat -a 0 -m 1000 target_hashes.txt</code></pre>
 <p>Özel araçlar gibi <strong>OMEN</strong> (Bir sonraki şifrenin Markov Estimatoru) doğrudan sıralanmış adayların listelerini oluşturur.</p>
 <hr>
 <h2>5. Aşama 1 - Gerçek şifre eğitiminin Bedeni</h2>
 <h3>5.1. n-gramların Ekstraksiyonu</h3>
 <p>Korpus'taki her şifre için, tüm n-gramlar çıkarılır (bir başlangıç işareti ile). <code>^</code> Ve son <code>$</code>)</p>
 <p>Örnek with "hello" (order 2):
-</p><pre><code class="language-plaintext">^h, he, el, ll, lo, o$</code></pre><p></p>
+</p><pre><code class="language-plaintext">^h, he, el, ll, lo, o$</code></pre>
 <p>"P@ss1" (order 2) ile örnek:
-</p><pre><code class="language-plaintext">^P, P@, @s, ss, s1, 1!, !$</code></pre><p></p>
+</p><pre><code class="language-plaintext">^P, P@, @s, ss, s1, 1!, !$</code></pre>
 <h3>5.2 Konting ve standardizasyon</h3>
 <p>Her bağlamda (n-1 önceki karakterler), her bir karakterin olayları sayılıyor ve normalleştirildi:</p>
-<pre><code class="language-plaintext">Contexte "pa" → {s: 847, r: 12, t: 8, l: 3, ...}
+<pre><code class="language-plaintext">Bağlam "pa" → {s: 847, r: 12, t: 8, l: 3, ...}
 → P(s|pa) = 847/870 = 0.973
 → P(r|pa) = 12/870 = 0.014</code></pre>
 <p>Bu dağıtımlar insan dil alışkanlıklarını ortaya çıkarır: "pa"dan sonra insanlar büyük ölçüde "s" (password, pass, pablo...).</p>
@@ -148,7 +148,7 @@ python maskegen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashe
 <p>Bu yaklaşım, tüm alanı ezberlemeden yaklaşık azaltımı sağlar.</p>
 <h3>6.2. Threshold eşi</h3>
 <p>milyarlarca uygunsuz adayı oluşturmaktan kaçınmak için, bir <strong>Minimum puan minimum puan</strong> Hangi kısmi bir aday ortadan kaldırılır (sladding).</p>
-<pre><code class="language-plaintext">Si log P(candidatpartiel) &lt; THRESHOLD → abandon de cette branche</code></pre>
+<pre><code class="language-plaintext">log P(kismi_aday) &lt; THRESHOLD ise → bu dal elenir</code></pre>
 <p>Threshold kritik bir parametredir: çok yüksek → Sınırda şifreleri özlüyorsunuz; çok düşük → çok fazla aday üretiyorsunuz ve saldırıyı yavaşlatıyorsunuz.</p>
 <h3>6.3 Toplam yönetim</h3>
 <p>Markov modelleri eğitilir ve genellikle çalışır <strong>Sabit uzunlukta</strong>Tipik bir saldırı:</p>
@@ -210,7 +210,7 @@ python maskegen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashe
 <p>John TheRipper birbiriyle bütünleşiyor <strong>yerli Markov modu</strong> ( Samuele Giovanni Tonon tarafından gelişmiş):</p>
 <pre><code class="language-bash">john --markov --min-length=6 --max-length=8 hashes.txt</code></pre>
 <p>Parametre parametresi <code>--markov-threshold</code> (0-400): kesme eşini kontrol edin. 150 = önerilen standart parametre.</p>
-<p>JtR Markov modu dosyalarında depolanan önceden hesaplanan istatistikler kullanır <code>.mkv</code> (markov stats dosyaları) tarafından yaratılan <code>calc<em>İstatistik</em></code>.</p>
+<p>JtR Markov modu dosyalarında depolanan önceden hesaplanan istatistikler kullanır <code>.mkv</code> (markov stats dosyaları) tarafından yaratılan <code>calc_stat</code>.</p>
 <h3>8.5 Markov Hybrid Modeller</h3>
 <strong>Markov + kurallar</strong> Markov adayları üretmek, sonra Hashcat dönüşüm kuralları uygulamak
 <strong>Markov + Sözlük</strong> : Markov şifrelerini hibrit saldırılar için temel olarak kullanın
@@ -276,7 +276,7 @@ python maskegen.py markov</em>model.stats | hashcat -a 0 -m 1000 target<em>hashe
 <li>Bir insan rütbesinin iskelet + form + jetonlarla tahmin edilmesi,</li>
 <li>Yapısal sinyallerin modülasyonu (p&gt;<code>kbPat</code>, <code>seq</code>, <code>dt</code>, <code>rep</code>, <code>hybridVuln</code>)</li>
 <li>Sürekli bir "hayal benzeri" rejime karşı apolasyon <code>charset</code> ve uzunluğu,</li>
-<li>Zaman dönüşümü <code>budgetTime(rangestime, vitesse<em>hash)</em></code>.</li>
+<li>Zaman dönüşümü <code>budgetTime(estimated_rank, hash_rate)</code>.</li>
 <h3>10.2 Unicode Hediyeleme ve Kalibrated Profile Tarafından Language</h3>
 <p>Markov v2 modeli Unicode sınıflarını kullanır (<code>\p{L}</code>, <code>\p{N}</code>Aksi takdirde sembolü) ve dil başına bir kalibre profili (bu zamandan beri yüklendi). <code>data/markov-calibration.json</code>İç geri çekilme ile.</p>
 <p>Profil içerir:</p>

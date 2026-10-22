@@ -240,8 +240,8 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <h4>Exemple réel</h4>
 <p><code>Password123</code> :</p>
 <ul>
-<li>Brute force : 94¹¹ = 475 trillion tentatives</li>
-<li>PCFG : ~100 billion tentatives (4 700× plus rapide!)</li>
+<li>Force brute : 62¹¹ ≈ 5 × 10¹⁹ tentatives</li>
+<li>PCFG : sa structure (1 majuscule + 7 minuscules + 3 chiffres) est parmi les plus fréquentes, donc PCFG la teste très tôt</li>
 </ul>
 </div>
 <p><small><a href="methode/pcfg.html">En savoir plus sur PCFG →</a></small></p>
@@ -337,24 +337,24 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <h3>Impact concret</h3>
 <div class="example-box">
-<h4>Mot de passe : "P@ssw0rd" (10 chars, rang : 1 billion)</h4>
+<h4>Exemple : un mot de passe de rang 10¹², haché en SHA-256</h4>
 <ul>
 <li><strong>Amateur</strong> : 36 secondes</li>
-<li><strong>Experienced</strong> : 3.0 secondes</li>
-<li><strong>Professional</strong> : 0.36 secondes</li>
-<li><strong>Nation-State</strong> : 3.6 millisecondes</li>
+<li><strong>Expérimenté</strong> : 3 secondes</li>
+<li><strong>Professionnel</strong> : 0,36 seconde</li>
+<li><strong>État-nation</strong> : 3,6 millisecondes</li>
 </ul>
 </div>
 <p><strong>Enseignement</strong> : Même un mot de passe "fort" peut être craqué en millisecondes par un état-nation!</p>
 </section>
 <section class="doc-section" id="example">
 <h2>Exemple concret : Tr0ub4dor&amp;3</h2>
-<p>C'est le mot de passe du film <strong>"Correct Horse Battery Staple"</strong> (xkcd). Voyons ce que Time2Crack fait :</p>
+<p>C’est le mot de passe de la BD xkcd « Password Strength » (n° 936), celle qui a aussi rendu célèbre « correct horse battery staple ». Voyons ce qu’en fait Time2Crack :</p>
 <h3>Étape 1 : Analyse</h3>
 <div class="code-block">
 <pre>• length : 11 caractères
 • charset : 94 caractères
-• entropy : ~64 bits
+• entropy : ~72 bits
 • dictionaryWord : FALSE
 • commonPassword : FALSE
 • maskLike : TRUE
@@ -362,7 +362,7 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <h3>Étape 2 : Estimation du rang</h3>
 <div class="code-block">
-<pre>Brute Force  : 94^11 ≈ 475 trillion
+<pre>Brute Force  : 94^11 ≈ 5 × 10^21
 Dictionary   : ∞ (pas dans dictionnaire)
 Mask         : ≈ 1.4 trillion
 Markov       : ≈ 10 trillion
@@ -440,5 +440,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">↑ Retour au sommet</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Last: <span id="commit-date">2026-10-22 15:31:31</span> • <span id="commit-message">feat(seo): h1 on the FAQ, HIBP and sourc...</span></small>
+<small class="commit-info">Last: <span id="commit-date">2026-10-22 15:51:13</span> • <span id="commit-message">fix(pages): remove stray comment text an...</span></small>
 </footer><script src="../includes.js"></script></body></html>

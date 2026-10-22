@@ -240,8 +240,8 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <h4>Gerçek örnek</h4>
 <p><code>Password123</code> :</p>
 <ul>
-<li>Gross power: 9411 = 475 trilyon deneme</li>
-<li>PCFG: ~100 trilyon deneme (4,700× daha hızlı!)</li>
+<li>Kaba kuvvet: 62¹¹ ≈ 5 × 10¹⁹ deneme</li>
+<li>PCFG: yapısı (1 büyük harf + 7 küçük harf + 3 rakam) en yaygınlar arasında, bu yüzden PCFG onu çok erken dener</li>
 </ul>
 </div>
 <p><small><a href="methode/pcfg.html">PCFG hakkında daha fazla bilgi edinin →</a></small></p>
@@ -337,24 +337,24 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <h3>Beton etkisi</h3>
 <div class="example-box">
-<h4>Şifre: "P@ssw0rd" (10 tank, sıra: 1 trilyon)</h4>
+<h4>Örnek: sırası 10¹² olan, SHA-256 ile hashlenmiş bir şifre</h4>
 <ul>
-<li><strong>Amatör Amatör</strong> 36 saniye</li>
-<li><strong>Deneyimlendi</strong> 3.0 saniye</li>
-<li><strong>Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel Profesyonel</strong> : 0.36 saniye</li>
-<li><strong>Devlet Ulusu</strong> 3.6 milisaniye</li>
+<li><strong>Amatör</strong>: 36 saniye</li>
+<li><strong>Deneyimli</strong>: 3 saniye</li>
+<li><strong>Profesyonel</strong>: 0,36 saniye</li>
+<li><strong>Ulus devlet</strong>: 3,6 milisaniye</li>
 </ul>
 </div>
 <p><strong>Eğitim Eğitimi</strong> : Bir ulus devlet tarafından milisaniyelerde bile "güçlü" bir şifre bile kırılabilir!</p>
 </section>
 <section class="doc-section" id="example">
 <h2>Beton örneği: Tr0ub4dor&amp;3</h2>
-<p>Film şifresi. <strong>"Correct Horse Battery Staple"</strong> Time2Crack'in ne yaptığını görelim:</p>
+<p>Bu, “correct horse battery staple” ifadesini de ünlü yapan xkcd çizgi romanındaki (“Password Strength”, no. 936) şifredir. Time2Crack’in onunla ne yaptığına bakalım:</p>
 <h3>Adım 1: Analiz</h3>
 <div class="code-block">
 <pre>• length : 11 caractères
 • charset : 94 caractères
-• entropy : ~64 bits
+• entropy : ~72 bits
 • dictionaryWord : FALSE
 • commonPassword : FALSE
 • maskLike : TRUE
@@ -362,7 +362,7 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <h3>Adım 2: Rank tahmini</h3>
 <div class="code-block">
-<pre>Brute Force  : 94^11 ≈ 475 trillion
+<pre>Brute Force  : 94^11 ≈ 5 × 10^21
 Dictionary   : ∞ (pas dans dictionnaire)
 Mask         : ≈ 1.4 trillion
 Markov       : ≈ 10 trillion
@@ -440,5 +440,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">^ Back to top</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Son: <span id="commit-date">2026-10-22 15:31:31</span> • • <span id="commit-message">feat(seo): h1 on the FAQ, HIBP and sourc...</span></small>
+<small class="commit-info">Son: <span id="commit-date">2026-10-22 15:51:13</span> • • <span id="commit-message">fix(pages): remove stray comment text an...</span></small>
 </footer><script src="../includes.js"></script></body></html>

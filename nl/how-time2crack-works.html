@@ -240,8 +240,8 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <h4>Echt voorbeeld</h4>
 <p><code>Password123</code> :</p>
 <ul>
-<li>Bruto sterkte: 9411 = 475 biljoen pogingen</li>
-<li>PCFG: ~100 biljoen pogingen (4.700× sneller!)</li>
+<li>Brute force: 62¹¹ ≈ 5 × 10¹⁹ pogingen</li>
+<li>PCFG: de structuur (1 hoofdletter + 7 kleine letters + 3 cijfers) is een van de meest voorkomende, dus PCFG probeert die heel vroeg</li>
 </ul>
 </div>
 <p><small><a href="methode/pcfg.html">Meer informatie over PCFG →</a></small></p>
@@ -337,24 +337,24 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <h3>Concrete impact</h3>
 <div class="example-box">
-<h4>Wachtwoord: "P@ssw0rd" (10 tanks, rij: 1 biljoen)</h4>
+<h4>Voorbeeld: een wachtwoord met rang 10¹², gehasht met SHA-256</h4>
 <ul>
-<li><strong>Amateur</strong> 36 seconden</li>
-<li><strong>Ervaren</strong> 3,0 seconden</li>
-<li><strong>Professioneel</strong> : 0,36 seconden</li>
-<li><strong>Staat</strong> 3,6 milliseconden</li>
+<li><strong>Amateur</strong>: 36 seconden</li>
+<li><strong>Ervaren</strong>: 3 seconden</li>
+<li><strong>Professional</strong>: 0,36 seconden</li>
+<li><strong>Natiestaat</strong>: 3,6 milliseconden</li>
 </ul>
 </div>
 <p><strong>Onderwijs</strong> : Zelfs een "sterk" wachtwoord kan worden gekraakt in milliseconden door een natie-staat!</p>
 </section>
 <section class="doc-section" id="example">
 <h2>Concrete voorbeeld: Tr0ub4dor&amp;3</h2>
-<p>Het is het filmwachtwoord. <strong>"Correct Horse Battery Nieten"</strong> Eens kijken wat Time2Crack doet:</p>
+<p>Dit is het wachtwoord uit de xkcd-strip ‘Password Strength’ (nr. 936), dezelfde die ‘correct horse battery staple’ beroemd maakte. Laten we kijken wat Time2Crack ermee doet:</p>
 <h3>Stap 1: Analyse</h3>
 <div class="code-block">
 <pre>• length : 11 caractères
 • charset : 94 caractères
-• entropy : ~64 bits
+• entropy : ~72 bits
 • dictionaryWord : FALSE
 • commonPassword : FALSE
 • maskLike : TRUE
@@ -362,7 +362,7 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <h3>Stap 2: Rangschatting</h3>
 <div class="code-block">
-<pre>Brute Force  : 94^11 ≈ 475 trillion
+<pre>Brute Force  : 94^11 ≈ 5 × 10^21
 Dictionary   : ∞ (pas dans dictionnaire)
 Mask         : ≈ 1.4 trillion
 Markov       : ≈ 10 trillion
@@ -440,5 +440,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">↑ Terug naar boven</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Laatste: <span id="commit-date">2026-10-22 15:31:31</span> • <span id="commit-message">feat(seo): h1 on the FAQ, HIBP and sourc...</span></small>
+<small class="commit-info">Laatste: <span id="commit-date">2026-10-22 15:51:13</span> • <span id="commit-message">fix(pages): remove stray comment text an...</span></small>
 </footer><script src="../includes.js"></script></body></html>

@@ -240,8 +240,8 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 <h4>Prawdziwy przykład</h4>
 <p><code>Password123</code> :</p>
 <ul>
-<li>Wytrzymałość brutto: 9411 = 475 bilionów prób</li>
-<li>PCFG: ~ 100 bilionów prób (4,700 × szybciej!)</li>
+<li>Brute force: 62¹¹ ≈ 5 × 10¹⁹ prób</li>
+<li>PCFG: jego struktura (1 wielka litera + 7 małych + 3 cyfry) należy do najczęstszych, więc PCFG sprawdza ją bardzo wcześnie</li>
 </ul>
 </div>
 <p><small><a href="methode/pcfg.html">Dowiedz się więcej o PCFG →</a></small></p>
@@ -337,24 +337,24 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <h3>Konkretny wpływ</h3>
 <div class="example-box">
-<h4>Hasło: "P @ ssw0rd" (10 czołgów, rząd: 1 bilion)</h4>
+<h4>Przykład: hasło o randze 10¹², zahaszowane SHA-256</h4>
 <ul>
-<li><strong>Amatorskie</strong> 36 sekundy</li>
-<li><strong>Doświadczony</strong> 3.0 sekundy</li>
-<li><strong>Profesjonalne</strong> : 0.36 sekund</li>
-<li><strong>Państwo</strong> 3.6 milisekundy</li>
+<li><strong>Amator</strong>: 36 sekund</li>
+<li><strong>Doświadczony</strong>: 3 sekundy</li>
+<li><strong>Profesjonalista</strong>: 0,36 sekundy</li>
+<li><strong>Państwo</strong>: 3,6 milisekundy</li>
 </ul>
 </div>
 <p><strong>Edukacja</strong> : Nawet "silne" hasło może być złamane w milisekundach przez państwo narodowe!</p>
 </section>
 <section class="doc-section" id="example">
 <h2>Przykład betonu: Trub4dor &amp; 3</h2>
-<p>To hasło do filmu. <strong>"Prawidłowy konik Battery Staple"</strong> Zobaczmy, co robi Time2Crack:</p>
+<p>To hasło z komiksu xkcd „Password Strength” (nr 936), tego samego, który rozsławił „correct horse battery staple”. Zobaczmy, co zrobi z nim Time2Crack:</p>
 <h3>Etap 1: Analiza</h3>
 <div class="code-block">
 <pre>• length : 11 caractères
 • charset : 94 caractères
-• entropy : ~64 bits
+• entropy : ~72 bits
 • dictionaryWord : FALSE
 • commonPassword : FALSE
 • maskLike : TRUE
@@ -362,7 +362,7 @@ const best = Math.min(...Object.values(results).map(r =&gt; r.rank));
 </div>
 <h3>Etap 2: oszacowanie rankingu</h3>
 <div class="code-block">
-<pre>Brute Force  : 94^11 ≈ 475 trillion
+<pre>Brute Force  : 94^11 ≈ 5 × 10^21
 Dictionary   : ∞ (pas dans dictionnaire)
 Mask         : ≈ 1.4 trillion
 Markov       : ≈ 10 trillion
@@ -440,5 +440,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">↑ Powrót do góry</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Ostatni: <span id="commit-date">2026-10-22 15:31:31</span> • <span id="commit-message">feat(seo): h1 on the FAQ, HIBP and sourc...</span></small>
+<small class="commit-info">Ostatni: <span id="commit-date">2026-10-22 15:51:13</span> • <span id="commit-message">fix(pages): remove stray comment text an...</span></small>
 </footer><script src="../includes.js"></script></body></html>

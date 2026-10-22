@@ -23,17 +23,15 @@
 <h2>Przegląd</h2>
 <p>Time2Crack odpowiada na proste pytanie: <strong>"Jak długo zajmie złamanie tego hasła?"</strong></p>
 <p>Odpowiedź obejmuje trzy etapy:</p>
-<div class="diagram">
-PASS MOT (np. "P @ ssw0rd!")
-▼
+<pre class="diagram"><code>HASŁO (np. "P@ssw0rd!")
+    ↓
 KROK 1: Analiza (wykrywanie wzorców, entropia)
-▼
-KROK 2: Szacowana liczba prób (zakres)
-▼
-KROK 3: Przelicznik czasu (w oparciu o prędkość GPU)
-▼
-WYNIK (np. "2 dni na GPU NTLM")
-      </div>
+    ↓
+KROK 2: Szacowana liczba prób (ranga)
+    ↓
+KROK 3: Przeliczenie na czas (według szybkości GPU)
+    ↓
+WYNIK (np. "2 dni na GPU, NTLM")</code></pre>
 <p><strong>Punkt krytyczny</strong> : Time2Crack testes <strong>Nie bardzo.</strong> Hasło. <strong>matematycznie</strong> jak wiele prób byłoby potrzebnych przy różnych atakach.</p>
 <div class="insight-box">
         Kluczową innowacją jest ścisłe oddzielenie <strong>Wskaźnik</strong> (liczba prób) oraz <strong>Czas</strong> (Konwersja oparta na GPU.Pozwala to na samodzielną modyfikację algorytmów ataku lub prędkości GPU.
@@ -41,26 +39,24 @@ WYNIK (np. "2 dni na GPU NTLM")
 </section>
 <section class="doc-section" id="flux">
 <h2>Główny przepływ obliczeniowy</h2>
-<div class="diagram">
-calcCrackTime (hasło, opcje) [core / calc.js]
-Promocyjne
-- analizatory (hasło)
---------------------------------------------------
-Promocyjne
-Ü--estimateRank (hasło, kontekst)
-Egzamin - rankBrute () → Tanklength
--------------------------------------------------- - rankDictionary () → słownik + HIBP
-▼ ç - rankHybrid () → słownik + mutacje
-XXX- rankMask () → przewidywalne struktury
-RRRR - RankMarkov () → model probabilistyczny
-▼ ç - rankPCFG () → gramatyka
-Promocyjne
---------------------------------------------------
-Promocyjne
-- RankToAllSeconds (rank)
-- Konwertuje próby → sekund (GPU prędkości)
-- Return: {md5, sha1, sha256, ntlm, bript, argon2}
-      </div>
+<pre class="diagram"><code>calcCrackTime(password, options)  [core/calc.js]
+    │
+    ├─ analyzePatterns(password)
+    │   └─ Zwraca: { charset, entropy, patterns, flags, context }
+    │
+    ├─ estimateRank(password, context)
+    │   ├─ rankBrute()      → charset^length
+    │   ├─ rankDictionary() → słownik + HIBP
+    │   ├─ rankHybrid()     → słownik + mutacje
+    │   ├─ rankMask()       → przewidywalne struktury
+    │   ├─ rankMarkov()     → model probabilistyczny
+    │   ├─ rankPCFG()       → gramatyka
+    │   ├─ rankCombinator() → łączenie słów
+    │   └─ Zwraca: { standard, optimistic, worst_case, best_attack }
+    │
+    └─ rankToAllSeconds(rank)
+        ├─ Przelicza próby → sekundy (szybkość GPU)
+        └─ Zwraca: { md5, sha1, sha256, ntlm, bcrypt, argon2 }</code></pre>
 <h3>Architektura dwuwarstwowa</h3>
 <p>Kluczową innowacją Time2Crack jest <strong>ścisłe oddzielenie</strong> między:</p>
 <div class="feature-list">
@@ -444,5 +440,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">↑ Powrót do góry</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Ostatni: <span id="commit-date">2026-10-22 11:23:05</span> • <span id="commit-message">fix(methode): correct bcrypt cost 12 and...</span></small>
+<small class="commit-info">Ostatni: <span id="commit-date">2026-10-22 11:27:55</span> • <span id="commit-message">fix(pages): rebuild the calculation diag...</span></small>
 </footer><script src="../includes.js"></script></body></html>

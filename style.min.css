@@ -5,3 +5,4 @@
 .nav-generator{--nav-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5z'/%3E%3Cpath d='M19 13c.3 2.3 1.4 3.4 3.7 3.7-2.3.3-3.4 1.4-3.7 3.7-.3-2.3-1.4-3.4-3.7-3.7 2.3-.3 3.4-1.4 3.7-3.7z'/%3E%3C/svg%3E")}
 .nav-home::before,.nav-generator::before{content:"";display:inline-block;width:1.15em;height:1.15em;margin-right:.4em;vertical-align:-.22em;background-color:currentColor;-webkit-mask:var(--nav-icon) center/contain no-repeat;mask:var(--nav-icon) center/contain no-repeat}
 @media (max-width:359px){.nav-home::before,.nav-generator::before{display:none}}
+pre{max-width:100%;overflow-x:auto}pre.diagram{font-size:.85rem;line-height:1.4}

@@ -23,17 +23,15 @@
 <h2>Overzicht</h2>
 <p>Time2Crack beantwoordt een eenvoudige vraag: <strong>Hoe lang duurt het om dit wachtwoord te kraken?</strong></p>
 <p>Het antwoord omvat drie stappen:</p>
-<div class="diagram">
-PASS MOT (bv. "P@ssw0rd!")
-▼
+<pre class="diagram"><code>WACHTWOORD (bv. "P@ssw0rd!")
+    ↓
 STAP 1: Analyse (patroondetectie, entropie)
-▼
-STAP 2: Geschat aantal pogingen (bereik)
-▼
-STAP 3: Tijdconversie (gebaseerd op GPU snelheid)
-▼
-Als gevolg daarvan (bv. "2 dagen op GPU NTLM")
-      </div>
+    ↓
+STAP 2: Geschat aantal pogingen (rang)
+    ↓
+STAP 3: Omrekening naar tijd (op basis van GPU-snelheid)
+    ↓
+RESULTAAT (bv. "2 dagen op GPU, NTLM")</code></pre>
 <p><strong>Kritisch punt</strong> : Time2Crack-tests <strong>Niet echt.</strong> Het wachtwoord. <strong>wiskundig</strong> hoeveel pogingen nodig zouden zijn met verschillende aanvallen.</p>
 <div class="insight-box">
         De belangrijkste innovatie is de strikte scheiding tussen <strong>Rang</strong> (aantal pogingen) en <strong>Tijd</strong> Dit maakt het mogelijk om aanvalsalgoritmen of GPU snelheden onafhankelijk te wijzigen.
@@ -41,26 +39,24 @@ Als gevolg daarvan (bv. "2 dagen op GPU NTLM")
 </section>
 <section class="doc-section" id="flux">
 <h2>Voornaamste berekeningsstroom</h2>
-<div class="diagram">
-calcCrackTime(wachtwoord, opties) [core/calc.js]
-Promotie
-- analysePatterns(wachtwoord)
-│
-Promotie
-Ü--schattingRank(wachtwoord, context)
-│ Ã - rankBrute() → tanklengte
-│ ç - rangDictionary() → woordenboek + HIPP
-│ ç - rangHybrid() → woordenboek + mutaties
-│ Ã - rangMask() → voorspelbare structuren
-│ Ü - RankMarkov() → probabilistisch model
-│ ç - rangPCFG() → grammatica
-Promotie
-│
-Promotie
-- RangToAllSeconds(rank)
-- Converteert pogingen → seconden (GPU snelheid)
-- Return: { md5, sha1, sha256, ntlm, bcrypt, argon2 }
-      </div>
+<pre class="diagram"><code>calcCrackTime(password, options)  [core/calc.js]
+    │
+    ├─ analyzePatterns(password)
+    │   └─ Geeft terug: { charset, entropy, patterns, flags, context }
+    │
+    ├─ estimateRank(password, context)
+    │   ├─ rankBrute()      → charset^length
+    │   ├─ rankDictionary() → woordenboek + HIBP
+    │   ├─ rankHybrid()     → woordenboek + mutaties
+    │   ├─ rankMask()       → voorspelbare structuren
+    │   ├─ rankMarkov()     → probabilistisch model
+    │   ├─ rankPCFG()       → grammatica
+    │   ├─ rankCombinator() → woordcombinaties
+    │   └─ Geeft terug: { standard, optimistic, worst_case, best_attack }
+    │
+    └─ rankToAllSeconds(rank)
+        ├─ Zet pogingen om → seconden (GPU-snelheid)
+        └─ Geeft terug: { md5, sha1, sha256, ntlm, bcrypt, argon2 }</code></pre>
 <h3>Twee lagen architectuur</h3>
 <p>Time2Crack's belangrijkste innovatie is <strong>strikte scheiding</strong> tussen:</p>
 <div class="feature-list">
@@ -444,5 +440,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">↑ Terug naar boven</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Laatste: <span id="commit-date">2026-10-22 11:23:05</span> • <span id="commit-message">fix(methode): correct bcrypt cost 12 and...</span></small>
+<small class="commit-info">Laatste: <span id="commit-date">2026-10-22 11:27:55</span> • <span id="commit-message">fix(pages): rebuild the calculation diag...</span></small>
 </footer><script src="../includes.js"></script></body></html>

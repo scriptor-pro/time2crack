@@ -23,17 +23,15 @@
 <h2>Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış Genel Bakış</h2>
 <p>Time2Crack basit bir soruya cevap verir: <strong>“Bu şifreyi kırmak ne kadar sürer?”</strong></p>
 <p>Cevap üç adım içerir:</p>
-<div class="diagram">
-PASS MOT (e.g. "P@sw0rd!")
-
-STEP 1: Analiz (pattern algılama, entropi)
-
-STEP 2: Tahmin edilen sayıda girişim (range)
-
-AD 3: Zaman dönüşümü ( GPU hızına dayalı)
-
-RESULT (e.g. "2 days on GPU NTLM")
-      </div>
+<pre class="diagram"><code>ŞİFRE (ör. "P@ssw0rd!")
+    ↓
+ADIM 1: Analiz (örüntü tespiti, entropi)
+    ↓
+ADIM 2: Tahmini deneme sayısı (sıra)
+    ↓
+ADIM 3: Süreye dönüştürme (GPU hızına göre)
+    ↓
+SONUÇ (ör. "GPU'da 2 gün, NTLM")</code></pre>
 <p><strong>Eleştirel nokta</strong> : Time2Crack testleri <strong>Gerçekten değil</strong> Şifre. <strong>Matematiksel olarak</strong> Farklı saldırılarla kaç girişim gerekli olacaktır.</p>
 <div class="insight-box">
         Anahtar inovasyon, arasındaki sıkı ayrılıktır <strong>Rank Rank Rank Rank Rank Rank</strong> (Profesyonellerin sayısı) ve <strong>Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman Zaman</strong> (GPU tabanlı dönüşüm). Bu, saldırı algoritmaları veya GPU hızlarını bağımsız olarak değiştirmenize olanak sağlar.
@@ -41,26 +39,24 @@ RESULT (e.g. "2 days on GPU NTLM")
 </section>
 <section class="doc-section" id="flux">
 <h2>Main hesaplama akışı</h2>
-<div class="diagram">
-calcCrackTime(password, seçenekler) [core/calc.js]
-Promosyon Promosyon Promosyon
--Patterns(password) analiz edin
-
-Promosyon Promosyon Promosyon
-Ü-estimate Rank (password, context)
-Ã¶ - sıralamaBrute()
-ç - sıralamaDictionary() → Sözlük + HIBP
-ç - rütbeHybrid() → sözlük + mutasyonlar
-Ã¶ - RankMask() → öngörülebilir yapılar
-Ü - RankMarkov() → olasılıksal model
-ç - RankPCFG()
-Promosyon Promosyon Promosyon
-
-Promosyon Promosyon Promosyon
-RankToAll Seconds (rank)
-- Dönüştürmeler → saniye (GPU hızı)
-Return: { md5, sha1, sha256, ntlm, bcrypt, argon2 }
-      </div>
+<pre class="diagram"><code>calcCrackTime(password, options)  [core/calc.js]
+    │
+    ├─ analyzePatterns(password)
+    │   └─ Döndürür: { charset, entropy, patterns, flags, context }
+    │
+    ├─ estimateRank(password, context)
+    │   ├─ rankBrute()      → charset^length
+    │   ├─ rankDictionary() → sözlük + HIBP
+    │   ├─ rankHybrid()     → sözlük + mutasyonlar
+    │   ├─ rankMask()       → tahmin edilebilir yapılar
+    │   ├─ rankMarkov()     → olasılıksal model
+    │   ├─ rankPCFG()       → dilbilgisi
+    │   ├─ rankCombinator() → kelime birleştirme
+    │   └─ Döndürür: { standard, optimistic, worst_case, best_attack }
+    │
+    └─ rankToAllSeconds(rank)
+        ├─ Denemeleri → saniyeye çevirir (GPU hızı)
+        └─ Döndürür: { md5, sha1, sha256, ntlm, bcrypt, argon2 }</code></pre>
 <h3>İki katmanlı mimarlık</h3>
 <p>Time2Crack'in anahtar inovasyonu <strong>katı ayrılık</strong> arasında:</p>
 <div class="feature-list">
@@ -444,5 +440,5 @@ Combinator   : ∞</pre>
 <a class="back-to-top" href="how-time2crack-works.html#top">^ Back to top</a>
 </section>
 </main><footer id="site-footer">
-<small class="commit-info">Son: <span id="commit-date">2026-10-22 11:23:05</span> • • <span id="commit-message">fix(methode): correct bcrypt cost 12 and...</span></small>
+<small class="commit-info">Son: <span id="commit-date">2026-10-22 11:27:55</span> • • <span id="commit-message">fix(pages): rebuild the calculation diag...</span></small>
 </footer><script src="../includes.js"></script></body></html>

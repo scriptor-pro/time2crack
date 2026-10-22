@@ -513,7 +513,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 </tbody>
 </table>
 <strong>Lecture</strong> : pour MD5 et NTLM, même le FULL keyspace (128M candidats) est cracké en quelques dizaines de microsecondes. L'algorithme de hachage est presque sans importance pour les mots communs.
-<strong>Argon2id</strong> est le seul algorithme qui résiste significativement même pour les mots communs : 0,5 secondes pour un mot COMMON, 8 secondes pour un dictWord. Ces temps restent brefs en valeur absolue mais représentent un ralentissement de x10^12 vs MD5 — rendant les attaques à grande échelle économiquement inviables.
+<strong>Argon2id</strong> est le seul algorithme qui résiste significativement même pour les mots communs : 0,5 secondes pour un mot COMMON, 8 secondes pour un dictWord. Ces temps restent brefs en valeur absolue mais représentent un ralentissement de x10^9 vs MD5 — rendant les attaques à grande échelle économiquement inviables.
 <h3>13.2 Impact du profil attaquant</h3>
 <p>Time2Crack propose deux profils (Experienced 12 GPU, Professional 100 GPU). Pour l'hybride, la différence de profil est directement proportionnelle :</p>
 <table class="about-table">

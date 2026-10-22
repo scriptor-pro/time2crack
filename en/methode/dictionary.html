@@ -476,7 +476,7 @@ export function rankToSeconds(rank, algo, profile = "experienced") {
 <p><strong>A slow hash algorithm (bcrypt, Argon2id).</strong> This is the most effective server-side defence: each guess costs more. For <code>soleil</code> (rank 275,117):</p>
 <ul>
 <li>MD5: about 0.1 microseconds</li>
-<li>bcrypt cost 12 (128 times slower than cost 5): about 13 seconds</li>
+<li>bcrypt cost 12 (128 times slower than cost 5): about 10 seconds</li>
 <li>Argon2id: about 5 minutes</li>
 </ul>
 <p>A slow hash slows the attacker down, but it does not save a dictionary word: the list is simply too short.</p>

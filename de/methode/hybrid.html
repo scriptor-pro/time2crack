@@ -513,7 +513,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 </tbody>
 </table>
 <strong>Lesung</strong> : Für MD5 und NTLM wird sogar der FULL-Schlüsselraum (128M-Kandidaten) in wenigen Dutzend Mikrosekunden gekrackt. Der Hash-Algorithmus ist für gemeinsame Wörter fast irrelevant.
-<strong>Argon2id</strong> ist der einzige Algorithmus, der auch bei gemeinsamen Wörtern deutlich widersteht: 0,5 Sekunden für ein COMMON-Wort, 8 Sekunden für einen DiktWord. Diese Zeiten bleiben kurz im absoluten Wert, stellen aber eine Verlangsamung von x10^12 vs MD5 dar - große Angriffe wirtschaftlich unbrauchbar.
+<strong>Argon2id</strong> ist der einzige Algorithmus, der auch bei gemeinsamen Wörtern deutlich widersteht: 0,5 Sekunden für ein COMMON-Wort, 8 Sekunden für einen DiktWord. Diese Zeiten bleiben kurz im absoluten Wert, stellen aber eine Verlangsamung von x10^9 vs MD5 dar - große Angriffe wirtschaftlich unbrauchbar.
 <h3>13.2 Auswirkung des Angriffsprofils</h3>
 <p>Time2Crack bietet zwei Profile (Experienced 12 GPU, Professional 100 GPU). Für den Hybriden ist die Profildifferenz direkt proportional:</p>
 <table class="about-table">

@@ -476,7 +476,7 @@ export function rankToSeconds(rank, algo, profile = "experienced") {
 <p><strong>Un algorithme de hachage lent (bcrypt, Argon2id).</strong> C'est la défense la plus efficace côté serveur : chaque essai coûte plus cher. Pour <code>soleil</code> (rang 275 117) :</p>
 <ul>
 <li>MD5 : environ 0,1 microseconde</li>
-<li>bcrypt coût 12 (128 fois plus lent que le coût 5) : environ 13 secondes</li>
+<li>bcrypt coût 12 (128 fois plus lent que le coût 5) : environ 10 secondes</li>
 <li>Argon2id : environ 5 minutes</li>
 </ul>
 <p>Un hachage lent freine l'attaquant, mais il ne sauve pas un mot du dictionnaire : la liste est tout simplement trop courte.</p>

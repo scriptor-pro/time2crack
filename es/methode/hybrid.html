@@ -513,7 +513,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 </tbody>
 </table>
 <strong>Lectura</strong> : para MD5 y NTLM, incluso el espacio clave FULL (128M candidatos) se rompe en unas docenas de microsegundos. El algoritmo de hash es casi irrelevante para palabras comunes.
-<strong>Argon2id</strong> es el único algoritmo que resiste significativamente incluso para palabras comunes: 0.5 segundos para una palabra COMMON, 8 segundos para un dictWord. Estos tiempos permanecen cortos en valor absoluto pero representan una desaceleración de x10^12 vs MD5 — haciendo ataques a gran escala económicamente inviable.
+<strong>Argon2id</strong> es el único algoritmo que resiste significativamente incluso para palabras comunes: 0.5 segundos para una palabra COMMON, 8 segundos para un dictWord. Estos tiempos permanecen cortos en valor absoluto pero representan una desaceleración de x10^9 vs MD5 — haciendo ataques a gran escala económicamente inviable.
 <h3>13.2 Impacto del perfil de ataque</h3>
 <p>Time2Crack ofrece dos perfiles (Experimentado 12 GPU, Profesional 100 GPU). Para el híbrido, la diferencia de perfil es directamente proporcional:</p>
 <table class="about-table">

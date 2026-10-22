@@ -513,7 +513,7 @@ if (row.sec &lt; floorAlpha) row.sec = floorAlpha;</code></pre>
 </tbody>
 </table>
 <strong>Czytanie</strong> : dla MD5 i NTLM nawet przestrzeń klawiszowa FULL (128M kandydaci) jest pęknięta w kilka tuzinów mikrosekund. Algorytm haszu jest prawie nieistotny dla zwykłych słów.
-<strong>Argon2id</strong> jest jedynym algorytmem, który opiera się znacznie nawet dla zwykłych słów: 0.5 sekund dla wspólnego słowa, 8 sekund dla Dyctic Word. Te czasy pozostają krótkie w wartości bezwzględnej, ale stanowią spowolnienie x10 ^ 12 vs MD5 - co duże ataki skali ekonomicznie niewykonalne.
+<strong>Argon2id</strong> jest jedynym algorytmem, który opiera się znacznie nawet dla zwykłych słów: 0.5 sekund dla wspólnego słowa, 8 sekund dla Dyctic Word. Te czasy pozostają krótkie w wartości bezwzględnej, ale stanowią spowolnienie x10^9 vs MD5 - co duże ataki skali ekonomicznie niewykonalne.
 <h3>13.2 Wpływ profilu atakującego</h3>
 <p>Time2Crack oferuje dwa profile (Doświadczony 12 GPU, Professional 100 GPU). Dla hybrydy różnica profilu jest wprost proporcjonalna:</p>
 <table class="about-table">

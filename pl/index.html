@@ -39,9 +39,17 @@ window.RESOURCE_BASE = (() => {
 </head>
 <body><header id="site-header"></header><main>
 
+    <section class="hero hero--text" aria-labelledby="hero-title">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <h1 class="hero__title" id="hero-title">Sprawdź siłę swojego hasła</h1>
+        </div>
+      </div>
+    </section>
+
     <div class="input-section">
       <div class="input-group">
-        <label for="pw-input" id="main-title" data-i18n="inputLabel">Wpisz hasło do przetestowania</label>
+        <label for="pw-input" id="main-title" data-i18n="inputLabel">Testuj siłę hasła</label>
         <input id="pw-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ex: Password2024!" aria-describedby="status">
         <p class="input-hint" id="main-hint">Analiza lokalna, bezpieczna, bezpłatna • Żadne hasła nie są przesyłane</p>
         <p class="input-hint"><small><a href="how-time2crack-works.html" id="how-it-works-link">Jak to działa? →</a></small></p>

@@ -360,26 +360,6 @@
     if (!main || main.querySelector('.hero')) return;
     const ctx = getPageContext();
 
-    if (!document.getElementById('hero-inline-style')) {
-      const style = document.createElement('style');
-      style.id = 'hero-inline-style';
-      style.textContent = `
-        .hero{margin-bottom:var(--space-4)}
-        .hero__grid{display:flex;flex-direction:column;gap:var(--space-3)}
-        .hero__media{margin:0;width:100%;max-width:560px;align-self:center;overflow:hidden}
-        .hero__media picture,.hero__media img{display:block;width:100%;max-width:100%;height:auto}
-        .hero__image{aspect-ratio:1344/768;object-fit:cover}
-        .hero__content{width:100%;max-width:560px;align-self:center}
-        .hero--text .hero__content{max-width:none}
-        .hero__title{width:100%;font-size:clamp(1.35rem,2.8vw,2rem);line-height:1.06;max-width:none}
-        @media (min-width:860px){
-          .hero{margin-bottom:var(--space-3)}
-          .hero__grid{gap:var(--space-3)}
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
     const { assetPrefix } = ctx;
     const hero = document.createElement('section');
     hero.className = isResults ? 'hero' : 'hero hero--text';
@@ -429,7 +409,7 @@
     header.outerHTML = `
       <header class="site-header">
         <div class="site-header__top">
-          <h1><a href="${pagePrefix}index.html" class="site-logo">${logoMarkup}Time2Crack</a></h1>
+          <p class="site-title"><a href="${pagePrefix}index.html" class="site-logo">${logoMarkup}Time2Crack</a></p>
           <div class="lang-selector">
             <button id="lang-toggle" class="lang-toggle" type="button" aria-label="${texts.selectLanguage}" aria-expanded="false" aria-controls="lang-menu">
               <svg class="lang-toggle__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

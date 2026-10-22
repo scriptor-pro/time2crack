@@ -429,3 +429,44 @@ test('uppercaseCost — toggle aléatoire retourne combinatoire', () => {
   // pAsSwOrD : U=4, L=4 → ∑C(8,1..4) = 8+28+56+70 = 162
   assert.equal(uppercaseCost('pAsSwOrD'), 162);
 });
+
+// ─── PCFG (2026-10-22) ───────────────────────────────────────────────────────
+import { init as initPCFG, rankPCFG } from '../core/rank/pcfg.js';
+
+const PCFG_TEST_DATA = {
+  total_passwords: 1_000_000,
+  skeleton_total: 1_000_000,
+  skeletons: { L8D3: 5_000, L6D2: 100_000, L8: 200_000 },
+  segments: { L: {}, D: { 2: { space: 100 }, 3: { space: 1000 } }, S: {} },
+  threshold: 100,
+};
+const pcfgDict = new Set(['password', 'sunshine', 'princess', 'monkey']);
+
+test('rankPCFG — squelette fréquent : le rang PCFG n’est pas écrasé par la force brute', () => {
+  initPCFG(PCFG_TEST_DATA);
+  const r = rankPCFG('password123', pcfgDict);
+  // 1/P(L8D3) ≈ 200, × 4 mots de 8 lettres × 1000 → ~10⁶ ; force brute 36¹¹/2 ≈ 6,6×10¹⁶
+  assert.ok(r.confidence > 0.99);
+  assert.ok(r.rank < 1e7, `rang ${r.rank.toExponential(2)}`);
+});
+
+test('rankPCFG — segment lettres hors dictionnaire : pas de gain par rapport à la force brute', () => {
+  initPCFG(PCFG_TEST_DATA);
+  const known = rankPCFG('password123', pcfgDict).rank;
+  const unknown = rankPCFG('xkqzvbmw123', pcfgDict).rank;
+  assert.ok(unknown > known * 1e6, `${unknown.toExponential(2)} vs ${known.toExponential(2)}`);
+  assert.ok(unknown > 1e15);
+});
+
+test('rankPCFG — la majuscule initiale coûte un facteur 2', () => {
+  initPCFG(PCFG_TEST_DATA);
+  const lower = rankPCFG('password123', pcfgDict).rank;
+  const cap = rankPCFG('Password123', pcfgDict).rank;
+  assert.ok(Math.abs(cap / lower - 2) < 0.05, `ratio ${cap / lower}`);
+});
+
+test('rankPCFG — données dans un autre format : non applicable, sans exception', () => {
+  initPCFG({ structures: {}, terminals: {} });
+  assert.equal(rankPCFG('password123', pcfgDict).rank, null);
+  initPCFG(null);
+});

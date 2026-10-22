@@ -22,6 +22,7 @@
 'use strict';
 
 import { charsetSize, passwordLength } from '../charset.js';
+import { uppercaseCost } from './uppercase.js';
 
 // ─── État interne ─────────────────────────────────────────────────────────────
 
@@ -78,57 +79,61 @@ function extractSkeleton(password) {
 
 // ─── Calcul de l'espace des segments ─────────────────────────────────────────
 
+// Nombre de mots du dictionnaire par longueur, calculé une fois par Set.
+const DICT_LENGTHS = new WeakMap();
+
+function dictCountByLength(dictWords) {
+  let counts = DICT_LENGTHS.get(dictWords);
+  if (!counts) {
+    counts = new Map();
+    for (const w of dictWords) {
+      const n = [...w].length;
+      counts.set(n, (counts.get(n) || 0) + 1);
+    }
+    DICT_LENGTHS.set(dictWords, counts);
+  }
+  return counts;
+}
+
 /**
- * Calcule log10 de la taille de l'espace des segments d'un squelette.
- * Utilise les comptages empiriques du corpus pour les segments lettre,
- * et les espaces théoriques pour chiffres et symboles.
+ * Calcule log10 de la taille de l'espace des segments d'un mot de passe.
  *
- * @param {string} skeleton - Ex: "L6D4S1"
+ * Segment lettres (Weir et al. 2009 : les lettres viennent d'un dictionnaire) :
+ *   - mot du dictionnaire → nombre de mots de cette longueur × variantes de casse
+ *   - sinon (ou dictionnaire absent) → 26^n × variantes de casse : le PCFG
+ *     n'aide pas pour un segment qui n'est pas un mot.
+ * Chiffres et symboles : espace empirique du corpus, sinon théorique (10^n, 32^n).
+ *
+ * @param {string} password
+ * @param {Set<string>|null} dictWords
  * @returns {number} log10(segment_space)
  */
-function logSegmentSpace(skeleton) {
-  const segments = skeleton.match(/[LDS]\d+/g) || [];
+function logSegmentSpace(password, dictWords) {
+  const segments = password.match(/\p{L}+|[0-9]+|[^\p{L}0-9]+/gu) || [];
+  const counts = dictWords instanceof Set && dictWords.size > 0 ? dictCountByLength(dictWords) : null;
   let logSpace = 0;
 
   for (const seg of segments) {
-    const cls = seg[0];
-    const n   = parseInt(seg.slice(1), 10);
-    const key = String(n);
+    const n = [...seg].length;
+    const segData = (cls) => DATA.segments?.[cls]?.[String(n)];
 
-    const segData = DATA.segments[cls]?.[key];
+    if (/^\p{L}/u.test(seg)) {
+      const caseCost = uppercaseCost(seg);
+      const inDict = counts && dictWords.has(seg.toLowerCase());
+      const words = inDict ? Math.min(counts.get(n) || 1, Math.pow(26, n)) : Math.pow(26, n);
+      logSpace += Math.log10(Math.max(words, 1)) + Math.log10(caseCost);
 
-    if (cls === 'L') {
-      // Espace lettre : nombre de mots distincts observés dans le corpus
-      // Si absent, extrapolation conservative
-      const wordCount = segData?.word_count ?? estimateLetterSpace(n);
-      logSpace += Math.log10(Math.max(wordCount, 1));
-
-    } else if (cls === 'D') {
-      // Espace chiffres : empirique si disponible, sinon théorique (10^n)
-      if (segData?.space) {
-        logSpace += Math.log10(segData.space);
-      } else {
-        logSpace += n; // log10(10^n) = n
-      }
+    } else if (/^[0-9]/.test(seg)) {
+      const space = segData('D')?.space;
+      logSpace += space ? Math.log10(space) : n;
 
     } else {
-      // Espace symboles : empirique si disponible, sinon théorique (32^n)
-      if (segData?.space) {
-        logSpace += Math.log10(segData.space);
-      } else {
-        logSpace += n * Math.log10(32);
-      }
+      const space = segData('S')?.space;
+      logSpace += space ? Math.log10(space) : n * Math.log10(32);
     }
   }
 
   return logSpace;
-}
-
-function estimateLetterSpace(n) {
-  // Extrapolation pour les longueurs non observées dans le corpus
-  if (n <= 2) return 50;
-  if (n <= 10) return Math.round(800 * Math.pow(1.6, n - 4));
-  return Math.round(25_000 + (n - 10) * 5_000);
 }
 
 // ─── Export principal ─────────────────────────────────────────────────────────
@@ -139,8 +144,13 @@ function estimateLetterSpace(n) {
  * Mixe probabilité empirique PCFG avec probabilité théorique brute force,
  * pondéré par la confiance basée sur la fréquence du squelette.
  *
- * Formula: rank_combined = confidence × rank_pcfg + (1-confidence) × rank_brute
+ * Formule (moyenne pondérée des ordres de grandeur) :
+ *   log(rank_combined) = confidence × log(rank_pcfg) + (1-confidence) × log(rank_brute)
  * où confidence = skeleton_count / (skeleton_count + CONFIDENCE_FLOOR)
+ *
+ * Une moyenne linéaire ne convient pas : rank_brute est souvent 10¹⁰ fois plus
+ * grand que rank_pcfg, si bien que même 0,3 % de son poids écrasait le résultat
+ * (Password123 avec un squelette vu 6 472 fois : 8×10¹⁶ au lieu de ~10⁹).
  *
  * Rationale :
  *   - Squelette observé beaucoup (count >> FLOOR): confidence ≈ 1, utilise PCFG
@@ -150,12 +160,14 @@ function estimateLetterSpace(n) {
  * Cela évite les cliff effects des approches threshold/Laplace classiques.
  *
  * @param {string} password
+ * @param {Set<string>|null} [dictWords] - Dictionnaire chargé (segments lettres)
  * @returns {{ rank: number, model: 'pcfg', skeleton: string, confidence?: number }}
  */
-export function rankPCFG(password) {
+export function rankPCFG(password, dictWords = null) {
   const skeleton = extractSkeleton(password);
 
-  if (!DATA) return { rank: null, model: 'pcfg', skeleton };
+  // Données absentes ou dans un autre format (ex. pcfg-data-pt.json) : non applicable
+  if (!DATA?.skeletons || !DATA.skeleton_total) return { rank: null, model: 'pcfg', skeleton };
 
   // CALIBRAGE : CONFIDENCE_FLOOR = Laplace smoothing pour squelettes rares.
   // Détermine le point d'inflexion où confidence = 0.5 (Bayesian interpolation).
@@ -181,16 +193,16 @@ export function rankPCFG(password) {
   const smoothedCount = skeletonCount + LAPLACE_ALPHA;
   const smoothedTotal = DATA.skeleton_total + LAPLACE_ALPHA * vocabSize;
   const skelProb = smoothedCount / smoothedTotal;
-  const logRankPCFG = -Math.log10(skelProb) + logSegmentSpace(skeleton);
-  const rankPCFG = Math.pow(10, logRankPCFG);
+  const logRankPCFG = -Math.log10(skelProb) + logSegmentSpace(password, dictWords);
 
   // Estimation brute force (importer depuis brute.js)
   // Pour éviter une dépendance circulaire, on calcule brute force ici
-  const rankBrute = computeBruteForceRank(password);
+  const logRankBrute = Math.log10(computeBruteForceRank(password));
 
-  // Interpolation Bayésienne
+  // Interpolation Bayésienne, sur les ordres de grandeur
   const confidence = skeletonCount / (skeletonCount + CONFIDENCE_FLOOR);
-  let rankCombined = confidence * rankPCFG + (1 - confidence) * rankBrute;
+  const logPCFG = Math.min(logRankPCFG, logRankBrute);
+  let rankCombined = Math.pow(10, confidence * logPCFG + (1 - confidence) * logRankBrute);
 
   // Pour les squelettes jamais observés (count=0), appliquer une pénalité très légère
   // pour garantir que rankPCFG < rankBrute (plutôt que égal due aux arrondis).

@@ -4,3 +4,6 @@
 .venv/
 *.found
 live-time2crack.eu/
+.playwright-mcp/
+docs/linkedin-calibration-corpus-personal.md
+linkedin-time2crack-vibe-coding-plan.md

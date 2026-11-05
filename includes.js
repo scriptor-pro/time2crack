@@ -518,15 +518,15 @@
   }
 
   const FOOTER_TEXTS = {
-    fr: { tagline: 'Calcul local &middot; Une seule vérification externe (HIBP k-anonymité) &middot; Open source', follow: 'Suivez-nous sur' },
-    en: { tagline: 'Local computation &middot; A single external check (HIBP k-anonymity) &middot; Open source', follow: 'Follow us on' },
-    es: { tagline: 'Cálculo local &middot; Una única verificación externa (HIBP k-anonimato) &middot; Código abierto', follow: 'Síguenos en' },
-    pt: { tagline: 'Cálculo local &middot; Uma única verificação externa (HIBP k-anonimato) &middot; Código aberto', follow: 'Siga-nos no' },
-    de: { tagline: 'Lokale Berechnung &middot; Eine einzige externe Prüfung (HIBP k-Anonymität) &middot; Open Source', follow: 'Folgen Sie uns auf' },
-    it: { tagline: 'Calcolo locale &middot; Un solo controllo esterno (HIBP k-anonimato) &middot; Open source', follow: 'Seguici su' },
-    tr: { tagline: 'Yerel hesaplama &middot; Tek bir harici kontrol (HIBP k-anonimlik) &middot; Açık kaynak', follow: 'Bizi takip edin:' },
-    pl: { tagline: 'Obliczenia lokalne &middot; Jedna zewnętrzna weryfikacja (HIBP k-anonimowość) &middot; Open source', follow: 'Obserwuj nas na' },
-    nl: { tagline: 'Lokale berekening &middot; Eén externe controle (HIBP k-anonimiteit) &middot; Open source', follow: 'Volg ons op' }
+    fr: { tagline: 'Calcul local &middot; Une seule vérification externe (HIBP k-anonymité) &middot; Open source', follow: 'Suivez-nous sur', by: 'Créé par' },
+    en: { tagline: 'Local computation &middot; A single external check (HIBP k-anonymity) &middot; Open source', follow: 'Follow us on', by: 'Created by' },
+    es: { tagline: 'Cálculo local &middot; Una única verificación externa (HIBP k-anonimato) &middot; Código abierto', follow: 'Síguenos en', by: 'Creado por' },
+    pt: { tagline: 'Cálculo local &middot; Uma única verificação externa (HIBP k-anonimato) &middot; Código aberto', follow: 'Siga-nos no', by: 'Criado por' },
+    de: { tagline: 'Lokale Berechnung &middot; Eine einzige externe Prüfung (HIBP k-Anonymität) &middot; Open Source', follow: 'Folgen Sie uns auf', by: 'Erstellt von' },
+    it: { tagline: 'Calcolo locale &middot; Un solo controllo esterno (HIBP k-anonimato) &middot; Open source', follow: 'Seguici su', by: 'Creato da' },
+    tr: { tagline: 'Yerel hesaplama &middot; Tek bir harici kontrol (HIBP k-anonimlik) &middot; Açık kaynak', follow: 'Bizi takip edin:', by: 'Geliştiren:' },
+    pl: { tagline: 'Obliczenia lokalne &middot; Jedna zewnętrzna weryfikacja (HIBP k-anonimowość) &middot; Open source', follow: 'Obserwuj nas na', by: 'Autor:' },
+    nl: { tagline: 'Lokale berekening &middot; Eén externe controle (HIBP k-anonimiteit) &middot; Open source', follow: 'Volg ons op', by: 'Gemaakt door' }
   };
 
   function renderSharedFooter() {
@@ -539,6 +539,9 @@
     footer.innerHTML = `
       <p>
         ${ft.tagline}
+      </p>
+      <p class="footer-author">
+        ${ft.by} <a href="/${lang}/about.html">Baudouin Van Humbeeck</a>
       </p>
 
       <div class="footer-social">
